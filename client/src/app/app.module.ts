@@ -7,9 +7,12 @@ import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { ColourSelectorComponent } from './components/colour-selector/colour-selector.component';
+import { HueSelectorComponent } from './components/hue-selector/hue-selector.component';
+import { ColourPaletteSelectorComponent } from './components/colour-palette-selector/colour-palette-selector.component';
 
 @NgModule({
-    declarations: [AppComponent, EditorComponent, SidebarComponent, DrawingComponent, MainPageComponent],
+    declarations: [AppComponent, EditorComponent, SidebarComponent, DrawingComponent, MainPageComponent, ColourSelectorComponent, HueSelectorComponent, ColourPaletteSelectorComponent],
     imports: [BrowserModule, HttpClientModule, AppRoutingModule],
     providers: [],
     bootstrap: [AppComponent],

@@ -6,7 +6,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./hue-selector.component.scss']
 })
 export class HueSelectorComponent implements OnInit {
-
+  // Code inspiré par https://malcoded.com/posts/angular-color-picker/
+  
   constructor() { }
 
   ngOnInit(): void {
