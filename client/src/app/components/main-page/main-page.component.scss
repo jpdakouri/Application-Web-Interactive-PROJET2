@@ -1,33 +1,44 @@
-.container {
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+
+.toolbar {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: space-between;
-    align-items: center;
-    min-height: 100vh;
-    height: auto;
+}
+.pacifico {
+    font-family: 'Pacifico', cursive;
 }
 
-.button {
-    margin-top: 10px;
-    text-align: center;
-}
+// .container {
+//     display: flex;
+//     flex-direction: column;
+//     justify-content: space-between;
+//     align-items: center;
+//     min-height: 100vh;
+//     height: auto;
+// }
 
-.team-name {
-    margin-top: 0.25em;
-    margin-bottom: 0.25em;
-}
+// .button {
+//     margin-top: 10px;
+//     text-align: center;
+// }
 
-.header-item {
-    justify-content: center;
-    text-align: center;
-}
+// .team-name {
+//     margin-top: 0.25em;
+//     margin-bottom: 0.25em;
+// }
 
-.footer-item {
-    text-align: center;
-}
+// .header-item {
+//     justify-content: center;
+//     text-align: center;
+// }
 
-.server-message {
-    justify-content: center;
-    width: 20%;
-    min-width: min-content;
-}
+// .footer-item {
+//     text-align: center;
+// }
+
+// .server-message {
+//     justify-content: center;
+//     width: 20%;
+//     min-width: min-content;
+// }
