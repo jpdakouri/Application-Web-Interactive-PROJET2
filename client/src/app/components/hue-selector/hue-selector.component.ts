@@ -1,11 +1,11 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-hue-selector',
   templateUrl: './hue-selector.component.html',
   styleUrls: ['./hue-selector.component.scss']
 })
-export class HueSelectorComponent implements OnInit {
+export class HueSelectorComponent implements AfterViewInit {
   // Code inspiré par https://malcoded.com/posts/angular-color-picker/
   
   private canvasContext: CanvasRenderingContext2D;
@@ -16,16 +16,18 @@ export class HueSelectorComponent implements OnInit {
   
   constructor() { }
 
-  ngOnInit() {
+  ngAfterViewInit() {
+    this.draw();
   }
 
-  private initialiseGradient(context: CanvasRenderingContext2D) {
+  private initialiseGradient() {
+    this.rainbowGradiant = this.canvasContext.createLinearGradient(0, 0, 0, this.height);
     const RED_STRING = 'rgba(255, 0, 0, 1)';
-    const YELLOW_STRING = 'rgba(255, 0, 0, 1)';
-    const GREEN_STRING = 'rgba(255, 0, 0, 1)';
-    const CYAN_STRING = 'rgba(255, 0, 0, 1)';
-    const BLUE_STRING = 'rgba(255, 0, 0, 1)';
-    const PURPLE_STRING = 'rgba(255, 0, 0, 1)';
+    const YELLOW_STRING = 'rgba(255, 255, 0, 1)';
+    const GREEN_STRING = 'rgba(0, 255, 0, 1)';
+    const CYAN_STRING = 'rgba(0, 255, 255, 1)';
+    const BLUE_STRING = 'rgba(0, 0, 255, 1)';
+    const PURPLE_STRING = 'rgba(255, 0, 255, 1)';
 
     this.rainbowGradiant.addColorStop(0, RED_STRING);
     this.rainbowGradiant.addColorStop(1/6,  YELLOW_STRING);
@@ -33,7 +35,7 @@ export class HueSelectorComponent implements OnInit {
     this.rainbowGradiant.addColorStop(3/6, CYAN_STRING);
     this.rainbowGradiant.addColorStop(4/6, BLUE_STRING);
     this.rainbowGradiant.addColorStop(5/6,  PURPLE_STRING);
-    this.rainbowGradiant.addColorStop(1,  PURPLE_STRING);  
+    this.rainbowGradiant.addColorStop(1,  RED_STRING);  
   }
 
   initialiseAttributes() {
@@ -41,8 +43,8 @@ export class HueSelectorComponent implements OnInit {
       if (CONTEXT != null) { // Étape nécessaire pour assigner à canvasContext
         this.canvasContext = CONTEXT; 
         this.width = this.sliderCanvas.nativeElement.width;
-        this.height = this.sliderCanvas.nativeElement.width;
-        this.initialiseGradient(this.canvasContext);
+        this.height = this.sliderCanvas.nativeElement.height;
+        this.initialiseGradient();
       }
   }
 
@@ -53,6 +55,7 @@ export class HueSelectorComponent implements OnInit {
     this.canvasContext.clearRect(0, 0, this.width, this.height);
     this.canvasContext.beginPath();
     this.canvasContext.rect(0, 0, this.width, this.height);
+    console.log(this.width, this.height);
     this.canvasContext.fillStyle = this.rainbowGradiant;
     this.canvasContext.fill();
     this.canvasContext.closePath();
