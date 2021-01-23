@@ -12,6 +12,7 @@ import { map } from 'rxjs/operators';
 export class MainPageComponent {
     readonly title: string = 'LOG2990';
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
+    isPendingDrawing: boolean = false;
 
     constructor(private basicService: IndexService) {}
 
@@ -22,6 +23,10 @@ export class MainPageComponent {
         };
         // Important de ne pas oublier "subscribe" ou l'appel ne sera jamais lancé puisque personne l'observe
         this.basicService.basicPost(newTimeMessage).subscribe();
+    }
+
+    alert(): void {
+        alert("Cette fonctionnalité n'est pas encore implémentée cher ami");
     }
 
     getMessagesFromServer(): void {
