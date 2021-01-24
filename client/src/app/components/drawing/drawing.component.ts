@@ -5,8 +5,8 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 
 // TODO : Avoir un fichier séparé pour les constantes ?
-export const DEFAULT_WIDTH = 1000;
-export const DEFAULT_HEIGHT = 800;
+export const DEFAULT_WIDTH = window.innerWidth / 2;
+export const DEFAULT_HEIGHT = window.innerHeight / 2;
 
 @Component({
     selector: 'app-drawing',
