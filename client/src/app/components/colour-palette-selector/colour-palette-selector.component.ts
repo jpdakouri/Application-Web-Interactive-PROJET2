@@ -1,108 +1,112 @@
-import {Component, ViewChild, ElementRef, AfterViewInit, Input, Output,SimpleChanges,
-  OnChanges, EventEmitter, HostListener} from '@angular/core'
+import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 
 @Component({
-  selector: 'app-colour-palette-selector',
-  templateUrl: './colour-palette-selector.component.html',
-  styleUrls: ['./colour-palette-selector.component.scss']
+    selector: 'app-colour-palette-selector',
+    templateUrl: './colour-palette-selector.component.html',
+    styleUrls: ['./colour-palette-selector.component.scss'],
 })
 export class ColourPaletteSelectorComponent implements AfterViewInit, OnChanges {
-  // Code inspiré par https://malcoded.com/posts/angular-color-picker/
-  
-  @Input() hue: string;
-  @Output() selectedColor: EventEmitter<string> = new EventEmitter(true);
-  @ViewChild('paletteCanvas') paletteCanvas: ElementRef<HTMLCanvasElement>;
-  private canvasContext: CanvasRenderingContext2D;
-  private mousedown = false;
-  selectedPosition: { x: number; y: number }
+    // Code inspiré par https://malcoded.com/posts/angular-color-picker/
 
-  ngAfterViewInit() {
-    this.draw();
-  }
+    @Input() hue: string;
+    @Output() selectedColor: EventEmitter<string> = new EventEmitter(true);
+    @ViewChild('paletteCanvas') paletteCanvas: ElementRef<HTMLCanvasElement>;
+    private canvasContext: CanvasRenderingContext2D;
+    private mousedown: boolean = false;
+    selectedPosition: { x: number; y: number };
 
-  draw() {
-    if (!this.canvasContext) {
-      const CONTEXT = this.paletteCanvas.nativeElement.getContext('2d');
-      if (CONTEXT != null) {
-        this.canvasContext = CONTEXT;
-      }
+    ngAfterViewInit(): void {
+        this.draw();
     }
-    const width = this.paletteCanvas.nativeElement.width;
-    const height = this.paletteCanvas.nativeElement.height;
 
-    this.canvasContext.fillStyle = this.hue || 'rgba(255,255,255,1)';
-    this.canvasContext.fillRect(0, 0, width, height);
+    draw(): void {
+        const RGBA_WHITE = 'rgba(255,255,255,1)';
+        const TRANSPARENT_RGBA_WHITE = 'rgba(255,255,255,0)';
+        const RGBA_BLACK = 'rgba(0,0,0,1)';
+        const TRANSPARENT_RGBA_BLACK = 'rgba(0,0,0,0)';
+        if (!this.canvasContext) {
+            const CONTEXT = this.paletteCanvas.nativeElement.getContext('2d');
+            if (CONTEXT != null) {
+                this.canvasContext = CONTEXT;
+            }
+        }
+        const WIDTH = this.paletteCanvas.nativeElement.width;
+        const HEIGHT = this.paletteCanvas.nativeElement.height;
 
-    const whiteGrad = this.canvasContext.createLinearGradient(0, 0, width, 0);
-    whiteGrad.addColorStop(0, 'rgba(255,255,255,1)');
-    whiteGrad.addColorStop(1, 'rgba(255,255,255,0)');
+        this.canvasContext.fillStyle = this.hue || RGBA_WHITE;
+        this.canvasContext.fillRect(0, 0, WIDTH, HEIGHT);
 
-    this.canvasContext.fillStyle = whiteGrad;
-    this.canvasContext.fillRect(0, 0, width, height);
+        const whiteGrad = this.canvasContext.createLinearGradient(0, 0, WIDTH, 0);
+        whiteGrad.addColorStop(0, RGBA_WHITE);
+        whiteGrad.addColorStop(1, TRANSPARENT_RGBA_WHITE);
 
-    const blackGrad = this.canvasContext.createLinearGradient(0, 0, 0, height);
-    blackGrad.addColorStop(0, 'rgba(0,0,0,0)');
-    blackGrad.addColorStop(1, 'rgba(0,0,0,1)');
+        this.canvasContext.fillStyle = whiteGrad;
+        this.canvasContext.fillRect(0, 0, WIDTH, HEIGHT);
 
-    this.canvasContext.fillStyle = blackGrad;
-    this.canvasContext.fillRect(0, 0, width, height);
+        const blackGrad = this.canvasContext.createLinearGradient(0, 0, 0, HEIGHT);
+        blackGrad.addColorStop(0, TRANSPARENT_RGBA_BLACK);
+        blackGrad.addColorStop(1, RGBA_BLACK);
 
-    if (this.selectedPosition) {
-      this.canvasContext.strokeStyle = 'white';
-      this.canvasContext.fillStyle = 'white';
-      this.canvasContext.beginPath();
-      this.canvasContext.arc(
-        this.selectedPosition.x,
-        this.selectedPosition.y,
-        10,
-        0,
-        2 * Math.PI
-      );
-      this.canvasContext.lineWidth = 5;
-      this.canvasContext.stroke();
+        this.canvasContext.fillStyle = blackGrad;
+        this.canvasContext.fillRect(0, 0, WIDTH, HEIGHT);
+
+        this.drawSelector();
     }
-  }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['hue']) {
-      this.draw();
-      const pos = this.selectedPosition;
-      if (pos) {
-        this.selectedColor.emit(this.getColorAtPosition(pos.x, pos.y));
-      }
+    private drawSelector(): void {
+        if (this.selectedPosition != undefined) {
+            const SELECTOR_COLOR = 'white';
+            const SELECTOR_RADIUS = 10;
+            const STROKE_WIDTH = 5;
+            this.canvasContext.strokeStyle = SELECTOR_COLOR;
+            this.canvasContext.fillStyle = SELECTOR_COLOR;
+            this.canvasContext.beginPath();
+            this.canvasContext.arc(this.selectedPosition.x, this.selectedPosition.y, SELECTOR_RADIUS, 0, 2 * Math.PI);
+            this.canvasContext.lineWidth = STROKE_WIDTH;
+            this.canvasContext.stroke();
+        }
     }
-  }
 
-  @HostListener('window:mouseup', ['$event'])
-  onMouseUp() {
-    this.mousedown = false;
-  }
-
-  onMouseDown(mouseEvent: MouseEvent) {
-    this.mousedown = true;
-    this.selectedPosition = { x: mouseEvent.offsetX, y: mouseEvent.offsetY };
-    this.draw();
-    this.selectedColor.emit(this.getColorAtPosition(mouseEvent.offsetX, mouseEvent.offsetY));
-  }
-
-  onMouseMove(mouseEvent: MouseEvent) {
-    if (this.mousedown) {
-      this.selectedPosition = { x: mouseEvent.offsetX, y: mouseEvent.offsetY };
-      this.draw();
-      this.emitColor(mouseEvent.offsetX, mouseEvent.offsetY);
+    ngOnChanges(changes: SimpleChanges): void {
+        const HUE_STRING = 'hue';
+        if (changes[HUE_STRING]) {
+            this.draw();
+            if (this.selectedPosition != undefined) {
+                this.selectedColor.emit(this.getColorAtPosition(this.selectedPosition.x, this.selectedPosition.y));
+            }
+        }
     }
-  }
 
-  emitColor(x: number, y: number) {
-    const rgbaColor = this.getColorAtPosition(x, y);
-    this.selectedColor.emit(rgbaColor);
-  }
+    @HostListener('window:mouseup', ['$event'])
+    onMouseUp(): void {
+        this.mousedown = false;
+    }
 
-  getColorAtPosition(x: number, y: number) {
-    const IMAGE_DATA = this.canvasContext.getImageData(x, y, 1, 1).data;
-    const RGBA_START = 'rgba(';
-    const RGBA_ALPHA = ',1)';
-    const RGBA_SEPARATOR = ',';
-    return RGBA_START + IMAGE_DATA[0] + RGBA_SEPARATOR + IMAGE_DATA[1] + RGBA_SEPARATOR + IMAGE_DATA[2] + RGBA_ALPHA;
-  }
+    onMouseDown(mouseEvent: MouseEvent): void {
+        this.mousedown = true;
+        this.selectedPosition = { x: mouseEvent.offsetX, y: mouseEvent.offsetY };
+        this.draw();
+        this.selectedColor.emit(this.getColorAtPosition(mouseEvent.offsetX, mouseEvent.offsetY));
+    }
+
+    onMouseMove(mouseEvent: MouseEvent): void {
+        if (this.mousedown) {
+            this.selectedPosition = { x: mouseEvent.offsetX, y: mouseEvent.offsetY };
+            this.draw();
+            this.emitColor(mouseEvent.offsetX, mouseEvent.offsetY);
+        }
+    }
+
+    emitColor(x: number, y: number): void {
+        const rgbaColor = this.getColorAtPosition(x, y);
+        this.selectedColor.emit(rgbaColor);
+    }
+
+    getColorAtPosition(x: number, y: number): string {
+        const IMAGE_DATA = this.canvasContext.getImageData(x, y, 1, 1).data;
+        const RGBA_START = 'rgba(';
+        const RGBA_ALPHA = ',1)';
+        const RGBA_SEPARATOR = ',';
+        return RGBA_START + IMAGE_DATA[0] + RGBA_SEPARATOR + IMAGE_DATA[1] + RGBA_SEPARATOR + IMAGE_DATA[2] + RGBA_ALPHA;
+    }
 }
