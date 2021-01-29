@@ -27,15 +27,16 @@ export class LigneService extends Tool {
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
             this.clearPath();
-            this.lastDot = this.newDot;
             this.started = true;
 
+            this.lastDot = this.newDot;
             this.mouseDownCoord = this.getPositionFromMouse(event);
-            this.pathData.push(this.mouseDownCoord);
             this.newDot = this.mouseDownCoord;
 
-            this.drawDot(this.drawingService.baseCtx, this.mouseDownCoord);
-            this.drawLinee(this.drawingService.baseCtx, this.lastDot);
+            this.pathData.push(this.mouseDownCoord);
+
+            this.drawDot(this.drawingService.baseCtx, this.newDot);
+            this.drawLine(this.drawingService.baseCtx, this.pathData);
         }
         this.mouseDown = false;
     }
@@ -45,12 +46,21 @@ export class LigneService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
 
-            // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.tempDot = mousePosition;
 
-            this.drawLinee(this.drawingService.previewCtx, this.tempDot);
+            this.drawLine(this.drawingService.previewCtx, this.pathData);
         }
+    }
+
+    onMouseEnter(event: MouseEvent): void {
+        if (this.started) {
+            this.onMouseMove(event);
+        }
+    }
+
+    onMouseLeave(event: MouseEvent): void {
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 
     private drawDot(ctx: CanvasRenderingContext2D, point: Vec2): void {
@@ -68,10 +78,12 @@ export class LigneService extends Tool {
         this.pathData = [];
     }
 
-    private drawLinee(ctx: CanvasRenderingContext2D, point: Vec2): void {
+    private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
-        ctx.moveTo(point.x, point.y);
-        ctx.lineTo(this.newDot.x, this.newDot.y);
+        for (const point of path) {
+            ctx.moveTo(point.x, point.y);
+            ctx.lineTo(this.newDot.x, this.newDot.y);
+        }
         ctx.stroke();
     }
 }
