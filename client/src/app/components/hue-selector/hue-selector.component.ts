@@ -6,10 +6,10 @@ import {Component, ViewChild, ElementRef, AfterViewInit, Output, HostListener, E
   styleUrls: ['./hue-selector.component.scss']
 })
 export class HueSelectorComponent implements AfterViewInit {
+  // Code inspiré par https://malcoded.com/posts/angular-color-picker/
+  
   @ViewChild('sliderCanvas') sliderCanvas: ElementRef<HTMLCanvasElement>;
-
   @Output() color: EventEmitter<string> = new EventEmitter();
-
   private sliderCanvasContext: CanvasRenderingContext2D;
   private isMouseDown = false;
   private selectedHeight = 1;
@@ -58,7 +58,6 @@ export class HueSelectorComponent implements AfterViewInit {
     const RGBA_BLUE = 'rgba(0, 0, 255, 1)';
     const RGBA_PURPLE = 'rgba(255, 0, 0, 1)';
 
-    
     GRADIENT.addColorStop(0, RGBA_RED);
     GRADIENT.addColorStop(0.17, RGBA_YELLOW);
     GRADIENT.addColorStop(0.34, RGBA_GREEN);
