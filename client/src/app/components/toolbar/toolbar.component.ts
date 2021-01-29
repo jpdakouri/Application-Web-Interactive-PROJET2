@@ -1,15 +1,23 @@
 import { Component, OnInit } from '@angular/core';
+import { ToolsNames } from '../../enums/tools-names';
+import { ToolManagerService } from '../../services/tool-manager/tool-manager.service';
 
 @Component({
-  selector: 'app-toolbar',
-  templateUrl: './toolbar.component.html',
-  styleUrls: ['./toolbar.component.scss']
+    selector: 'app-toolbar',
+    templateUrl: './toolbar.component.html',
+    styleUrls: ['./toolbar.component.scss'],
 })
 export class ToolbarComponent implements OnInit {
+    toolsNames = ToolsNames;
+    toolManagerService: ToolManagerService;
 
-  constructor() { }
+    constructor(toolManagerService: ToolManagerService) {
+        this.toolManagerService = toolManagerService;
+    }
 
-  ngOnInit(): void {
-  }
-
+    setCurrentTool(toolName: ToolsNames): void {
+        this.toolManagerService.setCurrentTool(toolName);
+        this.toolManagerService.toolChangeEmitter.emit(toolName);
+    }
+    ngOnInit(): void {}
 }

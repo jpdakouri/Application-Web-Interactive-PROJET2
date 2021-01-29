@@ -1,8 +1,9 @@
-import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { ToolsNames } from '@app/enums/tools-names';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { PencilService } from '@app/services/tools/pencil-service';
+import { ToolManagerService } from '../../services/tool-manager/tool-manager.service';
 
 // TODO : Avoir un fichier séparé pour les constantes ?
 export const DEFAULT_WIDTH = 1000;
@@ -13,7 +14,7 @@ export const DEFAULT_HEIGHT = 800;
     templateUrl: './drawing.component.html',
     styleUrls: ['./drawing.component.scss'],
 })
-export class DrawingComponent implements AfterViewInit {
+export class DrawingComponent implements AfterViewInit, OnInit {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     // On utilise ce canvas pour dessiner sans affecter le dessin final
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
@@ -21,13 +22,18 @@ export class DrawingComponent implements AfterViewInit {
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
-
-    // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
-    private tools: Tool[];
+    toolManagerService: ToolManagerService;
     currentTool: Tool;
-    constructor(private drawingService: DrawingService, pencilService: PencilService) {
-        this.tools = [pencilService];
-        this.currentTool = this.tools[0];
+
+    constructor(private drawingService: DrawingService, toolManagerService: ToolManagerService) {
+        this.toolManagerService = toolManagerService;
+    }
+
+    ngOnInit(): void {
+        this.currentTool = this.toolManagerService.getCurrentToolInstance();
+        this.toolManagerService.toolChangeEmitter.subscribe((toolName: ToolsNames) => {
+            this.updateCurrentTool();
+        });
     }
 
     ngAfterViewInit(): void {
@@ -36,6 +42,10 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
+    }
+
+    updateCurrentTool() {
+        this.currentTool = this.toolManagerService.getCurrentToolInstance();
     }
 
     @HostListener('mousemove', ['$event'])

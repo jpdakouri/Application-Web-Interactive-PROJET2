@@ -2,17 +2,17 @@
     <div class="flex-container">
         <div class="drawing-tools">
             <div class="pencil-button-container">
-                <button mat-fab color="primary" aria-label='Crayon "C"' title='Crayon "C"'>
+                <button (click)="setCurrentTool(this.toolsNames.Pencil)" mat-fab color="primary" aria-label='Crayon "C"' title='Crayon "C"'>
                     <mat-icon>create</mat-icon>
                 </button>
             </div>
             <div class="aerosol-button-container">
-                <button mat-fab color="primary" aria-label='Aérosol "A"' title='Aérosol "A"'>
+                <button (click)="setCurrentTool(this.toolsNames.Pencil)" mat-fab color="primary" aria-label='Aérosol "A"' title='Aérosol "A"'>
                     <mat-icon>blur_on</mat-icon>
                 </button>
             </div>
             <div class="eraser-button-container">
-                <button mat-fab color="primary" aria-label='Efface "E"' title='Efface "E"'>
+                <button (click)="setCurrentTool(this.toolsNames.Pencil)" mat-fab color="primary" aria-label='Efface "E"' title='Efface "E"'>
                     <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="24" height="24" viewBox="0 0 172 172" style="fill: #000000">
                         <g
                             fill="none"
@@ -44,17 +44,17 @@
         <mat-divider class="divider"></mat-divider>
         <div class="shaping-tools">
             <div class="rectangle-button-container">
-                <button mat-fab color="primary" aria-label='Rectangle "1"' title='Rectangle "1"'>
+                <button (click)="setCurrentTool(this.toolsNames.Pencil)" mat-fab color="primary" aria-label='Rectangle "1"' title='Rectangle "1"'>
                     <mat-icon>crop_5_4</mat-icon>
                 </button>
             </div>
             <div class="ellipse-button-container">
-                <button mat-fab color="primary" aria-label='Ellipse "2"' title='Ellipse "2"'>
+                <button (click)="setCurrentTool(this.toolsNames.Pencil)" mat-fab color="primary" aria-label='Ellipse "2"' title='Ellipse "2"'>
                     <mat-icon>panorama_fish_eye</mat-icon>
                 </button>
             </div>
             <div class="line-button-container">
-                <button mat-fab color="primary" aria-label='Ligne "L"' title='Ligne "L"'>
+                <button (click)="setCurrentTool(this.toolsNames.Pencil)" mat-fab color="primary" aria-label='Ligne "L"' title='Ligne "L"'>
                     <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="24" height="24" viewBox="0 0 172 172" style="fill: #000000">
                         <g
                             fill="none"
