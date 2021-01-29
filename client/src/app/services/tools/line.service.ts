@@ -4,18 +4,23 @@ import { Vec2 } from '@app/classes/vec2';
 import { MouseButton } from '@app/mock-mouse-button';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
+export const PIXEL_DISTANCE = 20;
+export const WAIT_TIME = 250;
+
 @Injectable({
     providedIn: 'root',
 })
 export class LigneService extends Tool {
     private started: boolean;
     private pathData: Vec2[];
-    private newDot: Vec2;
+    private presentedData: Vec2[];
     private dotRadius: number;
+    private dblClick: boolean;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
+        this.presentedData = [];
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -25,11 +30,16 @@ export class LigneService extends Tool {
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
             this.clearPath();
-            this.started = true;
-
             this.mouseDownCoord = this.getPositionFromMouse(event);
-            this.pathData.push(this.newDot);
-            this.newDot = this.mouseDownCoord;
+            this.presentedData.push(this.mouseDownCoord);
+
+            if (this.started) {
+                this.pathData.push(this.presentedData[this.presentedData.length - 1]);
+            } else {
+                this.started = true;
+            }
+
+            this.presentedData[this.presentedData.length - 1] = this.mouseDownCoord;
 
             this.drawDot(this.drawingService.baseCtx, this.mouseDownCoord);
             this.drawLine(this.drawingService.baseCtx, this.pathData);
@@ -53,6 +63,17 @@ export class LigneService extends Tool {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 
+    onDblClick(event: MouseEvent): void {
+        this.started = false;
+        this.dblClick = true;
+        if (this.verifyFirstPoint()) {
+            setTimeout(() => {
+                console.log('x');
+            }, WAIT_TIME);
+        }
+        console.log('y');
+    }
+
     private drawDot(ctx: CanvasRenderingContext2D, point: Vec2): void {
         // valeur devra etre choisi dans la bare a outil
         // peut etre fix pour l'instant
@@ -72,8 +93,21 @@ export class LigneService extends Tool {
         ctx.beginPath();
         for (const point of path) {
             ctx.moveTo(point.x, point.y);
-            ctx.lineTo(this.newDot.x, this.newDot.y);
+            ctx.lineTo(this.presentedData[this.presentedData.length - 1].x, this.presentedData[this.presentedData.length - 1].y);
         }
         ctx.stroke();
+    }
+
+    // private deleteLast(): void {}
+
+    private verifyFirstPoint(): boolean {
+        const tempFirstDot = this.presentedData[0];
+        const tempLastDot = this.presentedData[this.presentedData.length - 1];
+        return (
+            tempLastDot.x + PIXEL_DISTANCE > tempFirstDot.x &&
+            tempLastDot.x - PIXEL_DISTANCE < tempFirstDot.x &&
+            tempLastDot.y + PIXEL_DISTANCE > tempFirstDot.y &&
+            tempLastDot.y - PIXEL_DISTANCE < tempFirstDot.y
+        );
     }
 }
