@@ -18,7 +18,7 @@ export class HueSelectorComponent implements AfterViewInit {
         this.draw();
     }
 
-    draw(): void {
+    private draw(): void {
         if (!this.sliderCanvasContext) {
             const CONTEXT = this.sliderCanvas.nativeElement.getContext('2d');
             if (CONTEXT != null) {
@@ -77,7 +77,7 @@ export class HueSelectorComponent implements AfterViewInit {
     }
 
     @HostListener('window:mouseup', ['$event'])
-    onMouseUp(evt: MouseEvent): void {
+    onMouseUp(): void {
         this.isMouseDown = false;
     }
 
@@ -89,19 +89,31 @@ export class HueSelectorComponent implements AfterViewInit {
     }
 
     onMouseMove(mouseEvent: MouseEvent): void {
-        if (this.isMouseDown) {
+        this.isValidPosition(mouseEvent.offsetX, mouseEvent.offsetY);
+        console.log(mouseEvent.offsetX, mouseEvent.offsetY, this.sliderCanvas.nativeElement.width, this.sliderCanvas.nativeElement.height);
+        if (this.isMouseDown && this.isValidPosition(mouseEvent.offsetX, mouseEvent.offsetY)) {
             this.selectedHeight = mouseEvent.offsetY;
             this.draw();
             this.emitColor(mouseEvent.offsetX, mouseEvent.offsetY);
         }
     }
 
-    emitColor(x: number, y: number): void {
-        const rgbaColor = this.getColorAtPosition(x, y);
-        this.color.emit(rgbaColor);
+    private isValidPosition(x: number, y: number): boolean {
+        const EXCLUDED_SIDE_WIDTH = 5;
+        return (
+            x >= EXCLUDED_SIDE_WIDTH &&
+            x <= this.sliderCanvas.nativeElement.width - EXCLUDED_SIDE_WIDTH &&
+            y >= EXCLUDED_SIDE_WIDTH &&
+            y <= this.sliderCanvas.nativeElement.height - EXCLUDED_SIDE_WIDTH
+        );
     }
 
-    getColorAtPosition(x: number, y: number): string {
+    private emitColor(x: number, y: number): void {
+        const RGBA_COLOR = this.getColorAtPosition(x, y);
+        this.color.emit(RGBA_COLOR);
+    }
+
+    private getColorAtPosition(x: number, y: number): string {
         const IMAGE_DATA = this.sliderCanvasContext.getImageData(x, y, 1, 1).data;
         const RGBA_START = 'rgba(';
         const RGBA_ALPHA = ',1)';

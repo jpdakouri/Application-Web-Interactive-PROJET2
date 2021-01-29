@@ -7,7 +7,6 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input
 })
 export class ColourPaletteSelectorComponent implements AfterViewInit, OnChanges {
     // Code inspiré par https://malcoded.com/posts/angular-color-picker/
-
     @Input() hue: string;
     @Output() selectedColor: EventEmitter<string> = new EventEmitter(true);
     @ViewChild('paletteCanvas') paletteCanvas: ElementRef<HTMLCanvasElement>;
@@ -24,33 +23,36 @@ export class ColourPaletteSelectorComponent implements AfterViewInit, OnChanges 
         const TRANSPARENT_RGBA_WHITE = 'rgba(255,255,255,0)';
         const RGBA_BLACK = 'rgba(0,0,0,1)';
         const TRANSPARENT_RGBA_BLACK = 'rgba(0,0,0,0)';
-        if (!this.canvasContext) {
+        if (this.canvasContext == undefined && this.paletteCanvas != undefined) {
             const CONTEXT = this.paletteCanvas.nativeElement.getContext('2d');
             if (CONTEXT != null) {
                 this.canvasContext = CONTEXT;
             }
         }
-        const WIDTH = this.paletteCanvas.nativeElement.width;
-        const HEIGHT = this.paletteCanvas.nativeElement.height;
 
-        this.canvasContext.fillStyle = this.hue || RGBA_WHITE;
-        this.canvasContext.fillRect(0, 0, WIDTH, HEIGHT);
+        if (this.canvasContext != undefined) {
+            const WIDTH = this.paletteCanvas.nativeElement.width;
+            const HEIGHT = this.paletteCanvas.nativeElement.height;
 
-        const whiteGrad = this.canvasContext.createLinearGradient(0, 0, WIDTH, 0);
-        whiteGrad.addColorStop(0, RGBA_WHITE);
-        whiteGrad.addColorStop(1, TRANSPARENT_RGBA_WHITE);
+            this.canvasContext.fillStyle = this.hue || RGBA_WHITE;
+            this.canvasContext.fillRect(0, 0, WIDTH, HEIGHT);
 
-        this.canvasContext.fillStyle = whiteGrad;
-        this.canvasContext.fillRect(0, 0, WIDTH, HEIGHT);
+            const whiteGrad = this.canvasContext.createLinearGradient(0, 0, WIDTH, 0);
+            whiteGrad.addColorStop(0, RGBA_WHITE);
+            whiteGrad.addColorStop(1, TRANSPARENT_RGBA_WHITE);
 
-        const blackGrad = this.canvasContext.createLinearGradient(0, 0, 0, HEIGHT);
-        blackGrad.addColorStop(0, TRANSPARENT_RGBA_BLACK);
-        blackGrad.addColorStop(1, RGBA_BLACK);
+            this.canvasContext.fillStyle = whiteGrad;
+            this.canvasContext.fillRect(0, 0, WIDTH, HEIGHT);
 
-        this.canvasContext.fillStyle = blackGrad;
-        this.canvasContext.fillRect(0, 0, WIDTH, HEIGHT);
+            const blackGrad = this.canvasContext.createLinearGradient(0, 0, 0, HEIGHT);
+            blackGrad.addColorStop(0, TRANSPARENT_RGBA_BLACK);
+            blackGrad.addColorStop(1, RGBA_BLACK);
 
-        this.drawSelector();
+            this.canvasContext.fillStyle = blackGrad;
+            this.canvasContext.fillRect(0, 0, WIDTH, HEIGHT);
+
+            this.drawSelector();
+        }
     }
 
     private drawSelector(): void {

@@ -1,1 +1,10 @@
-<p>colour-selector works!</p>
+<div class="color-wrapper">
+    <app-hue-selector
+    (color)="hue=$event"
+    ></app-hue-selector>
+    <app-colour-palette-selector [hue]="hue" (color)="color = $event"></app-colour-palette-selector>
+    <h1>{{color}}</h1>
+</div>
+<div>
+    <h1>{{color}}</h1>
+</div>
