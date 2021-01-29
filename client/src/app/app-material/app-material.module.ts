@@ -4,11 +4,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSliderModule } from '@angular/material/slider';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
 @NgModule({
     declarations: [],
-    imports: [CommonModule, MatToolbarModule, MatIconModule, MatGridListModule, MatDividerModule, MatButtonModule],
-    exports: [MatToolbarModule, MatIconModule, MatGridListModule, MatDividerModule, MatButtonModule],
+    imports: [CommonModule, MatToolbarModule, MatIconModule, MatGridListModule, MatDividerModule, MatButtonModule, MatSliderModule],
+    exports: [MatToolbarModule, MatIconModule, MatGridListModule, MatDividerModule, MatButtonModule, MatSliderModule],
 })
 export class AppMaterialModule {}

@@ -1,0 +1,19 @@
+<div class="toolbar">
+    <div *ngIf="isLineWidth()" class="line-thickness">
+        <h2 class="attribute-title">Épaisseur de ligne: {{ this.currentLineWidth }}px</h2>
+        <mat-slider
+            color="primary"
+            thumbLabel
+            min="1"
+            max="30"
+            (input)="this.currentLineWidth = $event.value"
+            (change)="onThicknessChange($event)"
+            step="1"
+        ></mat-slider>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="rectangle-ellipse-type">
+        <h2 class="attribute-title">Type de</h2>
+    </div>
+    <mat-divider></mat-divider>
+</div>

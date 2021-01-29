@@ -1,14 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ToolsNames } from '../../enums/tools-names';
 import { ToolManagerService } from '../../services/tool-manager/tool-manager.service';
-
 @Component({
     selector: 'app-toolbar',
     templateUrl: './toolbar.component.html',
     styleUrls: ['./toolbar.component.scss'],
 })
-export class ToolbarComponent implements OnInit {
-    toolsNames = ToolsNames;
+export class ToolbarComponent {
+    toolsNames: typeof ToolsNames = ToolsNames;
     toolManagerService: ToolManagerService;
 
     constructor(toolManagerService: ToolManagerService) {
@@ -19,5 +18,8 @@ export class ToolbarComponent implements OnInit {
         this.toolManagerService.setCurrentTool(toolName);
         this.toolManagerService.toolChangeEmitter.emit(toolName);
     }
-    ngOnInit(): void {}
+
+    isCurrentTool(toolName: ToolsNames): string {
+        return this.toolManagerService.currentTool === toolName ? 'accent' : 'primary';
+    }
 }

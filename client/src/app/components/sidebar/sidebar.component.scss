@@ -1,12 +1,8 @@
 .container {
-    height: auto;
-    min-height: 98vh;
+    height: 100vh;
     border: 1px solid black;
-    padding: 0 5px 0 5px;
+    width: 460px;
     margin-right: 5px;
-}
-
-.sidebar-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
 }
