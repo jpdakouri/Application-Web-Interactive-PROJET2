@@ -10,9 +10,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 export class LigneService extends Tool {
     private started: boolean;
     private pathData: Vec2[];
-    private lastDot: Vec2;
     private newDot: Vec2;
-    private tempDot: Vec2;
     private dotRadius: number;
 
     constructor(drawingService: DrawingService) {
@@ -29,13 +27,11 @@ export class LigneService extends Tool {
             this.clearPath();
             this.started = true;
 
-            this.lastDot = this.newDot;
             this.mouseDownCoord = this.getPositionFromMouse(event);
+            this.pathData.push(this.newDot);
             this.newDot = this.mouseDownCoord;
 
-            this.pathData.push(this.mouseDownCoord);
-
-            this.drawDot(this.drawingService.baseCtx, this.newDot);
+            this.drawDot(this.drawingService.baseCtx, this.mouseDownCoord);
             this.drawLine(this.drawingService.baseCtx, this.pathData);
         }
         this.mouseDown = false;
@@ -43,19 +39,13 @@ export class LigneService extends Tool {
 
     onMouseMove(event: MouseEvent): void {
         if (this.started) {
+            this.clearPath();
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
 
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.tempDot = mousePosition;
 
             this.drawLine(this.drawingService.previewCtx, this.pathData);
-        }
-    }
-
-    onMouseEnter(event: MouseEvent): void {
-        if (this.started) {
-            this.onMouseMove(event);
         }
     }
 
