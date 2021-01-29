@@ -8,5 +8,5 @@ import { Component } from '@angular/core';
 export class ColourSelectorComponent {
     // Code inspiré par https://malcoded.com/posts/angular-color-picker/
     hue: string;
-    color: string;
+    selectedColor : string;
 }

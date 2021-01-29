@@ -2,9 +2,10 @@
     <app-hue-selector
     (color)="hue=$event"
     ></app-hue-selector>
-    <app-colour-palette-selector [hue]="hue" (color)="color = $event"></app-colour-palette-selector>
-    <h1>{{color}}</h1>
+    <app-colour-palette-selector [hue]="hue" (selectedColor)="selectedColor = $event"></app-colour-palette-selector>
+    <h1>{{selectedColor}}</h1>
 </div>
 <div>
-    <h1>{{color}}</h1>
+    <h1>{{selectedColor}}</h1>
+    <h1>test</h1>
 </div>
