@@ -1,26 +1,57 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
-import { ToolsNames } from '../../enums/tools-names';
-import { ToolBox } from '../../types/tool-box';
-import { PencilService } from '../tools/pencil.service';
+import { ToolsNames } from '@app/enums/tools-names';
+import { PencilService } from '@app/services/tools/pencil.service';
+import { ToolBox } from '@app/types/tool-box';
 
+// tslint:disable: max-classes-per-file
+@Injectable({
+    providedIn: 'root',
+})
+class EraserService extends Tool {}
+@Injectable({
+    providedIn: 'root',
+})
+class EllipseService extends Tool {}
+@Injectable({
+    providedIn: 'root',
+})
+class LineService extends Tool {}
+@Injectable({
+    providedIn: 'root',
+})
+class RectangleService extends Tool {}
+@Injectable({
+    providedIn: 'root',
+})
+class AerosolService extends Tool {}
 @Injectable({
     providedIn: 'root',
 })
 export class ToolManagerService {
     currentTool: ToolsNames = ToolsNames.Pencil;
-    pencilService: PencilService;
     toolChangeEmitter: EventEmitter<ToolsNames> = new EventEmitter<ToolsNames>();
     toolBox: ToolBox;
 
-    constructor(pencilService: PencilService) {
-        this.pencilService = pencilService;
+    constructor(
+        pencilService: PencilService,
+        rectangleService: RectangleService,
+        ellipseService: EllipseService,
+        lineService: LineService,
+        eraserService: EraserService,
+        aerosolService: AerosolService,
+    ) {
         this.toolBox = {
-            Pencil: this.pencilService,
+            Pencil: pencilService,
+            Rectangle: rectangleService,
+            Ellipse: ellipseService,
+            Line: lineService,
+            Eraser: eraserService,
+            Aerosol: aerosolService,
         };
     }
 
-    setCurrentTool(toolName: ToolsNames) {
+    setCurrentTool(toolName: ToolsNames): void {
         this.currentTool = toolName;
     }
 

@@ -3,7 +3,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { ToolsNames } from '@app/enums/tools-names';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { ToolManagerService } from '../../services/tool-manager/tool-manager.service';
+import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 
 // TODO : Avoir un fichier séparé pour les constantes ?
 export const DEFAULT_WIDTH = 1000;
@@ -44,7 +44,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.drawingService.canvas = this.baseCanvas.nativeElement;
     }
 
-    updateCurrentTool() {
+    updateCurrentTool(): void {
         this.currentTool = this.toolManagerService.getCurrentToolInstance();
     }
 

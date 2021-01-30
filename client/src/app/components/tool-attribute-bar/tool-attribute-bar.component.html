@@ -2,8 +2,8 @@
     <div *ngIf="isLineWidth()" class="line-thickness">
         <h2 class="attribute-title">Épaisseur de ligne: {{ this.currentLineWidth }}px</h2>
         <mat-slider
+            #thicknessSlider
             color="primary"
-            thumbLabel
             min="1"
             max="30"
             (input)="this.currentLineWidth = $event.value"
@@ -12,8 +12,13 @@
         ></mat-slider>
     </div>
     <mat-divider></mat-divider>
-    <div class="rectangle-ellipse-type">
-        <h2 class="attribute-title">Type de</h2>
+    <div *ngIf="isShapeStyle()" class="rectangle-ellipse-type">
+        <h2 class="attribute-title">Type d{{ isEllipse() ? "'ellipse:" : 'e rectangle:' }}</h2>
+        <mat-button-toggle-group name="ShapeStyle" aria-label="Shape Style">
+            <mat-button-toggle value="outline">Contour</mat-button-toggle>
+            <mat-button-toggle value="filled">Plein</mat-button-toggle>
+            <mat-button-toggle value="filledOutline">Plein avec contour</mat-button-toggle>
+        </mat-button-toggle-group>
     </div>
     <mat-divider></mat-divider>
 </div>

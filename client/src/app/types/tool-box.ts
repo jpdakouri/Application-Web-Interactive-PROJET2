@@ -1,5 +1,5 @@
-import { Tool } from '../classes/tool';
-import { ToolsNames } from '../enums/tools-names';
+import { Tool } from '@app/classes/tool';
+import { ToolsNames } from '@app/enums/tools-names';
 
 export type ToolBox = {
     [name in ToolsNames]: Tool;

@@ -14,9 +14,9 @@
             </div>
             <div class="aerosol-button-container">
                 <button
-                    (click)="setCurrentTool(this.toolsNames)"
+                    (click)="setCurrentTool(this.toolsNames.Aerosol)"
                     mat-fab
-                    [color]="isCurrentTool(this.toolsNames)"
+                    [color]="isCurrentTool(this.toolsNames.Aerosol)"
                     aria-label='Aérosol "A"'
                     title='Aérosol "A"'
                 >
@@ -25,9 +25,9 @@
             </div>
             <div class="eraser-button-container">
                 <button
-                    (click)="setCurrentTool(this.toolsNames)"
+                    (click)="setCurrentTool(this.toolsNames.Eraser)"
                     mat-fab
-                    [color]="isCurrentTool(this.toolsNames)"
+                    [color]="isCurrentTool(this.toolsNames.Eraser)"
                     aria-label='Efface "E"'
                     title='Efface "E"'
                 >
@@ -63,9 +63,9 @@
         <div class="shaping-tools">
             <div class="rectangle-button-container">
                 <button
-                    (click)="setCurrentTool(this.toolsNames)"
+                    (click)="setCurrentTool(this.toolsNames.Rectangle)"
                     mat-fab
-                    [color]="isCurrentTool(this.toolsNames)"
+                    [color]="isCurrentTool(this.toolsNames.Rectangle)"
                     aria-label='Rectangle "1"'
                     title='Rectangle "1"'
                 >
@@ -74,9 +74,9 @@
             </div>
             <div class="ellipse-button-container">
                 <button
-                    (click)="setCurrentTool(this.toolsNames)"
+                    (click)="setCurrentTool(this.toolsNames.Ellipse)"
                     mat-fab
-                    [color]="isCurrentTool(this.toolsNames)"
+                    [color]="isCurrentTool(this.toolsNames.Ellipse)"
                     aria-label='Ellipse "2"'
                     title='Ellipse "2"'
                 >
@@ -85,9 +85,9 @@
             </div>
             <div class="line-button-container">
                 <button
-                    (click)="setCurrentTool(this.toolsNames)"
+                    (click)="setCurrentTool(this.toolsNames.Line)"
                     mat-fab
-                    [color]="isCurrentTool(this.toolsNames)"
+                    [color]="isCurrentTool(this.toolsNames.Line)"
                     aria-label='Ligne "L"'
                     title='Ligne "L"'
                 >
