@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, ViewChild } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from '@app/components/drawing/drawing.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
@@ -21,10 +22,15 @@ export enum MouseButton {
 })
 export class PencilService extends Tool {
     private pathData: Vec2[];
+    private color: string;
+    private width: number;
+    private DEFAULT_SIZE: number = 3;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
+        this.width = this.DEFAULT_SIZE;
+        this.color = 'purple';
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -61,7 +67,12 @@ export class PencilService extends Tool {
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         for (const point of path) {
-            ctx.lineTo(point.x, point.y);
+            ctx.lineWidth = this.width;
+            ctx.strokeStyle = this.color;
+            if (this.mouseOut) {
+                ctx.stroke();
+                ctx.beginPath();
+            } else ctx.lineTo(point.x, point.y);
         }
         ctx.stroke();
     }
