@@ -5,7 +5,7 @@ import { MouseButton } from '@app/mock-mouse-button';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 export const PIXEL_DISTANCE = 20;
-export const WAIT_TIME = 250;
+export const WAIT_TIME = 500;
 
 @Injectable({
     providedIn: 'root',
@@ -20,7 +20,7 @@ export class LigneService extends Tool {
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
-        this.presentedData = [];
+        this.clearPresented();
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -30,19 +30,18 @@ export class LigneService extends Tool {
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
             this.clearPath();
+
             this.mouseDownCoord = this.getPositionFromMouse(event);
-            this.presentedData.push(this.mouseDownCoord);
-
-            if (this.started) {
-                this.pathData.push(this.presentedData[this.presentedData.length - 1]);
-            } else {
-                this.started = true;
-            }
-
-            this.presentedData[this.presentedData.length - 1] = this.mouseDownCoord;
 
             this.drawDot(this.drawingService.baseCtx, this.mouseDownCoord);
-            this.drawLine(this.drawingService.baseCtx, this.pathData);
+
+            this.presentedData.push(this.mouseDownCoord);
+            this.pathData.push(this.presentedData[this.presentedData.length - 2]);
+
+            this.started = true;
+            if (!this.dblClick) {
+                this.drawLine(this.drawingService.baseCtx, this.pathData);
+            } else this.dblClick = false;
         }
         this.mouseDown = false;
     }
@@ -63,15 +62,16 @@ export class LigneService extends Tool {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 
+    // detecter le double click et relier le dernier point au premier
     onDblClick(event: MouseEvent): void {
         this.started = false;
         this.dblClick = true;
         if (this.verifyFirstPoint()) {
-            setTimeout(() => {
-                console.log('x');
-            }, WAIT_TIME);
+            // this.presentedData[this.presentedData.length - 1] = this.presentedData[0];
+            console.log('it is my start point ');
         }
-        console.log('y');
+
+        this.clearPresented();
     }
 
     private drawDot(ctx: CanvasRenderingContext2D, point: Vec2): void {
@@ -87,6 +87,10 @@ export class LigneService extends Tool {
 
     private clearPath(): void {
         this.pathData = [];
+    }
+
+    private clearPresented(): void {
+        this.presentedData = [];
     }
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
