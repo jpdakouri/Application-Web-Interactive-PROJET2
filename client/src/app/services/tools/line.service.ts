@@ -13,14 +13,23 @@ export const WAIT_TIME = 500;
 export class LineService extends Tool {
     private started: boolean;
     private pathData: Vec2[];
-    private presentedData: Vec2[];
+    private dotData: Vec2[];
+
     private dotRadius: number;
-    private dblClick: boolean;
+    private lineWidth: number;
+    private withDots: boolean;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
         this.clearPresented();
+
+        // valeur devra etre choisi dans la bare a outil
+        // peut etre fix pour l'instant
+        // tslint:disable-next-line:no-magic-numbers
+        this.dotRadius = 5;
+        this.lineWidth = 1;
+        this.withDots = true;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -29,60 +38,58 @@ export class LineService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
-            this.clearPath();
+            this.started = true;
 
             this.mouseDownCoord = this.getPositionFromMouse(event);
+            this.pathData.push(this.mouseDownCoord);
 
-            this.drawDot(this.drawingService.baseCtx, this.mouseDownCoord);
-
-            this.presentedData.push(this.mouseDownCoord);
-            this.pathData.push(this.presentedData[this.presentedData.length - 2]);
-
-            this.started = true;
-            if (!this.dblClick) {
-                this.drawLine(this.drawingService.baseCtx, this.pathData);
-            } else this.dblClick = false;
+            this.drawLine(this.drawingService.previewCtx, this.pathData);
         }
         this.mouseDown = false;
     }
 
     onMouseMove(event: MouseEvent): void {
         if (this.started) {
-            this.clearPath();
             const mousePosition = this.getPositionFromMouse(event);
-            this.pathData.push(mousePosition);
 
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-
             this.drawLine(this.drawingService.previewCtx, this.pathData);
+            this.drawPreviewLine(this.drawingService.previewCtx, mousePosition, this.pathData[this.pathData.length - 1]);
         }
     }
 
     onMouseLeave(event: MouseEvent): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawLine(this.drawingService.previewCtx, this.pathData);
     }
 
-    // detecter le double click et relier le dernier point au premier
     onDblClick(event: MouseEvent): void {
         this.started = false;
-        this.dblClick = true;
+        this.dotData = this.pathData;
+        this.drawLine(this.drawingService.baseCtx, this.dotData);
+
         if (this.verifyFirstPoint()) {
-            // this.presentedData[this.presentedData.length - 1] = this.presentedData[0];
             console.log('it is my start point ');
         }
 
+        this.clearPath();
         this.clearPresented();
     }
 
-    private drawDot(ctx: CanvasRenderingContext2D, point: Vec2): void {
-        // valeur devra etre choisi dans la bare a outil
-        // peut etre fix pour l'instant
-        // tslint:disable-next-line:no-magic-numbers
-        this.dotRadius = 5;
+    handleKeyboardEvent(event: KeyboardEvent): void {
+        if (event.shiftKey) {
+        } else if (event.key === 'Escape') {
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.clearPath();
+            this.started = false;
+        } else if (event.key === 'Backspace') {
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.pathData.pop();
+            this.drawLine(this.drawingService.previewCtx, this.pathData);
+            event.preventDefault();
+        }
 
-        ctx.beginPath();
-        ctx.arc(point.x, point.y, this.dotRadius, 0, 2 * Math.PI, true);
-        ctx.fill();
+        console.log(event);
     }
 
     private clearPath(): void {
@@ -90,23 +97,36 @@ export class LineService extends Tool {
     }
 
     private clearPresented(): void {
-        this.presentedData = [];
+        this.dotData = [];
     }
 
-    private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    private drawPreviewLine(ctx: CanvasRenderingContext2D, previewPoint: Vec2, lastPoint: Vec2): void {
         ctx.beginPath();
-        for (const point of path) {
-            ctx.moveTo(point.x, point.y);
-            ctx.lineTo(this.presentedData[this.presentedData.length - 1].x, this.presentedData[this.presentedData.length - 1].y);
-        }
+        ctx.moveTo(lastPoint.x, lastPoint.y);
+        ctx.lineTo(previewPoint.x, previewPoint.y);
         ctx.stroke();
     }
 
-    // private deleteLast(): void {}
+    private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+
+        ctx.beginPath();
+        ctx.moveTo(path[0].x, path[0].y);
+        for (const point of path) {
+            ctx.lineTo(point.x, point.y);
+            ctx.lineWidth = this.lineWidth;
+        }
+        ctx.stroke();
+        if (this.withDots)
+            for (const dot of path) {
+                ctx.beginPath();
+                ctx.arc(dot.x, dot.y, this.dotRadius, 0, 2 * Math.PI, true);
+                ctx.fill();
+            }
+    }
 
     private verifyFirstPoint(): boolean {
-        const tempFirstDot = this.presentedData[0];
-        const tempLastDot = this.presentedData[this.presentedData.length - 1];
+        const tempFirstDot = this.dotData[0];
+        const tempLastDot = this.dotData[this.dotData.length - 1];
         return (
             tempLastDot.x + PIXEL_DISTANCE > tempFirstDot.x &&
             tempLastDot.x - PIXEL_DISTANCE < tempFirstDot.x &&

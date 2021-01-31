@@ -3,7 +3,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { LineService } from '@app/services/tools/line.service';
-import { PencilService } from '@app/services/tools/pencil-service';
+// import { PencilService } from '@app/services/tools/pencil-service';
 
 // TODO : Avoir un fichier séparé pour les constantes ?
 export const DEFAULT_WIDTH = 1000;
@@ -62,6 +62,11 @@ export class DrawingComponent implements AfterViewInit {
     @HostListener('dblclick', ['$event'])
     onDblClick(event: MouseEvent): void {
         this.currentTool.onDblClick(event);
+    }
+
+    @HostListener('keydown', ['$event'])
+    handleKeyboardEvent(event: KeyboardEvent): void {
+        this.currentTool.handleKeyboardEvent(event);
     }
 
     get width(): number {

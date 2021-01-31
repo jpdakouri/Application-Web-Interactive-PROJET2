@@ -21,6 +21,8 @@ export abstract class Tool {
 
     onDblClick(event: MouseEvent): void {}
 
+    handleKeyboardEvent(event: KeyboardEvent): void {}
+
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.offsetX, y: event.offsetY };
     }
