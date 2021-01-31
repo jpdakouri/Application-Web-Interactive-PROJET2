@@ -11,10 +11,18 @@ export enum MouseButton {
     Forward = 4,
 }
 
+export enum KeyboardKeys {
+    One = 0,
+    Two = 1,
+    Three = 3,
+}
+
 let startX = 0;
 let startY = 0;
 let currentX = 0;
 let currentY = 0;
+let width = 0;
+let height = 0;
 
 @Injectable({
     providedIn: 'root',
@@ -31,6 +39,7 @@ export class RectangleService extends Tool {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.clearPath();
+            // this.mouseDownCoord = this.getPositionFromMouse(event);
             startX = this.getPositionFromMouse(event).x;
             startY = this.getPositionFromMouse(event).y;
         }
@@ -38,32 +47,30 @@ export class RectangleService extends Tool {
 
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
+            // this.clearPath();
             currentX = this.getPositionFromMouse(event).x - startX;
             currentY = this.getPositionFromMouse(event).y - startY;
-            this.showRectangle(this.drawingService.previewCtx, startX, startY, currentX, currentY);
+            this.drawingService.previewCtx.strokeRect(startX, startY, currentX, currentY);
+            // this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
     }
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
-            // let position = this.getPositionFromMouse(event);
-            this.drawRectangle(this.drawingService.previewCtx, startX, startY, currentX, currentY);
+            this.drawRectangle(this.drawingService.baseCtx, startX, startY, currentX, currentY);
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
         this.mouseDown = false;
         this.clearPath();
     }
 
-    private drawRectangle(ctx: CanvasRenderingContext2D, initX: number, initY: number, posX: number, posY: number): void {
+    private drawRectangle(ctx: CanvasRenderingContext2D, initX: number, initY: number, w: number, h: number): void {
         ctx.beginPath();
-        ctx.strokeStyle = 'black';
-        ctx.rect(initX, initY, posX, posY);
-        ctx.stroke();
+        ctx.strokeStyle = 'blue';
+        ctx.strokeRect(initX, initY, w - ctx.canvas.offsetLeft, h - ctx.canvas.offsetTop);
+        // ctx.clearRect(initX, initY, w - ctx.canvas.offsetLeft, h - ctx.canvas.offsetTop);
     }
-    private showRectangle(ctx: CanvasRenderingContext2D, initX: number, initY: number, posX: number, posY: number): void {
-        ctx.beginPath();
-        ctx.strokeStyle = 'black';
-        ctx.rect(initX, initY, posX, posY);
-    }
+
     private clearPath(): void {
         // this.rectangle = [];
     }
