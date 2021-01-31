@@ -30,6 +30,7 @@ export class RectangleService extends Tool {
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
+            this.clearPath();
             startX = this.getPositionFromMouse(event).x;
             startY = this.getPositionFromMouse(event).y;
         }
@@ -37,16 +38,16 @@ export class RectangleService extends Tool {
 
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
-            currentX = event.x - startX;
-            currentY = event.y - startY;
-            this.drawRectangle(this.drawingService.previewCtx, startX, startY, currentX, currentY);
+            currentX = this.getPositionFromMouse(event).x - startX;
+            currentY = this.getPositionFromMouse(event).y - startY;
+            this.showRectangle(this.drawingService.previewCtx, startX, startY, currentX, currentY);
         }
     }
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
             // let position = this.getPositionFromMouse(event);
-            // this.drawRectangle(this.drawingService.previewCtx, startX, startY, currentX, currentY);
+            this.drawRectangle(this.drawingService.previewCtx, startX, startY, currentX, currentY);
         }
         this.mouseDown = false;
         this.clearPath();
@@ -58,7 +59,11 @@ export class RectangleService extends Tool {
         ctx.rect(initX, initY, posX, posY);
         ctx.stroke();
     }
-
+    private showRectangle(ctx: CanvasRenderingContext2D, initX: number, initY: number, posX: number, posY: number): void {
+        ctx.beginPath();
+        ctx.strokeStyle = 'black';
+        ctx.rect(initX, initY, posX, posY);
+    }
     private clearPath(): void {
         // this.rectangle = [];
     }
