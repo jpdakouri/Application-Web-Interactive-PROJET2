@@ -10,7 +10,7 @@ export const WAIT_TIME = 500;
 @Injectable({
     providedIn: 'root',
 })
-export class LigneService extends Tool {
+export class LineService extends Tool {
     private started: boolean;
     private pathData: Vec2[];
     private presentedData: Vec2[];
