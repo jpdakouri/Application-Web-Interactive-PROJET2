@@ -21,8 +21,6 @@ let startX = 0;
 let startY = 0;
 let currentX = 0;
 let currentY = 0;
-let width = 0;
-let height = 0;
 
 @Injectable({
     providedIn: 'root',
@@ -50,8 +48,8 @@ export class RectangleService extends Tool {
             // this.clearPath();
             currentX = this.getPositionFromMouse(event).x - startX;
             currentY = this.getPositionFromMouse(event).y - startY;
-            this.drawingService.previewCtx.strokeRect(startX, startY, currentX, currentY);
-            // this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawRectangle(this.drawingService.previewCtx, startX, startY, currentX, currentY);
         }
     }
 
@@ -66,7 +64,7 @@ export class RectangleService extends Tool {
 
     private drawRectangle(ctx: CanvasRenderingContext2D, initX: number, initY: number, w: number, h: number): void {
         ctx.beginPath();
-        ctx.strokeStyle = 'blue';
+        ctx.strokeStyle = 'black';
         ctx.strokeRect(initX, initY, w - ctx.canvas.offsetLeft, h - ctx.canvas.offsetTop);
         // ctx.clearRect(initX, initY, w - ctx.canvas.offsetLeft, h - ctx.canvas.offsetTop);
     }
