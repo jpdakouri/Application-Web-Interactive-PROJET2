@@ -14,7 +14,6 @@ export class LineService extends Tool {
     private started: boolean;
     private pathData: Vec2[];
     private shiftPressed: boolean;
-    private fixedDot: Vec2;
     // private dotData: Vec2[];
 
     private dotRadius: number;
@@ -42,10 +41,8 @@ export class LineService extends Tool {
         if (this.mouseDown) {
             this.mouseDownCoord = this.getPositionFromMouse(event);
 
-            if (!this.started) this.fixedDot = this.mouseDownCoord;
-
             if (!this.shiftPressed) this.pathData.push(this.mouseDownCoord);
-            else this.pathData.push(this.fixedDot);
+            else this.pathData.push(this.desiredAngle(this.mouseDownCoord));
 
             this.drawLine(this.drawingService.previewCtx, this.pathData, false);
             this.started = true;
@@ -55,15 +52,8 @@ export class LineService extends Tool {
 
     onMouseMove(event: MouseEvent): void {
         if (this.started) {
-            let mousePosition = this.getPositionFromMouse(event);
-            this.mouseDownCoord = mousePosition;
-            if (this.shiftPressed) {
-                mousePosition = this.desiredAngle(mousePosition);
-                this.fixedDot = mousePosition;
-            }
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawLine(this.drawingService.previewCtx, this.pathData, false);
-            this.drawPreviewLine(this.drawingService.previewCtx, mousePosition, this.pathData[this.pathData.length - 1]);
+            this.mouseDownCoord = this.getPositionFromMouse(event);;
+            this.previewUpdate();
         }
     }
 
@@ -91,22 +81,16 @@ export class LineService extends Tool {
     onKeyDown(event: KeyboardEvent): void {
         if (event.shiftKey) {
             this.shiftPressed = true;
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawLine(this.drawingService.previewCtx, this.pathData, false);
-            this.drawPreviewLine(this.drawingService.previewCtx, this.desiredAngle(this.mouseDownCoord), this.pathData[this.pathData.length - 1]);
+            this.previewUpdate();
         } else if (event.key === 'Escape') {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.clearPath();
             this.started = false;
         } else if (event.key === 'Backspace') {
             if (this.pathData.length > 1) {
-                this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.pathData.pop();
-                this.drawLine(this.drawingService.previewCtx, this.pathData, false);
             }
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawLine(this.drawingService.previewCtx, this.pathData, false);
-            this.drawPreviewLine(this.drawingService.previewCtx, this.mouseDownCoord, this.pathData[this.pathData.length - 1]);
+            this.previewUpdate();
             event.preventDefault();
         }
     }
@@ -114,10 +98,16 @@ export class LineService extends Tool {
     onKeyUp(event: KeyboardEvent): void {
         if (this.shiftPressed && !event.shiftKey) {
             this.shiftPressed = false;
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawLine(this.drawingService.previewCtx, this.pathData, false);
-            this.drawPreviewLine(this.drawingService.previewCtx, this.mouseDownCoord, this.pathData[this.pathData.length - 1]);
+            this.previewUpdate();
         }
+    }
+
+    private previewUpdate(): void {
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawLine(this.drawingService.previewCtx, this.pathData, false);
+        if (this.shiftPressed)
+            this.drawPreviewLine(this.drawingService.previewCtx, this.desiredAngle(this.mouseDownCoord), this.pathData[this.pathData.length - 1]);
+        else this.drawPreviewLine(this.drawingService.previewCtx, this.mouseDownCoord, this.pathData[this.pathData.length - 1]);
     }
 
     private desiredAngle(mousePosition: Vec2): Vec2 {
