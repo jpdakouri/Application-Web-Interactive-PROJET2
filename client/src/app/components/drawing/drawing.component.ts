@@ -65,8 +65,13 @@ export class DrawingComponent implements AfterViewInit {
     }
 
     @HostListener('keydown', ['$event'])
-    handleKeyboardEvent(event: KeyboardEvent): void {
-        this.currentTool.handleKeyboardEvent(event);
+    onKeyDown(event: KeyboardEvent): void {
+        this.currentTool.onKeyDown(event);
+    }
+
+    @HostListener('keyup', ['$event'])
+    onKeyUp(event: KeyboardEvent): void {
+        this.currentTool.onKeyUp(event);
     }
 
     get width(): number {
