@@ -91,14 +91,22 @@ export class LineService extends Tool {
     onKeyDown(event: KeyboardEvent): void {
         if (event.shiftKey) {
             this.shiftPressed = true;
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawLine(this.drawingService.previewCtx, this.pathData, false);
+            this.drawPreviewLine(this.drawingService.previewCtx, this.desiredAngle(this.mouseDownCoord), this.pathData[this.pathData.length - 1]);
         } else if (event.key === 'Escape') {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.clearPath();
             this.started = false;
         } else if (event.key === 'Backspace') {
+            if (this.pathData.length > 1) {
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                this.pathData.pop();
+                this.drawLine(this.drawingService.previewCtx, this.pathData, false);
+            }
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.pathData.pop();
             this.drawLine(this.drawingService.previewCtx, this.pathData, false);
+            this.drawPreviewLine(this.drawingService.previewCtx, this.mouseDownCoord, this.pathData[this.pathData.length - 1]);
             event.preventDefault();
         }
     }
