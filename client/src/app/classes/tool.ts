@@ -15,7 +15,7 @@ export abstract class Tool {
 
     onMouseMove(event: MouseEvent): void {}
 
-    handleKeyboardEvent(event: KeyboardEvent): void {}
+    onShift(event: KeyboardEvent): void {}
 
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.offsetX, y: event.offsetY };

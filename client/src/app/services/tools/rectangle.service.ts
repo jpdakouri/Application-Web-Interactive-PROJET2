@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
@@ -11,22 +12,13 @@ export enum MouseButton {
     Forward = 4,
 }
 
-export enum KeyboardKeys {
-    One = 0,
-    Two = 1,
-    Three = 3,
-}
-
-let startX = 0;
-let startY = 0;
 let currentX = 0;
 let currentY = 0;
-
 @Injectable({
     providedIn: 'root',
 })
 export class RectangleService extends Tool {
-    // private rectangle: Vec2[];
+    private firstGrid: Vec2;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
@@ -37,36 +29,43 @@ export class RectangleService extends Tool {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.clearPath();
-            // this.mouseDownCoord = this.getPositionFromMouse(event);
-            startX = this.getPositionFromMouse(event).x;
-            startY = this.getPositionFromMouse(event).y;
+            this.firstGrid = this.getPositionFromMouse(event);
         }
     }
 
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
-            // this.clearPath();
-            currentX = this.getPositionFromMouse(event).x - startX;
-            currentY = this.getPositionFromMouse(event).y - startY;
+            currentX = this.getPositionFromMouse(event).x - this.firstGrid.x;
+            currentY = this.getPositionFromMouse(event).y - this.firstGrid.y;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawRectangle(this.drawingService.previewCtx, startX, startY, currentX, currentY);
+            this.drawRectangle(this.drawingService.previewCtx, this.firstGrid, currentX, currentY);
         }
     }
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
-            this.drawRectangle(this.drawingService.baseCtx, startX, startY, currentX, currentY);
+            this.drawRectangle(this.drawingService.baseCtx, this.firstGrid, currentX, currentY);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
         this.mouseDown = false;
         this.clearPath();
     }
 
-    private drawRectangle(ctx: CanvasRenderingContext2D, initX: number, initY: number, w: number, h: number): void {
+    onShift(event: KeyboardEvent): void {
+        if (event.shiftKey && this.mouseDown) {
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            currentX = Math.abs(this.firstGrid.x - currentX);
+            currentY = Math.abs(this.firstGrid.y - currentY);
+            Math.max(currentX, currentY);
+            currentX = currentY;
+            this.drawRectangle(this.drawingService.previewCtx, this.firstGrid, currentX, currentY);
+        }
+    }
+
+    private drawRectangle(ctx: CanvasRenderingContext2D, initGrid: Vec2, w: number, h: number): void {
         ctx.beginPath();
         ctx.strokeStyle = 'black';
-        ctx.strokeRect(initX, initY, w - ctx.canvas.offsetLeft, h - ctx.canvas.offsetTop);
-        // ctx.clearRect(initX, initY, w - ctx.canvas.offsetLeft, h - ctx.canvas.offsetTop);
+        ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, w, h);
     }
 
     private clearPath(): void {
