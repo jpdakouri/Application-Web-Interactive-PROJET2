@@ -1,5 +1,5 @@
-.toolbar {
-    height: 100vh;
+.attribute-toolbar {
+    height: calc(100vh - 40px);
     width: 300px;
     border-left: 1px solid black;
     padding: 20px 10px;

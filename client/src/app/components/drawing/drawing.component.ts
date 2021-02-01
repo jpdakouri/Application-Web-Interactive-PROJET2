@@ -42,6 +42,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
+        this.drawingService.restoreCanvas();
     }
 
     updateCurrentTool(): void {
@@ -61,6 +62,11 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     @HostListener('mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
         this.currentTool.onMouseUp(event);
+    }
+
+    @HostListener('window:beforeunload', ['$event'])
+    unloadHandler(): void {
+        this.drawingService.saveCanvas(this.width, this.height);
     }
 
     get width(): number {
