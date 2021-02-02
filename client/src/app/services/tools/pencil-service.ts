@@ -24,17 +24,21 @@ export class PencilService extends Tool {
     private pathData: Vec2[];
     private color: string;
     private width: number;
-    private DEFAULT_SIZE: number = 3;
+    private radius: number;
+    private DEFAULT_SIZE: number = 50;
+    private DEFAULT_RADIUS: number = 50 / 3;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
         this.width = this.DEFAULT_SIZE;
         this.color = 'purple';
+        this.radius = this.DEFAULT_RADIUS;
     }
 
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
+        this.mouseOut = false;
         if (this.mouseDown) {
             this.clearPath();
 
@@ -47,8 +51,13 @@ export class PencilService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-            this.drawLine(this.drawingService.baseCtx, this.pathData);
+            if (!this.mouseOut) {
+                this.drawDot(this.drawingService.baseCtx, this.pathData);
+            } else {
+                this.drawLine(this.drawingService.baseCtx, this.pathData);
+            }
         }
+        this.mouseOut = false;
         this.mouseDown = false;
         this.clearPath();
     }
@@ -57,6 +66,7 @@ export class PencilService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
+            this.mouseOut = true;
 
             // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -75,9 +85,20 @@ export class PencilService extends Tool {
         ctx.beginPath();
         ctx.lineWidth = this.width;
         ctx.strokeStyle = this.color;
+        ctx.fillStyle = this.color;
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
         }
+        ctx.stroke();
+    }
+
+    private drawDot(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+        ctx.lineWidth = this.width / 3;
+        ctx.strokeStyle = this.color;
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(path[0].x, path[0].y, this.radius, 0, 2 * Math.PI);
+        ctx.fill();
         ctx.stroke();
     }
 
