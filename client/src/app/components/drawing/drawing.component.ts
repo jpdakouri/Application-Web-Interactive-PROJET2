@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Tool } from '@app/classes/tool';
-// import { Vec2 } from '@app/classes/vec2';
+import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 
@@ -15,9 +15,8 @@ export const LOWER_BOUND_WIDTH = 500;
 export const LOWER_BOUND_HEIGHT = 500;
 
 export const DEFAULT_WHITE = '#fff';
-// export const DEFAULT_BACKGROUND_COLOR = '#b3b3b3';
 
-export const SIDEBAR_WIDTH = 300;
+export const SIDEBAR_WIDTH = 294;
 
 @Component({
     selector: 'app-drawing',
@@ -31,7 +30,9 @@ export class DrawingComponent implements AfterViewInit {
 
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
-    // private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
+    private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
+    // @ts-ignore
+    private currentDrawing: CanvasRenderingContext2D;
 
     // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
     private tools: Tool[];
@@ -39,6 +40,7 @@ export class DrawingComponent implements AfterViewInit {
     constructor(private drawingService: DrawingService, pencilService: PencilService) {
         this.tools = [pencilService];
         this.currentTool = this.tools[0];
+        this.setCanvasSize();
     }
 
     ngAfterViewInit(): void {
@@ -47,9 +49,9 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
-        this.drawingService.canvas.style.backgroundColor = DEFAULT_WHITE;
-        // this.drawingService.canvas.style.minHeight = '300';
-        // this.drawingService.canvas.style.minWidth = '300';
+        // this.drawingService.canvas.style.backgroundColor = DEFAULT_WHITE;
+        // @ts-ignore
+        makeResizableDiv('.resizable');
     }
 
     @HostListener('mousemove', ['$event'])
@@ -68,16 +70,40 @@ export class DrawingComponent implements AfterViewInit {
     }
 
     get width(): number {
-        if (window.innerWidth - SIDEBAR_WIDTH < LOWER_BOUND_WIDTH) {
-            return MINIMUM_WIDTH;
-        }
-        return (window.innerWidth - SIDEBAR_WIDTH) / 2;
+        return this.canvasSize.x;
     }
 
     get height(): number {
-        if (window.innerHeight < LOWER_BOUND_HEIGHT) {
-            return MINIMUM_HEIGHT;
+        return this.canvasSize.y;
+    }
+
+    setCanvasSize(): void {
+        this.canvasSize.x = this.workingZoneSize().x / 2;
+        this.canvasSize.y = this.workingZoneSize().y / 2;
+        if (this.workingZoneSize().x < LOWER_BOUND_WIDTH || this.workingZoneSize().y < LOWER_BOUND_HEIGHT) {
+            this.canvasSize.x = MINIMUM_WIDTH;
+            this.canvasSize.y = MINIMUM_HEIGHT;
         }
-        return window.innerHeight / 2;
+    }
+
+    workingZoneSize(): Vec2 {
+        return {
+            x: window.innerWidth - SIDEBAR_WIDTH,
+            y: window.innerHeight,
+        };
+    }
+
+    isCanvasBlank(): boolean {
+        // return this.currentDrawing;
+        return false;
+    }
+
+    saveDrawing(): void {
+        // @ts-ignore
+        this.currentDrawing = this.baseCtx.save();
+    }
+
+    restoreDrawing(): void {
+        this.baseCtx.restore();
     }
 }
