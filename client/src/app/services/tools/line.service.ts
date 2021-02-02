@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
-import { MouseButton } from '@app/mock-mouse-button';
+import { KeyboardButton, MouseButton } from '@app/mock-boutton-pressed';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 export const PIXEL_DISTANCE = 20;
@@ -14,7 +14,6 @@ export class LineService extends Tool {
     private started: boolean;
     private pathData: Vec2[];
     private shiftPressed: boolean;
-    // private dotData: Vec2[];
 
     private dotRadius: number;
     private lineWidth: number;
@@ -23,7 +22,6 @@ export class LineService extends Tool {
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
-        // this.clearDots();
 
         // valeurs devront etre choisi dans la bare a outil
         // peut etre fix pour l'instant
@@ -52,7 +50,7 @@ export class LineService extends Tool {
 
     onMouseMove(event: MouseEvent): void {
         if (this.started) {
-            this.mouseDownCoord = this.getPositionFromMouse(event);;
+            this.mouseDownCoord = this.getPositionFromMouse(event);
             this.previewUpdate();
         }
     }
@@ -73,7 +71,6 @@ export class LineService extends Tool {
         } else if (this.verifyLastPoint(this.pathData[this.pathData.length - 2])) {
             this.pathData.pop();
         }
-        // this.dotData = this.pathData;
         this.drawLine(this.drawingService.baseCtx, this.pathData, closed);
         this.clearPath();
     }
@@ -82,11 +79,11 @@ export class LineService extends Tool {
         if (event.shiftKey) {
             this.shiftPressed = true;
             this.previewUpdate();
-        } else if (event.key === 'Escape') {
+        } else if (event.key === KeyboardButton.Escape) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.clearPath();
             this.started = false;
-        } else if (event.key === 'Backspace') {
+        } else if (event.key === KeyboardButton.Backspace) {
             if (this.pathData.length > 1) {
                 this.pathData.pop();
             }
@@ -155,10 +152,6 @@ export class LineService extends Tool {
     private clearPath(): void {
         this.pathData = [];
     }
-
-    // private clearDots(): void {
-    //     this.dotData = [];
-    // }
 
     private drawPreviewLine(ctx: CanvasRenderingContext2D, previewPoint: Vec2, lastPoint: Vec2): void {
         ctx.beginPath();
