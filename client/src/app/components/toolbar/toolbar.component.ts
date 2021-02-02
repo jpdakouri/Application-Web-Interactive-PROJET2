@@ -19,7 +19,7 @@ export class ToolbarComponent {
         this.toolManagerService.toolChangeEmitter.emit(toolName);
     }
 
-    isCurrentTool(toolName: ToolsNames): string {
-        return this.toolManagerService.currentTool === toolName ? 'accent' : 'primary';
+    isSelected(toolName: ToolsNames): boolean {
+        return this.toolManagerService.isCurrentTool(toolName);
     }
 }

@@ -1,11 +1,27 @@
 import { TestBed } from '@angular/core/testing';
-import { ToolManagerService } from './tool-manager.service';
+import { PencilService } from '@app/services/tools/pencil.service';
+import { AerosolService, EllipseService, EraserService, LineService, RectangleService, ToolManagerService } from './tool-manager.service';
 
 describe('ToolManagerService', () => {
     let service: ToolManagerService;
+    let pencilServiceSpy: jasmine.SpyObj<PencilService>;
+    let rectangleServiceSpy: jasmine.SpyObj<RectangleService>;
+    let ellipseServiceSpy: jasmine.SpyObj<EllipseService>;
+    let aerosolServiceSpy: jasmine.SpyObj<AerosolService>;
+    let eraserServiceSpy: jasmine.SpyObj<EraserService>;
+    let lineServiceSpy: jasmine.SpyObj<LineService>;
 
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        TestBed.configureTestingModule({
+            providers: [
+                { provide: PencilService, useValue: pencilServiceSpy },
+                { provide: RectangleService, useValue: rectangleServiceSpy },
+                { provide: EllipseService, useValue: ellipseServiceSpy },
+                { provide: AerosolService, useValue: aerosolServiceSpy },
+                { provide: EraserService, useValue: eraserServiceSpy },
+                { provide: LineService, useValue: lineServiceSpy },
+            ],
+        });
         service = TestBed.inject(ToolManagerService);
     });
 

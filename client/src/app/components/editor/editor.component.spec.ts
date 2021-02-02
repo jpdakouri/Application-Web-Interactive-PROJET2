@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
-import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
+import { ToolAttributeBarComponent } from '@app/components/tool-attribute-bar/tool-attribute-bar.component';
+import { ToolbarComponent } from '@app/components/toolbar/toolbar.component';
 import { EditorComponent } from './editor.component';
 
 describe('EditorComponent', () => {
@@ -9,7 +10,7 @@ describe('EditorComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [EditorComponent, DrawingComponent, SidebarComponent],
+            declarations: [EditorComponent, DrawingComponent, ToolAttributeBarComponent, ToolbarComponent],
         }).compileComponents();
     }));
 
@@ -20,6 +21,7 @@ describe('EditorComponent', () => {
     });
 
     it('should create', () => {
+        console.log(component);
         expect(component).toBeTruthy();
     });
 });

@@ -9,12 +9,11 @@ export class DrawingService {
     canvas: HTMLCanvasElement;
 
     saveCanvas(width: number, height: number): void {
-        localStorage.setItem('canvasBuffer', this.canvas.toDataURL());
+        sessionStorage.setItem('canvasBuffer', this.canvas.toDataURL());
     }
 
     restoreCanvas(): void {
-        const dataURL = localStorage.getItem('canvasBuffer');
-        localStorage.removeItem('canvasBuffer');
+        const dataURL = sessionStorage.getItem('canvasBuffer');
         const image = new Image();
         if (dataURL) {
             image.src = dataURL;

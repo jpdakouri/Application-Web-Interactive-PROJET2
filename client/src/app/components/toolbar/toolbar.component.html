@@ -5,7 +5,7 @@
                 <button
                     (click)="setCurrentTool(this.toolsNames.Pencil)"
                     mat-fab
-                    [color]="isCurrentTool(this.toolsNames.Pencil)"
+                    [color]="isSelected(this.toolsNames.Pencil) ? 'accent' : 'primary'"
                     aria-label='Crayon "C"'
                     title='Crayon "C"'
                 >
@@ -16,7 +16,7 @@
                 <button
                     (click)="setCurrentTool(this.toolsNames.Aerosol)"
                     mat-fab
-                    [color]="isCurrentTool(this.toolsNames.Aerosol)"
+                    [color]="isSelected(this.toolsNames.Aerosol) ? 'accent' : 'primary'"
                     aria-label='Aérosol "A"'
                     title='Aérosol "A"'
                 >
@@ -27,7 +27,7 @@
                 <button
                     (click)="setCurrentTool(this.toolsNames.Eraser)"
                     mat-fab
-                    [color]="isCurrentTool(this.toolsNames.Eraser)"
+                    [color]="isSelected(this.toolsNames.Eraser) ? 'accent' : 'primary'"
                     aria-label='Efface "E"'
                     title='Efface "E"'
                 >
@@ -65,7 +65,7 @@
                 <button
                     (click)="setCurrentTool(this.toolsNames.Rectangle)"
                     mat-fab
-                    [color]="isCurrentTool(this.toolsNames.Rectangle)"
+                    [color]="isSelected(this.toolsNames.Rectangle) ? 'accent' : 'primary'"
                     aria-label='Rectangle "1"'
                     title='Rectangle "1"'
                 >
@@ -76,7 +76,7 @@
                 <button
                     (click)="setCurrentTool(this.toolsNames.Ellipse)"
                     mat-fab
-                    [color]="isCurrentTool(this.toolsNames.Ellipse)"
+                    [color]="isSelected(this.toolsNames.Ellipse) ? 'accent' : 'primary'"
                     aria-label='Ellipse "2"'
                     title='Ellipse "2"'
                 >
@@ -87,7 +87,7 @@
                 <button
                     (click)="setCurrentTool(this.toolsNames.Line)"
                     mat-fab
-                    [color]="isCurrentTool(this.toolsNames.Line)"
+                    [color]="isSelected(this.toolsNames.Line) ? 'accent' : 'primary'"
                     aria-label='Ligne "L"'
                     title='Ligne "L"'
                 >

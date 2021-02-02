@@ -1,10 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { PencilService } from '@app/services/tools/pencil.service';
+import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
+import { ToolManagerServiceMock } from '@app/tests-mocks/tool-manager-mock';
+import { ToolStub } from '@app/tests-mocks/tool-stub';
 import { DrawingComponent } from './drawing.component';
-
-class ToolStub extends Tool {}
 
 // TODO : Déplacer dans un fichier accessible à tous
 const DEFAULT_WIDTH = 1000;
@@ -13,18 +12,18 @@ const DEFAULT_HEIGHT = 800;
 describe('DrawingComponent', () => {
     let component: DrawingComponent;
     let fixture: ComponentFixture<DrawingComponent>;
-    let toolStub: ToolStub;
     let drawingStub: DrawingService;
-
+    let toolManagerServiceMock: ToolManagerServiceMock;
+    let toolStub: ToolStub;
     beforeEach(async(() => {
-        toolStub = new ToolStub({} as DrawingService);
         drawingStub = new DrawingService();
+        toolManagerServiceMock = new ToolManagerServiceMock();
 
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],
             providers: [
-                { provide: PencilService, useValue: toolStub },
                 { provide: DrawingService, useValue: drawingStub },
+                { provide: ToolManagerService, useValue: toolManagerServiceMock },
             ],
         }).compileComponents();
     }));
@@ -32,6 +31,7 @@ describe('DrawingComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(DrawingComponent);
         component = fixture.componentInstance;
+        toolStub = toolManagerServiceMock.currentTool;
         fixture.detectChanges();
     });
 
@@ -48,7 +48,7 @@ describe('DrawingComponent', () => {
 
     it('should get stubTool', () => {
         const currentTool = component.currentTool;
-        expect(currentTool).toEqual(toolStub);
+        expect(currentTool).toEqual(toolManagerServiceMock.currentTool);
     });
 
     it(" should call the tool's mouse move when receiving a mouse move event", () => {

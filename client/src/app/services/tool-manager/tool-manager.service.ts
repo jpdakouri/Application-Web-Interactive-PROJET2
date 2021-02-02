@@ -8,23 +8,23 @@ import { ToolBox } from '@app/types/tool-box';
 @Injectable({
     providedIn: 'root',
 })
-class EraserService extends Tool {}
+export class EraserService extends Tool {}
 @Injectable({
     providedIn: 'root',
 })
-class EllipseService extends Tool {}
+export class EllipseService extends Tool {}
 @Injectable({
     providedIn: 'root',
 })
-class LineService extends Tool {}
+export class LineService extends Tool {}
 @Injectable({
     providedIn: 'root',
 })
-class RectangleService extends Tool {}
+export class RectangleService extends Tool {}
 @Injectable({
     providedIn: 'root',
 })
-class AerosolService extends Tool {}
+export class AerosolService extends Tool {}
 @Injectable({
     providedIn: 'root',
 })
@@ -57,5 +57,9 @@ export class ToolManagerService {
 
     getCurrentToolInstance(): Tool {
         return this.toolBox[this.currentTool];
+    }
+
+    isCurrentTool(toolName: ToolsNames): boolean {
+        return this.currentTool === toolName;
     }
 }
