@@ -3,7 +3,6 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
-// TODO : Déplacer ça dans un fichier séparé accessible par tous
 export enum MouseButton {
     Left = 0,
     Middle = 1,
@@ -18,16 +17,21 @@ export enum KeyboardKeys {
     One = '1',
 }
 
+export enum rayType {
+    Border = 'border',
+    Fill = 'fill',
+    BorderAndFilled = 'borderAndFilled',
+}
 @Injectable({
     providedIn: 'root',
 })
 export class RectangleService extends Tool {
     private firstGrid: Vec2;
     private shiftDown: boolean;
-
     private primaryColour: string;
     private secondaryColour: string;
     private lineWidth: number;
+    private rt: rayType;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
@@ -36,8 +40,8 @@ export class RectangleService extends Tool {
         this.primaryColour = 'black';
         this.secondaryColour = 'blue';
         this.lineWidth = 5;
+        this.rt = rayType.BorderAndFilled;
     }
-
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
@@ -55,9 +59,9 @@ export class RectangleService extends Tool {
 
             if (event.shiftKey) {
                 this.shiftDown = true;
-                if (this.mouseDownCoord.x > this.mouseDownCoord.y) {
+                if (Math.abs(this.mouseDownCoord.x) > Math.abs(this.mouseDownCoord.y)) {
                     this.mouseDownCoord.y = this.mouseDownCoord.x;
-                } else if (this.mouseDownCoord.x < this.mouseDownCoord.y) {
+                } else if (Math.abs(this.mouseDownCoord.x) < Math.abs(this.mouseDownCoord.y)) {
                     this.mouseDownCoord.x = this.mouseDownCoord.y;
                 }
                 this.updatePreview();
@@ -67,8 +71,9 @@ export class RectangleService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
-            this.drawRectangle(this.drawingService.previewCtx, this.firstGrid, this.mouseDownCoord);
+            this.drawRectangle(this.drawingService.previewCtx, this.firstGrid, this.mouseDownCoord, this.rt);
             this.drawingService.clearCanvas(this.drawingService.baseCtx);
+            this.clearPath();
         }
         this.mouseDown = false;
     }
@@ -76,11 +81,11 @@ export class RectangleService extends Tool {
     onKeyDown(event: KeyboardEvent): void {
         switch (event.key) {
             case KeyboardKeys.Escape:
-                this.clearPath();
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                this.clearPath();
                 break;
             case KeyboardKeys.One:
-                this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                // this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 break;
             default:
                 break;
@@ -105,16 +110,38 @@ export class RectangleService extends Tool {
         }
     }
 
-    private drawRectangle(ctx: CanvasRenderingContext2D, initGrid: Vec2, finalGrid: Vec2): void {
-        ctx.beginPath();
-        ctx.strokeStyle = 'black';
-        ctx.lineWidth = this.lineWidth;
-        ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+    private drawRectangle(ctx: CanvasRenderingContext2D, initGrid: Vec2, finalGrid: Vec2, rt: rayType): void {
+        switch (rt) {
+            case rayType.Border:
+                ctx.beginPath();
+                ctx.strokeStyle = this.secondaryColour;
+                ctx.lineWidth = this.lineWidth;
+                ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+                break;
+
+            case rayType.Fill:
+                ctx.beginPath();
+                ctx.strokeStyle = this.secondaryColour;
+                ctx.lineWidth = this.lineWidth;
+                ctx.fillStyle = this.primaryColour;
+                ctx.font = this.primaryColour;
+                ctx.fillRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+                break;
+
+            case rayType.BorderAndFilled:
+                ctx.beginPath();
+                ctx.fillStyle = this.primaryColour;
+                ctx.lineWidth = this.lineWidth;
+                ctx.strokeStyle = this.secondaryColour;
+                ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+                ctx.fillRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+                break;
+        }
     }
 
     private updatePreview(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.drawRectangle(this.drawingService.previewCtx, this.firstGrid, this.mouseDownCoord);
+        this.drawRectangle(this.drawingService.previewCtx, this.firstGrid, this.mouseDownCoord, this.rt);
     }
     private clearPath(): void {
         this.firstGrid = this.mouseDownCoord = { x: 0, y: 0 };
