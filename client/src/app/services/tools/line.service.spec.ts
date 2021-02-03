@@ -1,22 +1,23 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
-import { MouseButton } from '@app/mock-boutton-pressed';
+import { KeyboardButton, MouseButton } from '@app/list-boutton-pressed';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { LineService } from './line.service';
 
 // tslint:disable:no-any
 describe('LineService', () => {
-    /*let service: LineService;
+    let service: LineService;
     let mouseEvent: MouseEvent;
+    let keyboardEvent: KeyboardEvent;
     let canvasTestHelper: CanvasTestHelper;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let drawLineSpy: jasmine.Spy<any>;
-    let drawPreviewLineSpy: jasmine.Spy<any>;
-    // let shiftPressedSpy: jasmine.Spy<any>;
+    let previewUpdateSpy: jasmine.Spy<any>;
+    let desiredAngleSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
@@ -30,7 +31,8 @@ describe('LineService', () => {
 
         service = TestBed.inject(LineService);
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
-        drawPreviewLineSpy = spyOn<any>(service, 'drawPreviewLine').and.callThrough();
+        previewUpdateSpy = spyOn<any>(service, 'previewUpdate').and.callThrough();
+        desiredAngleSpy = spyOn<any>(service, 'desiredAngle').and.callThrough();
 
         // Configuration du spy du service
         // tslint:disable:no-string-literal
@@ -42,6 +44,10 @@ describe('LineService', () => {
             offsetY: 25,
             button: MouseButton.Left,
         } as MouseEvent;
+
+        keyboardEvent = {
+            key: KeyboardButton.Shift,
+        } as KeyboardEvent;
     });
 
     it('should be created', () => {
@@ -80,9 +86,43 @@ describe('LineService', () => {
     it(' onMouseUp should not call desiredAngle if mouse was already down and shift not pressed', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
-        // service.onKeyDown()
+        const keyboardEventFalse = {
+            key: KeyboardButton.RandomLettre,
+        } as KeyboardEvent;
 
         service.onMouseUp(mouseEvent);
-        // expect().toBeTrue();
-    });*/
+        service.onKeyDown(keyboardEventFalse);
+
+        expect(desiredAngleSpy).not.toHaveBeenCalled();
+    });
+
+    it(' onMouseUp should call desiredAngle if mouse was already down and shift pressed', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+        service.shiftPressed = true;
+
+        service.onMouseMove(mouseEvent);
+        expect(desiredAngleSpy).toHaveBeenCalled();
+    });
+
+    it('onMouseMove should call previewUpdate if the drawing has started', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.started = true;
+        service.onMouseMove(mouseEvent);
+
+        expect(previewUpdateSpy).toHaveBeenCalled();
+    });
+
+    it('onMouseUp should call desiredAngle if mouse was already down and shift pressed2', () => {
+        service.mouseDown = true;
+        const mouseEventRClick = {
+            offsetX: 25,
+            offsetY: 25,
+            button: MouseButton.Left,
+        } as MouseEvent;
+        service.onMouseUp(mouseEvent);
+        service.onKeyDown(keyboardEvent);
+        service.onMouseMove(mouseEventRClick);
+    });
 });
+// desiredAngle should return the closest point with sift key pressed

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
-import { KeyboardButton, MouseButton } from '@app/mock-boutton-pressed';
+import { KeyboardButton, MouseButton } from '@app/list-boutton-pressed';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 export const PIXEL_DISTANCE = 20;
@@ -11,9 +11,9 @@ export const SHIFT_ANGLE = 45;
     providedIn: 'root',
 })
 export class LineService extends Tool {
-    private started: boolean;
+    started: boolean;
     private pathData: Vec2[];
-    private shiftPressed: boolean;
+    shiftPressed: boolean;
 
     private dotRadius: number;
     private lineWidth: number;
@@ -32,13 +32,16 @@ export class LineService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
+        console.log(event);
         this.mouseDown = event.button === MouseButton.Left;
+        this.mouseDownCoord = this.getPositionFromMouse(event);
     }
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
             this.mouseDownCoord = this.getPositionFromMouse(event);
 
+            console.log(event);
             if (!this.shiftPressed) this.pathData.push(this.mouseDownCoord);
             else this.pathData.push(this.desiredAngle(this.mouseDownCoord));
 
@@ -76,6 +79,7 @@ export class LineService extends Tool {
     }
 
     onKeyDown(event: KeyboardEvent): void {
+        console.log(event);
         if (event.shiftKey) {
             this.shiftPressed = true;
             this.previewUpdate();
@@ -118,18 +122,10 @@ export class LineService extends Tool {
         clsDots.push({ x: lastDot.x, y: mousePosition.y });
         clsDots.push({ x: mousePosition.x, y: lastDot.y });
 
-        if (distX > 0) {
-            if (distY < 0) {
-                clsDots.push({ x: mousePosition.x, y: lastDot.y - distX * Math.tan(SHIFT_ANGLE) });
-            } else {
-                clsDots.push({ x: mousePosition.x, y: lastDot.y + distX * Math.tan(SHIFT_ANGLE) });
-            }
+        if ((distX > 0 && distY < 0) || (distX <= 0 && distY >= 0)) {
+            clsDots.push({ x: mousePosition.x, y: lastDot.y - distX * Math.tan(SHIFT_ANGLE) });
         } else {
-            if (distY < 0) {
-                clsDots.push({ x: mousePosition.x, y: lastDot.y + distX * Math.tan(SHIFT_ANGLE) });
-            } else {
-                clsDots.push({ x: mousePosition.x, y: lastDot.y - distX * Math.tan(SHIFT_ANGLE) });
-            }
+            clsDots.push({ x: mousePosition.x, y: lastDot.y + distX * Math.tan(SHIFT_ANGLE) });
         }
         return this.closestDot(mousePosition, clsDots);
     }
