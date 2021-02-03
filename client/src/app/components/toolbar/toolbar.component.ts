@@ -16,7 +16,7 @@ export class ToolbarComponent {
 
     setCurrentTool(toolName: ToolsNames): void {
         this.toolManagerService.setCurrentTool(toolName);
-        this.toolManagerService.toolChangeEmitter.emit(toolName);
+        this.toolManagerService.emitToolChange(toolName);
     }
 
     isSelected(toolName: ToolsNames): boolean {

@@ -10,4 +10,7 @@ export class ToolManagerServiceMock {
     getCurrentToolInstance(): Tool {
         return this.currentTool;
     }
+    isCurrentTool(): boolean {
+        return true;
+    }
 }

@@ -7,10 +7,10 @@ import { Vec2 } from './vec2';
 export abstract class Tool {
     mouseDownCoord: Vec2;
     mouseDown: boolean = false;
-    currentLineThickness?: number = 1;
-    currentPrimaryColor?: string = '#000000';
-    currentSecondaryColor?: string = '#000000';
-    currentShapeStyle?: ShapeStyle = ShapeStyle.Outline;
+    lineThickness?: number = 1;
+    primaryColor?: string = '#000000';
+    secondaryColor?: string = '#000000';
+    shapeStyle?: ShapeStyle = ShapeStyle.Outline;
 
     constructor(protected drawingService: DrawingService) {}
 
