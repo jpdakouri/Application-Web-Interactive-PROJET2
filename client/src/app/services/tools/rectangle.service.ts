@@ -39,8 +39,8 @@ export class RectangleService extends Tool {
 
         this.primaryColour = 'black';
         this.secondaryColour = 'blue';
-        this.lineWidth = 5;
-        this.rt = rayType.BorderAndFilled;
+        this.lineWidth = 25;
+        this.rt = rayType.Fill;
     }
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
@@ -85,7 +85,6 @@ export class RectangleService extends Tool {
                 this.clearPath();
                 break;
             case KeyboardKeys.One:
-                // this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 break;
             default:
                 break;
@@ -121,10 +120,7 @@ export class RectangleService extends Tool {
 
             case rayType.Fill:
                 ctx.beginPath();
-                ctx.strokeStyle = this.secondaryColour;
-                ctx.lineWidth = this.lineWidth;
                 ctx.fillStyle = this.primaryColour;
-                ctx.font = this.primaryColour;
                 ctx.fillRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
                 break;
 
@@ -143,6 +139,7 @@ export class RectangleService extends Tool {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawRectangle(this.drawingService.previewCtx, this.firstGrid, this.mouseDownCoord, this.rt);
     }
+
     private clearPath(): void {
         this.firstGrid = this.mouseDownCoord = { x: 0, y: 0 };
     }
