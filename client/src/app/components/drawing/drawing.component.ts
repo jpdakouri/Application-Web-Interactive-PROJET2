@@ -49,9 +49,7 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
-        // this.drawingService.canvas.style.backgroundColor = DEFAULT_WHITE;
-        // @ts-ignore
-        makeResizableDiv('.resizable');
+        this.drawingService.canvas.style.backgroundColor = DEFAULT_WHITE;
     }
 
     @HostListener('mousemove', ['$event'])
@@ -106,4 +104,7 @@ export class DrawingComponent implements AfterViewInit {
     restoreDrawing(): void {
         this.baseCtx.restore();
     }
+
+    // tslint:disable-next-line:no-empty
+    onMiddleRightClick(): void {}
 }
