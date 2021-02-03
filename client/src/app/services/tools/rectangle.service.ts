@@ -25,9 +25,17 @@ export class RectangleService extends Tool {
     private firstGrid: Vec2;
     private shiftDown: boolean;
 
+    private primaryColour: string;
+    private secondaryColour: string;
+    private lineWidth: number;
+
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
+
+        this.primaryColour = 'black';
+        this.secondaryColour = 'blue';
+        this.lineWidth = 5;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -100,6 +108,7 @@ export class RectangleService extends Tool {
     private drawRectangle(ctx: CanvasRenderingContext2D, initGrid: Vec2, finalGrid: Vec2): void {
         ctx.beginPath();
         ctx.strokeStyle = 'black';
+        ctx.lineWidth = this.lineWidth;
         ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
     }
 
