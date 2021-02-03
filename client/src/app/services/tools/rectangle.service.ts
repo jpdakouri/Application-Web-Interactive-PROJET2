@@ -12,13 +12,18 @@ export enum MouseButton {
     Forward = 4,
 }
 
-let currentX = 0;
-let currentY = 0;
+export enum KeyboardKeys {
+    Escape = 'Escape',
+    Shift = 'Shift',
+    One = '1',
+}
+
 @Injectable({
     providedIn: 'root',
 })
 export class RectangleService extends Tool {
     private firstGrid: Vec2;
+    private shiftDown: boolean;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
@@ -28,47 +33,81 @@ export class RectangleService extends Tool {
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
-            this.clearPath();
             this.firstGrid = this.getPositionFromMouse(event);
+            this.updatePreview();
         }
     }
 
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
-            currentX = this.getPositionFromMouse(event).x - this.firstGrid.x;
-            currentY = this.getPositionFromMouse(event).y - this.firstGrid.y;
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawRectangle(this.drawingService.previewCtx, this.firstGrid, currentX, currentY);
+            this.mouseDownCoord = this.getPositionFromMouse(event);
+            this.mouseDownCoord.x = this.getPositionFromMouse(event).x - this.firstGrid.x;
+            this.mouseDownCoord.y = this.getPositionFromMouse(event).y - this.firstGrid.y;
+            this.updatePreview();
+
+            if (event.shiftKey) {
+                this.shiftDown = true;
+                if (this.mouseDownCoord.x > this.mouseDownCoord.y) {
+                    this.mouseDownCoord.y = this.mouseDownCoord.x;
+                } else if (this.mouseDownCoord.x < this.mouseDownCoord.y) {
+                    this.mouseDownCoord.x = this.mouseDownCoord.y;
+                }
+                this.updatePreview();
+            }
         }
     }
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
-            this.drawRectangle(this.drawingService.baseCtx, this.firstGrid, currentX, currentY);
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawRectangle(this.drawingService.previewCtx, this.firstGrid, this.mouseDownCoord);
+            this.drawingService.clearCanvas(this.drawingService.baseCtx);
         }
         this.mouseDown = false;
-        this.clearPath();
     }
 
-    onShift(event: KeyboardEvent): void {
-        if (event.shiftKey && this.mouseDown) {
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            currentX = Math.abs(this.firstGrid.x - currentX);
-            currentY = Math.abs(this.firstGrid.y - currentY);
-            Math.max(currentX, currentY);
-            currentX = currentY;
-            this.drawRectangle(this.drawingService.previewCtx, this.firstGrid, currentX, currentY);
+    onKeyDown(event: KeyboardEvent): void {
+        switch (event.key) {
+            case KeyboardKeys.Escape:
+                this.clearPath();
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                break;
+            case KeyboardKeys.One:
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                break;
+            default:
+                break;
+        }
+        if (event.shiftKey) {
+            this.shiftDown = true;
+            if (this.shiftDown) {
+                if (this.mouseDownCoord.x > this.mouseDownCoord.y) {
+                    this.mouseDownCoord.y = this.mouseDownCoord.x;
+                } else if (this.mouseDownCoord.x < this.mouseDownCoord.y) {
+                    this.mouseDownCoord.x = this.mouseDownCoord.y;
+                }
+                this.updatePreview();
+            }
         }
     }
 
-    private drawRectangle(ctx: CanvasRenderingContext2D, initGrid: Vec2, w: number, h: number): void {
-        ctx.beginPath();
-        ctx.strokeStyle = 'black';
-        ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, w, h);
+    onKeyUp(event: KeyboardEvent): void {
+        if (this.shiftDown && !event.shiftKey) {
+            this.shiftDown = false;
+            this.updatePreview();
+        }
     }
 
+    private drawRectangle(ctx: CanvasRenderingContext2D, initGrid: Vec2, finalGrid: Vec2): void {
+        ctx.beginPath();
+        ctx.strokeStyle = 'black';
+        ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+    }
+
+    private updatePreview(): void {
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawRectangle(this.drawingService.previewCtx, this.firstGrid, this.mouseDownCoord);
+    }
     private clearPath(): void {
-        // this.rectangle = [];
+        this.firstGrid = this.mouseDownCoord = { x: 0, y: 0 };
     }
 }
