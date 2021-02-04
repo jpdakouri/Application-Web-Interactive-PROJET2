@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { ColourHistoryService, HISTORY_LENGTH } from './colour-history.service';
 
-const DEFAULT_COLOUR = 'rgba(255,255,255,1)';
+const DEFAULT_COLOUR = 'rgb(255,255,255)';
 describe('ColourHistoryService', () => {
     let service: ColourHistoryService;
 
@@ -23,25 +23,14 @@ describe('ColourHistoryService', () => {
     });
 
     it('pushColour adds the new color to the front', () => {
-        const NEW_COLOUR = 'rgba(0,0,0,1)';
+        const NEW_COLOUR = 'rgb(0,0,0)';
         service.pushColour(NEW_COLOUR);
         expect(service.getColour(0)).toBe(NEW_COLOUR);
     });
 
     it('pushColour adds the new color to the front', () => {
-        const NEW_COLOUR = 'rgba(0,0,0,1)';
+        const NEW_COLOUR = 'rgb(0,0,0)';
         service.pushColour(NEW_COLOUR);
         expect(service.getColour(0)).toBe(NEW_COLOUR);
-    });
-
-    it('selectColour puts the selected color at the front and returns it', () => {
-        const WANTED_COLOUR = 'rgba(0,0,0,1)';
-        const UNWANTED_COLOUR = 'rgba(1,1,1,1)';
-        service.pushColour(WANTED_COLOUR);
-        service.pushColour(UNWANTED_COLOUR);
-        const SELECTED_COLOUR = service.selectColour(1);
-        expect(SELECTED_COLOUR).toBe(WANTED_COLOUR);
-        expect(service.getColour(0)).toBe(WANTED_COLOUR);
-        expect(service.getColour(1)).toBe(UNWANTED_COLOUR);
     });
 });
