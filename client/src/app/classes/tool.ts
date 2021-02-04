@@ -1,9 +1,13 @@
+import { Injectable } from '@angular/core';
 import { ShapeStyle } from '@app/enums/shape-style';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { Vec2 } from './vec2';
 
 // Ceci est justifié vu qu'on a des fonctions qui seront gérés par les classes enfant
 // tslint:disable:no-empty
+@Injectable({
+    providedIn: 'root',
+})
 export abstract class Tool {
     mouseDownCoord: Vec2;
     mouseDown: boolean = false;

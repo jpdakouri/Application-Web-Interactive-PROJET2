@@ -12,6 +12,12 @@ describe('ToolManagerService', () => {
     let lineServiceSpy: jasmine.SpyObj<LineService>;
 
     beforeEach(() => {
+        lineServiceSpy = jasmine.createSpyObj('LineService', ['onMouseMove']);
+        rectangleServiceSpy = jasmine.createSpyObj('LineService', ['onMouseMove']);
+        ellipseServiceSpy = jasmine.createSpyObj('LineService', ['onMouseMove']);
+        pencilServiceSpy = jasmine.createSpyObj('LineService', ['onMouseMove']);
+        aerosolServiceSpy = jasmine.createSpyObj('LineService', ['onMouseMove']);
+        eraserServiceSpy = jasmine.createSpyObj('LineService', ['onMouseMove']);
         TestBed.configureTestingModule({
             providers: [
                 { provide: PencilService, useValue: pencilServiceSpy },

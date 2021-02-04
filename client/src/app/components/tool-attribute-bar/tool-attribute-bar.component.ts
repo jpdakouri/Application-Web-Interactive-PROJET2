@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { MatSliderChange } from '@angular/material/slider';
 import { ShapeStyle } from '@app/enums/shape-style';
@@ -10,7 +10,7 @@ import { ToolManagerService } from '@app/services/tool-manager/tool-manager.serv
     templateUrl: './tool-attribute-bar.component.html',
     styleUrls: ['./tool-attribute-bar.component.scss'],
 })
-export class ToolAttributeBarComponent implements OnInit {
+export class ToolAttributeBarComponent {
     toolsNames: typeof ToolsNames = ToolsNames;
     shapeStyle: typeof ShapeStyle = ShapeStyle;
     toolManagerService: ToolManagerService;
@@ -18,8 +18,6 @@ export class ToolAttributeBarComponent implements OnInit {
     constructor(toolManagerService: ToolManagerService) {
         this.toolManagerService = toolManagerService;
     }
-
-    ngOnInit(): void {}
 
     onThicknessChange(event: MatSliderChange): void {
         event.value ? this.toolManagerService.setCurrentLineThickness(event.value) : this.toolManagerService.setCurrentLineThickness();
