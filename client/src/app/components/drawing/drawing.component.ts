@@ -2,22 +2,11 @@ import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { LineService } from '@app/services/tools/line.service';
-import { PencilService } from '@app/services/tools/pencil-service';
+import { RectangleService } from '@app/services/tools/rectangle.service';
 
 // TODO : Avoir un fichier séparé pour les constantes ?
 export const DEFAULT_WIDTH = 1000;
 export const DEFAULT_HEIGHT = 800;
-
-export const MINIMUM_WIDTH = 250;
-export const MINIMUM_HEIGHT = 250;
-
-export const LOWER_BOUND_WIDTH = 500;
-export const LOWER_BOUND_HEIGHT = 500;
-
-export const DEFAULT_WHITE = '#fff';
-
-export const SIDEBAR_WIDTH = 294;
 
 @Component({
     selector: 'app-drawing',
@@ -32,16 +21,13 @@ export class DrawingComponent implements AfterViewInit {
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
-    // @ts-ignore
-    private currentDrawing: CanvasRenderingContext2D;
 
     // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
     private tools: Tool[];
     currentTool: Tool;
-    constructor(private drawingService: DrawingService, pencilService: LineService) {
-        this.tools = [pencilService];
+    constructor(private drawingService: DrawingService, rectangleService: RectangleService) {
+        this.tools = [rectangleService];
         this.currentTool = this.tools[0];
-        this.setCanvasSize();
     }
 
     ngAfterViewInit(): void {
@@ -50,7 +36,6 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
-        this.drawingService.canvas.style.backgroundColor = DEFAULT_WHITE;
     }
 
     @HostListener('mousemove', ['$event'])
@@ -68,26 +53,15 @@ export class DrawingComponent implements AfterViewInit {
         this.currentTool.onMouseUp(event);
     }
 
-    @HostListener('mouseleave', ['$event'])
-    onMouseLeave(event: MouseEvent): void {
-        this.currentTool.onMouseLeave(event);
-    }
-
-    @HostListener('dblclick', ['$event'])
-    onDblClick(event: MouseEvent): void {
-        this.currentTool.onDblClick(event);
-    }
-
     @HostListener('keydown', ['$event'])
-    onKeyDown(event: KeyboardEvent): void {
+    onShiftDown(event: KeyboardEvent): void {
         this.currentTool.onKeyDown(event);
     }
 
     @HostListener('keyup', ['$event'])
-    onKeyUp(event: KeyboardEvent): void {
-        this.currentTool.onKeyUp(event);
+    onShiftUp(event: KeyboardEvent): void {
+        this.currentTool.onKeyDown(event);
     }
-
     get width(): number {
         return this.canvasSize.x;
     }
@@ -95,37 +69,4 @@ export class DrawingComponent implements AfterViewInit {
     get height(): number {
         return this.canvasSize.y;
     }
-
-    setCanvasSize(): void {
-        this.canvasSize.x = this.workingZoneSize().x / 2;
-        this.canvasSize.y = this.workingZoneSize().y / 2;
-        if (this.workingZoneSize().x < LOWER_BOUND_WIDTH || this.workingZoneSize().y < LOWER_BOUND_HEIGHT) {
-            this.canvasSize.x = MINIMUM_WIDTH;
-            this.canvasSize.y = MINIMUM_HEIGHT;
-        }
-    }
-
-    workingZoneSize(): Vec2 {
-        return {
-            x: window.innerWidth - SIDEBAR_WIDTH,
-            y: window.innerHeight,
-        };
-    }
-
-    isCanvasBlank(): boolean {
-        // return this.currentDrawing;
-        return false;
-    }
-
-    saveDrawing(): void {
-        // @ts-ignore
-        this.currentDrawing = this.baseCtx.save();
-    }
-
-    restoreDrawing(): void {
-        this.baseCtx.restore();
-    }
-
-    // tslint:disable-next-line:no-empty
-    onMiddleRightClick(): void {}
 }

@@ -1,10 +1,9 @@
 canvas {
     cursor: crosshair;
-    border: 0 solid #000000;
+    border: 2px solid #000000;
     position: absolute;
     left: 0;
     top: 0;
-    //background-color: white;
 }
 
 #canvas{
@@ -17,28 +16,4 @@ canvas {
 
 #canvas-container{
     position: relative;
-}
-
-.resizer {
-    width: 5px;
-    height: 5px;
-    position: absolute;
-    z-index: 50;
-    border: 0 solid #000000;
-    background-color: black;
-    //border-radius: 50%; /*magic to turn square into circle*/
-}
-
-.resizer.middle-right {
-    //background-color: #d7789a;
-    cursor: ew-resize;
-}
-
-.resizer.bottom-middle {
-    //background-color: #de950e;
-    cursor: ns-resize;
-}
-.resizer.bottom-right {
-    //background-color: #1e3e9d;
-    cursor: nwse-resize;
 }
