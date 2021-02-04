@@ -10,10 +10,12 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { ColourSelectorComponent } from './components/colour-selector/colour-selector.component';
 import { HueSelectorComponent } from './components/hue-selector/hue-selector.component';
 import { ColourPaletteSelectorComponent } from './components/colour-palette-selector/colour-palette-selector.component';
+import { FormsModule } from '@angular/forms';
+import { CurrentColorComponent } from './components/current-color/current-color.component';
 
 @NgModule({
-    declarations: [AppComponent, EditorComponent, SidebarComponent, DrawingComponent, MainPageComponent, ColourSelectorComponent, HueSelectorComponent, ColourPaletteSelectorComponent],
-    imports: [BrowserModule, HttpClientModule, AppRoutingModule],
+    declarations: [AppComponent, EditorComponent, SidebarComponent, DrawingComponent, MainPageComponent, ColourSelectorComponent, HueSelectorComponent, ColourPaletteSelectorComponent, CurrentColorComponent],
+    imports: [BrowserModule, HttpClientModule, AppRoutingModule, FormsModule],
     providers: [],
     bootstrap: [AppComponent],
 })
