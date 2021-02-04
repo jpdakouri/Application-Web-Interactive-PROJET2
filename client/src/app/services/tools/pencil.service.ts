@@ -39,7 +39,7 @@ export class PencilService extends Tool {
 
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
-        this.mouseOut = false;
+        this.mouseMoved = false;
         if (this.mouseDown) {
             this.clearPath();
 
@@ -52,13 +52,13 @@ export class PencilService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-            if (!this.mouseOut) {
+            if (!this.mouseMoved) {
                 this.drawDot(this.drawingService.baseCtx, this.pathData[0]);
             } else {
                 this.drawLine(this.drawingService.baseCtx, this.pathData);
             }
         }
-        this.mouseOut = false;
+        // this.mouseMoved = false;
         this.mouseDown = false;
         this.clearPath();
     }
@@ -67,7 +67,7 @@ export class PencilService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-            this.mouseOut = true;
+            this.mouseMoved = true;
 
             // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -76,10 +76,12 @@ export class PencilService extends Tool {
     }
 
     onMouseLeave(event: MouseEvent): void {
-        this.pathData.push(this.getPositionFromMouse(event));
-        this.drawLine(this.drawingService.baseCtx, this.pathData);
-        this.clearPath();
-        this.drawingService.previewCtx.beginPath();
+        if (this.mouseDown) {
+            this.pathData.push(this.getPositionFromMouse(event));
+            this.drawLine(this.drawingService.baseCtx, this.pathData);
+            this.clearPath();
+            this.drawingService.previewCtx.beginPath();
+        }
     }
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
