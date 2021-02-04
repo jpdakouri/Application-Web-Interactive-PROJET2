@@ -15,8 +15,8 @@ export abstract class Tool {
     primaryColor?: string = '#000000';
     secondaryColor?: string = '#000000';
     shapeStyle?: ShapeStyle = ShapeStyle.Outline;
-    dotRadius?: number = 1;
-    showDots?: boolean = true;
+    dotRadius?: number = 5;
+    showDots?: boolean = false;
 
     constructor(protected drawingService: DrawingService) {}
 

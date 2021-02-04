@@ -22,9 +22,6 @@ export class LineService extends Tool {
         // valeurs devront etre choisi dans la bare a outil
         // peut etre fix pour l'instant
         // tslint:disable-next-line:no-magic-numbers
-        this.dotRadius = 5;
-        this.lineThickness = 1;
-        this.showDots = true;
     }
 
     onMouseDown(event: MouseEvent): void {

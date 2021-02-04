@@ -54,6 +54,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
+        this.drawingService.canvas.style.backgroundColor = DEFAULT_WHITE;
         this.drawingService.restoreCanvas();
     }
 
