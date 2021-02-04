@@ -78,10 +78,10 @@ export class ToolManagerService {
             ? lineThickness
             : this.currentAttributes.LineThickness;
     }
-
     getCurrentLineThickness(): number | undefined {
         return this.currentAttributes.LineThickness;
     }
+
     setCurrentPrimaryColor(color: string): void {
         this.toolBox[this.currentTool].primaryColor = this.currentAttributes.PrimaryColor = color;
     }

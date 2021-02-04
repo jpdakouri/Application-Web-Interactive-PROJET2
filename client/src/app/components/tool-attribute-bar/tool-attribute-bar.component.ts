@@ -57,7 +57,6 @@ export class ToolAttributeBarComponent implements OnInit {
     }
 
     isChecked(shapeStyle: ShapeStyle): boolean {
-        console.log(this.getCurrentShapeStyle());
         return this.getCurrentShapeStyle() === shapeStyle;
     }
 }
