@@ -7,7 +7,7 @@
             color="primary"
             min="1"
             max="30"
-            (input)="this.getCurrentLineThickness() == $event.value"
+            (input)="onThicknessChange($event)"
             (change)="onThicknessChange($event)"
             step="1"
         ></mat-slider>
@@ -20,6 +20,27 @@
             <mat-button-toggle [checked]="isChecked(shapeStyle.Filled)" value="Filled">Plein</mat-button-toggle>
             <mat-button-toggle [checked]="isChecked(shapeStyle.FilledOutline)" value="FilledOutline">Plein avec contour</mat-button-toggle>
         </mat-button-toggle-group>
+        <mat-divider></mat-divider>
     </div>
-    <mat-divider></mat-divider>
+
+    <div *ngIf="showLineAttributes()">
+        <div class="dot-radius">
+            <h2 class="attribute-title">Rayon du point: {{ this.getCurrentDotRadius() }}px</h2>
+            <mat-slider
+                [value]="this.getCurrentDotRadius()"
+                #dotRadiusSlider
+                color="primary"
+                min="5"
+                max="20"
+                (input)="onDotRadiusChange($event)"
+                (change)="onDotRadiusChange($event)"
+                step="1"
+            ></mat-slider>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="show-dots">
+            <mat-checkbox (change)="onShowDotChange($event)"><h2 class="show-dots-title">Voir les points</h2></mat-checkbox>
+        </div>
+        <mat-divider></mat-divider>
+    </div>
 </div>

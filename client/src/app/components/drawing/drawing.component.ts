@@ -9,6 +9,16 @@ import { ToolManagerService } from '@app/services/tool-manager/tool-manager.serv
 export const DEFAULT_WIDTH = 1000;
 export const DEFAULT_HEIGHT = 800;
 
+export const MINIMUM_WIDTH = 250;
+export const MINIMUM_HEIGHT = 250;
+
+export const LOWER_BOUND_WIDTH = 500;
+export const LOWER_BOUND_HEIGHT = 500;
+
+export const DEFAULT_WHITE = '#fff';
+
+export const SIDEBAR_WIDTH = 294;
+
 @Component({
     selector: 'app-drawing',
     templateUrl: './drawing.component.html',
@@ -22,8 +32,9 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
-    toolManagerService: ToolManagerService;
+    // private currentDrawing: CanvasRenderingContext2D;
     currentTool: Tool;
+    toolManagerService: ToolManagerService;
 
     constructor(private drawingService: DrawingService, toolManagerService: ToolManagerService) {
         this.toolManagerService = toolManagerService;
@@ -31,6 +42,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     ngOnInit(): void {
         this.currentTool = this.toolManagerService.getCurrentToolInstance();
+        this.setCanvasSize();
         this.toolManagerService.toolChangeEmitter.subscribe((toolName: ToolsNames) => {
             this.updateCurrentTool();
         });
@@ -47,6 +59,15 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     updateCurrentTool(): void {
         this.currentTool = this.toolManagerService.getCurrentToolInstance();
+        this.drawingService.canvas.style.backgroundColor = DEFAULT_WHITE;
+    }
+
+    get width(): number {
+        return this.canvasSize.x;
+    }
+
+    get height(): number {
+        return this.canvasSize.y;
     }
 
     @HostListener('mousemove', ['$event'])
@@ -69,11 +90,56 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.drawingService.saveCanvas(this.width, this.height);
     }
 
-    get width(): number {
-        return this.canvasSize.x;
+    @HostListener('mouseleave', ['$event'])
+    onMouseLeave(event: MouseEvent): void {
+        this.currentTool.onMouseLeave(event);
     }
 
-    get height(): number {
-        return this.canvasSize.y;
+    @HostListener('dblclick', ['$event'])
+    onDblClick(event: MouseEvent): void {
+        this.currentTool.onDblClick(event);
     }
+
+    @HostListener('keydown', ['$event'])
+    onKeyDown(event: KeyboardEvent): void {
+        this.currentTool.onKeyDown(event);
+    }
+
+    @HostListener('keyup', ['$event'])
+    onKeyUp(event: KeyboardEvent): void {
+        this.currentTool.onKeyUp(event);
+    }
+
+    setCanvasSize(): void {
+        this.canvasSize.x = this.workingZoneSize().x / 2;
+        this.canvasSize.y = this.workingZoneSize().y / 2;
+        if (this.workingZoneSize().x < LOWER_BOUND_WIDTH || this.workingZoneSize().y < LOWER_BOUND_HEIGHT) {
+            this.canvasSize.x = MINIMUM_WIDTH;
+            this.canvasSize.y = MINIMUM_HEIGHT;
+        }
+    }
+
+    workingZoneSize(): Vec2 {
+        return {
+            x: window.innerWidth - SIDEBAR_WIDTH,
+            y: window.innerHeight,
+        };
+    }
+
+    isCanvasBlank(): boolean {
+        // return this.currentDrawing;
+        return false;
+    }
+
+    saveDrawing(): void {
+        // this.currentDrawing =
+        this.baseCtx.save();
+    }
+
+    restoreDrawing(): void {
+        this.baseCtx.restore();
+    }
+
+    // tslint:disable-next-line:no-empty
+    onMiddleRightClick(): void {}
 }

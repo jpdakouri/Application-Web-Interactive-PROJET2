@@ -5,4 +5,6 @@ export type CurrentAttributes = {
     PrimaryColor?: string;
     SecondaryColor?: string;
     ShapeStyle?: ShapeStyle;
+    DotRadius?: number;
+    ShowDots?: boolean;
 };

@@ -2,7 +2,8 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { ShapeStyle } from '@app/enums/shape-style';
 import { ToolsNames } from '@app/enums/tools-names';
-import { PencilService } from '@app/services/tools/pencil.service';
+import { LineService } from '@app/services/tools/line-service/line.service';
+import { PencilService } from '@app/services/tools/pencil-service/pencil.service';
 import { CurrentAttributes } from '@app/types/current-attributes';
 import { ToolBox } from '@app/types/tool-box';
 
@@ -15,10 +16,6 @@ export class EraserService extends Tool {}
     providedIn: 'root',
 })
 export class EllipseService extends Tool {}
-@Injectable({
-    providedIn: 'root',
-})
-export class LineService extends Tool {}
 @Injectable({
     providedIn: 'root',
 })
@@ -58,6 +55,8 @@ export class ToolManagerService {
             PrimaryColor: '#000000',
             SecondaryColor: '#000000',
             ShapeStyle: ShapeStyle.Outline,
+            DotRadius: 1,
+            ShowDots: true,
         };
         this.shapeStyleSelection.set('Outline', ShapeStyle.Outline).set('Filled', ShapeStyle.Filled).set('FilledOutline', ShapeStyle.FilledOutline);
         this.toolChangeEmitter.subscribe(() => {
@@ -66,6 +65,8 @@ export class ToolManagerService {
             this.currentAttributes.SecondaryColor = currentTool.secondaryColor;
             this.currentAttributes.ShapeStyle = currentTool.shapeStyle;
             this.currentAttributes.LineThickness = currentTool.lineThickness;
+            this.currentAttributes.DotRadius = currentTool.dotRadius;
+            this.currentAttributes.ShowDots = currentTool.showDots;
         });
     }
 
@@ -80,6 +81,18 @@ export class ToolManagerService {
     }
     getCurrentLineThickness(): number | undefined {
         return this.currentAttributes.LineThickness;
+    }
+
+    setCurrentShowDots(checked: boolean): void {
+        this.toolBox[this.currentTool].showDots = this.currentAttributes.ShowDots = checked;
+    }
+
+    setCurrentDotRadius(dotRadius?: number): void {
+        this.toolBox[this.currentTool].dotRadius = this.currentAttributes.DotRadius = dotRadius ? dotRadius : this.currentAttributes.DotRadius;
+    }
+
+    getCurrentDotRadius(): number | undefined {
+        return this.currentAttributes.DotRadius;
     }
 
     setCurrentPrimaryColor(color: string): void {

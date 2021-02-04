@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatSliderChange } from '@angular/material/slider';
 import { ShapeStyle } from '@app/enums/shape-style';
 import { ToolsNames } from '@app/enums/tools-names';
@@ -26,14 +27,24 @@ export class ToolAttributeBarComponent {
     getCurrentLineThickness(): number | undefined {
         return this.toolManagerService.getCurrentLineThickness();
     }
-
+    onShowDotChange(event: MatCheckboxChange): void {
+        this.toolManagerService.setCurrentShowDots(event.checked);
+    }
     onShapeStyleChange(event: MatButtonToggleChange): void {
         const shapeStyle: string = event.value;
         this.toolManagerService.setCurrentShapeStyle(shapeStyle);
     }
 
+    onDotRadiusChange(event: MatSliderChange): void {
+        event.value ? this.toolManagerService.setCurrentDotRadius(event.value) : this.toolManagerService.setCurrentDotRadius();
+    }
+
     getCurrentShapeStyle(): ShapeStyle | undefined {
         return this.toolManagerService.getCurrentShapeStyle();
+    }
+
+    getCurrentDotRadius(): number | undefined {
+        return this.toolManagerService.getCurrentDotRadius();
     }
 
     showLineWidth(): boolean {
@@ -48,6 +59,9 @@ export class ToolAttributeBarComponent {
 
     showEllipseTitle(): boolean {
         return this.toolManagerService.isCurrentTool(ToolsNames.Ellipse);
+    }
+    showLineAttributes(): boolean {
+        return this.toolManagerService.isCurrentTool(ToolsNames.Line);
     }
 
     showShapeStyle(): boolean {

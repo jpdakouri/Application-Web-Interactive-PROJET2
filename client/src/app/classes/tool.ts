@@ -15,6 +15,8 @@ export abstract class Tool {
     primaryColor?: string = '#000000';
     secondaryColor?: string = '#000000';
     shapeStyle?: ShapeStyle = ShapeStyle.Outline;
+    dotRadius?: number = 1;
+    showDots?: boolean = true;
 
     constructor(protected drawingService: DrawingService) {}
 
@@ -23,6 +25,16 @@ export abstract class Tool {
     onMouseUp(event: MouseEvent): void {}
 
     onMouseMove(event: MouseEvent): void {}
+
+    onMouseEnter(event: MouseEvent): void {}
+
+    onMouseLeave(event: MouseEvent): void {}
+
+    onDblClick(event: MouseEvent): void {}
+
+    onKeyUp(event: KeyboardEvent): void {}
+
+    onKeyDown(event: KeyboardEvent): void {}
 
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.offsetX, y: event.offsetY };
