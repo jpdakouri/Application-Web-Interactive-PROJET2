@@ -9,7 +9,8 @@ import { LineService } from './line.service';
 describe('LineService', () => {
     let service: LineService;
     let mouseEvent: MouseEvent;
-    let keyboardEvent: KeyboardEvent;
+    let mouseStartEvent: MouseEvent;
+    // let keyboardEvent: KeyboardEvent;
     let canvasTestHelper: CanvasTestHelper;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
@@ -45,9 +46,15 @@ describe('LineService', () => {
             button: MouseButton.Left,
         } as MouseEvent;
 
-        keyboardEvent = {
-            key: KeyboardButton.Shift,
-        } as KeyboardEvent;
+        mouseStartEvent = {
+            offsetX: 0,
+            offsetY: 0,
+            button: MouseButton.Left,
+        } as MouseEvent;
+
+        // keyboardEvent = {
+        //     key: KeyboardButton.Shift,
+        // } as KeyboardEvent;
     });
 
     it('should be created', () => {
@@ -97,32 +104,33 @@ describe('LineService', () => {
     });
 
     it(' onMouseUp should call desiredAngle if mouse was already down and shift pressed', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+        service.onMouseUp(mouseStartEvent);
         service.mouseDown = true;
         service.shiftPressed = true;
 
-        service.onMouseMove(mouseEvent);
+        service.onMouseUp(mouseEvent);
         expect(desiredAngleSpy).toHaveBeenCalled();
     });
 
     it('onMouseMove should call previewUpdate if the drawing has started', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
-        service.started = true;
+        service.mouseDown = true;
+        service.onMouseUp(mouseStartEvent);
         service.onMouseMove(mouseEvent);
 
         expect(previewUpdateSpy).toHaveBeenCalled();
     });
 
-    it('onMouseUp should call desiredAngle if mouse was already down and shift pressed2', () => {
-        service.mouseDown = true;
-        const mouseEventRClick = {
-            offsetX: 25,
-            offsetY: 25,
-            button: MouseButton.Left,
-        } as MouseEvent;
-        service.onMouseUp(mouseEvent);
-        service.onKeyDown(keyboardEvent);
-        service.onMouseMove(mouseEventRClick);
-    });
+    // it('onMouseUp should call desiredAngle if mouse was already down and shift pressed2', () => {
+    //     service.mouseDown = true;
+    //     const mouseEventRClick = {
+    //         offsetX: 25,
+    //         offsetY: 25,
+    //         button: MouseButton.Left,
+    //     } as MouseEvent;
+    //     service.onMouseUp(mouseEvent);
+    //     service.onKeyDown(keyboardEvent);
+    //     service.onMouseMove(mouseEventRClick);
+    // });
 });
 // desiredAngle should return the closest point with sift key pressed
