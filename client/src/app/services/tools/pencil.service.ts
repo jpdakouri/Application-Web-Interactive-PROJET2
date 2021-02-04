@@ -25,8 +25,9 @@ export class PencilService extends Tool {
     private color: string;
     private width: number;
     private radius: number;
-    private DEFAULT_SIZE: number = 50;
-    private DEFAULT_RADIUS: number = 50 / 3;
+    private DEFAULT_SIZE: number = 30;
+    private DOT_DIVIDER: number = 3;
+    private DEFAULT_RADIUS: number = this.DEFAULT_SIZE / this.DOT_DIVIDER;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
@@ -52,7 +53,7 @@ export class PencilService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             if (!this.mouseOut) {
-                this.drawDot(this.drawingService.baseCtx, this.pathData);
+                this.drawDot(this.drawingService.baseCtx, this.pathData[0]);
             } else {
                 this.drawLine(this.drawingService.baseCtx, this.pathData);
             }
@@ -85,19 +86,19 @@ export class PencilService extends Tool {
         ctx.beginPath();
         ctx.lineWidth = this.width;
         ctx.strokeStyle = this.color;
-        ctx.fillStyle = this.color;
+        ctx.lineCap = 'round';
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
         }
         ctx.stroke();
     }
 
-    private drawDot(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        ctx.lineWidth = this.width / 3;
+    private drawDot(ctx: CanvasRenderingContext2D, point: Vec2): void {
+        ctx.lineWidth = this.width / this.DOT_DIVIDER;
         ctx.strokeStyle = this.color;
         ctx.fillStyle = this.color;
         ctx.beginPath();
-        ctx.arc(path[0].x, path[0].y, this.radius, 0, 2 * Math.PI);
+        ctx.arc(point.x, point.y, this.radius, 0, 2 * Math.PI);
         ctx.fill();
         ctx.stroke();
     }
