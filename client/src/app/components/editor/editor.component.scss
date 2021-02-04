@@ -1,11 +1,13 @@
-.container {
+.container {  // container de la page entiere
+    // width: 100%;
     height: 100%;
     display: flex;
 }
 
-.drawing-container {
+.drawing-container { // zone de travail
     overflow: auto;
     flex: 1 1 auto;
+    background-color: rgba(179, 179, 179, 0.6);
 }
 
 .drawing {
@@ -13,4 +15,3 @@
     width: min-content;
     outline: none;
 }
-  
