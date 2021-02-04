@@ -56,7 +56,7 @@ export class HueSelectorComponent implements AfterViewInit {
         const RGBA_GREEN = 'rgba(0, 255, 0, 1)';
         const RGBA_CYAN = 'rgba(0, 255, 255, 1)';
         const RGBA_BLUE = 'rgba(0, 0, 255, 1)';
-        const RGBA_PURPLE = 'rgba(255, 0, 0, 1)';
+        const RGBA_PURPLE = 'rgba(255, 0, 255, 1)';
 
         let gradientPartCount = 0;
         const GRADIENT_PARTS = 6;
@@ -89,8 +89,6 @@ export class HueSelectorComponent implements AfterViewInit {
     }
 
     onMouseMove(mouseEvent: MouseEvent): void {
-        this.isValidPosition(mouseEvent.offsetX, mouseEvent.offsetY);
-        console.log(mouseEvent.offsetX, mouseEvent.offsetY, this.sliderCanvas.nativeElement.width, this.sliderCanvas.nativeElement.height);
         if (this.isMouseDown && this.isValidPosition(mouseEvent.offsetX, mouseEvent.offsetY)) {
             this.selectedHeight = mouseEvent.offsetY;
             this.draw();

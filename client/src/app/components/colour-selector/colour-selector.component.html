@@ -1,11 +1,12 @@
 <div class="color-wrapper">
-    <app-hue-selector
-    (color)="hue=$event"
-    ></app-hue-selector>
+    <app-hue-selector (color)="hue = $event"></app-hue-selector>
     <app-colour-palette-selector [hue]="hue" (selectedColor)="selectedColor = $event"></app-colour-palette-selector>
-    <h1>{{selectedColor}}</h1>
 </div>
 <div>
-    <h1>{{selectedColor}}</h1>
+    <input [(ngModel)]="rgbColor" (keydown)="onInputEntry($event)" />
+</div>
+<div>
+    <h1>{{ selectedColor }}</h1>
     <h1>test</h1>
 </div>
+<app-current-color></app-current-color>
