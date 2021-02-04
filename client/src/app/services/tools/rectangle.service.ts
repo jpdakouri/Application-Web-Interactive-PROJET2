@@ -39,7 +39,7 @@ export class RectangleService extends Tool {
 
         this.primaryColour = 'black';
         this.secondaryColour = 'blue';
-        this.lineWidth = 25;
+        this.lineWidth = 1;
         this.rt = rayType.Fill;
     }
     onMouseDown(event: MouseEvent): void {
