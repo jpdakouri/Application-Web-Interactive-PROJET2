@@ -16,7 +16,7 @@ export class CurrentColourService {
     constructor(private colorHistory: ColourHistoryService) {
         const DEFAULT_PRIMARY_RGB = '0,0,0';
         const DEFAULT_SECONDARY_RGB = '255,255,255';
-        const DEFAULT_TRANSPARENCY = '255';
+        const DEFAULT_TRANSPARENCY = '1';
 
         this.primaryColorRgb = DEFAULT_PRIMARY_RGB;
         this.secondaryColorRgb = DEFAULT_SECONDARY_RGB;

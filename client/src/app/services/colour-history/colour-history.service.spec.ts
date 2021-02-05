@@ -23,14 +23,14 @@ describe('ColourHistoryService', () => {
     });
 
     it('pushColour adds the new color to the front', () => {
-        const NEW_COLOUR = 'rgb(0,0,0)';
-        service.pushColour(NEW_COLOUR);
-        expect(service.getColour(0)).toBe(NEW_COLOUR);
+        const newColor = 'rgb(0,0,0)';
+        service.pushColour(newColor);
+        expect(service.getColour(0)).toBe(newColor);
     });
 
     it('pushColour adds the new color to the front', () => {
-        const NEW_COLOUR = 'rgb(0,0,0)';
-        service.pushColour(NEW_COLOUR);
-        expect(service.getColour(0)).toBe(NEW_COLOUR);
+        const newColor = 'rgb(0,0,0)';
+        service.pushColour(newColor);
+        expect(service.getColour(0)).toBe(newColor);
     });
 });
