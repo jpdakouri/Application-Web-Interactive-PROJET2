@@ -9,11 +9,11 @@
 <div id="canvas-container">
 
   <div class='resizer middle-right'  [ngStyle]="{'left': width + 'px', 'top': (height/2 - 2.5) + 'px'}"
-                                     (click)="onMiddleRightResizerClick()" (mouseover)="onMouseOver()"></div>
+                                     (mousedown)="onMiddleRightResizerClick()" (mouseover)="onMouseOver()"></div>
   <div class='resizer bottom-right'  [ngStyle]="{'left': width + 'px', 'top': height + 'px'}"
-                                     (click)="onBottomRightResizerClick()" (mouseover)="onMouseOver()"></div>
+                                     (mousedown)="onBottomRightResizerClick()" (mouseover)="onMouseOver()"></div>
   <div class='resizer bottom-middle' [ngStyle]="{'left': (width/2 - 2.5) + 'px', 'top': height + 'px'}"
-                                     (click)="onMiddleBottomResizerClick()" (mouseover)="onMouseOver()"></div>
+                                     (mousedown)="onMiddleBottomResizerClick()" (mouseover)="onMouseOver()"></div>
 
   <canvas id="canvas" #baseCanvas [attr.width]="width" [attr.height]="height"
           (mousedown)="onMouseDown($event)"
@@ -23,6 +23,11 @@
           (mousedown)="onMouseDown($event)"
           (mouseup)="onMouseUp($event)"
           (mousemove)="onMouseMove($event)"></canvas>
+
+<!--  <canvas id="resizingLayer" #resizingPreviewCanvas width="width" [attr.height]="height"-->
+<!--          (mousedown)="onMouseDown($event)"-->
+<!--          (mouseup)="onMouseUp($event)"-->
+<!--          (mousemove)="onMouseMove($event)" *ngIf="!isResizing"></canvas>-->
 
 </div>
 

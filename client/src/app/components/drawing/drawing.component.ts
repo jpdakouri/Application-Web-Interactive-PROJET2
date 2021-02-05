@@ -36,8 +36,12 @@ export class DrawingComponent implements AfterViewInit {
     // On utilise ce canvas pour dessiner sans affecter le dessin final
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
 
+    // Pour l'aperçu lors du redimensionnement
+    // @ViewChild('resizingPreviewCanvas', { static: false }) resizingPreviewCanvas: ElementRef<HTMLCanvasElement>;
+
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
+    // private resizingPreviewCtx: CanvasRenderingContext2D;
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
 
     // mouse
@@ -47,6 +51,7 @@ export class DrawingComponent implements AfterViewInit {
     startCoordinate: Vec2;
     endCoordinate: Vec2;
     currentCoordinate: Vec2;
+    isResizing: boolean = false;
 
     // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
     private tools: Tool[];
@@ -64,6 +69,7 @@ export class DrawingComponent implements AfterViewInit {
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
+        // this.drawingService.resizingPreviewCtx = this.resizingPreviewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
         this.drawingService.canvas.style.backgroundColor = DEFAULT_WHITE;
     }
@@ -75,7 +81,7 @@ export class DrawingComponent implements AfterViewInit {
 
         // if (this.status !== Status.OFF) this.resizeCanvas();
         // this.setMouseCoordinate(event.clientX, event.clientY);
-        // if (this.status !== Status.OFF)
+        if (this.status !== Status.OFF) event.stopImmediatePropagation();
         this.currentCoordinate = { x: event.x, y: event.y };
     }
 
@@ -83,9 +89,9 @@ export class DrawingComponent implements AfterViewInit {
     onMouseDown(event: MouseEvent): void {
         this.currentTool.onMouseDown(event);
         this.startCoordinate = { x: event.x, y: event.y };
-        // if (this.status !== Status.OFF) {
-        //     // this.currentTool = this.tools[1];
-        // }
+        if (this.status !== Status.OFF) {
+            this.currentTool = this.tools[1];
+        }
     }
 
     @HostListener('window:mouseup', ['$event'])
@@ -94,7 +100,9 @@ export class DrawingComponent implements AfterViewInit {
         this.endCoordinate = { x: event.clientX, y: event.clientY };
         if (this.status !== Status.OFF) this.resizeCanvas();
         this.status = Status.OFF;
-        this.currentTool = this.tools[0]; // pencil
+        this.currentTool = this.tools[0];
+
+        // this.drawingService.baseCtx.restore();
     }
 
     @HostListener('window:mouseleave', ['$event'])
@@ -104,8 +112,7 @@ export class DrawingComponent implements AfterViewInit {
 
     onMouseOver(): void {
         this.currentTool = this.tools[1];
-        console.log('onMouseOver trriged!');
-        console.log('curr tool: ' + typeof this.tools[0]);
+        this.isResizing = true;
     }
 
     get width(): number {
@@ -148,24 +155,25 @@ export class DrawingComponent implements AfterViewInit {
     }
 
     onMiddleRightResizerClick(): void {
-        console.log('midd right resizer clicked!' + this.currentCoordinate);
+        // console.log('midd right resizer clicked!');
+        console.log('midd right resizer dragged!');
         this.drawingService.baseCtx.save();
+        this.currentTool = this.tools[1];
         this.status = Status.MIDDLE_RIGHT_RESIZE;
-        // this.currentTool = this.tools[1];
     }
 
     onBottomRightResizerClick(): void {
-        console.log('right resizer clicked!' + this.currentCoordinate);
+        console.log('right resizer clicked!');
 
+        this.currentTool = this.tools[1];
         this.status = Status.BOTTOM_RIGHT_RESIZE;
-        // this.currentTool = this.tools[1];
     }
 
     onMiddleBottomResizerClick(): void {
-        console.log('bott right resizer clicked!' + this.currentCoordinate);
+        console.log('bott right resizer clicked!');
 
+        this.currentTool = this.tools[1];
         this.status = Status.MIDDLE_BOTTOM_RESIZE;
-        // this.currentTool = this.tools[1];
     }
 
     setMouseCoordinate(x: number, y: number): void {
