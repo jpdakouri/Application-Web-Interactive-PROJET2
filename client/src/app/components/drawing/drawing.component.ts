@@ -70,7 +70,7 @@ export class DrawingComponent implements AfterViewInit {
     @HostListener('window:mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
         this.currentTool.onMouseMove(event);
-        console.log('mouse x = ' + event.x + ' | mouse y = ' + event.y);
+        // console.log('mouse x = ' + event.x + ' | mouse y = ' + event.y);
 
         // if (this.status !== Status.OFF) this.resizeCanvas();
         // this.setMouseCoordinate(event.clientX, event.clientY);
@@ -137,36 +137,26 @@ export class DrawingComponent implements AfterViewInit {
         // this.status = Status.OFF;
     }
 
-    // updateStatus(event: MouseEvent): void {
-    //     // if (this.status !== Status.OFF) event.stopPropagation();
-    //     this.status = Status.OFF;
-    // }
-
     onMiddleRightResizerClick(): void {
         console.log('midd right resizer clicked!' + this.currentCoordinate);
         this.drawingService.baseCtx.save();
         this.status = Status.MIDDLE_RIGHT_RESIZE;
-        // this.setMouseCoordinate(event.clientX, event.clientY);
     }
 
     onBottomRightResizerClick(): void {
         console.log('right resizer clicked!' + this.currentCoordinate);
 
         this.status = Status.BOTTOM_RIGHT_RESIZE;
-        // this.setMouseCoordinate(event.clientX, event.clientY);
     }
 
     onMiddleBottomResizerClick(): void {
         console.log('bott right resizer clicked!' + this.currentCoordinate);
 
         this.status = Status.MIDDLE_BOTTOM_RESIZE;
-        // this.setMouseCoordinate(event.clientX, event.clientY);
     }
 
     setMouseCoordinate(x: number, y: number): void {
-        // this.mouseCoordinate = { x, y };
-        this.currentCoordinate.x = x;
-        this.currentCoordinate.y = y;
+        this.currentCoordinate = { x, y };
     }
 
     // isCanvasBlank(): boolean {
