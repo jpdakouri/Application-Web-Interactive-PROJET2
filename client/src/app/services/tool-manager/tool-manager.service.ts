@@ -4,6 +4,7 @@ import { ShapeStyle } from '@app/enums/shape-style';
 import { ToolsNames } from '@app/enums/tools-names';
 import { LineService } from '@app/services/tools/line-service/line.service';
 import { PencilService } from '@app/services/tools/pencil-service/pencil.service';
+import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
 import { CurrentAttributes } from '@app/types/current-attributes';
 import { ToolBox } from '@app/types/tool-box';
 
@@ -16,10 +17,6 @@ export class EraserService extends Tool {}
     providedIn: 'root',
 })
 export class EllipseService extends Tool {}
-@Injectable({
-    providedIn: 'root',
-})
-export class RectangleService extends Tool {}
 @Injectable({
     providedIn: 'root',
 })

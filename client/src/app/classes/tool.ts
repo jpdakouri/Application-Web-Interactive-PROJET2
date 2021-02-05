@@ -18,6 +18,7 @@ export abstract class Tool {
     dotRadius?: number = 5;
     showDots?: boolean = false;
     mouseMoved: boolean = false;
+    // shiftDown: boolean = false;
 
     constructor(protected drawingService: DrawingService) {}
 
