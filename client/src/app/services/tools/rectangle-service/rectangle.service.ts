@@ -15,10 +15,10 @@ export class RectangleService extends Tool {
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
-        this.clearPath();
     }
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
+        this.clearPath();
         if (this.mouseDown) {
             this.firstGrid = this.getPositionFromMouse(event);
             this.updatePreview();
@@ -47,33 +47,18 @@ export class RectangleService extends Tool {
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
             this.drawRectangle(this.drawingService.previewCtx, this.mouseDownCoord);
-            this.drawingService.clearCanvas(this.drawingService.baseCtx);
-            this.clearPath();
+            this.updatePreview();
         }
         this.mouseDown = false;
     }
 
     onKeyDown(event: KeyboardEvent): void {
-        switch (event.key) {
-            case KeyboardKeys.Escape:
-                this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                this.clearPath();
-                break;
-            case KeyboardKeys.One:
-                break;
-            default:
-                break;
-        }
-        if (event.shiftKey) {
+        if (event.key === KeyboardKeys.Escape) {
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.clearPath();
+        } else if (event.shiftKey) {
             this.shiftDown = true;
-            if (this.shiftDown) {
-                if (this.mouseDownCoord.x > this.mouseDownCoord.y) {
-                    this.mouseDownCoord.y = this.mouseDownCoord.x;
-                } else if (this.mouseDownCoord.x < this.mouseDownCoord.y) {
-                    this.mouseDownCoord.x = this.mouseDownCoord.y;
-                }
-                this.updatePreview();
-            }
+            this.updatePreview();
         }
     }
 
@@ -129,6 +114,14 @@ export class RectangleService extends Tool {
     private updatePreview(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawRectangle(this.drawingService.previewCtx, this.mouseDownCoord);
+
+        if (this.shiftDown) {
+            if (this.mouseDownCoord.x > this.mouseDownCoord.y) {
+                this.mouseDownCoord.y = this.mouseDownCoord.x;
+            } else if (this.mouseDownCoord.x < this.mouseDownCoord.y) {
+                this.mouseDownCoord.x = this.mouseDownCoord.y;
+            }
+        }
     }
 
     private clearPath(): void {
