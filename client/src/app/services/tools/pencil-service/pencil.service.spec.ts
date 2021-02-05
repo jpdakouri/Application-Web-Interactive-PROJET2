@@ -14,6 +14,7 @@ describe('PencilService', () => {
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let drawLineSpy: jasmine.Spy<any>;
+    let drawDotSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
@@ -27,6 +28,7 @@ describe('PencilService', () => {
 
         service = TestBed.inject(PencilService);
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
+        drawDotSpy = spyOn<any>(service, 'drawDot').and.callThrough();
 
         // Configuration du spy du service
         // tslint:disable:no-string-literal
@@ -65,12 +67,22 @@ describe('PencilService', () => {
         expect(service.mouseDown).toEqual(false);
     });
 
-    it(' onMouseUp should call drawLine if mouse was already down', () => {
+    it(' onMouseUp should call drawLine if mouse was already down and mouse moved', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
+        service.mouseMoved = true;
 
         service.onMouseUp(mouseEvent);
         expect(drawLineSpy).toHaveBeenCalled();
+    });
+
+    it(' onMouseUp should call drawDot if mouse was already down and mouse moved', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+        service.mouseMoved = false;
+
+        service.onMouseUp(mouseEvent);
+        expect(drawDotSpy).toHaveBeenCalled();
     });
 
     it(' onMouseUp should not call drawLine if mouse was not already down', () => {
@@ -79,6 +91,14 @@ describe('PencilService', () => {
 
         service.onMouseUp(mouseEvent);
         expect(drawLineSpy).not.toHaveBeenCalled();
+    });
+
+    it(' onMouseUp should not call drawDot if mouse was not already down', () => {
+        service.mouseDown = false;
+        service.mouseDownCoord = { x: 0, y: 0 };
+
+        service.onMouseUp(mouseEvent);
+        expect(drawDotSpy).not.toHaveBeenCalled();
     });
 
     it(' onMouseMove should call drawLine if mouse was already down', () => {

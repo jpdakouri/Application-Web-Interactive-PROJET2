@@ -17,6 +17,7 @@ export abstract class Tool {
     shapeStyle?: ShapeStyle = ShapeStyle.Outline;
     dotRadius?: number = 5;
     showDots?: boolean = false;
+    mouseMoved: boolean = false;
 
     constructor(protected drawingService: DrawingService) {}
 

@@ -1,25 +1,29 @@
 <div class="attribute-toolbar">
-    <div *ngIf="showLineWidth()" class="line-thickness">
-        <h2 class="attribute-title">Épaisseur de ligne: {{ this.getCurrentLineThickness() }}px</h2>
-        <mat-slider
-            [value]="this.getCurrentLineThickness()"
-            #thicknessSlider
-            color="primary"
-            min="1"
-            max="30"
-            (input)="onThicknessChange($event)"
-            (change)="onThicknessChange($event)"
-            step="1"
-        ></mat-slider>
+    <div *ngIf="showLineWidth()">
+        <div class="line-thickness">
+            <h2 class="attribute-title">Épaisseur de ligne: {{ this.getCurrentLineThickness() }}px</h2>
+            <mat-slider
+                [value]="this.getCurrentLineThickness()"
+                #thicknessSlider
+                color="primary"
+                min="1"
+                max="30"
+                (input)="onThicknessChange($event)"
+                (change)="onThicknessChange($event)"
+                step="1"
+            ></mat-slider>
+        </div>
+        <mat-divider></mat-divider>
     </div>
-    <mat-divider></mat-divider>
-    <div *ngIf="showShapeStyle()" class="rectangle-ellipse-type">
-        <h2 class="attribute-title">Type d{{ showEllipseTitle() ? "'ellipse:" : 'e rectangle:' }}</h2>
-        <mat-button-toggle-group (change)="onShapeStyleChange($event)" name="ShapeStyle" aria-label="Shape Style">
-            <mat-button-toggle [checked]="isChecked(shapeStyle.Outline)" value="Outline">Contour</mat-button-toggle>
-            <mat-button-toggle [checked]="isChecked(shapeStyle.Filled)" value="Filled">Plein</mat-button-toggle>
-            <mat-button-toggle [checked]="isChecked(shapeStyle.FilledOutline)" value="FilledOutline">Plein avec contour</mat-button-toggle>
-        </mat-button-toggle-group>
+    <div *ngIf="showShapeStyle()">
+        <div class="rectangle-ellipse-type">
+            <h2 class="attribute-title">Type d{{ showEllipseTitle() ? "'ellipse:" : 'e rectangle:' }}</h2>
+            <mat-button-toggle-group (change)="onShapeStyleChange($event)" name="ShapeStyle" aria-label="Shape Style">
+                <mat-button-toggle [checked]="isChecked(shapeStyle.Outline)" value="Outline">Contour</mat-button-toggle>
+                <mat-button-toggle [checked]="isChecked(shapeStyle.Filled)" value="Filled">Plein</mat-button-toggle>
+                <mat-button-toggle [checked]="isChecked(shapeStyle.FilledOutline)" value="FilledOutline">Plein avec contour</mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
         <mat-divider></mat-divider>
     </div>
 
