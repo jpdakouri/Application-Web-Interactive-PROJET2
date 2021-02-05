@@ -10,9 +10,6 @@ import { MouseButton } from '@app/tests-mocks/mock-boutton-pressed';
 // Vous êtes encouragés de modifier et compléter le code.
 // N'oubliez pas de regarder les tests dans le fichier spec.ts aussi!
 
-const DEFAULT_SIZE: number = 30;
-const DOT_DIVIDER: number = 3;
-const DEFAULT_RADIUS: number = DEFAULT_SIZE / DOT_DIVIDER;
 @Injectable({
     providedIn: 'root',
 })
@@ -23,7 +20,7 @@ export class PencilService extends Tool {
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
-        this.radius = DEFAULT_RADIUS;
+        this.radius = this.lineThickness ? this.lineThickness : 1;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -85,9 +82,10 @@ export class PencilService extends Tool {
     }
 
     private drawDot(ctx: CanvasRenderingContext2D, point: Vec2): void {
-        ctx.lineWidth = (this.lineThickness ? this.lineThickness : 1) / DOT_DIVIDER;
+        ctx.lineWidth = this.lineThickness ? this.lineThickness : 1;
         ctx.strokeStyle = this.primaryColor ? this.primaryColor : '#000000';
         ctx.fillStyle = this.primaryColor ? this.primaryColor : '#000000';
+        ctx.lineCap = 'round';
         ctx.beginPath();
         ctx.arc(point.x, point.y, this.radius, 0, 2 * Math.PI);
         ctx.fill();
