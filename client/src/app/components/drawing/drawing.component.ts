@@ -18,6 +18,13 @@ export const DEFAULT_WHITE = '#fff';
 
 export const SIDEBAR_WIDTH = 294;
 
+const enum Status {
+    OFF = 0,
+    MIDDLE_BOTTOM_RESIZE = 1,
+    BOTTOM_RIGHT_RESIZE = 2,
+    MIDDLE_RIGHT_RESIZE = 3,
+}
+
 @Component({
     selector: 'app-drawing',
     templateUrl: './drawing.component.html',
@@ -31,8 +38,14 @@ export class DrawingComponent implements AfterViewInit {
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
-    // @ts-ignore
-    private currentDrawing: CanvasRenderingContext2D;
+
+    // mouse
+    // mouseCoordinate: Vec2;
+    status: Status = Status.OFF;
+
+    startCoordinate: Vec2;
+    endCoordinate: Vec2;
+    currentCoordinate: Vec2;
 
     // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
     private tools: Tool[];
@@ -41,6 +54,8 @@ export class DrawingComponent implements AfterViewInit {
         this.tools = [pencilService];
         this.currentTool = this.tools[0];
         this.setCanvasSize();
+        this.startCoordinate = { x: 0, y: 0 };
+        this.endCoordinate = { x: 0, y: 0 };
     }
 
     ngAfterViewInit(): void {
@@ -55,16 +70,29 @@ export class DrawingComponent implements AfterViewInit {
     @HostListener('mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
         this.currentTool.onMouseMove(event);
+        // console.log('mouse x = ' + event.x + ' | mouse y = ' + event.y);
+
+        // if (this.status !== Status.OFF) this.resizeCanvas();
+        // this.setMouseCoordinate(event.clientX, event.clientY);
+        this.currentCoordinate = { x: event.x, y: event.y };
     }
 
     @HostListener('mousedown', ['$event'])
     onMouseDown(event: MouseEvent): void {
         this.currentTool.onMouseDown(event);
+        this.startCoordinate = { x: event.x, y: event.y };
     }
 
     @HostListener('mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
         this.currentTool.onMouseUp(event);
+        this.endCoordinate = { x: event.clientX, y: event.clientY };
+        // if (this.status !== Status.OFF) this.resizeCanvas();
+        // this.updateStatus(event);
+        this.status = Status.OFF;
+        this.resizeCanvas();
+
+        this.drawingService.baseCtx.restore();
     }
 
     get width(): number {
@@ -91,20 +119,58 @@ export class DrawingComponent implements AfterViewInit {
         };
     }
 
-    isCanvasBlank(): boolean {
-        // return this.currentDrawing;
-        return false;
+    resizeCanvas(): void {
+        const deltaX = this.endCoordinate.x - this.startCoordinate.x;
+        // const deltaY = this.endCoordinate.y - this.startCoordinate.y;
+        this.canvasSize.x += deltaX;
+        // this.canvasSize.y += deltaY;
+        console.log('resize method called' + this.currentCoordinate);
+        // this.status = Status.OFF;
     }
 
-    saveDrawing(): void {
-        // @ts-ignore
-        this.currentDrawing = this.baseCtx.save();
+    // updateStatus(event: MouseEvent): void {
+    //     // if (this.status !== Status.OFF) event.stopPropagation();
+    //     this.status = Status.OFF;
+    // }
+
+    onMiddleRightResizerClick(): void {
+        console.log('midd right resizer clicked!' + this.currentCoordinate);
+        this.drawingService.baseCtx.save();
+        this.status = Status.MIDDLE_RIGHT_RESIZE;
+        // this.setMouseCoordinate(event.clientX, event.clientY);
     }
 
-    restoreDrawing(): void {
-        this.baseCtx.restore();
+    onBottomRightResizerClick(): void {
+        console.log('right resizer clicked!' + this.currentCoordinate);
+
+        this.status = Status.BOTTOM_RIGHT_RESIZE;
+        // this.setMouseCoordinate(event.clientX, event.clientY);
     }
 
-    // tslint:disable-next-line:no-empty
-    onMiddleRightClick(): void {}
+    onMiddleBottomResizerClick(): void {
+        console.log('bott right resizer clicked!' + this.currentCoordinate);
+
+        this.status = Status.MIDDLE_BOTTOM_RESIZE;
+        // this.setMouseCoordinate(event.clientX, event.clientY);
+    }
+
+    setMouseCoordinate(x: number, y: number): void {
+        // this.mouseCoordinate = { x, y };
+        this.currentCoordinate.x = x;
+        this.currentCoordinate.y = y;
+    }
+
+    // isCanvasBlank(): boolean {
+    //     // return this.currentDrawing;
+    //     return false;
+    // }
+    //
+    // saveDrawing(): void {
+    //     // @ts-ignore
+    //     this.currentDrawing = this.baseCtx.save();
+    // }
+    //
+    // restoreDrawing(): void {
+    //     this.baseCtx.restore();
+    // }
 }

@@ -75,4 +75,6 @@ describe('DrawingComponent', () => {
         expect(mouseEventSpy).toHaveBeenCalled();
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
     });
+
+    // it('should have a size of 250 x 250 pixels', () => {});
 });
