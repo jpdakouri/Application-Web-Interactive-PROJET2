@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { CanvasResizerService } from '@app/services/tools/canvas-resizer/canvas-resizer.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 
 // TODO : Avoir un fichier séparé pour les constantes ?
@@ -50,8 +51,8 @@ export class DrawingComponent implements AfterViewInit {
     // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
     private tools: Tool[];
     currentTool: Tool;
-    constructor(private drawingService: DrawingService, pencilService: PencilService) {
-        this.tools = [pencilService];
+    constructor(private drawingService: DrawingService, pencilService: PencilService, canvasResizerService: CanvasResizerService) {
+        this.tools = [pencilService, canvasResizerService];
         this.currentTool = this.tools[0];
         this.setCanvasSize();
         this.startCoordinate = { x: 0, y: 0 };
@@ -74,6 +75,7 @@ export class DrawingComponent implements AfterViewInit {
 
         // if (this.status !== Status.OFF) this.resizeCanvas();
         // this.setMouseCoordinate(event.clientX, event.clientY);
+        // if (this.status !== Status.OFF)
         this.currentCoordinate = { x: event.x, y: event.y };
     }
 
@@ -81,6 +83,9 @@ export class DrawingComponent implements AfterViewInit {
     onMouseDown(event: MouseEvent): void {
         this.currentTool.onMouseDown(event);
         this.startCoordinate = { x: event.x, y: event.y };
+        // if (this.status !== Status.OFF) {
+        //     // this.currentTool = this.tools[1];
+        // }
     }
 
     @HostListener('window:mouseup', ['$event'])
@@ -89,13 +94,18 @@ export class DrawingComponent implements AfterViewInit {
         this.endCoordinate = { x: event.clientX, y: event.clientY };
         if (this.status !== Status.OFF) this.resizeCanvas();
         this.status = Status.OFF;
-
-        // this.drawingService.baseCtx.restore();
+        this.currentTool = this.tools[0]; // pencil
     }
 
     @HostListener('window:mouseleave', ['$event'])
     oneMouseLeave(event: MouseEvent): void {
         this.endCoordinate = { x: event.clientX, y: event.clientY };
+    }
+
+    onMouseOver(): void {
+        this.currentTool = this.tools[1];
+        console.log('onMouseOver trriged!');
+        console.log('curr tool: ' + typeof this.tools[0]);
     }
 
     get width(): number {
@@ -141,18 +151,21 @@ export class DrawingComponent implements AfterViewInit {
         console.log('midd right resizer clicked!' + this.currentCoordinate);
         this.drawingService.baseCtx.save();
         this.status = Status.MIDDLE_RIGHT_RESIZE;
+        // this.currentTool = this.tools[1];
     }
 
     onBottomRightResizerClick(): void {
         console.log('right resizer clicked!' + this.currentCoordinate);
 
         this.status = Status.BOTTOM_RIGHT_RESIZE;
+        // this.currentTool = this.tools[1];
     }
 
     onMiddleBottomResizerClick(): void {
         console.log('bott right resizer clicked!' + this.currentCoordinate);
 
         this.status = Status.MIDDLE_BOTTOM_RESIZE;
+        // this.currentTool = this.tools[1];
     }
 
     setMouseCoordinate(x: number, y: number): void {
