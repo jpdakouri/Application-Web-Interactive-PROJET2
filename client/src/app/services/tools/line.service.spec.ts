@@ -42,21 +42,17 @@ describe('LineService', () => {
         service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
 
-        mouseEvent = {
-            offsetX: 25,
-            offsetY: 25,
-            button: MouseButton.Left,
-        } as MouseEvent;
-
         mouseStartEvent = {
             offsetX: 0,
             offsetY: 0,
             button: MouseButton.Left,
         } as MouseEvent;
 
-        // keyboardEvent = {
-        //     key: KeyboardButton.Shift,
-        // } as KeyboardEvent;
+        mouseEvent = {
+            offsetX: 25,
+            offsetY: 25,
+            button: MouseButton.Left,
+        } as MouseEvent;
     });
 
     it('should be created', () => {
@@ -96,7 +92,7 @@ describe('LineService', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
         const keyboardEventFalse = {
-            key: KeyboardButton.RandomLettre,
+            key: KeyboardButton.RandomKey,
         } as KeyboardEvent;
 
         service.onMouseUp(mouseEvent);
@@ -171,7 +167,43 @@ describe('LineService', () => {
             service.mouseDown = true;
             service.onDblClick();
 
-            expect()
+            expect(verifyLastPointSpy).toBeTruthy();
         }
+    });
+
+    it(' keys should perform their task', () => {
+        service.mouseDown = true;
+        service.onMouseUp(mouseStartEvent);
+        service.mouseDown = true;
+        service.onMouseUp(mouseEvent);
+
+        // service.onKeyDown({
+        //     key: KeyboardButton.Backspace,
+        // } as KeyboardEvent);
+        // expect(previewUpdateSpy).toHaveBeenCalled();
+
+        console.log(
+            service.onKeyDown({
+                key: KeyboardButton.Shift,
+            } as KeyboardEvent),
+        );
+        expect(service.shiftPressed).toBeTrue();
+        service.onKeyDown({
+            key: KeyboardButton.Escape,
+        } as KeyboardEvent);
+        expect(service.started).toBeFalse();
+    });
+
+    it('onKeyup should update shift state', () => {
+        service.shiftPressed = true;
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.onKeyUp({
+            key: KeyboardButton.RandomKey,
+        } as KeyboardEvent);
+        expect(service.shiftPressed).toBeTrue();
+        service.onKeyUp({
+            key: KeyboardButton.Shift,
+        } as KeyboardEvent);
+        expect(service.shiftPressed).toBeFalse();
     });
 });

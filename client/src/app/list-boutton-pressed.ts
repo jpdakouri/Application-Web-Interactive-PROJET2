@@ -10,5 +10,5 @@ export enum KeyboardButton {
     Shift = 'Shift',
     Escape = 'Escape',
     Backspace = 'Backspace',
-    RandomLettre = 'A',
+    RandomKey = 'A',
 }
