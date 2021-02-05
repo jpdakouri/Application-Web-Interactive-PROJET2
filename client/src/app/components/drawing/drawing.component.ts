@@ -87,10 +87,10 @@ export class DrawingComponent implements AfterViewInit {
     onMouseUp(event: MouseEvent): void {
         this.currentTool.onMouseUp(event);
         this.endCoordinate = { x: event.clientX, y: event.clientY };
-        // if (this.status !== Status.OFF) this.resizeCanvas();
+        if (this.status !== Status.OFF) this.resizeCanvas();
         // this.updateStatus(event);
+        // this.resizeCanvas();
         this.status = Status.OFF;
-        this.resizeCanvas();
 
         this.drawingService.baseCtx.restore();
     }
@@ -121,8 +121,14 @@ export class DrawingComponent implements AfterViewInit {
 
     resizeCanvas(): void {
         const deltaX = this.endCoordinate.x - this.startCoordinate.x;
-        // const deltaY = this.endCoordinate.y - this.startCoordinate.y;
-        this.canvasSize.x += deltaX;
+        const deltaY = this.endCoordinate.y - this.startCoordinate.y;
+        // tslint:disable-next-line:prefer-switch
+        if (this.status === Status.MIDDLE_RIGHT_RESIZE) this.canvasSize.x += deltaX;
+        else if (this.status === Status.MIDDLE_BOTTOM_RESIZE) this.canvasSize.y += deltaY;
+        else if (this.status === Status.BOTTOM_RIGHT_RESIZE) {
+            this.canvasSize.x += deltaX;
+            this.canvasSize.y += deltaY;
+        }
         // this.canvasSize.y += deltaY;
         console.log('resize method called' + this.currentCoordinate);
         // this.status = Status.OFF;
