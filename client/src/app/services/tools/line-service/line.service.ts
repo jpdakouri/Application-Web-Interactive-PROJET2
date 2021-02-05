@@ -2,11 +2,9 @@ import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { DEFAULT_MIN_THICKNESS, PIXEL_DISTANCE, SHIFT_ANGLE } from '@app/services/tools/tools-constants';
 import { KeyboardButton, MouseButton } from '@app/tests-mocks/mock-boutton-pressed';
 
-export const PIXEL_DISTANCE = 20;
-export const WAIT_TIME = 500;
-export const SHIFT_ANGLE = 45;
 @Injectable({
     providedIn: 'root',
 })
@@ -18,10 +16,6 @@ export class LineService extends Tool {
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
-
-        // valeurs devront etre choisi dans la bare a outil
-        // peut etre fix pour l'instant
-        // tslint:disable-next-line:no-magic-numbers
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -160,7 +154,7 @@ export class LineService extends Tool {
             ctx.lineTo(point.x, point.y);
         }
         if (closed) ctx.lineTo(path[0].x, path[0].y);
-        ctx.lineWidth = this.lineThickness ? this.lineThickness : 1;
+        ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
         ctx.stroke();
 
         if (this.showDots)

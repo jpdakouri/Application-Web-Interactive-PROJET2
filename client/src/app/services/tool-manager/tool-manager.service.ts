@@ -72,20 +72,21 @@ export class ToolManagerService {
     }
 
     setCurrentLineThickness(lineThickness?: number): void {
-        this.toolBox[this.currentTool].lineThickness = this.currentAttributes.LineThickness = lineThickness
-            ? lineThickness
-            : this.currentAttributes.LineThickness;
+        this.toolBox[this.currentTool].lineThickness = lineThickness;
+        this.currentAttributes.LineThickness = lineThickness;
     }
     getCurrentLineThickness(): number | undefined {
         return this.currentAttributes.LineThickness;
     }
 
     setCurrentShowDots(checked: boolean): void {
-        this.toolBox[this.currentTool].showDots = this.currentAttributes.ShowDots = checked;
+        this.toolBox[this.currentTool].showDots = checked;
+        this.currentAttributes.ShowDots = checked;
     }
 
     setCurrentDotRadius(dotRadius?: number): void {
-        this.toolBox[this.currentTool].dotRadius = this.currentAttributes.DotRadius = dotRadius ? dotRadius : this.currentAttributes.DotRadius;
+        this.toolBox[this.currentTool].dotRadius = dotRadius;
+        this.currentAttributes.DotRadius = dotRadius;
     }
 
     getCurrentDotRadius(): number | undefined {
@@ -93,20 +94,23 @@ export class ToolManagerService {
     }
 
     setCurrentPrimaryColor(color: string): void {
-        this.toolBox[this.currentTool].primaryColor = this.currentAttributes.PrimaryColor = color;
+        this.toolBox[this.currentTool].primaryColor = color;
+        this.currentAttributes.PrimaryColor = color;
     }
     getCurrentPrimaryColor(): string | undefined {
         return this.currentAttributes.PrimaryColor;
     }
     setCurrentSecondaryColor(color: string): void {
-        this.toolBox[this.currentTool].secondaryColor = this.currentAttributes.SecondaryColor = color;
+        this.toolBox[this.currentTool].secondaryColor = color;
+        this.currentAttributes.SecondaryColor = color;
     }
     getCurrentSecondaryColor(): string | undefined {
         return this.currentAttributes.SecondaryColor;
     }
     setCurrentShapeStyle(shapeStyleStr: string): void {
         const shapeStyle = this.shapeStyleSelection.get(shapeStyleStr);
-        this.toolBox[this.currentTool].shapeStyle = this.currentAttributes.ShapeStyle = shapeStyle ? shapeStyle : this.currentAttributes.ShapeStyle;
+        this.toolBox[this.currentTool].shapeStyle = shapeStyle;
+        this.currentAttributes.ShapeStyle = shapeStyle;
     }
     getCurrentShapeStyle(): ShapeStyle | undefined {
         return this.currentAttributes.ShapeStyle;

@@ -4,6 +4,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { KeyboardKeys, MouseButton } from '@app/enums/rectangle-enums';
 import { ShapeStyle } from '@app/enums/shape-style';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { DEFAULT_COLOR_BLACK, DEFAULT_MIN_THICKNESS } from '@app/services/tools/tools-constants';
 
 @Injectable({
     providedIn: 'root',
@@ -15,9 +16,6 @@ export class RectangleService extends Tool {
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
-        this.shapeStyle = ShapeStyle.Filled;
-        this.primaryColor = 'red';
-        this.secondaryColor = '#000000';
     }
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
@@ -48,12 +46,7 @@ export class RectangleService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
-            this.drawRectangle(
-                this.drawingService.previewCtx,
-                this.firstGrid,
-                this.mouseDownCoord,
-                this.shapeStyle ? this.shapeStyle : ShapeStyle.Outline,
-            );
+            this.drawRectangle(this.drawingService.previewCtx, this.mouseDownCoord);
             this.drawingService.clearCanvas(this.drawingService.baseCtx);
             this.clearPath();
         }
@@ -91,40 +84,51 @@ export class RectangleService extends Tool {
         }
     }
 
-    private drawRectangle(ctx: CanvasRenderingContext2D, initGrid: Vec2, finalGrid: Vec2, shapeStyle: ShapeStyle): void {
-        switch (shapeStyle) {
+    drawOutline(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+        ctx.beginPath();
+        ctx.strokeStyle = this.secondaryColor || DEFAULT_COLOR_BLACK;
+        ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
+        ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+    }
+
+    drawFilled(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+        ctx.beginPath();
+        ctx.fillStyle = this.primaryColor || DEFAULT_COLOR_BLACK;
+        ctx.fillRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+    }
+
+    drawFilledOutline(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+        ctx.beginPath();
+        ctx.fillStyle = this.primaryColor || DEFAULT_COLOR_BLACK;
+        ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
+        ctx.strokeStyle = this.secondaryColor || DEFAULT_COLOR_BLACK;
+        ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+        ctx.fillRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+    }
+
+    private drawRectangle(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+        switch (this.shapeStyle) {
             case ShapeStyle.Outline:
-                ctx.beginPath();
-                ctx.strokeStyle = this.secondaryColor ? this.secondaryColor : '#000000';
-                ctx.lineWidth = this.lineThickness ? this.lineThickness : 1;
-                ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+                this.drawOutline(ctx, finalGrid);
                 break;
 
             case ShapeStyle.Filled:
-                ctx.beginPath();
-                ctx.fillStyle = this.primaryColor ? this.primaryColor : '#000000';
-                ctx.fillRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+                this.drawFilled(ctx, finalGrid);
                 break;
 
             case ShapeStyle.FilledOutline:
-                ctx.beginPath();
-                ctx.fillStyle = this.primaryColor ? this.primaryColor : '#000000';
-                ctx.lineWidth = this.lineThickness ? this.lineThickness : 1;
-                ctx.strokeStyle = this.secondaryColor ? this.secondaryColor : '#000000';
-                ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
-                ctx.fillRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+                this.drawFilledOutline(ctx, finalGrid);
+                break;
+
+            default:
+                this.drawOutline(ctx, finalGrid);
                 break;
         }
     }
 
     private updatePreview(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.drawRectangle(
-            this.drawingService.previewCtx,
-            this.firstGrid,
-            this.mouseDownCoord,
-            this.shapeStyle ? this.shapeStyle : ShapeStyle.Outline,
-        );
+        this.drawRectangle(this.drawingService.previewCtx, this.mouseDownCoord);
     }
 
     private clearPath(): void {

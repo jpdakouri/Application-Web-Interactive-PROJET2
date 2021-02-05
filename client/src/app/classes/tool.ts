@@ -12,7 +12,7 @@ export abstract class Tool {
     mouseDownCoord: Vec2;
     mouseDown: boolean = false;
     lineThickness?: number = 1;
-    primaryColor?: string = '#000000';
+    primaryColor?: string = '#ff0000';
     secondaryColor?: string = '#000000';
     shapeStyle?: ShapeStyle = ShapeStyle.Outline;
     dotRadius?: number = 5;

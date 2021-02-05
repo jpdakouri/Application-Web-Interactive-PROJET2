@@ -3,6 +3,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 // import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from '@app/components/drawing/drawing.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { DEFAULT_COLOR_BLACK, DEFAULT_MIN_THICKNESS, DEFAULT_RADIUS, DOT_DIVIDER } from '@app/services/tools/tools-constants';
 import { MouseButton } from '@app/tests-mocks/mock-boutton-pressed';
 
 // Ceci est une implémentation de base de l'outil Crayon pour aider à débuter le projet
@@ -10,9 +11,6 @@ import { MouseButton } from '@app/tests-mocks/mock-boutton-pressed';
 // Vous êtes encouragés de modifier et compléter le code.
 // N'oubliez pas de regarder les tests dans le fichier spec.ts aussi!
 
-const DEFAULT_SIZE: number = 30;
-const DOT_DIVIDER: number = 3;
-const DEFAULT_RADIUS: number = DEFAULT_SIZE / DOT_DIVIDER;
 @Injectable({
     providedIn: 'root',
 })
@@ -75,8 +73,8 @@ export class PencilService extends Tool {
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
-        ctx.lineWidth = this.lineThickness ? this.lineThickness : 1;
-        ctx.strokeStyle = this.primaryColor ? this.primaryColor : '#000000';
+        ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
+        ctx.strokeStyle = this.primaryColor || DEFAULT_COLOR_BLACK;
         ctx.lineCap = 'round';
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
@@ -85,9 +83,9 @@ export class PencilService extends Tool {
     }
 
     private drawDot(ctx: CanvasRenderingContext2D, point: Vec2): void {
-        ctx.lineWidth = (this.lineThickness ? this.lineThickness : 1) / DOT_DIVIDER;
-        ctx.strokeStyle = this.primaryColor ? this.primaryColor : '#000000';
-        ctx.fillStyle = this.primaryColor ? this.primaryColor : '#000000';
+        ctx.lineWidth = (this.lineThickness || DEFAULT_MIN_THICKNESS) / DOT_DIVIDER;
+        ctx.strokeStyle = this.primaryColor || DEFAULT_COLOR_BLACK;
+        ctx.fillStyle = this.primaryColor || DEFAULT_COLOR_BLACK;
         ctx.beginPath();
         ctx.arc(point.x, point.y, this.radius, 0, 2 * Math.PI);
         ctx.fill();
