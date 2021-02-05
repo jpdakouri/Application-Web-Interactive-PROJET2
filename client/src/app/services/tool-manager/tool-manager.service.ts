@@ -2,6 +2,7 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { ShapeStyle } from '@app/enums/shape-style';
 import { ToolsNames } from '@app/enums/tools-names';
+import { EraserService } from '@app/services/tools/eraser-service/eraser.service';
 import { LineService } from '@app/services/tools/line-service/line.service';
 import { PencilService } from '@app/services/tools/pencil-service/pencil.service';
 import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
@@ -9,10 +10,6 @@ import { CurrentAttributes } from '@app/types/current-attributes';
 import { ToolBox } from '@app/types/tool-box';
 
 // tslint:disable: max-classes-per-file
-@Injectable({
-    providedIn: 'root',
-})
-export class EraserService extends Tool {}
 @Injectable({
     providedIn: 'root',
 })
