@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ColourHistoryService } from '../../services/colour-history/colour-history.service';
+import { ColourHistoryService } from '@app/services/colour-history/colour-history.service';
 const RGB_START = 'rgb(';
 const RGBA_START = 'rgba(';
 const RGB_RGBA_END = ')';
@@ -40,13 +40,17 @@ export class CurrentColourService {
     }
 
     setPrimaryColorRgb(rgb: string): void {
-        this.primaryColorRgb = rgb;
-        this.colorHistory.pushColour(this.getPrimaryColorRgb());
+        if (this.primaryColorRgb !== rgb) {
+            this.primaryColorRgb = rgb;
+            this.colorHistory.pushColour(this.getPrimaryColorRgb());
+        }
     }
 
     setSecondaryColorRgb(rgb: string): void {
-        this.secondaryColorRgb = rgb;
-        this.colorHistory.pushColour(this.getSecondaryColorRgb());
+        if (this.secondaryColorRgb !== rgb) {
+            this.secondaryColorRgb = rgb;
+            this.colorHistory.pushColour(this.getSecondaryColorRgb());
+        }
     }
 
     setPrimaryColorTransparency(transparency: string): void {
@@ -56,7 +60,7 @@ export class CurrentColourService {
         this.secondaryColorTransparency = transparency;
     }
     swapColors(): void {
-        let temp = this.primaryColorRgb;
+        const temp = this.primaryColorRgb;
         this.primaryColorRgb = this.secondaryColorRgb;
         this.secondaryColorRgb = temp;
     }

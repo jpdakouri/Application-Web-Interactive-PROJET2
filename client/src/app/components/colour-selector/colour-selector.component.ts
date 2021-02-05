@@ -36,8 +36,16 @@ export class ColourSelectorComponent {
             if (Number(value) > 0 && Number(value) < MAX_RGB) containsValidNumbers = false;
             if (!Number.isInteger(value)) containsValidNumbers = false;
         });
-        console.log("a");
+        console.log('a');
         return containsValidNumbers;
+    }
+
+    isValidTransparency(transparency: string): boolean {
+        const MIN_TRANSPARENCY = 0;
+        const MAX_TRANSPARENCY = 100;
+        if (Number(transparency) == undefined) return false;
+        if (Number.isInteger(Number(transparency))) return false;
+        return Number(transparency) >= MIN_TRANSPARENCY && Number(transparency) <= MAX_TRANSPARENCY;
     }
 
     formatToRGBA(): string {

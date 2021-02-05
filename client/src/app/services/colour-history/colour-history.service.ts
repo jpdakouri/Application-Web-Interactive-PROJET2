@@ -20,9 +20,6 @@ export class ColourHistoryService {
     }
 
     pushColour(colour: string): void {
-        for (let i = 9; i >= 1; i--) {
-            this.colours[i] = this.colours[i - 1];
-        }
         const LAST_ELEMENT_INDEX = -1;
         this.colours.splice(LAST_ELEMENT_INDEX, 1);
         this.colours.unshift(colour);

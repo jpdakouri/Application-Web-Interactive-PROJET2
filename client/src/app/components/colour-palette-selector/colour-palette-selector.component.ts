@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 
 @Component({
     selector: 'app-colour-palette-selector',
@@ -17,6 +18,8 @@ export class ColourPaletteSelectorComponent implements AfterViewInit, OnChanges 
     ngAfterViewInit(): void {
         this.draw();
     }
+
+    constructor(private currentColourService: CurrentColourService) {}
 
     draw(): void {
         const RGBA_WHITE = 'rgba(255,255,255,1)';
@@ -74,41 +77,41 @@ export class ColourPaletteSelectorComponent implements AfterViewInit, OnChanges 
         if (changes[HUE_STRING]) {
             this.draw();
             if (this.selectedPosition != undefined) {
-                this.selectedColor.emit(this.getColorAtPosition(this.selectedPosition.x, this.selectedPosition.y));
+                this.selectedColor.emit(this.getRgbAtPosition(this.selectedPosition.x, this.selectedPosition.y));
             }
         }
     }
 
-    @HostListener('window:mouseup', ['$event'])
-    onMouseUp(): void {
+    @HostListener('mouseup', ['$event'])
+    onMouseUp(mouseEvent: MouseEvent): void {
         this.mousedown = false;
+        if (mouseEvent.button === 0) this.currentColourService.setPrimaryColorRgb(this.getRgbAtPosition(mouseEvent.offsetX, mouseEvent.offsetY));
+        else if (mouseEvent.button === 2)
+            this.currentColourService.setSecondaryColorRgb(this.getRgbAtPosition(mouseEvent.offsetX, mouseEvent.offsetY));
     }
 
     onMouseDown(mouseEvent: MouseEvent): void {
+        console.log('a');
         this.mousedown = true;
         this.selectedPosition = { x: mouseEvent.offsetX, y: mouseEvent.offsetY };
         this.draw();
-        this.selectedColor.emit(this.getColorAtPosition(mouseEvent.offsetX, mouseEvent.offsetY));
     }
 
     onMouseMove(mouseEvent: MouseEvent): void {
         if (this.mousedown) {
             this.selectedPosition = { x: mouseEvent.offsetX, y: mouseEvent.offsetY };
             this.draw();
-            this.emitColor(mouseEvent.offsetX, mouseEvent.offsetY);
         }
     }
 
-    emitColor(x: number, y: number): void {
-        const rgbaColor = this.getColorAtPosition(x, y);
-        this.selectedColor.emit(rgbaColor);
+    getRgbAtPosition(x: number, y: number): string {
+        const IMAGE_DATA = this.canvasContext.getImageData(x, y, 1, 1).data;
+        const RGBA_SEPARATOR = ',';
+        return IMAGE_DATA[0] + RGBA_SEPARATOR + IMAGE_DATA[1] + RGBA_SEPARATOR + IMAGE_DATA[2];
     }
 
-    getColorAtPosition(x: number, y: number): string {
-        const IMAGE_DATA = this.canvasContext.getImageData(x, y, 1, 1).data;
-        const RGBA_START = 'rgba(';
-        const RGBA_ALPHA = ',1)';
-        const RGBA_SEPARATOR = ',';
-        return RGBA_START + IMAGE_DATA[0] + RGBA_SEPARATOR + IMAGE_DATA[1] + RGBA_SEPARATOR + IMAGE_DATA[2] + RGBA_ALPHA;
+    @HostListener('contextmenu', ['$event'])
+    removeChromeContextMenu(): boolean {
+        return false;
     }
 }
