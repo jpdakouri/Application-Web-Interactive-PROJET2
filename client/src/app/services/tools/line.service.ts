@@ -59,22 +59,23 @@ export class LineService extends Tool {
     }
 
     onMouseLeave(event: MouseEvent): void {
+        console.log(event);
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         if (this.started) this.drawLine(this.drawingService.previewCtx, this.pathData, false);
     }
 
-    onDblClick(event: MouseEvent): void {
+    onDblClick(): void {
         this.started = false;
-        let closed = false;
+        let closedSegment = false;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         if (this.verifyLastPoint(this.pathData[0])) {
             this.pathData.pop();
             this.pathData.pop();
-            closed = true;
+            closedSegment = true;
         } else if (this.verifyLastPoint(this.pathData[this.pathData.length - 2])) {
             this.pathData.pop();
         }
-        this.drawLine(this.drawingService.baseCtx, this.pathData, closed);
+        this.drawLine(this.drawingService.baseCtx, this.pathData, closedSegment);
         this.clearPath();
     }
 
@@ -156,13 +157,13 @@ export class LineService extends Tool {
         ctx.stroke();
     }
 
-    private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[], closed: boolean): void {
+    private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[], closedSegment: boolean): void {
         ctx.beginPath();
         ctx.moveTo(path[0].x, path[0].y);
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
         }
-        if (closed) ctx.lineTo(path[0].x, path[0].y);
+        if (closedSegment) ctx.lineTo(path[0].x, path[0].y);
         ctx.lineWidth = this.lineWidth;
         ctx.stroke();
 

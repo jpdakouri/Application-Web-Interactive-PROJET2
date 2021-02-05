@@ -7,10 +7,11 @@ import { LineService } from './line.service';
 
 // tslint:disable:no-any
 describe('LineService', () => {
+    const DETECTION_RANGE = 15;
     let service: LineService;
     let mouseEvent: MouseEvent;
     let mouseStartEvent: MouseEvent;
-    // let keyboardEvent: KeyboardEvent;
+
     let canvasTestHelper: CanvasTestHelper;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
@@ -19,10 +20,10 @@ describe('LineService', () => {
     let drawLineSpy: jasmine.Spy<any>;
     let previewUpdateSpy: jasmine.Spy<any>;
     let desiredAngleSpy: jasmine.Spy<any>;
+    let verifyLastPointSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
-
         TestBed.configureTestingModule({
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
         });
@@ -34,6 +35,7 @@ describe('LineService', () => {
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
         previewUpdateSpy = spyOn<any>(service, 'previewUpdate').and.callThrough();
         desiredAngleSpy = spyOn<any>(service, 'desiredAngle').and.callThrough();
+        verifyLastPointSpy = spyOn<any>(service, 'verifyLastPoint').and.callThrough();
 
         // Configuration du spy du service
         // tslint:disable:no-string-literal
@@ -121,16 +123,55 @@ describe('LineService', () => {
         expect(previewUpdateSpy).toHaveBeenCalled();
     });
 
-    // it('onMouseUp should call desiredAngle if mouse was already down and shift pressed2', () => {
-    //     service.mouseDown = true;
-    //     const mouseEventRClick = {
-    //         offsetX: 25,
-    //         offsetY: 25,
-    //         button: MouseButton.Left,
-    //     } as MouseEvent;
-    //     service.onMouseUp(mouseEvent);
-    //     service.onKeyDown(keyboardEvent);
-    //     service.onMouseMove(mouseEventRClick);
-    // });
+    it('onMouseUp should call desiredAngle if mouse was already down and shift pressed2', () => {
+        service.mouseDown = true;
+        service.onMouseUp(mouseStartEvent);
+        service.mouseDown = true;
+        service.shiftPressed = true;
+        service.onMouseMove(mouseEvent);
+
+        expect(desiredAngleSpy).toHaveBeenCalled();
+    });
+
+    it('onMouseLeave should call clearCanvas and drawLine if the line has started ', () => {
+        service.mouseDown = true;
+        service.onMouseUp(mouseStartEvent);
+        service.onMouseLeave({
+            offsetX: 25,
+            offsetY: 25,
+        } as MouseEvent);
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect(drawLineSpy).toHaveBeenCalled();
+    });
+
+    it(' onDblClick should adapt if last points are 20px close', () => {
+        const surroundingCoords: number[][] = [
+            [DETECTION_RANGE, 0],
+            [-DETECTION_RANGE, 0],
+            [0, DETECTION_RANGE],
+            [0, -DETECTION_RANGE],
+        ];
+        for (const dot of surroundingCoords) {
+            service.mouseDown = true;
+            service.onMouseUp(mouseStartEvent);
+            service.mouseDown = true;
+            service.onMouseUp(mouseEvent);
+            service.mouseDown = true;
+
+            const lastDot = {
+                offsetX: mouseEvent.offsetX + dot[0],
+                offsetY: mouseEvent.offsetY + dot[1],
+                button: MouseButton.Left,
+            } as MouseEvent;
+
+            service.mouseDown = true;
+            service.onMouseUp(lastDot);
+            service.mouseDown = true;
+            service.onMouseUp(lastDot);
+            service.mouseDown = true;
+            service.onDblClick();
+
+            expect()
+        }
+    });
 });
-// desiredAngle should return the closest point with sift key pressed
