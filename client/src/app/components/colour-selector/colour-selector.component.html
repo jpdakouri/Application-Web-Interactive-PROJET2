@@ -3,10 +3,20 @@
     <app-colour-palette-selector [hue]="hue" (selectedColor)="selectedColor = $event"></app-colour-palette-selector>
 </div>
 <div>
-    <input [(ngModel)]="rgbColor" (keydown)="onInputEntry($event)" />
-</div>
 <div>
-    <h1>{{ selectedColor }}</h1>
+    <h4>Select RGB manually in hex (ex: 12,7F,7A)</h4>
+    <input [(ngModel)]="rgbColor" />
+    <div *ngIf="isValidRGB()">
+        <button (click)="setPrimaryColor()">Set primary color</button>
+        <button (click)="setSecondaryColor()">Set secondary color</button>
+    </div>
+
+</div>
+    <div>
+        <h4>Change transparency (0-100)</h4>
+        <input [(ngModel)]="primaryColourTransparency" (keyup)="onPrimaryColorTransparencyEntryChange()" />
+        <input [(ngModel)]="secondaryColourTransparency" (keyup)="onSecondaryColorTransparencyEntryChange()" />
+    </div>
 </div>
 <app-current-color></app-current-color>
 <app-colour-history></app-colour-history>

@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
-
+import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
+const RGB_MAX = 255;
+const PERCENTAGE_MAX = 100;
+const PERCENTAGE_TO_ALPHA_RATIO = RGB_MAX / PERCENTAGE_MAX;
 @Component({
     selector: 'app-colour-selector',
     templateUrl: './colour-selector.component.html',
@@ -11,10 +14,33 @@ export class ColourSelectorComponent {
     selectedColor: string;
 
     rgbColor: string;
+    primaryColourTransparency: string;
+    secondaryColourTransparency: string;
 
-    onInputEntry(event: KeyboardEvent): void {
-        if (this.isValidRGB()) this.selectedColor = this.formatToRGBA();
-        console.log(this.selectedColor);
+    constructor(private currentColourService: CurrentColourService) {}
+
+    setPrimaryColor(): void {
+        this.currentColourService.setPrimaryColorRgb(this.rgbColor);
+        this.rgbColor = '';
+    }
+
+    setSecondaryColor(): void {
+        this.currentColourService.setSecondaryColorRgb(this.rgbColor);
+        this.rgbColor = '';
+    }
+
+    onPrimaryColorTransparencyEntryChange(): void {
+        if (this.isValidTransparency(this.primaryColourTransparency)) {
+            const TRANSPARENCY_RGB = Math.round(Number(this.primaryColourTransparency) * PERCENTAGE_TO_ALPHA_RATIO);
+            this.currentColourService.setPrimaryColorTransparency(TRANSPARENCY_RGB.toString());
+        }
+    }
+
+    onSecondaryColorTransparencyEntryChange(): void {
+        if (this.isValidTransparency(this.secondaryColourTransparency)) {
+            const TRANSPARENCY_RGB = Math.round(Number(this.secondaryColourTransparency) * PERCENTAGE_TO_ALPHA_RATIO);
+            this.currentColourService.setSecondaryColorTransparency(TRANSPARENCY_RGB.toString());
+        }
     }
 
     isValidRGB(): boolean {
@@ -33,7 +59,7 @@ export class ColourSelectorComponent {
 
         let containsValidNumbers = true;
         RGB_VALUES.forEach((value) => {
-            if (Number(value) > 0 && Number(value) < MAX_RGB) containsValidNumbers = false;
+            if (Number(value) > 0 && Number(value) < MAX_RGB && !Number.isInteger(value)) containsValidNumbers = false;
             if (!Number.isInteger(value)) containsValidNumbers = false;
         });
         console.log('a');
