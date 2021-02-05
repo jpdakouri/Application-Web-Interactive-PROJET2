@@ -67,32 +67,35 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.canvas.style.backgroundColor = DEFAULT_WHITE;
     }
 
-    @HostListener('mousemove', ['$event'])
+    @HostListener('window:mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
         this.currentTool.onMouseMove(event);
-        // console.log('mouse x = ' + event.x + ' | mouse y = ' + event.y);
+        console.log('mouse x = ' + event.x + ' | mouse y = ' + event.y);
 
         // if (this.status !== Status.OFF) this.resizeCanvas();
         // this.setMouseCoordinate(event.clientX, event.clientY);
         this.currentCoordinate = { x: event.x, y: event.y };
     }
 
-    @HostListener('mousedown', ['$event'])
+    @HostListener('window:mousedown', ['$event'])
     onMouseDown(event: MouseEvent): void {
         this.currentTool.onMouseDown(event);
         this.startCoordinate = { x: event.x, y: event.y };
     }
 
-    @HostListener('mouseup', ['$event'])
+    @HostListener('window:mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
         this.currentTool.onMouseUp(event);
         this.endCoordinate = { x: event.clientX, y: event.clientY };
         if (this.status !== Status.OFF) this.resizeCanvas();
-        // this.updateStatus(event);
-        // this.resizeCanvas();
         this.status = Status.OFF;
 
-        this.drawingService.baseCtx.restore();
+        // this.drawingService.baseCtx.restore();
+    }
+
+    @HostListener('window:mouseleave', ['$event'])
+    oneMouseLeave(event: MouseEvent): void {
+        this.endCoordinate = { x: event.clientX, y: event.clientY };
     }
 
     get width(): number {
