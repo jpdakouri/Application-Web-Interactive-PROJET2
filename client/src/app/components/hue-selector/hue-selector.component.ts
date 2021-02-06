@@ -37,14 +37,34 @@ export class HueSelectorComponent implements AfterViewInit {
         this.drawSelector();
     }
 
+    // TO DO: REMOVE MAGIC NUMBERS
     private drawSelector(): void {
         const SELECTOR_WIDTH = 5;
         const SELECTOR_COLOR = 'white';
+        const SELECTOR_OUTLINE_WIDTH = 1;
+        const SELECTOR_OUTLINE_COLOR = '#000000';
 
         this.sliderCanvasContext.beginPath();
         this.sliderCanvasContext.strokeStyle = SELECTOR_COLOR;
         this.sliderCanvasContext.lineWidth = SELECTOR_WIDTH;
         this.sliderCanvasContext.rect(0, this.selectedHeight - SELECTOR_WIDTH, this.sliderCanvas.nativeElement.width, SELECTOR_WIDTH * 2);
+        this.sliderCanvasContext.stroke();
+        this.sliderCanvasContext.closePath();
+        this.sliderCanvasContext.beginPath();
+        this.sliderCanvasContext.strokeStyle = SELECTOR_OUTLINE_COLOR;
+        this.sliderCanvasContext.lineWidth = SELECTOR_OUTLINE_WIDTH;
+        this.sliderCanvasContext.rect(
+            -1,
+            this.selectedHeight - SELECTOR_WIDTH - 3,
+            this.sliderCanvas.nativeElement.width + 2,
+            SELECTOR_WIDTH * 2 + 6,
+        );
+        this.sliderCanvasContext.stroke();
+        this.sliderCanvasContext.closePath();
+        this.sliderCanvasContext.beginPath();
+        this.sliderCanvasContext.strokeStyle = SELECTOR_OUTLINE_COLOR;
+        this.sliderCanvasContext.lineWidth = SELECTOR_OUTLINE_WIDTH;
+        this.sliderCanvasContext.rect(3, this.selectedHeight - SELECTOR_WIDTH + 3, this.sliderCanvas.nativeElement.width - 6, SELECTOR_WIDTH * 2 - 6);
         this.sliderCanvasContext.stroke();
         this.sliderCanvasContext.closePath();
     }
