@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -31,7 +31,7 @@ const enum Status {
     templateUrl: './drawing.component.html',
     styleUrls: ['./drawing.component.scss'],
 })
-export class DrawingComponent implements AfterViewInit {
+export class DrawingComponent implements OnInit, AfterViewInit {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     // On utilise ce canvas pour dessiner sans affecter le dessin final
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
@@ -64,6 +64,10 @@ export class DrawingComponent implements AfterViewInit {
         this.endCoordinate = { x: 0, y: 0 };
     }
 
+    ngOnInit(): void {
+        // this.setCanvasSize();
+    }
+
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -72,6 +76,7 @@ export class DrawingComponent implements AfterViewInit {
         // this.drawingService.resizingPreviewCtx = this.resizingPreviewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
         this.drawingService.canvas.style.backgroundColor = DEFAULT_WHITE;
+        this.drawingService.restoreCanvas();
     }
 
     @HostListener('window:mousemove', ['$event'])
@@ -81,7 +86,7 @@ export class DrawingComponent implements AfterViewInit {
 
         // if (this.status !== Status.OFF) this.resizeCanvas();
         // this.setMouseCoordinate(event.clientX, event.clientY);
-        if (this.status !== Status.OFF) event.stopImmediatePropagation();
+        // if (this.status !== Status.OFF) event.stopImmediatePropagation();
         this.currentCoordinate = { x: event.x, y: event.y };
     }
 
@@ -101,13 +106,18 @@ export class DrawingComponent implements AfterViewInit {
         if (this.status !== Status.OFF) this.resizeCanvas();
         this.status = Status.OFF;
         this.currentTool = this.tools[0];
-
-        // this.drawingService.baseCtx.restore();
+        this.drawingService.saveCanvas(this.width, this.height);
     }
 
     @HostListener('window:mouseleave', ['$event'])
     oneMouseLeave(event: MouseEvent): void {
         this.endCoordinate = { x: event.clientX, y: event.clientY };
+        // this.drawingService.saveCanvas(this.width, this.height);
+    }
+
+    @HostListener('window:beforeunload', ['$event'])
+    unloadHandler(): void {
+        this.drawingService.saveCanvas(this.width, this.height);
     }
 
     onMouseOver(): void {
@@ -152,18 +162,21 @@ export class DrawingComponent implements AfterViewInit {
         // this.canvasSize.y += deltaY;
         console.log('resize method called' + this.currentCoordinate);
         // this.status = Status.OFF;
+        this.drawingService.restoreCanvas();
     }
 
     onMiddleRightResizerClick(): void {
         // console.log('midd right resizer clicked!');
         console.log('midd right resizer dragged!');
-        this.drawingService.baseCtx.save();
+        this.drawingService.saveCanvas(this.width, this.height);
+
         this.currentTool = this.tools[1];
         this.status = Status.MIDDLE_RIGHT_RESIZE;
     }
 
     onBottomRightResizerClick(): void {
         console.log('right resizer clicked!');
+        this.drawingService.saveCanvas(this.width, this.height);
 
         this.currentTool = this.tools[1];
         this.status = Status.BOTTOM_RIGHT_RESIZE;
@@ -171,6 +184,7 @@ export class DrawingComponent implements AfterViewInit {
 
     onMiddleBottomResizerClick(): void {
         console.log('bott right resizer clicked!');
+        this.drawingService.saveCanvas(this.width, this.height);
 
         this.currentTool = this.tools[1];
         this.status = Status.MIDDLE_BOTTOM_RESIZE;
@@ -179,18 +193,4 @@ export class DrawingComponent implements AfterViewInit {
     setMouseCoordinate(x: number, y: number): void {
         this.currentCoordinate = { x, y };
     }
-
-    // isCanvasBlank(): boolean {
-    //     // return this.currentDrawing;
-    //     return false;
-    // }
-    //
-    // saveDrawing(): void {
-    //     // @ts-ignore
-    //     this.currentDrawing = this.baseCtx.save();
-    // }
-    //
-    // restoreDrawing(): void {
-    //     this.baseCtx.restore();
-    // }
 }
