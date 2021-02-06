@@ -46,8 +46,6 @@ export class ToolManagerService {
         };
         this.currentAttributes = {
             LineThickness: 1,
-            PrimaryColor: '#000000',
-            SecondaryColor: '#000000',
             ShapeStyle: ShapeStyle.Outline,
             DotRadius: 1,
             ShowDots: true,
@@ -55,8 +53,6 @@ export class ToolManagerService {
         this.shapeStyleSelection.set('Outline', ShapeStyle.Outline).set('Filled', ShapeStyle.Filled).set('FilledOutline', ShapeStyle.FilledOutline);
         this.toolChangeEmitter.subscribe(() => {
             const currentTool = this.toolBox[this.currentTool];
-            this.currentAttributes.PrimaryColor = currentTool.primaryColor;
-            this.currentAttributes.SecondaryColor = currentTool.secondaryColor;
             this.currentAttributes.ShapeStyle = currentTool.shapeStyle;
             this.currentAttributes.LineThickness = currentTool.lineThickness;
             this.currentAttributes.DotRadius = currentTool.dotRadius;
@@ -90,20 +86,6 @@ export class ToolManagerService {
         return this.currentAttributes.DotRadius;
     }
 
-    setCurrentPrimaryColor(color: string): void {
-        this.toolBox[this.currentTool].primaryColor = color;
-        this.currentAttributes.PrimaryColor = color;
-    }
-    getCurrentPrimaryColor(): string | undefined {
-        return this.currentAttributes.PrimaryColor;
-    }
-    setCurrentSecondaryColor(color: string): void {
-        this.toolBox[this.currentTool].secondaryColor = color;
-        this.currentAttributes.SecondaryColor = color;
-    }
-    getCurrentSecondaryColor(): string | undefined {
-        return this.currentAttributes.SecondaryColor;
-    }
     setCurrentShapeStyle(shapeStyleStr: string): void {
         const shapeStyle = this.shapeStyleSelection.get(shapeStyleStr);
         this.toolBox[this.currentTool].shapeStyle = shapeStyle;

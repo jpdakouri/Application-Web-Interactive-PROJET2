@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DEFAULT_MIN_THICKNESS, PIXEL_DISTANCE, SHIFT_ANGLE } from '@app/services/tools/tools-constants';
 import { KeyboardButton, MouseButton } from '@app/tests-mocks/mock-boutton-pressed';
@@ -12,9 +13,10 @@ export class LineService extends Tool {
     private started: boolean;
     private pathData: Vec2[];
     private shiftPressed: boolean;
-
-    constructor(drawingService: DrawingService) {
+    currentColourService: CurrentColourService;
+    constructor(drawingService: DrawingService, currentColourService: CurrentColourService) {
         super(drawingService);
+        this.currentColourService = currentColourService;
         this.clearPath();
     }
 
@@ -144,6 +146,8 @@ export class LineService extends Tool {
         ctx.beginPath();
         ctx.moveTo(lastPoint.x, lastPoint.y);
         ctx.lineTo(previewPoint.x, previewPoint.y);
+        ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
+        ctx.strokeStyle = this.currentColourService.getPrimaryColorRgba();
         ctx.stroke();
     }
 
@@ -155,6 +159,7 @@ export class LineService extends Tool {
         }
         if (closed) ctx.lineTo(path[0].x, path[0].y);
         ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
+        ctx.strokeStyle = this.currentColourService.getPrimaryColorRgba();
         ctx.stroke();
 
         if (this.showDots)
