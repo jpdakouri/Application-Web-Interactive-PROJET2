@@ -51,7 +51,7 @@ export class DrawingComponent implements OnInit, AfterViewInit {
     startCoordinate: Vec2;
     endCoordinate: Vec2;
     currentCoordinate: Vec2;
-    isResizing: boolean = false;
+    // @Input() isResizing: boolean = false;
 
     // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
     private tools: Tool[];
@@ -77,6 +77,9 @@ export class DrawingComponent implements OnInit, AfterViewInit {
         this.drawingService.canvas = this.baseCanvas.nativeElement;
         this.drawingService.canvas.style.backgroundColor = DEFAULT_WHITE;
         this.drawingService.restoreCanvas();
+        // if (this.drawingService.isCanvasBlank()) {
+        //     confirm("le canavs n'est pas vide");
+        // }
     }
 
     @HostListener('window:mousemove', ['$event'])
@@ -104,6 +107,7 @@ export class DrawingComponent implements OnInit, AfterViewInit {
         this.currentTool.onMouseUp(event);
         this.endCoordinate = { x: event.clientX, y: event.clientY };
         if (this.status !== Status.OFF) this.resizeCanvas();
+        // this.isResizing = false;
         this.status = Status.OFF;
         this.currentTool = this.tools[0];
         this.drawingService.saveCanvas(this.width, this.height);
@@ -113,6 +117,7 @@ export class DrawingComponent implements OnInit, AfterViewInit {
     oneMouseLeave(event: MouseEvent): void {
         this.endCoordinate = { x: event.clientX, y: event.clientY };
         // this.drawingService.saveCanvas(this.width, this.height);
+        // this.isResizing = false;
     }
 
     @HostListener('window:beforeunload', ['$event'])
@@ -122,7 +127,7 @@ export class DrawingComponent implements OnInit, AfterViewInit {
 
     onMouseOver(): void {
         this.currentTool = this.tools[1];
-        this.isResizing = true;
+        // this.isResizing = true;
     }
 
     get width(): number {
@@ -150,6 +155,7 @@ export class DrawingComponent implements OnInit, AfterViewInit {
     }
 
     resizeCanvas(): void {
+        // this.isResizing = true;
         const deltaX = this.endCoordinate.x - this.startCoordinate.x;
         const deltaY = this.endCoordinate.y - this.startCoordinate.y;
         // tslint:disable-next-line:prefer-switch
@@ -159,6 +165,7 @@ export class DrawingComponent implements OnInit, AfterViewInit {
             this.canvasSize.x += deltaX;
             this.canvasSize.y += deltaY;
         }
+
         // this.canvasSize.y += deltaY;
         console.log('resize method called' + this.currentCoordinate);
         // this.status = Status.OFF;
@@ -166,6 +173,7 @@ export class DrawingComponent implements OnInit, AfterViewInit {
     }
 
     onMiddleRightResizerClick(): void {
+        // this.isResizing = true;
         // console.log('midd right resizer clicked!');
         console.log('midd right resizer dragged!');
         this.drawingService.saveCanvas(this.width, this.height);
@@ -192,5 +200,9 @@ export class DrawingComponent implements OnInit, AfterViewInit {
 
     setMouseCoordinate(x: number, y: number): void {
         this.currentCoordinate = { x, y };
+    }
+
+    isResizing(): boolean {
+        return this.status !== Status.OFF;
     }
 }

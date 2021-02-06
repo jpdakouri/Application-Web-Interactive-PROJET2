@@ -24,11 +24,13 @@
           (mouseup)="onMouseUp($event)"
           (mousemove)="onMouseMove($event)"></canvas>
 
-<!--  <canvas id="resizingLayer" #resizingPreviewCanvas width="width" [attr.height]="height"-->
+  <div [ngStyle]="{'height': height + 'px', 'width': width + 'px', 'background-color': '#a49fd7', 'position': 'absolute', 'border': '1px dashed'}" *ngIf="isResizing()"></div>
+
+
+  <!--  <canvas id="resizingLayer" #resizingPreviewCanvas width="width" [attr.height]="height"-->
 <!--          (mousedown)="onMouseDown($event)"-->
 <!--          (mouseup)="onMouseUp($event)"-->
 <!--          (mousemove)="onMouseMove($event)" *ngIf="!isResizing"></canvas>-->
-
 </div>
 
 

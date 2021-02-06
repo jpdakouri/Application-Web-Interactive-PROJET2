@@ -30,11 +30,20 @@ export class DrawingService {
         context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
+    // isCanvasBlank(): boolean {
+    //     // @ts-ignore
+    //     return !this.drawingService.canvas
+    //         .getContext('2d')
+    //         .getImageData(0, 0, this.canvas.width, this.canvas.height)
+    //         .data.some((channel: number) => channel !== 0);
+    // }
+
     isCanvasBlank(): boolean {
+        const context = this.canvas.getContext('2d');
+
         // @ts-ignore
-        return !this.drawingService.canvas
-            .getContext('2d')
-            .getImageData(0, 0, this.canvas.width, this.canvas.height)
-            .data.some((channel: number) => channel !== 0);
+        const pixelBuffer = new Uint32Array(context.getImageData(0, 0, canvas.width, canvas.height).data.buffer);
+
+        return !pixelBuffer.some((color) => color !== 0);
     }
 }
