@@ -20,7 +20,7 @@ export class MouseHandlerService {
 
     onMouseDown(coordinate: Coordinate): void {
         this.startCoordinate = coordinate;
-        console.log('mouse handler onMouse down called!');
+        // console.log('mouse handler onMouse down called!');
     }
 
     onMouseUp(coordinate: Coordinate): void {
