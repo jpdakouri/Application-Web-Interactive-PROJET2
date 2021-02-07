@@ -120,14 +120,20 @@ export class DrawingComponent implements OnInit, AfterViewInit {
     resizeCanvas(): void {
         const deltaX = this.mouseService.calculateDeltaX();
         const deltaY = this.mouseService.calculateDeltaY();
-        console.log('width before resize = ' + this.canvasSize.x);
 
-        // tslint:disable-next-line:prefer-switch
-        if (this.canvasResizerService.status === Status.MIDDLE_RIGHT_RESIZE) this.canvasSize.x += deltaX;
-        else if (this.canvasResizerService.status === Status.MIDDLE_BOTTOM_RESIZE) this.canvasSize.y += deltaY;
-        else if (this.canvasResizerService.status === Status.BOTTOM_RIGHT_RESIZE) {
-            this.canvasSize.x += deltaX;
-            this.canvasSize.y += deltaY;
+        switch (this.canvasResizerService.status) {
+            case Status.MIDDLE_RIGHT_RESIZE:
+                this.canvasSize.x += deltaX;
+                break;
+
+            case Status.MIDDLE_BOTTOM_RESIZE:
+                this.canvasSize.y += deltaY;
+                break;
+
+            case Status.BOTTOM_RIGHT_RESIZE:
+                this.canvasSize.x += deltaX;
+                this.canvasSize.y += deltaY;
+                break;
         }
         if (this.canvasSize.x < MINIMUM_WIDTH || this.canvasSize.y < MINIMUM_HEIGHT) {
             this.canvasSize = { x: MINIMUM_WIDTH, y: MINIMUM_HEIGHT };
