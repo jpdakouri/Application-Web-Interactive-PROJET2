@@ -73,19 +73,10 @@ export class RectangleService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
-            if (this.shiftDown) {
-                this.shiftDown = true;
-                this.mouseDownCoord.x = Math.max(Math.abs(this.mouseDownCoord.x), Math.abs(this.mouseDownCoord.y))
-                    ? this.mouseDownCoord.x
-                    : this.mouseDownCoord.y;
-                this.mouseDownCoord.y = this.mouseDownCoord.x;
-                this.drawRectangle(this.drawingService.baseCtx, this.mouseDownCoord);
-            }
             this.drawRectangle(this.drawingService.baseCtx, this.mouseDownCoord);
             this.updatePreview();
         }
         this.mouseDown = false;
-        this.clearPath();
     }
 
     onKeyDown(event: KeyboardEvent): void {
@@ -93,7 +84,6 @@ export class RectangleService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.clearPath();
         } else if (event.shiftKey) {
-            console.log('up1');
             this.shiftDown = true;
             this.updatePreview();
         }
@@ -101,6 +91,7 @@ export class RectangleService extends Tool {
 
     onKeyUp(event: KeyboardEvent): void {
         if (this.shiftDown && !event.shiftKey) {
+            console.log('event');
             this.shiftDown = false;
             this.updatePreview();
         }
@@ -149,7 +140,6 @@ export class RectangleService extends Tool {
     }
 
     private updatePreview(): void {
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         const currentCoord = { ...this.mouseDownCoord };
         if (this.shiftDown) {

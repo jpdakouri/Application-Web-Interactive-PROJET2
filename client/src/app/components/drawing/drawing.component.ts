@@ -54,13 +54,13 @@ export class DrawingComponent implements AfterViewInit {
     }
 
     @HostListener('window:keydown', ['$event'])
-    onShiftDown(event: KeyboardEvent): void {
+    onKeyDown(event: KeyboardEvent): void {
         this.currentTool.onKeyDown(event);
     }
 
     @HostListener('window:keyup', ['$event'])
-    onShiftUp(event: KeyboardEvent): void {
-        this.currentTool.onKeyDown(event);
+    onKeyUp(event: KeyboardEvent): void {
+        this.currentTool.onKeyUp(event);
     }
     get width(): number {
         return this.canvasSize.x;
