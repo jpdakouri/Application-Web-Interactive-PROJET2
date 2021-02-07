@@ -3,7 +3,7 @@ import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { Coordinate } from '@app/services/mouse-handler/coordinate';
 import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.service';
-import { CanvasResizerService } from '@app/services/tools/canvas-resizer/canvas-resizer.service';
+import { CanvasResizerService, Status } from '@app/services/tools/canvas-resizer/canvas-resizer.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 
 // TODO : Avoir un fichier séparé pour les constantes ?
@@ -44,17 +44,17 @@ export class DrawingComponent implements OnInit, AfterViewInit {
     // private canvasResizer: CanvasResizerService;
     constructor(
         private drawingService: DrawingService,
-        mouseService: MouseHandlerService,
+        private mouseService: MouseHandlerService,
         pencilService: PencilService,
         private canvasResizerService: CanvasResizerService,
     ) {
         this.tools = [pencilService, canvasResizerService];
         this.currentTool = this.tools[0];
-        this.setCanvasSize();
+        // this.setCanvasSize();
     }
 
     ngOnInit(): void {
-        // this.drawingService.setCanvasSize(this.canvasSize.x, this.canvasSize.y);
+        this.setCanvasSize();
     }
 
     ngAfterViewInit(): void {
@@ -64,12 +64,13 @@ export class DrawingComponent implements OnInit, AfterViewInit {
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
         this.drawingService.canvas.style.backgroundColor = DEFAULT_WHITE;
-        this.drawingService.restoreCanvas();
-        // if (this.drawingService.isCanvasBlank()) {
+        // if (!this.drawingService.isCanvasBlank()) {
+        //     console.log('canvas non vide!');
         //     confirm("le canavs n'est pas vide");
         // }
+        this.drawingService.restoreCanvas();
         // this.drawingService.setCanvasSize(this.canvasSize.x, this.canvasSize.y);
-        this.setCanvasSize();
+        // this.setCanvasSize();
     }
 
     @HostListener('window:mousemove', ['$event'])
@@ -88,9 +89,10 @@ export class DrawingComponent implements OnInit, AfterViewInit {
     @HostListener('window:mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
         this.currentTool.onMouseUp(event);
-        if (this.canvasResizerService.isResizing()) {
-            this.resizeCanvas();
-        }
+
+        if (this.canvasResizerService.isResizing()) this.resizeCanvas();
+        this.canvasResizerService.setStatus(Status.OFF);
+        this.drawingService.saveCanvas(this.drawingService.canvas.width, this.drawingService.canvas.height);
     }
 
     @HostListener('window:mouseleave', ['$event'])
@@ -118,16 +120,35 @@ export class DrawingComponent implements OnInit, AfterViewInit {
     }
 
     resizeCanvas(): void {
-        this.canvasResizerService.resizeCanvas(this.canvasSize.x, this.canvasSize.y);
+        // this.canvasResizerService.resizeCanvas(this.canvasSize.x, this.canvasSize.y);
+        // this.isResizing = true;
+        const deltaX = this.mouseService.calculateDeltaX();
+        const deltaY = this.mouseService.calculateDeltaY();
+        console.log('width before resize = ' + this.canvasSize.x);
+
+        // tslint:disable-next-line:prefer-switch
+        if (this.canvasResizerService.status === Status.MIDDLE_RIGHT_RESIZE) this.canvasSize.x += deltaX;
+        else if (this.canvasResizerService.status === Status.MIDDLE_BOTTOM_RESIZE) this.canvasSize.y += deltaY;
+        else if (this.canvasResizerService.status === Status.BOTTOM_RIGHT_RESIZE) {
+            this.canvasSize.x += deltaX;
+            this.canvasSize.y += deltaY;
+        }
+        console.log('width after resize = ' + this.canvasSize.x);
+
+        if (this.canvasSize.x < MINIMUM_WIDTH || this.canvasSize.y < MINIMUM_HEIGHT) {
+            this.canvasSize = { x: MINIMUM_WIDTH, y: MINIMUM_HEIGHT };
+        }
+
+        // console.log('delatX = ' + deltaX);
+        // console.log('delatY = ' + deltaY);
+        this.drawingService.restoreCanvas();
     }
 
     setCanvasSize(): void {
-        this.canvasSize.x = this.workingZoneSize().x / 2;
-        this.canvasSize.y = this.workingZoneSize().y / 2;
+        this.canvasSize = { x: this.workingZoneSize().x / 2, y: this.workingZoneSize().y / 2 };
 
         if (this.workingZoneSize().x < LOWER_BOUND_WIDTH || this.workingZoneSize().y < LOWER_BOUND_HEIGHT) {
-            this.canvasSize.x = MINIMUM_WIDTH;
-            this.canvasSize.y = MINIMUM_HEIGHT;
+            this.canvasSize = { x: MINIMUM_WIDTH, y: MINIMUM_HEIGHT };
         }
         console.log('size changed!');
     }
@@ -140,20 +161,20 @@ export class DrawingComponent implements OnInit, AfterViewInit {
     }
 
     onMiddleRightResizerClick(): void {
-        this.drawingService.saveCanvas(this.width, this.height);
         this.currentTool = this.tools[1];
-        this.canvasResizerService.onMiddleBottomResizerClick();
+        this.drawingService.saveCanvas(this.width, this.height);
+        this.canvasResizerService.onMiddleRightResizerClick();
     }
 
     onBottomRightResizerClick(): void {
-        this.drawingService.saveCanvas(this.width, this.height);
         this.currentTool = this.tools[1];
+        this.drawingService.saveCanvas(this.width, this.height);
         this.canvasResizerService.onBottomRightResizerClick();
     }
 
     onMiddleBottomResizerClick(): void {
-        this.drawingService.saveCanvas(this.width, this.height);
         this.currentTool = this.tools[1];
+        this.drawingService.saveCanvas(this.width, this.height);
         this.canvasResizerService.onMiddleBottomResizerClick();
     }
 }
