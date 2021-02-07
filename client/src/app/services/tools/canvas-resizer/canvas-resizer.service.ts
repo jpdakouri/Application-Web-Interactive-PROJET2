@@ -37,11 +37,7 @@ export class CanvasResizerService extends Tool {
 
     onMouseMove(event: MouseEvent): void {
         this.mouseService.onMouseMove(this.mouseService.eventToCoordinate(event));
-        // if (this.isResizing()) this.resizePreviewCanvas();
-
-        const elem = document.getElementById('rsz');
-        // @ts-ignore
-        if (elem !== null) elem.style.width += String(this.mouseService.currentCoordinate.x - this.mouseService.startCoordinate.x) + 'px';
+        if (this.isResizing()) this.resizePreviewCanvas();
     }
 
     @HostListener('window:mouseleave', ['$event'])
@@ -61,16 +57,20 @@ export class CanvasResizerService extends Tool {
             switch (this.status) {
                 case Status.MIDDLE_RIGHT_RESIZE:
                     elem.style.width += String(deltaX) + 'px';
-                    console.log('deltaX in rsz = ' + deltaX);
+                    console.log('rszP width = ' + elem.style.width);
+                    // console.log('deltaX in rsz = ' + deltaX);
                     break;
 
                 case Status.MIDDLE_BOTTOM_RESIZE:
                     elem.style.height += deltaY + 'px';
+                    console.log('deltaY in rsz = ' + deltaY);
                     break;
 
                 case Status.BOTTOM_RIGHT_RESIZE:
                     elem.style.width += deltaX + 'px';
                     elem.style.height += deltaY + 'px';
+
+                    console.log('deltaX in rsz = ' + deltaX + ' | deltaY in rsz = ' + deltaY);
                     break;
             }
             // if (Number(elem.style.width) < MINIMUM_WIDTH || Number(elem.style.height) < MINIMUM_HEIGHT) {

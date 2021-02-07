@@ -86,8 +86,6 @@ export class DrawingComponent implements OnInit, AfterViewInit {
 
         // redimensionnement
         // if (this.canvasResizerService.isResizing()) this.canvasResizerService.resizePreviewCanvas();
-        // this.canvasResizerService.setStatus(Status.OFF);
-        // this.drawingService.saveCanvas(this.drawingService.canvas.width, this.drawingService.canvas.height);
     }
 
     @HostListener('window:mousedown', ['$event'])
