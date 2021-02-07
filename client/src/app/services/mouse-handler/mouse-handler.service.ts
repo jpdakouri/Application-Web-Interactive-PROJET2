@@ -16,6 +16,7 @@ export class MouseHandlerService {
     constructor() {
         this.startCoordinate = { x: 0, y: 0 };
         this.endCoordinate = { x: 0, y: 0 };
+        this.currentCoordinate = { x: 0, y: 0 };
     }
 
     onMouseDown(coordinate: Coordinate): void {
@@ -55,13 +56,13 @@ export class MouseHandlerService {
         return this.endCoordinate.y - this.startCoordinate.y;
     }
 
-    // private printToConsole(x: number): void {
-    //     console.log(`Total distance is ${x}`);
-    // }
-
     eventToCoordinate(event: MouseEvent): Coordinate {
         return { x: event.clientX, y: event.clientY };
     }
+
+    // private printToConsole(x: number): void {
+    //     console.log(`Total distance is ${x}`);
+    // }
 
     // setMouseCoordinate(x: number, y: number): void {
     //     this.currentCoordinate = { x, y };

@@ -33,7 +33,7 @@
           (mouseup)="onMouseUp($event)"
           (mousemove)="onMouseMove($event)"></canvas>
 
-<!--  <div [ngStyle]="{'height': resizePreviewHeight + 'px', 'width': resizePreviewWidth + 'px', 'background-color': '#a49fd7', 'position': 'relative', 'border': '1px dashed', 'z-index': -1}" *ngIf="isResizing()"></div>-->
+  <div [ngStyle]="{'width': width + 'px', 'height': height + 'px',  'background-color': '#a49fd7', 'position': 'absolute', 'border': '1px dashed', 'z-index': 100}"  id="rsz"></div>
 
 
   <!--  <canvas id="resizingLayer" #resizingPreviewCanvas width="width" [attr.height]="height"-->

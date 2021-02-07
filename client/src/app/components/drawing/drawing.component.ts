@@ -18,7 +18,7 @@ export const LOWER_BOUND_HEIGHT = 500;
 
 export const DEFAULT_WHITE = '#fff';
 
-export const SIDEBAR_WIDTH = 294;
+// export const SIDEBAR_WIDTH = 294;
 
 @Component({
     selector: 'app-drawing',
@@ -35,8 +35,8 @@ export class DrawingComponent implements OnInit, AfterViewInit {
     private canvasSize: Coordinate = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
 
     // aperçu redimensionnement
-    // resizePreviewHeight: number;
-    // resizePreviewWidth: number;
+    resizePreviewHeight: number;
+    resizePreviewWidth: number;
 
     // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
     private tools: Tool[];
@@ -46,7 +46,7 @@ export class DrawingComponent implements OnInit, AfterViewInit {
         private drawingService: DrawingService,
         private mouseService: MouseHandlerService,
         pencilService: PencilService,
-        private canvasResizerService: CanvasResizerService,
+        public canvasResizerService: CanvasResizerService,
     ) {
         this.tools = [pencilService, canvasResizerService];
         this.currentTool = this.tools[0];
@@ -64,11 +64,16 @@ export class DrawingComponent implements OnInit, AfterViewInit {
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
         this.drawingService.canvas.style.backgroundColor = DEFAULT_WHITE;
-        // if (!this.drawingService.isCanvasBlank()) {
-        //     console.log('canvas non vide!');
-        //     confirm("le canavs n'est pas vide");
-        // }
+
         this.drawingService.restoreCanvas();
+        // if (this.drawingService.isCanvasBlank()) {
+        //     if (confirm("le canvas n'est pas vide! Voulez-vous garder vos modifications?"))
+        //         // this.drawingService.clearCanvas(this.drawingService.baseCtx);
+        //         this.baseCtx.clearRect(0, 0, this.canvasSize.x, this.canvasSize.y);
+        // }
+
+        // this.resizePreviewWidth = this.canvasSize.x;
+        // this.resizePreviewHeight = this.canvasSize.y;
     }
 
     @HostListener('window:mousemove', ['$event'])
@@ -77,6 +82,12 @@ export class DrawingComponent implements OnInit, AfterViewInit {
         if (!this.canvasResizerService.isResizing()) {
             this.currentTool = this.tools[0];
         }
+        // console.log(this.drawingService.isCanvasBlank());
+
+        // redimensionnement
+        // if (this.canvasResizerService.isResizing()) this.canvasResizerService.resizePreviewCanvas();
+        // this.canvasResizerService.setStatus(Status.OFF);
+        // this.drawingService.saveCanvas(this.drawingService.canvas.width, this.drawingService.canvas.height);
     }
 
     @HostListener('window:mousedown', ['$event'])
@@ -142,19 +153,15 @@ export class DrawingComponent implements OnInit, AfterViewInit {
     }
 
     setCanvasSize(): void {
-        this.canvasSize = { x: this.workingZoneSize().x / 2, y: this.workingZoneSize().y / 2 };
+        this.canvasSize = { x: this.drawingService.calculateWorkingZoneSize().x / 2, y: this.drawingService.calculateWorkingZoneSize().y / 2 };
 
-        if (this.workingZoneSize().x < LOWER_BOUND_WIDTH || this.workingZoneSize().y < LOWER_BOUND_HEIGHT) {
+        if (
+            this.drawingService.calculateWorkingZoneSize().x < LOWER_BOUND_WIDTH ||
+            this.drawingService.calculateWorkingZoneSize().y < LOWER_BOUND_HEIGHT
+        ) {
             this.canvasSize = { x: MINIMUM_WIDTH, y: MINIMUM_HEIGHT };
         }
         console.log('size changed!');
-    }
-
-    workingZoneSize(): Coordinate {
-        return {
-            x: window.innerWidth - SIDEBAR_WIDTH,
-            y: window.innerHeight,
-        };
     }
 
     onMiddleRightResizerClick(): void {

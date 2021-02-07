@@ -2,6 +2,7 @@ import { HostListener, Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.service';
+// import { MINIMUM_HEIGHT, MINIMUM_WIDTH } from '@app/components/drawing/drawing.component';
 
 export const enum Status {
     OFF = 0,
@@ -32,15 +33,15 @@ export class CanvasResizerService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         this.mouseService.onMouseUp(this.mouseService.eventToCoordinate(event));
-
-        //     if (this.isResizing()) this.resizeCanvas(this.drawingService.canvas.width, this.drawingService.canvas.height);
-        //     this.status = Status.OFF;
-        //     this.drawingService.saveCanvas(this.drawingService.canvas.width, this.drawingService.canvas.height);
-        //
     }
 
     onMouseMove(event: MouseEvent): void {
         this.mouseService.onMouseMove(this.mouseService.eventToCoordinate(event));
+        // if (this.isResizing()) this.resizePreviewCanvas();
+
+        const elem = document.getElementById('rsz');
+        // @ts-ignore
+        if (elem !== null) elem.style.width += String(this.mouseService.currentCoordinate.x - this.mouseService.startCoordinate.x) + 'px';
     }
 
     @HostListener('window:mouseleave', ['$event'])
@@ -48,6 +49,36 @@ export class CanvasResizerService extends Tool {
         // this.drawingService.saveCanvas(this.width, this.height);
         // this.isResizing = false;
         this.mouseService.onMouseLeave(this.mouseService.eventToCoordinate(event));
+    }
+
+    resizePreviewCanvas(): void {
+        const elem = document.getElementById('rsz');
+        const deltaX = this.mouseService.startCoordinate.x - this.mouseService.currentCoordinate.x;
+        const deltaY = this.mouseService.startCoordinate.y - this.mouseService.currentCoordinate.y;
+        // @ts-ignore
+        if (elem !== null) {
+            // elem.style.width = String(this.mouseService.currentCoordinate.x - this.mouseService.startCoordinate.x) + 'px';
+            switch (this.status) {
+                case Status.MIDDLE_RIGHT_RESIZE:
+                    elem.style.width += String(deltaX) + 'px';
+                    console.log('deltaX in rsz = ' + deltaX);
+                    break;
+
+                case Status.MIDDLE_BOTTOM_RESIZE:
+                    elem.style.height += deltaY + 'px';
+                    break;
+
+                case Status.BOTTOM_RIGHT_RESIZE:
+                    elem.style.width += deltaX + 'px';
+                    elem.style.height += deltaY + 'px';
+                    break;
+            }
+            // if (Number(elem.style.width) < MINIMUM_WIDTH || Number(elem.style.height) < MINIMUM_HEIGHT) {
+            //     elem.style.width = MINIMUM_WIDTH + 'px';
+            //     elem.style.height = MINIMUM_HEIGHT + 'px';
+            // }
+            // this.drawingService.restoreCanvas();
+        }
     }
 
     // resizeCanvas(width: number, height: number): void {

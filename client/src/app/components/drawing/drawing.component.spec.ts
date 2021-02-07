@@ -18,6 +18,7 @@ describe('DrawingComponent', () => {
     let drawingStub: DrawingService;
 
     beforeEach(async(() => {
+        // @ts-ignore
         toolStub = new ToolStub({} as DrawingService);
         drawingStub = new DrawingService();
 
