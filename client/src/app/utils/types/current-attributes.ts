@@ -1,4 +1,4 @@
-import { ShapeStyle } from '@app/enums/shape-style';
+import { ShapeStyle } from '@app/utils/enums/shape-style';
 
 export type CurrentAttributes = {
     LineThickness?: number;

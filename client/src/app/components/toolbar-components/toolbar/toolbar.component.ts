@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { ToolsNames } from '@app/enums/tools-names';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
+import { ToolsNames } from '@app/utils/enums/tools-names';
 @Component({
     selector: 'app-toolbar',
     templateUrl: './toolbar.component.html',

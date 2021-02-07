@@ -2,9 +2,9 @@ import { Component } from '@angular/core';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatSliderChange } from '@angular/material/slider';
-import { ShapeStyle } from '@app/enums/shape-style';
-import { ToolsNames } from '@app/enums/tools-names';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
+import { ShapeStyle } from '@app/utils/enums/shape-style';
+import { ToolsNames } from '@app/utils/enums/tools-names';
 
 @Component({
     selector: 'app-tool-attribute-bar',

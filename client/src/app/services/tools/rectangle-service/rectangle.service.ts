@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
-import { KeyboardKeys, MouseButton } from '@app/enums/rectangle-enums';
-import { ShapeStyle } from '@app/enums/shape-style';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DEFAULT_MIN_THICKNESS } from '@app/services/tools/tools-constants';
+import { KeyboardKeys, MouseButton } from '@app/utils/enums/rectangle-enums';
+import { ShapeStyle } from '@app/utils/enums/shape-style';
 
 @Injectable({
     providedIn: 'root',

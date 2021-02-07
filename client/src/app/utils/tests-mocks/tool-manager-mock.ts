@@ -1,9 +1,9 @@
 import { EventEmitter } from '@angular/core';
-import { Tool } from '@app/classes/tool';
-import { ShapeStyle } from '@app/enums/shape-style';
-import { ToolsNames } from '@app/enums/tools-names';
-import { DrawingService } from '@app/services/drawing/drawing.service';
-import { ToolStub } from '@app/tests-mocks/tool-stub';
+import { Tool } from '../../classes/tool';
+import { DrawingService } from '../../services/drawing/drawing.service';
+import { ShapeStyle } from '../../utils/enums/shape-style';
+import { ToolsNames } from '../../utils/enums/tools-names';
+import { ToolStub } from '../../utils/tests-mocks/tool-stub';
 
 export class ToolManagerServiceMock {
     toolChangeEmitter: EventEmitter<ToolsNames> = new EventEmitter<ToolsNames>();

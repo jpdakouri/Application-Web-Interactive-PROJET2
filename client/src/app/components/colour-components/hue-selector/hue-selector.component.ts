@@ -1,5 +1,13 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Output, ViewChild } from '@angular/core';
-
+import {
+    SELECTOR_COLOR,
+    SELECTOR_OUTLINE_COLOR,
+    SELECTOR_OUTLINE_OFFSET_3PX,
+    SELECTOR_OUTLINE_OFFSET_6PX,
+    SELECTOR_OUTLINE_TOP_LEFT_X,
+    SELECTOR_OUTLINE_WIDTH,
+    SELECTOR_WIDTH,
+} from './hue-selector-constants';
 @Component({
     selector: 'app-hue-selector',
     templateUrl: './hue-selector.component.html',
@@ -34,37 +42,48 @@ export class HueSelectorComponent implements AfterViewInit {
         this.sliderCanvasContext.fillStyle = this.generateGradient();
         this.sliderCanvasContext.fill();
         this.sliderCanvasContext.closePath();
-        this.drawSelector();
+        this.drawWholeSelector();
     }
 
-    // TO DO: REMOVE MAGIC NUMBERS
-    private drawSelector(): void {
-        const SELECTOR_WIDTH = 5;
-        const SELECTOR_COLOR = 'white';
-        const SELECTOR_OUTLINE_WIDTH = 1;
-        const SELECTOR_OUTLINE_COLOR = '#000000';
+    private drawWholeSelector(): void {
+        this.drawSelectorWhiteInterior();
+        this.drawSelectorBlackOutline();
+        this.drawSelectorInteriorBlackOutline();
+    }
 
+    drawSelectorWhiteInterior(): void {
         this.sliderCanvasContext.beginPath();
         this.sliderCanvasContext.strokeStyle = SELECTOR_COLOR;
         this.sliderCanvasContext.lineWidth = SELECTOR_WIDTH;
         this.sliderCanvasContext.rect(0, this.selectedHeight - SELECTOR_WIDTH, this.sliderCanvas.nativeElement.width, SELECTOR_WIDTH * 2);
         this.sliderCanvasContext.stroke();
         this.sliderCanvasContext.closePath();
+    }
+
+    drawSelectorBlackOutline(): void {
         this.sliderCanvasContext.beginPath();
         this.sliderCanvasContext.strokeStyle = SELECTOR_OUTLINE_COLOR;
         this.sliderCanvasContext.lineWidth = SELECTOR_OUTLINE_WIDTH;
         this.sliderCanvasContext.rect(
-            -1,
-            this.selectedHeight - SELECTOR_WIDTH - 3,
+            SELECTOR_OUTLINE_TOP_LEFT_X,
+            this.selectedHeight - SELECTOR_WIDTH - SELECTOR_OUTLINE_OFFSET_3PX,
             this.sliderCanvas.nativeElement.width + 2,
-            SELECTOR_WIDTH * 2 + 6,
+            SELECTOR_WIDTH * 2 + SELECTOR_OUTLINE_OFFSET_6PX,
         );
         this.sliderCanvasContext.stroke();
         this.sliderCanvasContext.closePath();
+    }
+
+    drawSelectorInteriorBlackOutline(): void {
         this.sliderCanvasContext.beginPath();
         this.sliderCanvasContext.strokeStyle = SELECTOR_OUTLINE_COLOR;
         this.sliderCanvasContext.lineWidth = SELECTOR_OUTLINE_WIDTH;
-        this.sliderCanvasContext.rect(3, this.selectedHeight - SELECTOR_WIDTH + 3, this.sliderCanvas.nativeElement.width - 6, SELECTOR_WIDTH * 2 - 6);
+        this.sliderCanvasContext.rect(
+            SELECTOR_OUTLINE_OFFSET_3PX,
+            this.selectedHeight - SELECTOR_WIDTH + SELECTOR_OUTLINE_OFFSET_3PX,
+            this.sliderCanvas.nativeElement.width - SELECTOR_OUTLINE_OFFSET_6PX,
+            SELECTOR_WIDTH * 2 - SELECTOR_OUTLINE_OFFSET_6PX,
+        );
         this.sliderCanvasContext.stroke();
         this.sliderCanvasContext.closePath();
     }

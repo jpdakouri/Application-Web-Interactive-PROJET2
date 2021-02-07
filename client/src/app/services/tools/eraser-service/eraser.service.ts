@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { MouseButton } from '@app/tests-mocks/mock-boutton-pressed';
+import { MouseButton } from '@app/utils/tests-mocks/mock-boutton-pressed';
 
 @Injectable({
     providedIn: 'root',

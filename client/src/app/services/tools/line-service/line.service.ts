@@ -4,7 +4,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DEFAULT_MIN_THICKNESS, PIXEL_DISTANCE, SHIFT_ANGLE } from '@app/services/tools/tools-constants';
-import { KeyboardButton, MouseButton } from '@app/tests-mocks/mock-boutton-pressed';
+import { KeyboardButton, MouseButton } from '@app/utils/tests-mocks/mock-boutton-pressed';
 
 @Injectable({
     providedIn: 'root',

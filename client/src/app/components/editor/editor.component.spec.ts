@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
-import { ToolAttributeBarComponent } from '@app/components/tool-attribute-bar/tool-attribute-bar.component';
-import { ToolbarComponent } from '@app/components/toolbar/toolbar.component';
+import { ToolAttributeBarComponent } from '@app/components/toolbar-components/tool-attribute-bar/tool-attribute-bar.component';
+import { ToolbarComponent } from '@app/components/toolbar-components/toolbar/toolbar.component';
 import { EditorComponent } from './editor.component';
 
 describe('EditorComponent', () => {

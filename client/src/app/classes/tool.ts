@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { ShapeStyle } from '@app/enums/shape-style';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { Vec2 } from './vec2';
 
 // Ceci est justifié vu qu'on a des fonctions qui seront gérés par les classes enfant
