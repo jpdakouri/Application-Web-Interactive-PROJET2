@@ -69,8 +69,6 @@ export class DrawingComponent implements OnInit, AfterViewInit {
         //     confirm("le canavs n'est pas vide");
         // }
         this.drawingService.restoreCanvas();
-        // this.drawingService.setCanvasSize(this.canvasSize.x, this.canvasSize.y);
-        // this.setCanvasSize();
     }
 
     @HostListener('window:mousemove', ['$event'])
@@ -120,8 +118,6 @@ export class DrawingComponent implements OnInit, AfterViewInit {
     }
 
     resizeCanvas(): void {
-        // this.canvasResizerService.resizeCanvas(this.canvasSize.x, this.canvasSize.y);
-        // this.isResizing = true;
         const deltaX = this.mouseService.calculateDeltaX();
         const deltaY = this.mouseService.calculateDeltaY();
         console.log('width before resize = ' + this.canvasSize.x);
@@ -133,14 +129,9 @@ export class DrawingComponent implements OnInit, AfterViewInit {
             this.canvasSize.x += deltaX;
             this.canvasSize.y += deltaY;
         }
-        console.log('width after resize = ' + this.canvasSize.x);
-
         if (this.canvasSize.x < MINIMUM_WIDTH || this.canvasSize.y < MINIMUM_HEIGHT) {
             this.canvasSize = { x: MINIMUM_WIDTH, y: MINIMUM_HEIGHT };
         }
-
-        // console.log('delatX = ' + deltaX);
-        // console.log('delatY = ' + deltaY);
         this.drawingService.restoreCanvas();
     }
 
