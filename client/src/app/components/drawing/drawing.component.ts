@@ -3,7 +3,7 @@ import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { Coordinate } from '@app/services/mouse-handler/coordinate';
 import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.service';
-import { CanvasResizerService, Status } from '@app/services/tools/canvas-resizer/canvas-resizer.service';
+import { CanvasResizerService } from '@app/services/tools/canvas-resizer/canvas-resizer.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 
 // TODO : Avoir un fichier séparé pour les constantes ?
@@ -140,26 +140,20 @@ export class DrawingComponent implements OnInit, AfterViewInit {
     }
 
     onMiddleRightResizerClick(): void {
-        // console.log('midd right resizer clicked!');
-        console.log('midd right resizer dragged!');
         this.drawingService.saveCanvas(this.width, this.height);
         this.currentTool = this.tools[1];
-        this.canvasResizerService.setStatus(Status.BOTTOM_RIGHT_RESIZE);
+        this.canvasResizerService.onMiddleBottomResizerClick();
     }
 
     onBottomRightResizerClick(): void {
-        console.log('right resizer clicked!');
         this.drawingService.saveCanvas(this.width, this.height);
-
         this.currentTool = this.tools[1];
-        this.canvasResizerService.setStatus(Status.BOTTOM_RIGHT_RESIZE);
+        this.canvasResizerService.onBottomRightResizerClick();
     }
 
     onMiddleBottomResizerClick(): void {
-        console.log('bott right resizer clicked!');
         this.drawingService.saveCanvas(this.width, this.height);
-
         this.currentTool = this.tools[1];
-        this.canvasResizerService.setStatus(Status.MIDDLE_BOTTOM_RESIZE);
+        this.canvasResizerService.onMiddleBottomResizerClick();
     }
 }
