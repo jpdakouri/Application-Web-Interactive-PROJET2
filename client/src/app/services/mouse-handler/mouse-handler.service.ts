@@ -61,7 +61,7 @@ export class MouseHandlerService {
     // }
 
     eventToCoordinate(event: MouseEvent): Coordinate {
-        return { x: event.offsetX, y: event.offsetY };
+        return { x: event.clientX, y: event.clientY };
     }
 
     // setMouseCoordinate(x: number, y: number): void {
