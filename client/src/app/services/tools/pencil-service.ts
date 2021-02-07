@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.service';
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
 export enum MouseButton {
@@ -22,8 +23,8 @@ export enum MouseButton {
 export class PencilService extends Tool {
     private pathData: Vec2[];
 
-    constructor(drawingService: DrawingService) {
-        super(drawingService);
+    constructor(drawingService: DrawingService, mouseService: MouseHandlerService) {
+        super(drawingService, mouseService);
         this.clearPath();
     }
 
@@ -51,6 +52,7 @@ export class PencilService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
+            // console.log('Pencil called!');
 
             // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);

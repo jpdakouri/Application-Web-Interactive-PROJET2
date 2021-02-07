@@ -9,6 +9,24 @@ export class DrawingService {
     // resizingPreviewCtx: CanvasRenderingContext2D;
     canvas: HTMLCanvasElement;
 
+    // setCanvasSize(width: number, height: number): void {
+    //     width = this.workingZoneSize().x / 2;
+    //     height = this.workingZoneSize().y / 2;
+    //
+    //     if (this.workingZoneSize().x < LOWER_BOUND_WIDTH || this.workingZoneSize().y < LOWER_BOUND_HEIGHT) {
+    //         width = MINIMUM_WIDTH;
+    //         height = MINIMUM_HEIGHT;
+    //     }
+    //     console.log('size changed!');
+    // }
+    //
+    // workingZoneSize(): Coordinate {
+    //     return {
+    //         x: window.innerWidth - SIDEBAR_WIDTH,
+    //         y: window.innerHeight,
+    //     };
+    // }
+
     saveCanvas(width: number, height: number): void {
         sessionStorage.setItem('canvasBuffer', this.canvas.toDataURL());
     }
