@@ -137,4 +137,15 @@ describe('MouseHandlerService', () => {
         const calculatedDeltaY = service.calculateDeltaY();
         expect(calculatedDeltaY).toBe(deltaY);
     });
+
+    it('should get event coordinate when eventToCoordinate method is called ', () => {
+        const mockClick = new MouseEvent('mousemove', {
+            clientX: 1,
+            clientY: 2,
+        });
+
+        service.eventToCoordinate(mockClick);
+        expect(mockClick.clientX).toBe(1);
+        expect(mockClick.clientY).toBe(2);
+    });
 });
