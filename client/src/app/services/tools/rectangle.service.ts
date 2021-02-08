@@ -62,10 +62,10 @@ export class RectangleService extends Tool {
 
             if (event.shiftKey) {
                 this.shiftDown = true;
-                this.mouseDownCoord.x = Math.max(Math.abs(this.mouseDownCoord.x), Math.abs(this.mouseDownCoord.y))
-                    ? this.mouseDownCoord.x
-                    : this.mouseDownCoord.y;
-                this.mouseDownCoord.y = this.mouseDownCoord.x;
+                // this.mouseDownCoord.x = Math.max(Math.abs(this.mouseDownCoord.x), Math.abs(this.mouseDownCoord.y))
+                //     ? this.mouseDownCoord.x
+                //     : this.mouseDownCoord.y;
+                // this.mouseDownCoord.y = this.mouseDownCoord.x;
                 this.updatePreview();
             }
         }
@@ -75,6 +75,7 @@ export class RectangleService extends Tool {
         if (this.mouseDown) {
             this.drawRectangle(this.drawingService.baseCtx, this.mouseDownCoord);
             this.updatePreview();
+            this.clearPath();
         }
         this.mouseDown = false;
     }
@@ -93,7 +94,8 @@ export class RectangleService extends Tool {
         if (this.shiftDown && !event.shiftKey) {
             console.log('event');
             this.shiftDown = false;
-            this.updatePreview();
+            // this.updatePreview();
+            // this.clearPath();
         }
     }
 
@@ -143,10 +145,30 @@ export class RectangleService extends Tool {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         const currentCoord = { ...this.mouseDownCoord };
         if (this.shiftDown) {
-            if (this.mouseDownCoord.x > this.mouseDownCoord.y) {
-                currentCoord.y = this.mouseDownCoord.x;
-            } else if (this.mouseDownCoord.x < this.mouseDownCoord.y) {
-                currentCoord.x = this.mouseDownCoord.y;
+            if (Math.sign(this.mouseDownCoord.x) === 1 && Math.sign(this.mouseDownCoord.y) === 1) {
+                const min = Math.min(this.mouseDownCoord.x, this.mouseDownCoord.y);
+                currentCoord.x = currentCoord.y = min;
+            }
+            if (Math.sign(this.mouseDownCoord.x) === -1 && Math.sign(this.mouseDownCoord.y) === -1) {
+                const max = Math.max(this.mouseDownCoord.x, this.mouseDownCoord.y);
+                currentCoord.x = currentCoord.y = max;
+            }
+
+            // en bas a gauche
+            if (Math.sign(this.mouseDownCoord.x) === -1 && Math.sign(this.mouseDownCoord.y) === 1) {
+                if (Math.abs(this.mouseDownCoord.x) > Math.abs(this.mouseDownCoord.y)) {
+                    currentCoord.x = -currentCoord.y;
+                } else if (Math.abs(this.mouseDownCoord.x) < Math.abs(this.mouseDownCoord.y)) {
+                    currentCoord.y = -currentCoord.x;
+                }
+            }
+            // en haute droite
+            if (Math.sign(this.mouseDownCoord.x) === 1 && Math.sign(this.mouseDownCoord.y) === -1) {
+                if (Math.abs(this.mouseDownCoord.x) < Math.abs(this.mouseDownCoord.y)) {
+                    currentCoord.y = -currentCoord.x;
+                } else if (Math.abs(this.mouseDownCoord.x) > Math.abs(this.mouseDownCoord.y)) {
+                    currentCoord.x = -currentCoord.y;
+                }
             }
         }
         this.drawRectangle(this.drawingService.previewCtx, currentCoord);
