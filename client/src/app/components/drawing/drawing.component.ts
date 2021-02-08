@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, OnInit, Output, ViewChild } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -17,7 +17,9 @@ export const LOWER_BOUND_HEIGHT = 500;
 
 export const DEFAULT_WHITE = '#fff';
 
-export const SIDEBAR_WIDTH = 294;
+export const SIDEBAR_WIDTH = 425;
+
+const WORKING_ZONE_VISIBLE_PORTION = 100;
 
 @Component({
     selector: 'app-drawing',
@@ -28,6 +30,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     // On utilise ce canvas pour dessiner sans affecter le dessin final
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
+    @Output() editorMinWidthEmitter: EventEmitter<number> = new EventEmitter<number>();
 
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
@@ -41,8 +44,12 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     }
 
     ngOnInit(): void {
-        this.currentTool = this.toolManagerService.getCurrentToolInstance();
+        this.updateCurrentTool();
         this.setCanvasSize();
+        this.subscribeToToolChange();
+    }
+
+    subscribeToToolChange(): void {
         this.toolManagerService.toolChangeEmitter.subscribe((toolName: ToolsNames) => {
             this.updateCurrentTool();
         });
@@ -60,7 +67,6 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     updateCurrentTool(): void {
         this.currentTool = this.toolManagerService.getCurrentToolInstance();
-        this.drawingService.canvas.style.backgroundColor = DEFAULT_WHITE;
     }
 
     get width(): number {
@@ -118,6 +124,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             this.canvasSize.x = MINIMUM_WIDTH;
             this.canvasSize.y = MINIMUM_HEIGHT;
         }
+        this.emitEditorMinWidth();
     }
 
     workingZoneSize(): Vec2 {
@@ -133,7 +140,6 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     }
 
     saveDrawing(): void {
-        // this.currentDrawing =
         this.baseCtx.save();
     }
 
@@ -141,6 +147,11 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.baseCtx.restore();
     }
 
-    // tslint:disable-next-line:no-empty
-    onMiddleRightClick(): void {}
+    emitEditorMinWidth(): void {
+        const editorMinWidth = this.computeEditorMinWidth();
+        this.editorMinWidthEmitter.emit(editorMinWidth);
+    }
+    computeEditorMinWidth(): number {
+        return this.width + SIDEBAR_WIDTH + WORKING_ZONE_VISIBLE_PORTION;
+    }
 }

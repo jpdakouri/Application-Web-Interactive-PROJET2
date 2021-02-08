@@ -3,7 +3,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSliderModule } from '@angular/material/slider';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
-import { ToolManagerServiceMock } from '@app/tests-mocks/tool-manager-mock';
+import { ToolManagerServiceMock } from '@app/utils/tests-mocks/tool-manager-mock';
 import { ToolAttributeBarComponent } from './tool-attribute-bar.component';
 
 describe('ToolAttributeBarComponent', () => {

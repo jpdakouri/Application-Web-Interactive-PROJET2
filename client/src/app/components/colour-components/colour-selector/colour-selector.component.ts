@@ -44,7 +44,7 @@ export class ColourSelectorComponent {
     }
 
     isValidRGB(): boolean {
-        console.log(this.rgbColor);
+        // console.log(this.rgbColor);
         if (this.rgbColor === '' || this.rgbColor == undefined) return false;
         const RGB_VALUES = this.rgbColor.split(',');
         const MAX_RGB = 255;

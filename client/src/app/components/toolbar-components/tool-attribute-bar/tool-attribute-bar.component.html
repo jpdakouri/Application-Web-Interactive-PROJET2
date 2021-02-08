@@ -3,7 +3,7 @@
     <div *ngIf="showLineWidth()">
         <mat-divider></mat-divider>
         <div class="line-thickness">
-            <h2 class="attribute-title">Épaisseur de ligne: {{ this.getCurrentLineThickness() }}px</h2>
+            <h2 class="attribute-title">Épaisseur du trait: {{ this.getCurrentLineThickness() }}px</h2>
             <mat-slider
                 [value]="this.getCurrentLineThickness()"
                 #thicknessSlider

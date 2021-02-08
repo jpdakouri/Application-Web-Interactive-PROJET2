@@ -3,7 +3,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
-import { ToolManagerServiceMock } from '@app/tests-mocks/tool-manager-mock';
+import { ToolManagerServiceMock } from '@app/utils/tests-mocks/tool-manager-mock';
 import { ToolbarComponent } from './toolbar.component';
 
 describe('ToolbarComponent', () => {
