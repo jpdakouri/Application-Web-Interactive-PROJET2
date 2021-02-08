@@ -32,7 +32,6 @@ export class LineService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        console.log(event);
         this.mouseDown = event.button === MouseButton.Left;
         this.mouseDownCoord = this.getPositionFromMouse(event);
     }
@@ -41,7 +40,6 @@ export class LineService extends Tool {
         if (this.mouseDown) {
             this.mouseDownCoord = this.getPositionFromMouse(event);
 
-            console.log(event);
             if (!this.shiftPressed) this.pathData.push(this.mouseDownCoord);
             else this.pathData.push(this.desiredAngle(this.mouseDownCoord));
 
@@ -59,7 +57,6 @@ export class LineService extends Tool {
     }
 
     onMouseLeave(event: MouseEvent): void {
-        console.log(event);
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         if (this.started) this.drawLine(this.drawingService.previewCtx, this.pathData, false);
     }
@@ -80,25 +77,30 @@ export class LineService extends Tool {
     }
 
     onKeyDown(event: KeyboardEvent): void {
-        console.log(event);
-        if (event.shiftKey) {
-            this.shiftPressed = true;
-            this.previewUpdate();
-        } else if (event.key === KeyboardButton.Escape) {
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.clearPath();
-            this.started = false;
-        } else if (event.key === KeyboardButton.Backspace) {
-            if (this.pathData.length > 1) {
-                this.pathData.pop();
-            }
-            this.previewUpdate();
-            event.preventDefault();
+        switch (event.key) {
+            case KeyboardButton.Shift:
+                this.shiftPressed = true;
+                this.previewUpdate();
+                break;
+            case KeyboardButton.Escape:
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                this.clearPath();
+                this.started = false;
+                break;
+            case KeyboardButton.Backspace:
+                if (this.pathData.length > 1) {
+                    this.pathData.pop();
+                }
+                this.previewUpdate();
+                event.preventDefault();
+                break;
+            default:
+                break;
         }
     }
 
     onKeyUp(event: KeyboardEvent): void {
-        if (this.shiftPressed && !event.shiftKey) {
+        if (this.shiftPressed && event.key === KeyboardButton.Shift) {
             this.shiftPressed = false;
             this.previewUpdate();
         }

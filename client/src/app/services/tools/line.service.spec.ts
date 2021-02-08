@@ -102,8 +102,7 @@ describe('LineService', () => {
     });
 
     it(' onMouseUp should call desiredAngle if mouse was already down and shift pressed', () => {
-        service.mouseDown = true;
-        service.onMouseUp(mouseStartEvent);
+        service['pathData'].push({ x: 0, y: 0 });
         service.mouseDown = true;
         service['shiftPressed'] = true;
 
@@ -119,19 +118,10 @@ describe('LineService', () => {
         expect(previewUpdateSpy).toHaveBeenCalled();
     });
 
-    it('onMouseUp should call desiredAngle if mouse was already down and shift pressed2', () => {
-        service.mouseDown = true;
-        service.onMouseUp(mouseStartEvent);
-        service.mouseDown = true;
-        service['shiftPressed'] = true;
-        service.onMouseMove(mouseEvent);
-
-        expect(desiredAngleSpy).toHaveBeenCalled();
-    });
-
-    it('onMouseLeave should call clearCanvas and drawLine if the line has started ', () => {
-        service.mouseDown = true;
-        service.onMouseUp(mouseStartEvent);
+    // canva size value to add
+    it('onMouseLeave should stop the preview if drawing has started ', () => {
+        service['pathData'].push({ x: 0, y: 0 });
+        service['started'] = true;
         service.onMouseLeave({
             offsetX: 25,
             offsetY: 25,
@@ -148,11 +138,8 @@ describe('LineService', () => {
             [0, -DETECTION_RANGE],
         ];
         for (const dot of surroundingCoords) {
-            service.mouseDown = true;
-            service.onMouseUp(mouseStartEvent);
-            service.mouseDown = true;
-            service.onMouseUp(mouseEvent);
-            service.mouseDown = true;
+            service['pathData'].push({ x: 0, y: 0 });
+            service['pathData'].push({ x: mouseEvent.offsetX, y: mouseEvent.offsetY });
 
             const lastDot = {
                 offsetX: mouseEvent.offsetX + dot[0],
@@ -160,10 +147,8 @@ describe('LineService', () => {
                 button: MouseButton.Left,
             } as MouseEvent;
 
-            service.mouseDown = true;
-            service.onMouseUp(lastDot);
-            service.mouseDown = true;
-            service.onMouseUp(lastDot);
+            service['pathData'].push({ x: lastDot.offsetX, y: lastDot.offsetY });
+            service['pathData'].push({ x: lastDot.offsetX, y: lastDot.offsetY });
             service.mouseDown = true;
             service.onDblClick();
 
@@ -171,40 +156,43 @@ describe('LineService', () => {
         }
     });
 
-    // fit(' keys should perform their task', () => {
-    //     service['pathData'].push({ x: 0, y: 0 }, { x: 20, y: 20 });
+    it(' keys should perform their task', () => {
+        service['started'] = true;
+        service.mouseDownCoord = { x: 20, y: 20 };
+        service['pathData'].push({ x: 0, y: 0 }, service.mouseDownCoord);
 
-    //     const bS = {
-    //         key: KeyboardButton.Backspace,
-    //     } as KeyboardEvent;
+        service.onKeyDown({
+            key: KeyboardButton.Shift,
+        } as KeyboardEvent);
+        expect(service['shiftPressed']).toBeTrue();
 
-    //     service.onKeyDown(bS);
-    //     expect(service['pathData'].length).toEqual(1);
-    //     service.onKeyDown(bS);
-    //     expect(service['pathData'].length).toEqual(1);
+        service.onKeyDown({
+            key: KeyboardButton.Escape,
+        } as KeyboardEvent);
+        expect(service['started']).toBeFalse();
 
-    //     console.log(
-    //         service.onKeyDown({
-    //             key: KeyboardButton.Shift,
-    //         } as KeyboardEvent),
-    //     );
-    //     expect(service['shiftPressed']).toBeTrue();
-    //     service.onKeyDown({
-    //         key: KeyboardButton.Escape,
-    //     } as KeyboardEvent);
-    //     expect(service['started']).toBeFalse();
-    // });
+        // TypeError: event.preventDefault is not a function
+        service['pathData'].push({ x: 0, y: 0 }, service.mouseDownCoord);
+        const event = jasmine.createSpyObj('KeyboardEvent', ['preventDefault']);
+        service.onKeyDown({
+            key: KeyboardButton.Backspace,
+        } as KeyboardEvent);
+        expect(event.preventDefault).toHaveBeenCalled();
+    });
 
-    // it('onKeyup should update shift state', () => {
-    //     service['shiftPressed'] = true;
-    //     service.mouseDownCoord = { x: 0, y: 0 };
-    //     service.onKeyUp({
-    //         key: KeyboardButton.RandomKey,
-    //     } as KeyboardEvent);
-    //     expect(service['shiftPressed']).toBeTrue();
-    //     service.onKeyUp({
-    //         key: KeyboardButton.Shift,
-    //     } as KeyboardEvent);
-    //     expect(service['shiftPressed']).toBeFalse();
-    // });
+    it('onKeyup should update shift state', () => {
+        service['shiftPressed'] = true;
+        service.mouseDownCoord = { x: 20, y: 20 };
+        service['pathData'].push({ x: 0, y: 0 }, service.mouseDownCoord);
+
+        // service.onKeyUp({
+        //     key: KeyboardButton.RandomKey,
+        // } as KeyboardEvent);
+        // expect(service['shiftPressed']).toBeFalse();
+
+        service.onKeyUp({
+            key: KeyboardButton.Shift,
+        } as KeyboardEvent);
+        expect(service['shiftPressed']).toBeFalse();
+    });
 });
