@@ -11,9 +11,9 @@ export const SHIFT_ANGLE = 45;
     providedIn: 'root',
 })
 export class LineService extends Tool {
-    started: boolean;
+    private started: boolean;
     private pathData: Vec2[];
-    shiftPressed: boolean;
+    private shiftPressed: boolean;
 
     private dotRadius: number;
     private lineWidth: number;
