@@ -132,7 +132,7 @@ describe('MouseHandlerService', () => {
         endPosition = { x: 10, y: 10 };
         service.startCoordinate = starPosition;
         service.endCoordinate = endPosition;
-        const deltaY = 7;
+        const deltaY = 5;
 
         const calculatedDeltaY = service.calculateDeltaY();
         expect(calculatedDeltaY).toBe(deltaY);
