@@ -7,7 +7,7 @@ import { CanvasResizerService, Status } from '@app/services/tools/canvas-resizer
 import { PencilService } from '@app/services/tools/pencil-service';
 
 // TODO : Avoir un fichier séparé pour les constantes ?
-export const DEFAULT_WIDTH = 500;
+export const DEFAULT_WIDTH = 1000;
 export const DEFAULT_HEIGHT = 800;
 
 export const MINIMUM_WIDTH = 250;
@@ -35,13 +35,13 @@ export class DrawingComponent implements OnInit, AfterViewInit {
     private canvasSize: Coordinate = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
 
     // aperçu redimensionnement
-    resizePreviewHeight: number;
-    resizePreviewWidth: number;
+    // @Input() resizePreviewHeight: number;
+    // @Input() resizePreviewWidth: number;
 
     // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
     private tools: Tool[];
     currentTool: Tool;
-    // private canvasResizer: CanvasResizerService;
+
     constructor(
         private drawingService: DrawingService,
         private mouseService: MouseHandlerService,
@@ -50,7 +50,6 @@ export class DrawingComponent implements OnInit, AfterViewInit {
     ) {
         this.tools = [pencilService, canvasResizerService];
         this.currentTool = this.tools[0];
-        // this.setCanvasSize();
     }
 
     ngOnInit(): void {
@@ -64,6 +63,7 @@ export class DrawingComponent implements OnInit, AfterViewInit {
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
         this.drawingService.canvas.style.backgroundColor = DEFAULT_WHITE;
+        // this.setCanvasSize();
 
         this.drawingService.restoreCanvas();
         // if (this.drawingService.isCanvasBlank()) {
@@ -71,9 +71,6 @@ export class DrawingComponent implements OnInit, AfterViewInit {
         //         // this.drawingService.clearCanvas(this.drawingService.baseCtx);
         //         this.baseCtx.clearRect(0, 0, this.canvasSize.x, this.canvasSize.y);
         // }
-
-        // this.resizePreviewWidth = this.canvasSize.x;
-        // this.resizePreviewHeight = this.canvasSize.y;
     }
 
     @HostListener('window:mousemove', ['$event'])
@@ -159,7 +156,7 @@ export class DrawingComponent implements OnInit, AfterViewInit {
         ) {
             this.canvasSize = { x: MINIMUM_WIDTH, y: MINIMUM_HEIGHT };
         }
-        console.log('size changed!');
+        // console.log('size changed!');
     }
 
     onMiddleRightResizerClick(): void {
