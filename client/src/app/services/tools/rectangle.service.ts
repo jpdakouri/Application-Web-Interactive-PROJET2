@@ -59,13 +59,8 @@ export class RectangleService extends Tool {
             this.mouseDownCoord.x = this.getPositionFromMouse(event).x - this.firstGrid.x;
             this.mouseDownCoord.y = this.getPositionFromMouse(event).y - this.firstGrid.y;
             this.updatePreview();
-
             if (event.shiftKey) {
                 this.shiftDown = true;
-                // this.mouseDownCoord.x = Math.max(Math.abs(this.mouseDownCoord.x), Math.abs(this.mouseDownCoord.y))
-                //     ? this.mouseDownCoord.x
-                //     : this.mouseDownCoord.y;
-                // this.mouseDownCoord.y = this.mouseDownCoord.x;
                 this.updatePreview();
             }
         }
@@ -74,9 +69,9 @@ export class RectangleService extends Tool {
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
             this.drawRectangle(this.drawingService.baseCtx, this.mouseDownCoord);
-            this.updatePreview();
             this.clearPath();
         }
+        this.drawRectangle(this.drawingService.baseCtx, this.mouseDownCoord);
         this.mouseDown = false;
     }
 
@@ -94,8 +89,7 @@ export class RectangleService extends Tool {
         if (this.shiftDown && !event.shiftKey) {
             console.log('event');
             this.shiftDown = false;
-            // this.updatePreview();
-            // this.clearPath();
+            this.updatePreview();
         }
     }
 
@@ -122,31 +116,32 @@ export class RectangleService extends Tool {
     }
 
     private drawSquare(grid: Vec2): void {
-        // en bas a droite (+/+)
+        // cadrant en bas a droite (+/+)
         if (Math.sign(this.mouseDownCoord.x) === 1 && Math.sign(this.mouseDownCoord.y) === 1) {
             const min = Math.min(this.mouseDownCoord.x, this.mouseDownCoord.y);
             grid.x = grid.y = min;
         }
-        // en haut a gauche (-/-)
+        // cadrant en haut a gauche (-/-)
         if (Math.sign(this.mouseDownCoord.x) === -1 && Math.sign(this.mouseDownCoord.y) === -1) {
             const max = Math.max(this.mouseDownCoord.x, this.mouseDownCoord.y);
             grid.x = grid.y = max;
         }
 
-        // en bas a gauche (-/+)
+        // cadrant en bas a gauche (-/+)
         if (Math.sign(this.mouseDownCoord.x) === -1 && Math.sign(this.mouseDownCoord.y) === 1) {
             if (Math.abs(this.mouseDownCoord.x) > Math.abs(this.mouseDownCoord.y)) {
                 grid.x = -grid.y;
             }
             grid.y = -grid.x;
         }
-        // en haute droite (+/-)
+        //  cadrant en haute droite (+/-)
         if (Math.sign(this.mouseDownCoord.x) === 1 && Math.sign(this.mouseDownCoord.y) === -1) {
             if (Math.abs(this.mouseDownCoord.x) < Math.abs(this.mouseDownCoord.y)) {
                 grid.y = -grid.x;
             }
             grid.x = -grid.y;
         }
+        this.drawRectangle(this.drawingService.previewCtx, grid);
     }
 
     private drawRectangle(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
@@ -174,6 +169,7 @@ export class RectangleService extends Tool {
         const currentCoord = { ...this.mouseDownCoord };
         if (this.shiftDown) {
             this.drawSquare(currentCoord);
+            this.drawRectangle(this.drawingService.previewCtx, currentCoord);
         }
         this.drawRectangle(this.drawingService.previewCtx, currentCoord);
     }
