@@ -25,6 +25,11 @@ export enum shapeStyle {
     Filled = 'filled',
     FilledOutline = 'filledOutline',
 }
+
+export enum sign {
+    Negative = -1,
+    Positive = 1,
+}
 @Injectable({
     providedIn: 'root',
 })
@@ -61,7 +66,8 @@ export class RectangleService extends Tool {
             this.updatePreview();
             if (event.shiftKey) {
                 this.shiftDown = true;
-                this.updatePreview();
+                this.drawSquare(this.mouseDownCoord);
+                // this.updatePreview();
             }
         }
     }
@@ -93,11 +99,22 @@ export class RectangleService extends Tool {
         }
     }
 
+    drawDashedRectangle(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+        ctx.beginPath();
+        // ctx.strokeStyle = this.secondaryColor;
+        ctx.lineWidth = this.lineThickness;
+        ctx.setLineDash([2]);
+        ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+        ctx.fill();
+    }
+
     drawOutline(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.beginPath();
+        this.drawDashedRectangle(ctx, finalGrid);
         ctx.strokeStyle = this.secondaryColor;
         ctx.lineWidth = this.lineThickness;
-        ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+        // ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+        ctx.ellipse(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y, 0, 0, 360, false);
     }
 
     drawFilled(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
@@ -117,37 +134,38 @@ export class RectangleService extends Tool {
 
     private drawSquare(grid: Vec2): void {
         // cadrant en bas a droite (+/+)
-        if (Math.sign(this.mouseDownCoord.x) === 1 && Math.sign(this.mouseDownCoord.y) === 1) {
+        if (Math.sign(this.mouseDownCoord.x) === sign.Positive && Math.sign(this.mouseDownCoord.y) === sign.Positive) {
             const min = Math.min(this.mouseDownCoord.x, this.mouseDownCoord.y);
             grid.x = grid.y = min;
         }
         // cadrant en haut a gauche (-/-)
-        if (Math.sign(this.mouseDownCoord.x) === -1 && Math.sign(this.mouseDownCoord.y) === -1) {
+        if (Math.sign(this.mouseDownCoord.x) === sign.Negative && Math.sign(this.mouseDownCoord.y) === sign.Negative) {
             const max = Math.max(this.mouseDownCoord.x, this.mouseDownCoord.y);
             grid.x = grid.y = max;
         }
 
         // cadrant en bas a gauche (-/+)
-        if (Math.sign(this.mouseDownCoord.x) === -1 && Math.sign(this.mouseDownCoord.y) === 1) {
+        if (Math.sign(this.mouseDownCoord.x) === sign.Negative && Math.sign(this.mouseDownCoord.y) === sign.Positive) {
             if (Math.abs(this.mouseDownCoord.x) > Math.abs(this.mouseDownCoord.y)) {
                 grid.x = -grid.y;
             }
             grid.y = -grid.x;
         }
         //  cadrant en haute droite (+/-)
-        if (Math.sign(this.mouseDownCoord.x) === 1 && Math.sign(this.mouseDownCoord.y) === -1) {
+        if (Math.sign(this.mouseDownCoord.x) === sign.Positive && Math.sign(this.mouseDownCoord.y) === sign.Negative) {
             if (Math.abs(this.mouseDownCoord.x) < Math.abs(this.mouseDownCoord.y)) {
                 grid.y = -grid.x;
             }
             grid.x = -grid.y;
         }
-        this.drawRectangle(this.drawingService.previewCtx, grid);
+        // his.drawRectangle(this.drawingService.previewCtx, grid);
     }
 
     private drawRectangle(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         switch (this.shapeStyle) {
             case shapeStyle.Outline:
-                this.drawOutline(ctx, finalGrid);
+                this.drawDashedRectangle(ctx, finalGrid);
+                // this.drawOutline(ctx, finalGrid);
                 break;
 
             case shapeStyle.Filled:
@@ -160,6 +178,7 @@ export class RectangleService extends Tool {
 
             default:
                 this.drawOutline(ctx, finalGrid);
+
                 break;
         }
     }
