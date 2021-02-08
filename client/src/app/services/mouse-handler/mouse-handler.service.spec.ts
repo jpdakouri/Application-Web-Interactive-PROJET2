@@ -126,4 +126,15 @@ describe('MouseHandlerService', () => {
         const calculatedDeltaX = service.calculateDeltaX();
         expect(calculatedDeltaX).toBe(deltaX);
     });
+
+    it('should calculate deltaY between two points', () => {
+        starPosition = { x: 5, y: 5 };
+        endPosition = { x: 10, y: 10 };
+        service.startCoordinate = starPosition;
+        service.endCoordinate = endPosition;
+        const deltaY = 7;
+
+        const calculatedDeltaY = service.calculateDeltaY();
+        expect(calculatedDeltaY).toBe(deltaY);
+    });
 });
