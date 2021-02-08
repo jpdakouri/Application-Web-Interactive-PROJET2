@@ -110,11 +110,10 @@ export class RectangleService extends Tool {
 
     drawOutline(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.beginPath();
-        this.drawDashedRectangle(ctx, finalGrid);
+        // this.drawDashedRectangle(ctx, finalGrid);
         ctx.strokeStyle = this.secondaryColor;
         ctx.lineWidth = this.lineThickness;
-        // ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
-        ctx.ellipse(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y, 0, 0, 360, false);
+        ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
     }
 
     drawFilled(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
