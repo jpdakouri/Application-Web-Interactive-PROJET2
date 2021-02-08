@@ -189,12 +189,12 @@ describe('LineService', () => {
         expect(service['started']).toBeFalse();
 
         // TypeError: event.preventDefault is not a function
-        // service['pathData'].push({ x: 0, y: 0 }, service.mouseDownCoord);
-        // const event = jasmine.createSpyObj('KeyboardEvent', ['preventDefault']);
-        // service.onKeyDown({
-        //     key: KeyboardButton.Backspace,
-        // } as KeyboardEvent);
-        // expect(event.preventDefault).toHaveBeenCalled();
+        service['pathData'].push({ x: 0, y: 0 }, service.mouseDownCoord);
+        const e = jasmine.createSpyObj('KeyboardEvent', ['preventDefault']);
+        service.onKeyDown({
+            key: KeyboardButton.Backspace,
+        } as KeyboardEvent);
+        expect(e.preventDefault).toHaveBeenCalled();
     });
 
     it('onKeyup should update shift state', () => {
