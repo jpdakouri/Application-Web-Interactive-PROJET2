@@ -115,4 +115,15 @@ describe('MouseHandlerService', () => {
         // tslint:disable-next-line:no-magic-numbers
         expect(calculatedDistance).toBe(5);
     });
+
+    it('should calculate deltaX between two points', () => {
+        starPosition = { x: 3, y: 4 };
+        endPosition = { x: 10, y: 10 };
+        service.startCoordinate = starPosition;
+        service.endCoordinate = endPosition;
+        const deltaX = 7;
+
+        const calculatedDeltaX = service.calculateDeltaX();
+        expect(calculatedDeltaX).toBe(deltaX);
+    });
 });
