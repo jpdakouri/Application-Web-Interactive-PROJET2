@@ -121,6 +121,34 @@ export class RectangleService extends Tool {
         ctx.fillRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
     }
 
+    private drawSquare(grid: Vec2): void {
+        // en bas a droite (+/+)
+        if (Math.sign(this.mouseDownCoord.x) === 1 && Math.sign(this.mouseDownCoord.y) === 1) {
+            const min = Math.min(this.mouseDownCoord.x, this.mouseDownCoord.y);
+            grid.x = grid.y = min;
+        }
+        // en haut a gauche (-/-)
+        if (Math.sign(this.mouseDownCoord.x) === -1 && Math.sign(this.mouseDownCoord.y) === -1) {
+            const max = Math.max(this.mouseDownCoord.x, this.mouseDownCoord.y);
+            grid.x = grid.y = max;
+        }
+
+        // en bas a gauche (-/+)
+        if (Math.sign(this.mouseDownCoord.x) === -1 && Math.sign(this.mouseDownCoord.y) === 1) {
+            if (Math.abs(this.mouseDownCoord.x) > Math.abs(this.mouseDownCoord.y)) {
+                grid.x = -grid.y;
+            }
+            grid.y = -grid.x;
+        }
+        // en haute droite (+/-)
+        if (Math.sign(this.mouseDownCoord.x) === 1 && Math.sign(this.mouseDownCoord.y) === -1) {
+            if (Math.abs(this.mouseDownCoord.x) < Math.abs(this.mouseDownCoord.y)) {
+                grid.y = -grid.x;
+            }
+            grid.x = -grid.y;
+        }
+    }
+
     private drawRectangle(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         switch (this.shapeStyle) {
             case shapeStyle.Outline:
@@ -145,31 +173,7 @@ export class RectangleService extends Tool {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         const currentCoord = { ...this.mouseDownCoord };
         if (this.shiftDown) {
-            if (Math.sign(this.mouseDownCoord.x) === 1 && Math.sign(this.mouseDownCoord.y) === 1) {
-                const min = Math.min(this.mouseDownCoord.x, this.mouseDownCoord.y);
-                currentCoord.x = currentCoord.y = min;
-            }
-            if (Math.sign(this.mouseDownCoord.x) === -1 && Math.sign(this.mouseDownCoord.y) === -1) {
-                const max = Math.max(this.mouseDownCoord.x, this.mouseDownCoord.y);
-                currentCoord.x = currentCoord.y = max;
-            }
-
-            // en bas a gauche
-            if (Math.sign(this.mouseDownCoord.x) === -1 && Math.sign(this.mouseDownCoord.y) === 1) {
-                if (Math.abs(this.mouseDownCoord.x) > Math.abs(this.mouseDownCoord.y)) {
-                    currentCoord.x = -currentCoord.y;
-                } else if (Math.abs(this.mouseDownCoord.x) < Math.abs(this.mouseDownCoord.y)) {
-                    currentCoord.y = -currentCoord.x;
-                }
-            }
-            // en haute droite
-            if (Math.sign(this.mouseDownCoord.x) === 1 && Math.sign(this.mouseDownCoord.y) === -1) {
-                if (Math.abs(this.mouseDownCoord.x) < Math.abs(this.mouseDownCoord.y)) {
-                    currentCoord.y = -currentCoord.x;
-                } else if (Math.abs(this.mouseDownCoord.x) > Math.abs(this.mouseDownCoord.y)) {
-                    currentCoord.x = -currentCoord.y;
-                }
-            }
+            this.drawSquare(currentCoord);
         }
         this.drawRectangle(this.drawingService.previewCtx, currentCoord);
     }
