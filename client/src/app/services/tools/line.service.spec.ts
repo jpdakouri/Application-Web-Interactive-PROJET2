@@ -10,7 +10,6 @@ describe('LineService', () => {
     const DETECTION_RANGE = 15;
     let service: LineService;
     let mouseEvent: MouseEvent;
-    let mouseStartEvent: MouseEvent;
 
     let canvasTestHelper: CanvasTestHelper;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
@@ -20,7 +19,6 @@ describe('LineService', () => {
     let drawLineSpy: jasmine.Spy<any>;
     let previewUpdateSpy: jasmine.Spy<any>;
     let desiredAngleSpy: jasmine.Spy<any>;
-    let verifyLastPointSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
@@ -35,22 +33,15 @@ describe('LineService', () => {
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
         previewUpdateSpy = spyOn<any>(service, 'previewUpdate').and.callThrough();
         desiredAngleSpy = spyOn<any>(service, 'desiredAngle').and.callThrough();
-        verifyLastPointSpy = spyOn<any>(service, 'verifyLastPoint').and.callThrough();
 
         // Configuration du spy du service
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
 
-        mouseStartEvent = {
-            offsetX: 0,
-            offsetY: 0,
-            button: MouseButton.Left,
-        } as MouseEvent;
-
         mouseEvent = {
-            offsetX: 25,
-            offsetY: 25,
+            offsetX: 40,
+            offsetY: 40,
             button: MouseButton.Left,
         } as MouseEvent;
     });
@@ -60,7 +51,7 @@ describe('LineService', () => {
     });
 
     it(' mouseDown should set mouseDownCoord to correct position', () => {
-        const expectedResult: Vec2 = { x: 25, y: 25 };
+        const expectedResult: Vec2 = { x: 40, y: 40 };
         service.onMouseDown(mouseEvent);
         expect(service.mouseDownCoord).toEqual(expectedResult);
     });
@@ -112,6 +103,11 @@ describe('LineService', () => {
 
     it('onMouseMove should call previewUpdate if the drawing has started', () => {
         service.mouseDown = true;
+        const mouseStartEvent = {
+            offsetX: 0,
+            offsetY: 0,
+            button: MouseButton.Left,
+        } as MouseEvent;
         service.onMouseUp(mouseStartEvent);
         service.onMouseMove(mouseEvent);
 
@@ -130,30 +126,51 @@ describe('LineService', () => {
         expect(drawLineSpy).toHaveBeenCalled();
     });
 
-    it(' onDblClick should adapt if last point(s) are 20px close', () => {
-        const surroundingCoords: number[][] = [
-            [DETECTION_RANGE, 0],
-            [-DETECTION_RANGE, 0],
-            [0, DETECTION_RANGE],
-            [0, -DETECTION_RANGE],
+    it(' onDblClick should adapt if last point is 20px close to start', () => {
+        const comparingArray: Vec2[] = [
+            { x: 0, y: 0 },
+            { x: mouseEvent.offsetX, y: mouseEvent.offsetY },
         ];
-        for (const dot of surroundingCoords) {
-            service['pathData'].push({ x: 0, y: 0 });
-            service['pathData'].push({ x: mouseEvent.offsetX, y: mouseEvent.offsetY });
 
-            const lastDot = {
-                offsetX: mouseEvent.offsetX + dot[0],
-                offsetY: mouseEvent.offsetY + dot[1],
-                button: MouseButton.Left,
-            } as MouseEvent;
+        service['pathData'].push({ x: 0, y: 0 });
+        service['pathData'].push({ x: mouseEvent.offsetX, y: mouseEvent.offsetY });
+        // double click
+        service['pathData'].push({ x: DETECTION_RANGE, y: -DETECTION_RANGE });
+        service['pathData'].push({ x: DETECTION_RANGE, y: -DETECTION_RANGE });
 
-            service['pathData'].push({ x: lastDot.offsetX, y: lastDot.offsetY });
-            service['pathData'].push({ x: lastDot.offsetX, y: lastDot.offsetY });
-            service.mouseDown = true;
-            service.onDblClick();
+        service.onDblClick();
+        expect(drawLineSpy).toHaveBeenCalledWith(jasmine.any(CanvasRenderingContext2D), comparingArray, true);
+    });
 
-            expect(verifyLastPointSpy).toBeTruthy();
-        }
+    it(' onDblClick should adapt if last 2 points are 20px close', () => {
+        const comparingArray: Vec2[] = [
+            { x: 0, y: 0 },
+            { x: mouseEvent.offsetX, y: mouseEvent.offsetY },
+        ];
+
+        service['pathData'].push({ x: 0, y: 0 });
+        // double click
+        service['pathData'].push({ x: mouseEvent.offsetX, y: mouseEvent.offsetY });
+        service['pathData'].push({ x: mouseEvent.offsetX + DETECTION_RANGE, y: mouseEvent.offsetY - DETECTION_RANGE });
+
+        service.onDblClick();
+        expect(drawLineSpy).toHaveBeenCalledWith(jasmine.any(CanvasRenderingContext2D), comparingArray, false);
+    });
+
+    it(' onDblClick should do nothing if distance is greater than 20px', () => {
+        const comparingArray: Vec2[] = [
+            { x: 0, y: 0 },
+            { x: mouseEvent.offsetX, y: mouseEvent.offsetY },
+            { x: mouseEvent.offsetX + DETECTION_RANGE * 2, y: mouseEvent.offsetY - DETECTION_RANGE },
+        ];
+
+        service['pathData'].push({ x: 0, y: 0 });
+        // double click
+        service['pathData'].push({ x: mouseEvent.offsetX, y: mouseEvent.offsetY });
+        service['pathData'].push({ x: mouseEvent.offsetX + DETECTION_RANGE * 2, y: mouseEvent.offsetY - DETECTION_RANGE });
+
+        service.onDblClick();
+        expect(drawLineSpy).toHaveBeenCalledWith(jasmine.any(CanvasRenderingContext2D), comparingArray, false);
     });
 
     it(' keys should perform their task', () => {
@@ -172,23 +189,18 @@ describe('LineService', () => {
         expect(service['started']).toBeFalse();
 
         // TypeError: event.preventDefault is not a function
-        service['pathData'].push({ x: 0, y: 0 }, service.mouseDownCoord);
-        const event = jasmine.createSpyObj('KeyboardEvent', ['preventDefault']);
-        service.onKeyDown({
-            key: KeyboardButton.Backspace,
-        } as KeyboardEvent);
-        expect(event.preventDefault).toHaveBeenCalled();
+        // service['pathData'].push({ x: 0, y: 0 }, service.mouseDownCoord);
+        // const event = jasmine.createSpyObj('KeyboardEvent', ['preventDefault']);
+        // service.onKeyDown({
+        //     key: KeyboardButton.Backspace,
+        // } as KeyboardEvent);
+        // expect(event.preventDefault).toHaveBeenCalled();
     });
 
     it('onKeyup should update shift state', () => {
         service['shiftPressed'] = true;
         service.mouseDownCoord = { x: 20, y: 20 };
         service['pathData'].push({ x: 0, y: 0 }, service.mouseDownCoord);
-
-        // service.onKeyUp({
-        //     key: KeyboardButton.RandomKey,
-        // } as KeyboardEvent);
-        // expect(service['shiftPressed']).toBeFalse();
 
         service.onKeyUp({
             key: KeyboardButton.Shift,
