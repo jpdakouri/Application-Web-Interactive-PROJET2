@@ -144,8 +144,8 @@ describe('MouseHandlerService', () => {
             clientY: 2,
         });
 
-        service.eventToCoordinate(mockClick);
-        expect(mockClick.clientX).toBe(1);
-        expect(mockClick.clientY).toBe(2);
+        const calculatedCoordinate = service.eventToCoordinate(mockClick);
+        expect(calculatedCoordinate.x).toBe(1);
+        expect(calculatedCoordinate.y).toBe(2);
     });
 });
