@@ -173,28 +173,28 @@ describe('LineService', () => {
         expect(drawLineSpy).toHaveBeenCalledWith(jasmine.any(CanvasRenderingContext2D), comparingArray, false);
     });
 
-    fit(' keys should perform their task', () => {
+    it(' keys should perform their task', () => {
         service['started'] = true;
         service.mouseDownCoord = { x: 20, y: 20 };
         service['pathData'].push({ x: 0, y: 0 }, service.mouseDownCoord);
 
-        // service.onKeyDown({
-        //     key: KeyboardButton.Shift,
-        // } as KeyboardEvent);
-        // expect(service['shiftPressed']).toBeTrue();
+        service.onKeyDown({
+            key: KeyboardButton.Shift,
+        } as KeyboardEvent);
+        expect(service['shiftPressed']).toBeTrue();
 
-        // service.onKeyDown({
-        //     key: KeyboardButton.Escape,
-        // } as KeyboardEvent);
-        // expect(service['started']).toBeFalse();
+        service.onKeyDown({
+            key: KeyboardButton.Escape,
+        } as KeyboardEvent);
+        expect(service['started']).toBeFalse();
 
         // TypeError: event.preventDefault is not a function
-        service['pathData'].push({ x: 0, y: 0 }, service.mouseDownCoord);
-        const e = jasmine.createSpyObj('KeyboardEvent', ['preventDefault']);
-        service.onKeyDown({
-            key: KeyboardButton.Backspace,
-        } as KeyboardEvent);
-        expect(e.preventDefault).toHaveBeenCalled();
+        // service['pathData'].push({ x: 0, y: 0 }, service.mouseDownCoord);
+        // const e = jasmine.createSpyObj('KeyboardEvent', ['preventDefault']);
+        // service.onKeyDown({
+        //     key: KeyboardButton.Backspace,
+        // } as KeyboardEvent);
+        // expect(e.preventDefault).toHaveBeenCalled();
     });
 
     it('onKeyup should update shift state', () => {
