@@ -1,4 +1,4 @@
-import { HostListener, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.service';
@@ -24,9 +24,6 @@ export class CanvasResizerService extends Tool {
 
     onMouseDown(event: MouseEvent): void {
         this.mouseService.onMouseDown(this.mouseService.eventToCoordinate(event));
-        if (this.status !== Status.OFF) {
-            // this.currentTool = this.tools[1];
-        }
     }
 
     onMouseUp(event: MouseEvent): void {
@@ -35,48 +32,46 @@ export class CanvasResizerService extends Tool {
 
     onMouseMove(event: MouseEvent): void {
         this.mouseService.onMouseMove(this.mouseService.eventToCoordinate(event));
-        if (this.isResizing()) this.resizePreviewCanvas();
+        // if (this.isResizing()) this.resizePreviewCanvas();
     }
 
-    @HostListener('window:mouseleave', ['$event'])
-    oneMouseLeave(event: MouseEvent): void {
-        // this.drawingService.saveCanvas(this.width, this.height);
-        // this.isResizing = false;
-        this.mouseService.onMouseLeave(this.mouseService.eventToCoordinate(event));
-    }
+    // @HostListener('window:mouseleave', ['$event'])
+    // oneMouseLeave(event: MouseEvent): void {
+    //     this.mouseService.onMouseLeave(this.mouseService.eventToCoordinate(event));
+    // }
 
-    resizePreviewCanvas(): void {
-        const elem = document.getElementById('rsz');
-        const deltaX = this.mouseService.startCoordinate.x - this.mouseService.currentCoordinate.x;
-        const deltaY = this.mouseService.startCoordinate.y - this.mouseService.currentCoordinate.y;
-        // @ts-ignore
-        if (elem !== null) {
-            switch (this.status) {
-                case Status.MIDDLE_RIGHT_RESIZE:
-                    elem.style.width += String(deltaX) + 'px';
-                    // console.log('rszP width = ' + elem.style.width);
-                    // console.log('deltaX in rsz = ' + deltaX);
-                    break;
-
-                case Status.MIDDLE_BOTTOM_RESIZE:
-                    elem.style.height += deltaY + 'px';
-                    // console.log('deltaY in rsz = ' + deltaY);
-                    break;
-
-                case Status.BOTTOM_RIGHT_RESIZE:
-                    elem.style.width += deltaX + 'px';
-                    elem.style.height += deltaY + 'px';
-
-                    // console.log('deltaX in rsz = ' + deltaX + ' | deltaY in rsz = ' + deltaY);
-                    break;
-            }
-            // if (Number(elem.style.width) < MINIMUM_WIDTH || Number(elem.style.height) < MINIMUM_HEIGHT) {
-            //     elem.style.width = MINIMUM_WIDTH + 'px';
-            //     elem.style.height = MINIMUM_HEIGHT + 'px';
-            // }
-            // this.drawingService.restoreCanvas();
-        }
-    }
+    // resizePreviewCanvas(): void {
+    //     const elem = document.getElementById('rsz');
+    //     const deltaX = this.mouseService.startCoordinate.x - this.mouseService.currentCoordinate.x;
+    //     const deltaY = this.mouseService.startCoordinate.y - this.mouseService.currentCoordinate.y;
+    //     // @ts-ignore
+    //     if (elem !== null) {
+    //         switch (this.status) {
+    //             case Status.MIDDLE_RIGHT_RESIZE:
+    //                 elem.style.width += String(deltaX) + 'px';
+    //                 // console.log('rszP width = ' + elem.style.width);
+    //                 // console.log('deltaX in rsz = ' + deltaX);
+    //                 break;
+    //
+    //             case Status.MIDDLE_BOTTOM_RESIZE:
+    //                 elem.style.height += deltaY + 'px';
+    //                 // console.log('deltaY in rsz = ' + deltaY);
+    //                 break;
+    //
+    //             case Status.BOTTOM_RIGHT_RESIZE:
+    //                 elem.style.width += deltaX + 'px';
+    //                 elem.style.height += deltaY + 'px';
+    //
+    //                 // console.log('deltaX in rsz = ' + deltaX + ' | deltaY in rsz = ' + deltaY);
+    //                 break;
+    //         }
+    //         // if (Number(elem.style.width) < MINIMUM_WIDTH || Number(elem.style.height) < MINIMUM_HEIGHT) {
+    //         //     elem.style.width = MINIMUM_WIDTH + 'px';
+    //         //     elem.style.height = MINIMUM_HEIGHT + 'px';
+    //         // }
+    //         // this.drawingService.restoreCanvas();
+    //     }
+    // }
 
     // resizeCanvas(width: number, height: number): void {
     //     // this.isResizing = true;
