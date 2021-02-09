@@ -31,6 +31,8 @@ export enum sign {
     Positive = 1,
 }
 
+const REVOLUTION = 360;
+
 @Injectable({
     providedIn: 'root',
 })
@@ -103,14 +105,16 @@ export class EllipseService extends Tool {
         ctx.beginPath();
         ctx.strokeStyle = this.secondaryColor;
         ctx.lineWidth = this.lineThickness;
-        ctx.ellipse(this.firstGrid.x, this.firstGrid.y, Math.abs(finalGrid.x), Math.abs(finalGrid.y), 0, 0, 360, false);
+        ctx.ellipse(this.firstGrid.x, this.firstGrid.y, Math.abs(finalGrid.x), Math.abs(finalGrid.y), 0, 0, REVOLUTION, false);
         ctx.stroke();
     }
 
     drawFilled(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.beginPath();
         ctx.fillStyle = this.primaryColour;
-        ctx.fillRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+        ctx.ellipse(this.firstGrid.x, this.firstGrid.y, Math.abs(finalGrid.x), Math.abs(finalGrid.y), 0, 0, REVOLUTION, false);
+        ctx.fill();
+        ctx.stroke();
     }
 
     drawFilledOutline(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
@@ -118,8 +122,20 @@ export class EllipseService extends Tool {
         ctx.fillStyle = this.primaryColour;
         ctx.lineWidth = this.lineThickness;
         ctx.strokeStyle = this.secondaryColor;
-        ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
-        ctx.fillRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+        ctx.ellipse(
+            this.firstGrid.x,
+            this.firstGrid.y,
+            Math.abs(finalGrid.x) - this.lineThickness,
+            Math.abs(finalGrid.y) - this.lineThickness,
+            0,
+            0,
+            REVOLUTION,
+            false,
+        );
+        ctx.fill();
+        ctx.stroke();
+        ctx.ellipse(this.firstGrid.x, this.firstGrid.y, Math.abs(finalGrid.x), Math.abs(finalGrid.y), 0, 0, REVOLUTION, false);
+        ctx.stroke();
     }
 
     private drawCircle(grid: Vec2): void {

@@ -53,6 +53,15 @@ export class DrawingComponent implements AfterViewInit {
         this.currentTool.onMouseUp(event);
     }
 
+    // @HostListener('mouseup', ['$event'])
+    // onKeyDown(event: MouseEvent): void {
+    //     this.currentTool.onMouseUp(event);
+    // }
+
+    // @HostListener('mouseup', ['$event'])
+    // onMouseUp(event: MouseEvent): void {
+    //     this.currentTool.onMouseUp(event);
+    // }
     get width(): number {
         return this.canvasSize.x;
     }
