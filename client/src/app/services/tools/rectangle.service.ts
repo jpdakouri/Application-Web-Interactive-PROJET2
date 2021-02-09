@@ -30,6 +30,7 @@ export enum sign {
     Negative = -1,
     Positive = 1,
 }
+
 @Injectable({
     providedIn: 'root',
 })
@@ -157,7 +158,6 @@ export class RectangleService extends Tool {
             }
             grid.x = -grid.y;
         }
-        // his.drawRectangle(this.drawingService.previewCtx, grid);
     }
 
     private drawRectangle(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {

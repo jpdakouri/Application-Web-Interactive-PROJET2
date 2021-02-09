@@ -11,6 +11,12 @@ export enum MouseButton {
     Forward = 4,
 }
 
+export enum KeyboardKeys {
+    Escape = 'Escape',
+    Shift = 'Shift',
+    One = '1',
+}
+
 describe('RectangleService', () => {
     let service: RectangleService;
     let mouseEvent: MouseEvent;
@@ -20,6 +26,9 @@ describe('RectangleService', () => {
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let drawRectangleSpy: jasmine.Spy<any>;
+    let drawSquareSpy: jasmine.Spy<any>;
+    let shitfDownSpy: jasmine.Spy<any>;
+
     // let updatePreviewSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
@@ -34,6 +43,8 @@ describe('RectangleService', () => {
 
         service = TestBed.inject(RectangleService);
         drawRectangleSpy = spyOn<any>(service, 'drawRectangle').and.callThrough();
+        drawSquareSpy = spyOn<any>(service, 'drawSquare').and.callThrough();
+        shitfDownSpy = spyOn<Boolean>(service, 'shiftDown').and.callThrough();
         // updatePreviewSpy = spyOn<any>(service, 'drawRectangle').and.callThrough();
 
         // Configuration du spy du service
@@ -96,17 +107,34 @@ describe('RectangleService', () => {
         expect(drawRectangleSpy).not.toHaveBeenCalled();
     });
 
-    // it(' keys should perform their task', () => {
-    //     service['started'] = true;
-    //     service.mouseDownCoord = { x: 20, y: 20 };
+    it(' keys should perform their task', () => {
+        // service.mouseDownCoord = { x: 20, y: 20 };
 
-    //     service.onKeyDown({
-    //         key: KeyboardButton.Shift,
-    //     } as KeyboardEvent);
-    //     expect(service['shiftPressed']).toBeTrue();
+        service.onKeyDown({
+            key: KeyboardKeys.Escape,
+        } as KeyboardEvent);
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
 
-    //     service.onKeyDown({
-    //         key: KeyboardButton.Escape,
-    //     } as KeyboardEvent);
-    //     expect(service['started']).toBeFalse();
+        // service.onKeyDown({
+        //     key: KeyboardKeys.Shift,
+        // } as KeyboardEvent);
+        // expect(updatePreviewSpy).toHaveBeenCalled();
+    });
+
+    it('onKeyup should update shift state and change back square to rectangle', () => {
+        service.onKeyUp({
+            key: KeyboardKeys.Escape,
+        } as KeyboardEvent);
+        expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
+    });
+
+    it('a square should be drawed in the first quadrant with drawSquare', () => {
+        service.mouseDown = true;
+        const mouseFirstQ: Vec2 = {
+            x: 15,
+            y: 25,
+        };
+        expect(drawSquareSpy).toHaveBeenCalled();
+        expect(drawRectangleSpy).toHaveBeenCalled();
+    });
 });
