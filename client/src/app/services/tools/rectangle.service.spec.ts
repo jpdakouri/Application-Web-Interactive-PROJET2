@@ -88,4 +88,25 @@ describe('RectangleService', () => {
         service.onMouseUp(mouseEvent);
         expect(drawRectangleSpy).toHaveBeenCalled();
     });
+
+    it(' onMouseUp should not call drawRectangle if mouse was not down', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = false;
+        service.onMouseUp(mouseEvent);
+        expect(drawRectangleSpy).not.toHaveBeenCalled();
+    });
+
+    // it(' keys should perform their task', () => {
+    //     service['started'] = true;
+    //     service.mouseDownCoord = { x: 20, y: 20 };
+
+    //     service.onKeyDown({
+    //         key: KeyboardButton.Shift,
+    //     } as KeyboardEvent);
+    //     expect(service['shiftPressed']).toBeTrue();
+
+    //     service.onKeyDown({
+    //         key: KeyboardButton.Escape,
+    //     } as KeyboardEvent);
+    //     expect(service['started']).toBeFalse();
 });
