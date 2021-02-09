@@ -8,7 +8,7 @@ describe('CanvasResizerService', () => {
     let mouseServiceSpy: MouseHandlerService;
 
     beforeEach(() => {
-        mouseServiceSpy = jasmine.createSpyObj('MouseHandlerService', ['onMouseDown', 'onMouseMove', 'eventToCoordinate']);
+        mouseServiceSpy = jasmine.createSpyObj('MouseHandlerService', ['onMouseDown', 'onMouseMove', 'onMouseUp', 'eventToCoordinate']);
         TestBed.configureTestingModule({
             providers: [{ provide: MouseHandlerService, useValue: mouseServiceSpy }],
         });
@@ -29,6 +29,12 @@ describe('CanvasResizerService', () => {
         mouseEvent = {} as MouseEvent;
         service.onMouseMove(mouseEvent);
         expect(mouseServiceSpy.onMouseMove).toHaveBeenCalled();
+    });
+
+    it("should call MouseHandlerService's #onMousemove on mousemove", () => {
+        mouseEvent = {} as MouseEvent;
+        service.onMouseUp(mouseEvent);
+        expect(mouseServiceSpy.onMouseUp).toHaveBeenCalled();
     });
 
     it('should  change status when #onMiddleRightResizerClicked called', () => {
