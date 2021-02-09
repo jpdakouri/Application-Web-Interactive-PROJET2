@@ -75,10 +75,10 @@ export class EllipseService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
-            this.drawRectangle(this.drawingService.baseCtx, this.mouseDownCoord);
+            this.drawEllipse(this.drawingService.baseCtx, this.mouseDownCoord);
             this.clearPath();
         }
-        // this.drawRectangle(this.drawingService.baseCtx, this.mouseDownCoord);
+        // this.drawEllipse(this.drawingService.baseCtx, this.mouseDownCoord);
         this.mouseDown = false;
     }
 
@@ -94,28 +94,16 @@ export class EllipseService extends Tool {
 
     onKeyUp(event: KeyboardEvent): void {
         if (this.shiftDown && !event.shiftKey) {
-            console.log('event');
             this.shiftDown = false;
             this.updatePreview();
         }
     }
 
-    drawDashedRectangle(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
-        ctx.beginPath();
-        // ctx.strokeStyle = this.secondaryColor;
-        ctx.lineWidth = this.lineThickness;
-        ctx.setLineDash([2]);
-        ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
-        ctx.ellipse(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y, 90, 0, 360, false);
-    }
-
     drawOutline(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.beginPath();
-        // this.drawDashedRectangle(ctx, finalGrid);
         ctx.strokeStyle = this.secondaryColor;
         ctx.lineWidth = this.lineThickness;
-        // ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
-        ctx.ellipse(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y, 0, 0, 360, false);
+        ctx.ellipse(this.firstGrid.x, this.firstGrid.y, Math.abs(finalGrid.x), Math.abs(finalGrid.y), 0, 0, 360, false);
         ctx.stroke();
     }
 
@@ -162,11 +150,11 @@ export class EllipseService extends Tool {
         }
     }
 
-    private drawRectangle(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+    private drawEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         switch (this.shapeStyle) {
             case shapeStyle.Outline:
-                this.drawDashedRectangle(ctx, finalGrid);
-                // this.drawOutline(ctx, finalGrid);
+                this.drawOutline(ctx, finalGrid);
+                // this.drawDashedRectangle(ctx, finalGrid);
                 break;
 
             case shapeStyle.Filled:
@@ -188,9 +176,9 @@ export class EllipseService extends Tool {
         const currentCoord = { ...this.mouseDownCoord };
         if (this.shiftDown) {
             this.drawCircle(currentCoord);
-            this.drawRectangle(this.drawingService.previewCtx, currentCoord);
+            this.drawEllipse(this.drawingService.previewCtx, currentCoord);
         }
-        this.drawRectangle(this.drawingService.previewCtx, currentCoord);
+        this.drawEllipse(this.drawingService.previewCtx, currentCoord);
     }
 
     private clearPath(): void {
