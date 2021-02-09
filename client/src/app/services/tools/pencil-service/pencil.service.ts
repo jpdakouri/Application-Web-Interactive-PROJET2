@@ -21,7 +21,7 @@ export class PencilService extends Tool {
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
-        this.radius = this.lineThickness ? this.lineThickness : 1;
+        this.radius = this.lineThickness || DEFAULT_MIN_THICKNESS;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -45,7 +45,7 @@ export class PencilService extends Tool {
                 this.drawLine(this.drawingService.baseCtx, this.pathData);
             }
         }
-        // this.mouseMoved = false;
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.mouseDown = false;
         this.clearPath();
     }
