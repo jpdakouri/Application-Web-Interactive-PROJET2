@@ -77,7 +77,7 @@ export class RectangleService extends Tool {
             this.drawRectangle(this.drawingService.baseCtx, this.mouseDownCoord);
             this.clearPath();
         }
-        this.drawRectangle(this.drawingService.baseCtx, this.mouseDownCoord);
+        // this.drawRectangle(this.drawingService.baseCtx, this.mouseDownCoord);
         this.mouseDown = false;
     }
 
@@ -177,7 +177,6 @@ export class RectangleService extends Tool {
 
             default:
                 this.drawOutline(ctx, finalGrid);
-
                 break;
         }
     }
