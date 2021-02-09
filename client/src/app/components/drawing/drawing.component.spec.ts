@@ -2,6 +2,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.service';
+import { CanvasResizerService } from '@app/services/tools/canvas-resizer/canvas-resizer.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { DrawingComponent } from './drawing.component';
 
@@ -16,17 +18,22 @@ describe('DrawingComponent', () => {
     let fixture: ComponentFixture<DrawingComponent>;
     let toolStub: ToolStub;
     let drawingStub: DrawingService;
+    let mouseStub: MouseHandlerService;
+    let canvasResizerStub: CanvasResizerService;
 
     beforeEach(async(() => {
-        // @ts-ignore
-        toolStub = new ToolStub({} as DrawingService);
+        toolStub = new ToolStub({} as DrawingService, {} as MouseHandlerService);
         drawingStub = new DrawingService();
+        mouseStub = new MouseHandlerService();
+        canvasResizerStub = new CanvasResizerService(drawingStub, mouseStub);
 
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],
             providers: [
                 { provide: PencilService, useValue: toolStub },
                 { provide: DrawingService, useValue: drawingStub },
+                { provide: CanvasResizerService, useValue: canvasResizerStub },
+                { provide: MouseHandlerService, useValue: mouseStub },
             ],
         }).compileComponents();
     }));
@@ -77,5 +84,29 @@ describe('DrawingComponent', () => {
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
     });
 
-    // it('should have a size of 250 x 250 pixels', () => {});
+    // it("should call the middle right resizer's click method when he is clicked", () => {
+    //     spyOn(component, 'onMiddleRightResizerClick');
+    //     let middleRightResizer: HTMLElement;
+    //     middleRightResizer = fixture.debugElement.nativeElement.querySelector('.resizer.bottom-right');
+    //     // const event = {} as MouseEvent;
+    //     middleRightResizer.dispatchEvent(new MouseEvent('mousedown'));
+    //
+    //     fixture.detectChanges();
+    //     expect(component.onMiddleRightResizerClick).toHaveBeenCalled();
+    // });
+
+    // it('should have a size of 250 x 250 pixels', () => {
+    //     const width = 500;
+    //     const height = 500;
+    //     drawingStub.canvas.width = width;
+    //     drawingStub.canvas.height = height;
+    //
+    //     drawingStub.
+    // });
+
+    it('should save the canvas state when a resizer is clicked', () => {
+        spyOn(drawingStub, 'saveCanvas');
+        component.onMiddleRightResizerClick();
+        expect(drawingStub.saveCanvas).toHaveBeenCalled();
+    });
 });
