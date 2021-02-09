@@ -37,7 +37,7 @@ describe('CanvasResizerService', () => {
         expect(mouseServiceSpy.onMouseMove).toHaveBeenCalled();
     });
 
-    it("should call MouseHandlerService's #onMousemove on mouseup", () => {
+    it("should call MouseHandlerService's #onMouseLeave on mouseup", () => {
         mouseEvent = {} as MouseEvent;
         service.onMouseUp(mouseEvent);
         expect(mouseServiceSpy.onMouseUp).toHaveBeenCalled();
