@@ -27,8 +27,6 @@ export class CanvasResizerService extends Tool {
         if (this.status !== Status.OFF) {
             // this.currentTool = this.tools[1];
         }
-        // console.log('Canvas resizer onMouse down called!');
-        // console.log('mouse down in cRS');
     }
 
     onMouseUp(event: MouseEvent): void {
@@ -53,24 +51,23 @@ export class CanvasResizerService extends Tool {
         const deltaY = this.mouseService.startCoordinate.y - this.mouseService.currentCoordinate.y;
         // @ts-ignore
         if (elem !== null) {
-            // elem.style.width = String(this.mouseService.currentCoordinate.x - this.mouseService.startCoordinate.x) + 'px';
             switch (this.status) {
                 case Status.MIDDLE_RIGHT_RESIZE:
                     elem.style.width += String(deltaX) + 'px';
-                    console.log('rszP width = ' + elem.style.width);
+                    // console.log('rszP width = ' + elem.style.width);
                     // console.log('deltaX in rsz = ' + deltaX);
                     break;
 
                 case Status.MIDDLE_BOTTOM_RESIZE:
                     elem.style.height += deltaY + 'px';
-                    console.log('deltaY in rsz = ' + deltaY);
+                    // console.log('deltaY in rsz = ' + deltaY);
                     break;
 
                 case Status.BOTTOM_RIGHT_RESIZE:
                     elem.style.width += deltaX + 'px';
                     elem.style.height += deltaY + 'px';
 
-                    console.log('deltaX in rsz = ' + deltaX + ' | deltaY in rsz = ' + deltaY);
+                    // console.log('deltaX in rsz = ' + deltaX + ' | deltaY in rsz = ' + deltaY);
                     break;
             }
             // if (Number(elem.style.width) < MINIMUM_WIDTH || Number(elem.style.height) < MINIMUM_HEIGHT) {
