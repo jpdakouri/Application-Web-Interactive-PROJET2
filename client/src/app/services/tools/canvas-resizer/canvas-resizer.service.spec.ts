@@ -23,4 +23,9 @@ describe('CanvasResizerService', () => {
         service.onMiddleBottomResizerClick();
         expect(service.status).toBe(Status.MIDDLE_BOTTOM_RESIZE);
     });
+
+    it('should  change status when #onBottomRightResizerClick called', () => {
+        service.onBottomRightResizerClick();
+        expect(service.status).toBe(Status.BOTTOM_RIGHT_RESIZE);
+    });
 });
