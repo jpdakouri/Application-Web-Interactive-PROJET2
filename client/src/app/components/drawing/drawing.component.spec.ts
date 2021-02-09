@@ -105,8 +105,30 @@ describe('DrawingComponent', () => {
     // });
 
     it('should save the canvas state when a resizer is clicked', () => {
+        const numberOfCallsToSaveCanvasMethod = 3;
         spyOn(drawingStub, 'saveCanvas');
+
         component.onMiddleRightResizerClick();
-        expect(drawingStub.saveCanvas).toHaveBeenCalled();
+        component.onBottomRightResizerClick();
+        component.onMiddleBottomResizerClick();
+        expect(drawingStub.saveCanvas).toHaveBeenCalledTimes(numberOfCallsToSaveCanvasMethod);
+    });
+
+    it("should call CanvasResizerService's #onMiddleRightResizer when is called", () => {
+        spyOn(canvasResizerStub, 'onMiddleRightResizerClick');
+        component.onMiddleRightResizerClick();
+        expect(canvasResizerStub.onMiddleRightResizerClick).toHaveBeenCalled();
+    });
+
+    it("should call CanvasResizerService's #onMiddleBottomResizerClick when is called", () => {
+        spyOn(canvasResizerStub, 'onMiddleBottomResizerClick');
+        component.onMiddleBottomResizerClick();
+        expect(canvasResizerStub.onMiddleBottomResizerClick).toHaveBeenCalled();
+    });
+
+    it("should call CanvasResizerService's #onBottomRightResizerClick when is called", () => {
+        spyOn(canvasResizerStub, 'onBottomRightResizerClick');
+        component.onBottomRightResizerClick();
+        expect(canvasResizerStub.onBottomRightResizerClick).toHaveBeenCalled();
     });
 });
