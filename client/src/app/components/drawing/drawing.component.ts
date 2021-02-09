@@ -2,7 +2,6 @@ import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild }
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { Coordinate } from '@app/services/mouse-handler/coordinate';
-import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.service';
 import { CanvasResizerService, Status } from '@app/services/tools/canvas-resizer/canvas-resizer.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 
@@ -10,15 +9,7 @@ import { PencilService } from '@app/services/tools/pencil-service';
 export const DEFAULT_WIDTH = 1000;
 export const DEFAULT_HEIGHT = 800;
 
-export const MINIMUM_WIDTH = 250;
-export const MINIMUM_HEIGHT = 250;
-
-export const LOWER_BOUND_WIDTH = 500;
-export const LOWER_BOUND_HEIGHT = 500;
-
 export const DEFAULT_WHITE = '#fff';
-
-// export const SIDEBAR_WIDTH = 294;
 
 @Component({
     selector: 'app-drawing',
@@ -42,12 +33,7 @@ export class DrawingComponent implements OnInit, AfterViewInit {
     private tools: Tool[];
     currentTool: Tool;
 
-    constructor(
-        private drawingService: DrawingService,
-        private mouseService: MouseHandlerService,
-        pencilService: PencilService,
-        public canvasResizerService: CanvasResizerService,
-    ) {
+    constructor(private drawingService: DrawingService, pencilService: PencilService, public canvasResizerService: CanvasResizerService) {
         this.tools = [pencilService, canvasResizerService];
         this.currentTool = this.tools[0];
     }
@@ -99,20 +85,14 @@ export class DrawingComponent implements OnInit, AfterViewInit {
         this.drawingService.saveCanvas(this.drawingService.canvas.width, this.drawingService.canvas.height);
     }
 
-    // @HostListener('window:mouseleave', ['$event'])
-    // oneMouseLeave(event: MouseEvent): void {
-    //     // this.drawingService.saveCanvas(this.width, this.height);
-    //     this.currentTool.onMouseLeave(event);
-    // }
-
     @HostListener('window:beforeunload', ['$event'])
     unloadHandler(): void {
         this.drawingService.saveCanvas(this.width, this.height);
     }
 
+    @HostListener('window:mouseover', ['$event'])
     onMouseOver(): void {
         this.currentTool = this.tools[1];
-        // this.isResizing = true;
     }
 
     get width(): number {
@@ -123,38 +103,13 @@ export class DrawingComponent implements OnInit, AfterViewInit {
         return this.canvasSize.y;
     }
 
-    resizeCanvas(): void {
-        const deltaX = this.mouseService.calculateDeltaX();
-        const deltaY = this.mouseService.calculateDeltaY();
-
-        switch (this.canvasResizerService.status) {
-            case Status.MIDDLE_RIGHT_RESIZE:
-                this.canvasSize.x += deltaX;
-                break;
-
-            case Status.MIDDLE_BOTTOM_RESIZE:
-                this.canvasSize.y += deltaY;
-                break;
-
-            case Status.BOTTOM_RIGHT_RESIZE:
-                this.canvasSize.x += deltaX;
-                this.canvasSize.y += deltaY;
-                break;
-        }
-        if (this.canvasSize.x < MINIMUM_WIDTH || this.canvasSize.y < MINIMUM_HEIGHT) {
-            this.canvasSize = { x: MINIMUM_WIDTH, y: MINIMUM_HEIGHT };
-        }
-        this.drawingService.restoreCanvas();
+    setCanvasSize(): void {
+        this.canvasSize = this.canvasResizerService.calculateCanvasSize();
     }
 
-    setCanvasSize(): void {
-        const workingZone: Coordinate = this.drawingService.calculateWorkingZoneSize();
-        this.canvasSize = { x: workingZone.x / 2, y: workingZone.y / 2 };
-
-        if (workingZone.x < LOWER_BOUND_WIDTH || workingZone.y < LOWER_BOUND_HEIGHT) {
-            this.canvasSize = { x: MINIMUM_WIDTH, y: MINIMUM_HEIGHT };
-        }
-        // console.log('size changed!');
+    resizeCanvas(): void {
+        this.canvasSize = this.canvasResizerService.calculateNewCanvasSize(this.canvasSize);
+        this.drawingService.restoreCanvas();
     }
 
     onMiddleRightResizerClick(): void {
@@ -175,3 +130,43 @@ export class DrawingComponent implements OnInit, AfterViewInit {
         this.canvasResizerService.onMiddleBottomResizerClick();
     }
 }
+
+// @HostListener('window:mouseleave', ['$event'])
+// oneMouseLeave(event: MouseEvent): void {
+//     // this.drawingService.saveCanvas(this.width, this.height);
+//     this.currentTool.onMouseLeave(event);
+// }
+
+// resizeCanvas(): void {
+//     const deltaX = this.mouseService.calculateDeltaX();
+//     const deltaY = this.mouseService.calculateDeltaY();
+//
+//     switch (this.canvasResizerService.status) {
+//         case Status.MIDDLE_RIGHT_RESIZE:
+//             this.canvasSize.x += deltaX;
+//             break;
+//
+//         case Status.MIDDLE_BOTTOM_RESIZE:
+//             this.canvasSize.y += deltaY;
+//             break;
+//
+//         case Status.BOTTOM_RIGHT_RESIZE:
+//             this.canvasSize.x += deltaX;
+//             this.canvasSize.y += deltaY;
+//             break;
+//     }
+//     if (this.canvasSize.x < MINIMUM_WIDTH || this.canvasSize.y < MINIMUM_HEIGHT) {
+//         this.canvasSize = { x: MINIMUM_WIDTH, y: MINIMUM_HEIGHT };
+//     }
+//     this.drawingService.restoreCanvas();
+// }
+
+// setCanvasSize(): void {
+//     const workingZone: Coordinate = this.drawingService.calculateWorkingZoneSize();
+//     this.canvasSize = { x: workingZone.x / 2, y: workingZone.y / 2 };
+//
+//     if (workingZone.x < LOWER_BOUND_WIDTH || workingZone.y < LOWER_BOUND_HEIGHT) {
+//         this.canvasSize = { x: MINIMUM_WIDTH, y: MINIMUM_HEIGHT };
+//     }
+//     // console.log('size changed!');
+// }

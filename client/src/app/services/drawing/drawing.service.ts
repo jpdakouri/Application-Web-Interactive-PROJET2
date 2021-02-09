@@ -1,7 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Coordinate } from '@app/services/mouse-handler/coordinate';
-
-export const SIDEBAR_WIDTH = 294;
 
 @Injectable({
     providedIn: 'root',
@@ -11,13 +8,6 @@ export class DrawingService {
     previewCtx: CanvasRenderingContext2D;
     // resizingPreviewCtx: CanvasRenderingContext2D;
     canvas: HTMLCanvasElement;
-
-    calculateWorkingZoneSize(): Coordinate {
-        return {
-            x: window.innerWidth - SIDEBAR_WIDTH,
-            y: window.innerHeight,
-        };
-    }
 
     saveCanvas(width: number, height: number): void {
         sessionStorage.setItem('canvasBuffer', this.canvas.toDataURL());

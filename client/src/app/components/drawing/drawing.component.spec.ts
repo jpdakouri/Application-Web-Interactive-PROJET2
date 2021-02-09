@@ -95,14 +95,16 @@ describe('DrawingComponent', () => {
     //     expect(component.onMiddleRightResizerClick).toHaveBeenCalled();
     // });
 
-    // it('should have a size of 250 x 250 pixels', () => {
-    //     const width = 500;
-    //     const height = 500;
-    //     drawingStub.canvas.width = width;
-    //     drawingStub.canvas.height = height;
-    //
-    //     drawingStub.
-    // });
+    it('should have a size of 250 x 250 pixels', () => {
+        const width = 500;
+        const height = 500;
+
+        spyOnProperty(window, 'innerWidth').and.returnValue('width');
+        spyOnProperty(window, 'innerHeight').and.returnValue('height');
+
+        drawingStub.canvas.width = width;
+        drawingStub.canvas.height = height;
+    });
 
     it('should save the canvas state when a resizer is clicked', () => {
         const numberOfCallsToSaveCanvasMethod = 3;
