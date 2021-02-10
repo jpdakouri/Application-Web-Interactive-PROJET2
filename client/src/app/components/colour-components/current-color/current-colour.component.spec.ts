@@ -1,19 +1,18 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { CurrentColorComponent } from './current-color.component';
+import { CurrentColourComponent } from './current-colour.component';
 
 describe('CurrentColorComponent', () => {
-    let component: CurrentColorComponent;
-    let fixture: ComponentFixture<CurrentColorComponent>;
+    let component: CurrentColourComponent;
+    let fixture: ComponentFixture<CurrentColourComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [CurrentColorComponent],
+            declarations: [CurrentColourComponent],
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(CurrentColorComponent);
+        fixture = TestBed.createComponent(CurrentColourComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

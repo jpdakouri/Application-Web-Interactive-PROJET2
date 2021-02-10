@@ -8,7 +8,7 @@ import { DrawingComponent } from './drawing.component';
 // TODO : Déplacer dans un fichier accessible à tous
 const TOOLBAR_WIDTH = 425;
 
-fdescribe('DrawingComponent', () => {
+describe('DrawingComponent', () => {
     let component: DrawingComponent;
     let fixture: ComponentFixture<DrawingComponent>;
     let drawingStub: DrawingService;
@@ -107,5 +107,31 @@ fdescribe('DrawingComponent', () => {
         component.onMouseLeave(event);
         expect(mouseEventSpy).toHaveBeenCalled();
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
+    });
+
+    it('#emitEditorMinWidth should call #computeEditorMinWidth', () => {
+        spyOn(component, 'computeEditorMinWidth').and.callThrough();
+        component.emitEditorMinWidth();
+        expect(component.computeEditorMinWidth).toHaveBeenCalled();
+    });
+    it('#emitEditorMinWidth should emit correct value', () => {
+        const SIDEBAR_WIDTH = 425;
+        const FAKE_CANVAS_WIDTH = 100;
+        const WORKING_ZONE_VISIBLE_PORTION = 100;
+        // tslint:disable-next-line: no-string-literal
+        component['canvasSize'].x = FAKE_CANVAS_WIDTH;
+        const editorMinWidth = FAKE_CANVAS_WIDTH + SIDEBAR_WIDTH + WORKING_ZONE_VISIBLE_PORTION;
+        spyOn(component.editorMinWidthEmitter, 'emit');
+        component.emitEditorMinWidth();
+        expect(component.editorMinWidthEmitter.emit).toHaveBeenCalledWith(editorMinWidth);
+    });
+    it('#computeEditorMinWidth should compute the correct value', () => {
+        const SIDEBAR_WIDTH = 425;
+        const FAKE_CANVAS_WIDTH = 100;
+        const WORKING_ZONE_VISIBLE_PORTION = 100;
+        // tslint:disable-next-line: no-string-literal
+        component['canvasSize'].x = FAKE_CANVAS_WIDTH;
+        const editorMinWidth = FAKE_CANVAS_WIDTH + SIDEBAR_WIDTH + WORKING_ZONE_VISIBLE_PORTION;
+        expect(component.computeEditorMinWidth()).toEqual(editorMinWidth);
     });
 });

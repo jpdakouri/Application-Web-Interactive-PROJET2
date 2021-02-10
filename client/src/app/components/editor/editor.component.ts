@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { Vec2 } from '@app/classes/vec2';
 
 @Component({
     selector: 'app-editor',
@@ -7,14 +6,14 @@ import { Vec2 } from '@app/classes/vec2';
     styleUrls: ['./editor.component.scss'],
 })
 export class EditorComponent implements AfterViewInit {
-    editorMinWidth: Vec2;
+    editorMinWidth: number;
     @ViewChild('editor') editor: ElementRef<HTMLCanvasElement>;
 
     ngAfterViewInit(): void {
         this.setEditorMinWidth();
     }
 
-    saveEditorMinWidth(event: Vec2): void {
+    saveEditorMinWidth(event: number): void {
         this.editorMinWidth = event;
     }
 

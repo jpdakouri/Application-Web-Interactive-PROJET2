@@ -21,7 +21,7 @@ export class ToolAttributeBarComponent {
     }
 
     onThicknessChange(event: MatSliderChange): void {
-        event.value ? this.toolManagerService.setCurrentLineThickness(event.value) : this.toolManagerService.setCurrentLineThickness();
+        this.toolManagerService.setCurrentLineThickness(event.value || undefined);
     }
 
     getCurrentLineThickness(): number | undefined {
@@ -34,20 +34,18 @@ export class ToolAttributeBarComponent {
         const shapeStyle: string = event.value;
         this.toolManagerService.setCurrentShapeStyle(shapeStyle);
     }
-
-    onDotRadiusChange(event: MatSliderChange): void {
-        event.value ? this.toolManagerService.setCurrentDotRadius(event.value) : this.toolManagerService.setCurrentDotRadius();
-    }
-
     getCurrentShapeStyle(): ShapeStyle | undefined {
         return this.toolManagerService.getCurrentShapeStyle();
     }
 
+    onDotRadiusChange(event: MatSliderChange): void {
+        this.toolManagerService.setCurrentDotRadius(event.value || undefined);
+    }
     getCurrentDotRadius(): number | undefined {
         return this.toolManagerService.getCurrentDotRadius();
     }
 
-    showLineWidth(): boolean {
+    showLineThickness(): boolean {
         return (
             this.toolManagerService.isCurrentTool(ToolsNames.Pencil) ||
             this.toolManagerService.isCurrentTool(ToolsNames.Eraser) ||

@@ -9,7 +9,7 @@ import { AppComponent } from './components/app/app.component';
 import { ColourHistoryComponent } from './components/colour-components/colour-history/colour-history.component';
 import { ColourPaletteSelectorComponent } from './components/colour-components/colour-palette-selector/colour-palette-selector.component';
 import { ColourSelectorComponent } from './components/colour-components/colour-selector/colour-selector.component';
-import { CurrentColorComponent } from './components/colour-components/current-color/current-color.component';
+import { CurrentColourComponent } from './components/colour-components/current-color/current-colour.component';
 import { HueSelectorComponent } from './components/colour-components/hue-selector/hue-selector.component';
 import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
@@ -26,7 +26,7 @@ import { ToolbarComponent } from './components/toolbar-components/toolbar/toolba
         ColourSelectorComponent,
         HueSelectorComponent,
         ColourPaletteSelectorComponent,
-        CurrentColorComponent,
+        CurrentColourComponent,
         ColourHistoryComponent,
         ToolbarComponent,
         ToolAttributeBarComponent,

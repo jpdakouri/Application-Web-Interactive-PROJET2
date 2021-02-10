@@ -94,7 +94,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     @HostListener('window:beforeunload', ['$event'])
     unloadHandler(): void {
-        this.drawingService.saveCanvas(this.width, this.height);
+        this.drawingService.saveCanvas();
     }
 
     @HostListener('mouseleave', ['$event'])

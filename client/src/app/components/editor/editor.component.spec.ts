@@ -24,4 +24,24 @@ describe('EditorComponent', () => {
         console.log(component);
         expect(component).toBeTruthy();
     });
+
+    it('#ngAfterViewInit should call #setEditorMinWidth', () => {
+        spyOn(component, 'setEditorMinWidth').and.callThrough();
+        component.ngAfterViewInit();
+        expect(component.setEditorMinWidth).toHaveBeenCalled();
+    });
+    it('#saveEditorMinWidth should set this.editorMinWidth to correct value', () => {
+        const EDITOR_MIN_WIDTH_FAKE_VALUE = 100;
+        component.saveEditorMinWidth(EDITOR_MIN_WIDTH_FAKE_VALUE);
+        expect(component.editorMinWidth).toEqual(EDITOR_MIN_WIDTH_FAKE_VALUE);
+    });
+
+    it("#setEditorMinWidth should set editor's css min-width to correct value ", () => {
+        const EDITOR_MIN_WIDTH_FAKE_VALUE = 100;
+        component.editorMinWidth = EDITOR_MIN_WIDTH_FAKE_VALUE;
+        component.setEditorMinWidth();
+        const editorMinWidthString = component.editor.nativeElement.style.minWidth;
+        const editorMinWidth = parseInt(editorMinWidthString, 10);
+        expect(editorMinWidth).toEqual(EDITOR_MIN_WIDTH_FAKE_VALUE);
+    });
 });
