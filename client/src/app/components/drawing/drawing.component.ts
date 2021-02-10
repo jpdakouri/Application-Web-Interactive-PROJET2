@@ -21,13 +21,11 @@ export class DrawingComponent implements OnInit, AfterViewInit {
     // On utilise ce canvas pour dessiner sans affecter le dessin final
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
 
+    @ViewChild('canvasResizer', { static: false }) canvasResizer: ElementRef<HTMLDivElement>;
+
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
     private canvasSize: Coordinate = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
-
-    // aperçu redimensionnement
-    // @Input() resizePreviewHeight: number;
-    // @Input() resizePreviewWidth: number;
 
     // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
     private tools: Tool[];
@@ -49,6 +47,8 @@ export class DrawingComponent implements OnInit, AfterViewInit {
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
         this.drawingService.canvas.style.backgroundColor = DEFAULT_WHITE;
+        this.canvasResizerService.canvasPreviewWidth = this.canvasSize.x;
+        this.canvasResizerService.canvasPreviewHeight = this.canvasSize.y;
         // this.setCanvasSize();
 
         this.drawingService.restoreCanvas();
@@ -59,13 +59,21 @@ export class DrawingComponent implements OnInit, AfterViewInit {
         // }
     }
 
+    setCanvasSize(): void {
+        this.canvasSize = this.canvasResizerService.calculateCanvasSize();
+    }
+
+    resizeCanvas(): void {
+        this.canvasSize = this.canvasResizerService.calculateNewCanvasSize(this.canvasSize);
+        this.drawingService.restoreCanvas();
+    }
+
     @HostListener('window:mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
         this.currentTool.onMouseMove(event);
         if (!this.canvasResizerService.isResizing()) {
             this.currentTool = this.tools[0];
         }
-        // console.log(this.drawingService.isCanvasBlank());
 
         // redimensionnement
         // if (this.canvasResizerService.isResizing()) this.canvasResizerService.resizePreviewCanvas();
@@ -103,13 +111,8 @@ export class DrawingComponent implements OnInit, AfterViewInit {
         return this.canvasSize.y;
     }
 
-    setCanvasSize(): void {
-        this.canvasSize = this.canvasResizerService.calculateCanvasSize();
-    }
-
-    resizeCanvas(): void {
-        this.canvasSize = this.canvasResizerService.calculateNewCanvasSize(this.canvasSize);
-        this.drawingService.restoreCanvas();
+    getPreviewCanvasSize(): Coordinate {
+        return { x: this.canvasResizerService.canvasPreviewWidth, y: this.canvasResizerService.canvasPreviewHeight };
     }
 
     onMiddleRightResizerClick(): void {
