@@ -23,11 +23,14 @@ export const enum Status {
     providedIn: 'root',
 })
 export class CanvasResizerService extends Tool {
+    status: Status;
+    canvasPreviewWidth: number;
+    canvasPreviewHeight: number;
+
     constructor(drawingService: DrawingService, mouseService: MouseHandlerService) {
         super(drawingService, mouseService);
         this.status = Status.OFF;
     }
-    status: Status;
 
     static calculateWorkingZoneSize(): Coordinate {
         return {
@@ -46,7 +49,7 @@ export class CanvasResizerService extends Tool {
 
     onMouseMove(event: MouseEvent): void {
         this.mouseService.onMouseMove(this.mouseService.eventToCoordinate(event));
-        // if (this.isResizing()) this.resizePreviewCanvas();
+        if (this.isResizing()) this.resizePreviewCanvas();
     }
 
     onMiddleRightResizerClick(): void {
@@ -102,6 +105,37 @@ export class CanvasResizerService extends Tool {
         return newCoordinate;
     }
 
+    resizePreviewCanvas(): void {
+        // const deltaX = this.mouseService.startCoordinate.x - this.mouseService.currentCoordinate.x;
+        // const deltaY = this.mouseService.startCoordinate.y - this.mouseService.currentCoordinate.y;
+        // console.log('mouse start width = ' + this.mouseService.startCoordinate.x);
+        // console.log('mouse current width = ' + this.mouseService.currentCoordinate.y);
+        // console.log('deltaX = ' + deltaX);
+        // const start = this.canvasPreviewWidth;
+
+        switch (this.status) {
+            case Status.MIDDLE_RIGHT_RESIZE:
+                this.canvasPreviewWidth = this.mouseService.currentCoordinate.x - SIDEBAR_WIDTH;
+                // this.canvasPreviewWidth += deltaX;
+                // console.log('canvas resizer width = ' + this.canvasPreviewWidth);
+                break;
+
+            case Status.MIDDLE_BOTTOM_RESIZE:
+                this.canvasPreviewHeight = this.mouseService.currentCoordinate.y;
+                // console.log('deltaY in rsz = ' + deltaY);
+                break;
+
+            case Status.BOTTOM_RIGHT_RESIZE:
+                this.canvasPreviewWidth = this.mouseService.currentCoordinate.x - SIDEBAR_WIDTH;
+                this.canvasPreviewHeight = this.mouseService.currentCoordinate.y;
+
+                // console.log('deltaX in rsz = ' + deltaX + ' | deltaY in rsz = ' + deltaY);
+                break;
+        }
+
+        // this.drawingService.restoreCanvas();
+    }
+
     isResizing(): boolean {
         return this.status !== Status.OFF;
     }
@@ -138,39 +172,6 @@ export class CanvasResizerService extends Tool {
 // @HostListener('window:mouseleave', ['$event'])
 // oneMouseLeave(event: MouseEvent): void {
 //     this.mouseService.onMouseLeave(this.mouseService.eventToCoordinate(event));
-// }
-
-// resizePreviewCanvas(): void {
-//     const elem = document.getElementById('rsz');
-//     const deltaX = this.mouseService.startCoordinate.x - this.mouseService.currentCoordinate.x;
-//     const deltaY = this.mouseService.startCoordinate.y - this.mouseService.currentCoordinate.y;
-//     // @ts-ignore
-//     if (elem !== null) {
-//         switch (this.status) {
-//             case Status.MIDDLE_RIGHT_RESIZE:
-//                 elem.style.width += String(deltaX) + 'px';
-//                 // console.log('rszP width = ' + elem.style.width);
-//                 // console.log('deltaX in rsz = ' + deltaX);
-//                 break;
-//
-//             case Status.MIDDLE_BOTTOM_RESIZE:
-//                 elem.style.height += deltaY + 'px';
-//                 // console.log('deltaY in rsz = ' + deltaY);
-//                 break;
-//
-//             case Status.BOTTOM_RIGHT_RESIZE:
-//                 elem.style.width += deltaX + 'px';
-//                 elem.style.height += deltaY + 'px';
-//
-//                 // console.log('deltaX in rsz = ' + deltaX + ' | deltaY in rsz = ' + deltaY);
-//                 break;
-//         }
-//         // if (Number(elem.style.width) < MINIMUM_WIDTH || Number(elem.style.height) < MINIMUM_HEIGHT) {
-//         //     elem.style.width = MINIMUM_WIDTH + 'px';
-//         //     elem.style.height = MINIMUM_HEIGHT + 'px';
-//         // }
-//         // this.drawingService.restoreCanvas();
-//     }
 // }
 
 // resizeCanvas(width: number, height: number): void {
