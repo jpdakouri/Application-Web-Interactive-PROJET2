@@ -84,27 +84,21 @@ describe('DrawingComponent', () => {
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
     });
 
-    // it("should call the middle right resizer's click method when he is clicked", () => {
-    //     spyOn(component, 'onMiddleRightResizerClick');
-    //     let middleRightResizer: HTMLElement;
-    //     middleRightResizer = fixture.debugElement.nativeElement.querySelector('.resizer.bottom-right');
-    //     // const event = {} as MouseEvent;
-    //     middleRightResizer.dispatchEvent(new MouseEvent('mousedown'));
+    // it('should have a size of 250 x 250 pixels', () => {
+    //     // const width = 500;
+    //     // const height = 500;
     //
-    //     fixture.detectChanges();
-    //     expect(component.onMiddleRightResizerClick).toHaveBeenCalled();
+    //     spyOnProperty(window, 'innerWidth').and.returnValue('width');
+    //     spyOnProperty(window, 'innerHeight').and.returnValue('height');
     // });
 
-    it('should have a size of 250 x 250 pixels', () => {
-        const width = 500;
-        const height = 500;
+    // it(' canvas should have the right size on init', () => {});
 
-        spyOnProperty(window, 'innerWidth').and.returnValue('width');
-        spyOnProperty(window, 'innerHeight').and.returnValue('height');
-
-        drawingStub.canvas.width = width;
-        drawingStub.canvas.height = height;
-    });
+    // it('should save the canvas context on page load', () => {
+    //     spyOn(drawingStub, 'saveCanvas');
+    //     // spyOn(Window, '').and.callThrough();
+    //     expect(drawingStub.saveCanvas).toHaveBeenCalled();
+    // });
 
     it('should save the canvas state when a resizer is clicked', () => {
         const numberOfCallsToSaveCanvasMethod = 3;
@@ -132,5 +126,11 @@ describe('DrawingComponent', () => {
         spyOn(canvasResizerStub, 'onBottomRightResizerClick');
         component.onBottomRightResizerClick();
         expect(canvasResizerStub.onBottomRightResizerClick).toHaveBeenCalled();
+    });
+
+    it('should restore the canvas after #resize call', () => {
+        spyOn(drawingStub, 'restoreCanvas');
+        component.resizeCanvas();
+        expect(drawingStub.restoreCanvas).toHaveBeenCalled();
     });
 });
