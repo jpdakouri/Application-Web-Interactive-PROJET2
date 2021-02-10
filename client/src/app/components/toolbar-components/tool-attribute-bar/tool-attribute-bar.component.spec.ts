@@ -96,6 +96,7 @@ describe('ToolAttributeBarComponent', () => {
         expect(toolManagerServiceSpy.setCurrentShowDots).toHaveBeenCalledWith(true);
     });
     it("#onShapeStyleChange should call toolManagerService's #setCurrentShapeStyle with correct parameter ", () => {
+        // tslint:disable-next-line: no-any
         const matButtonToggle: any = undefined;
         const matButtonToggleValue = 'Outline';
         const matButtonToggleChange: MatButtonToggleChange = new MatButtonToggleChange(matButtonToggle, matButtonToggleValue);

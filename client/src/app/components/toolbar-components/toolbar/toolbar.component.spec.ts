@@ -40,6 +40,8 @@ describe('ToolbarComponent', () => {
         expect(toolManagerServiceSpy.emitToolChange).not.toHaveBeenCalledWith(ToolsNames.Rectangle);
     });
     it("#isSelected should call toolManagerService's #isCurrentTool with correct argument", () => {
+        // tslint:disable: no-magic-numbers
+
         component.isSelected(ToolsNames.Pencil);
         expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(0)).toEqual([ToolsNames.Pencil]);
         expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(0)).not.toEqual([ToolsNames.Line]);

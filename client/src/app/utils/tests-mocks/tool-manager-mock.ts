@@ -1,9 +1,9 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { Tool } from '../../classes/tool';
-import { DrawingService } from '../../services/drawing/drawing.service';
-import { ShapeStyle } from '../../utils/enums/shape-style';
-import { ToolsNames } from '../../utils/enums/tools-names';
-import { ToolStub } from '../../utils/tests-mocks/tool-stub';
+import { Tool } from '@app/classes/tool';
+import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ShapeStyle } from '@app/utils/enums/shape-style';
+import { ToolsNames } from '@app/utils/enums/tools-names';
+import { ToolStub } from '@app/utils/tests-mocks/tool-stub';
 
 @Injectable({
     providedIn: 'root',
