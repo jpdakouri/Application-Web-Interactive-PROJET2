@@ -68,7 +68,6 @@ export class RectangleService extends Tool {
             if (event.shiftKey) {
                 this.shiftDown = true;
                 this.drawSquare(this.mouseDownCoord);
-                // this.updatePreview();
             }
         }
     }
@@ -99,14 +98,13 @@ export class RectangleService extends Tool {
         }
     }
 
-    drawDashedRectangle(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
-        ctx.beginPath();
-        // ctx.strokeStyle = this.secondaryColor;
-        ctx.lineWidth = this.lineThickness;
-        ctx.setLineDash([2]);
-        ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
-        ctx.fill();
-    }
+    // drawDashedRectangle(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+    //     ctx.beginPath();
+    //     ctx.lineWidth = this.lineThickness;
+    //     ctx.setLineDash([2]);
+    //     ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+    //     ctx.fill();
+    // }
 
     private drawOutline(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.beginPath();
@@ -180,7 +178,7 @@ export class RectangleService extends Tool {
     private drawRectangle(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         switch (this.shapeStyle) {
             case shapeStyle.Outline:
-                this.drawDashedRectangle(ctx, finalGrid);
+                this.drawOutline(ctx, finalGrid);
                 break;
 
             case shapeStyle.Filled:
