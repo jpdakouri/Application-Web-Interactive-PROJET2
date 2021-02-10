@@ -10,23 +10,26 @@
   <div class='resizer middle-right'  [ngStyle]="{'left': width + 'px', 'top': (height/2 - 2.5) + 'px'}"
                                      (mousedown)="onMiddleRightResizerClick()"
                                      (mouseover)="onMouseOver()"
+                                     matTooltip="W : {{width}} px"
+                                     matTooltipPosition="right"
   ></div>
-<!--                                      matTooltip="W : {{width}} px"-->
-<!--                                      matTooltipPosition="right"-->
+
 
   <div class='resizer bottom-right'  [ngStyle]="{'left': width + 'px', 'top': height + 'px'}"
                                      (mousedown)="onBottomRightResizerClick()"
                                      (mouseover)="onMouseOver()"
+                                     matTooltip="W : {{width}} px | H : {{height}} px"
+                                     matTooltipPosition="below"
   ></div>
-<!--                                      matTooltip="W : {{width}} px | H : {{height}} px"-->
-<!--                                      matTooltipPosition="below"-->
+
 
   <div class='resizer bottom-middle' [ngStyle]="{'left': (width/2 - 2.5) + 'px', 'top': height + 'px'}"
                                      (mousedown)="onMiddleBottomResizerClick()"
                                      (mouseover)="onMouseOver()"
+                                     matTooltip="H : {{height}} px"
+                                     matTooltipPosition="below"
   ></div>
-<!--                                      matTooltip="H : {{height}} px"-->
-<!--                                      matTooltipPosition="below"-->
+
 
   <canvas id="canvas" #baseCanvas [attr.width]="width" [attr.height]="height"
           (mousedown)="onMouseDown($event)"
@@ -37,22 +40,18 @@
           (mouseup)="onMouseUp($event)"
           (mousemove)="onMouseMove($event)"></canvas>
 
-<!--  <div id="rsz" [ngStyle]="{'width': width + 'px',-->
-<!--                            'height': height + 'px',-->
-<!--                            'background-color': '#a49fd7',-->
-<!--                            'position': 'absolute',-->
-<!--                            'border': '1px dashed',-->
-<!--                            'z-index': 100}"-->
-<!--       (mousedown)="onMouseDown($event)"-->
-<!--       (mouseup)="onMouseUp($event)"-->
-<!--       (mousemove)="onMouseMove($event)"-->
-<!--  ></div>-->
-<!--  *ngIf="canvasResizerService.isResizing()-->
-
-  <!--  <canvas id="resizingLayer" #resizingPreviewCanvas width="width" [attr.height]="height"-->
-<!--          (mousedown)="onMouseDown($event)"-->
-<!--          (mouseup)="onMouseUp($event)"-->
-<!--          (mousemove)="onMouseMove($event)" *ngIf="!isResizing"></canvas>-->
+  <div id="rsz" #canvasResizer [ngStyle]="{'width': getPreviewCanvasSize().x  + 'px',
+                            'height': getPreviewCanvasSize().y + 'px',
+                            'position': 'relative',
+                            'border': '1px dashed',
+                            'min-width': 250 + 'px',
+                            'min-height':250 + 'px',
+                            'z-index': 100}"
+       (mousedown)="onMouseDown($event)"
+       (mouseup)="onMouseUp($event)"
+       (mousemove)="onMouseMove($event)"
+       *ngIf="canvasResizerService.isResizing()"
+  ></div>
 </div>
 
 
