@@ -106,7 +106,7 @@ export class RectangleService extends Tool {
     //     ctx.fill();
     // }
 
-    private drawOutline(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+    drawOutline(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.beginPath();
         // this.drawDashedRectangle(ctx, finalGrid);
         ctx.strokeStyle = this.secondaryColor;
@@ -114,13 +114,13 @@ export class RectangleService extends Tool {
         ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
     }
 
-    private drawFilled(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+    drawFilled(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.beginPath();
         ctx.fillStyle = this.primaryColour;
         ctx.fillRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
     }
 
-    private drawFilledOutline(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+    drawFilledOutline(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.beginPath();
         ctx.fillStyle = this.primaryColour;
         ctx.lineWidth = this.lineThickness;
