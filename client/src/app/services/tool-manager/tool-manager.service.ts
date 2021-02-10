@@ -48,10 +48,11 @@ export class ToolManagerService {
             LineThickness: 1,
             ShapeStyle: ShapeStyle.Outline,
             DotRadius: 1,
-            ShowDots: true,
+            ShowDots: false,
         };
         this.shapeStyleSelection.set('Outline', ShapeStyle.Outline).set('Filled', ShapeStyle.Filled).set('FilledOutline', ShapeStyle.FilledOutline);
-        this.toolChangeEmitter.subscribe(() => {
+        this.toolChangeEmitter.subscribe((toolName: ToolsNames) => {
+            this.currentTool = toolName;
             const currentTool = this.toolBox[this.currentTool];
             this.currentAttributes.ShapeStyle = currentTool.shapeStyle;
             this.currentAttributes.LineThickness = currentTool.lineThickness;

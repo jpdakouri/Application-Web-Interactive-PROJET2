@@ -1,4 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { CurrentColourComponent } from './current-colour.component';
 
 describe('CurrentColorComponent', () => {
@@ -8,6 +10,7 @@ describe('CurrentColorComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [CurrentColourComponent],
+            imports: [MatIconModule, MatButtonModule],
         }).compileComponents();
     }));
 

@@ -15,7 +15,6 @@ export class ToolbarComponent {
     }
 
     setCurrentTool(toolName: ToolsNames): void {
-        this.toolManagerService.setCurrentTool(toolName);
         this.toolManagerService.emitToolChange(toolName);
     }
 

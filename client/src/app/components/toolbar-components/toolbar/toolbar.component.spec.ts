@@ -34,9 +34,7 @@ describe('ToolbarComponent', () => {
 
     it("#setCurrentTool should call toolManagerService's #setCurrentTool and #emitToolChange with correct argument", () => {
         component.setCurrentTool(ToolsNames.Pencil);
-        expect(toolManagerServiceSpy.setCurrentTool).toHaveBeenCalledWith(ToolsNames.Pencil);
         expect(toolManagerServiceSpy.emitToolChange).toHaveBeenCalledWith(ToolsNames.Pencil);
-        expect(toolManagerServiceSpy.setCurrentTool).not.toHaveBeenCalledWith(ToolsNames.Ellipse);
         expect(toolManagerServiceSpy.emitToolChange).not.toHaveBeenCalledWith(ToolsNames.Rectangle);
     });
     it("#isSelected should call toolManagerService's #isCurrentTool with correct argument", () => {

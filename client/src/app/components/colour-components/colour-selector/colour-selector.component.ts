@@ -44,7 +44,6 @@ export class ColourSelectorComponent {
     }
 
     isValidRGB(): boolean {
-        // console.log(this.rgbColor);
         if (this.rgbColor === '' || this.rgbColor == undefined) return false;
         const RGB_VALUES = this.rgbColor.split(',');
         const MAX_RGB = 255;
@@ -62,7 +61,6 @@ export class ColourSelectorComponent {
             if (Number(value) > 0 && Number(value) < MAX_RGB && !Number.isInteger(value)) containsValidNumbers = false;
             if (!Number.isInteger(value)) containsValidNumbers = false;
         });
-        console.log('a');
         return containsValidNumbers;
     }
 

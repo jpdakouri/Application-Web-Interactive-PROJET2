@@ -91,7 +91,6 @@ export class ColourPaletteSelectorComponent implements AfterViewInit, OnChanges 
     }
 
     onMouseDown(mouseEvent: MouseEvent): void {
-        console.log('a');
         this.mousedown = true;
         this.selectedPosition = { x: mouseEvent.offsetX, y: mouseEvent.offsetY };
         this.draw();

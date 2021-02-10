@@ -6,6 +6,7 @@ import { ToolStub } from '@app/utils/tests-mocks/tool-stub';
 import { DrawingComponent } from './drawing.component';
 
 // TODO : Déplacer dans un fichier accessible à tous
+const TOOLBAR_WIDTH = 425;
 
 describe('DrawingComponent', () => {
     let component: DrawingComponent;
@@ -60,6 +61,24 @@ describe('DrawingComponent', () => {
         spyOn(drawingStub, 'restoreCanvas').and.callThrough();
         component.ngAfterViewInit();
         expect(drawingStub.restoreCanvas).toHaveBeenCalled();
+    });
+
+    it('canvas should have a default WIDTH and HEIGHT that is half of working zone dimensions', () => {
+        const MINIMUM_CANVAS_WIDTH = 250;
+        const MINIMUM_CANVAS_HEIGHT = 250;
+        const workingZoneWidth = window.innerWidth - TOOLBAR_WIDTH;
+        const workingZoneHeight = window.innerHeight;
+        const canvasHeight = component.height;
+        const canvasWidth = component.width;
+        const desiredCanvasHeight = workingZoneHeight / 2;
+        const desiredCanvasWidth = workingZoneWidth / 2;
+        if (desiredCanvasHeight < MINIMUM_CANVAS_HEIGHT || desiredCanvasWidth < MINIMUM_CANVAS_WIDTH) {
+            expect(canvasHeight).toEqual(MINIMUM_CANVAS_HEIGHT);
+            expect(canvasWidth).toEqual(MINIMUM_CANVAS_WIDTH);
+        } else {
+            expect(canvasHeight).toEqual(workingZoneHeight / 2);
+            expect(canvasWidth).toEqual(workingZoneWidth / 2);
+        }
     });
 
     it('should get stubTool', () => {

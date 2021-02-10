@@ -19,7 +19,6 @@ export class DrawingService {
             image.src = dataURL;
             image.onload = () => {
                 this.baseCtx.drawImage(image, 0, 0);
-                this.previewCtx.drawImage(image, 0, 0);
             };
         }
     }
