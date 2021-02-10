@@ -65,8 +65,7 @@ export class RectangleService extends Tool {
             this.mouseDownCoord.x = this.getPositionFromMouse(event).x - this.firstGrid.x;
             this.mouseDownCoord.y = this.getPositionFromMouse(event).y - this.firstGrid.y;
             this.updatePreview();
-            if (event.shiftKey) {
-                this.shiftDown = true;
+            if (this.shiftDown) {
                 this.drawSquare(this.mouseDownCoord);
             }
         }
@@ -84,7 +83,7 @@ export class RectangleService extends Tool {
         if (event.key === KeyboardKeys.Escape) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.clearPath();
-        } else if (event.shiftKey) {
+        } else if (event.key === KeyboardKeys.Shift) {
             this.shiftDown = true;
             this.updatePreview();
         }
@@ -92,7 +91,6 @@ export class RectangleService extends Tool {
 
     onKeyUp(event: KeyboardEvent): void {
         if (this.shiftDown && !event.shiftKey) {
-            console.log('event');
             this.shiftDown = false;
             this.updatePreview();
         }
