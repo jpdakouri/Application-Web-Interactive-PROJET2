@@ -40,7 +40,7 @@
                                           (mousemove)="onMouseMove($event)"
   ></canvas>
 
-  <div id="rsz" #canvasResizer [ngStyle]="{'width': getPreviewCanvasSize().x  + 'px',
+  <div id="rsz" #canvasResizerPreview [ngStyle]="{'width': getPreviewCanvasSize().x  + 'px',
                               'height': getPreviewCanvasSize().y + 'px',
                               'position': 'relative',
                               'border': '1px dashed',
