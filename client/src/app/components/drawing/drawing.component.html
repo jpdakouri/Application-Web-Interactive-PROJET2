@@ -30,13 +30,15 @@
   ></div>
 
   <canvas id="canvas" #baseCanvas [attr.width]="width" [attr.height]="height"
-          (mousedown)="onMouseDown($event)"
-          (mouseup)="onMouseUp($event)"
-          (mousemove)="onMouseMove($event)"></canvas>
+                                  (mousedown)="onMouseDown($event)"
+                                  (mouseup)="onMouseUp($event)"
+                                  (mousemove)="onMouseMove($event)"
+  ></canvas>
   <canvas id="previewLayer" #previewCanvas [attr.width]="width" [attr.height]="height"
-          (mousedown)="onMouseDown($event)"
-          (mouseup)="onMouseUp($event)"
-          (mousemove)="onMouseMove($event)"></canvas>
+                                          (mousedown)="onMouseDown($event)"
+                                          (mouseup)="onMouseUp($event)"
+                                          (mousemove)="onMouseMove($event)"
+  ></canvas>
 
   <div id="rsz" #canvasResizer [ngStyle]="{'width': getPreviewCanvasSize().x  + 'px',
                               'height': getPreviewCanvasSize().y + 'px',

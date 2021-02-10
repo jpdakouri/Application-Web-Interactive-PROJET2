@@ -4,7 +4,6 @@ canvas {
     position: absolute;
     left: 0;
     top: 0;
-    //background-color: white;
 }
 
 #canvas{
@@ -20,13 +19,12 @@ canvas {
 }
 
 .resizer {
-    width: 10px;
-    height: 10px;
+    width: 5px;
+    height: 5px;
     position: absolute;
     z-index: 50;
     border: 0 solid #000000;
     background-color: black;
-    //border-radius: 50%; /*magic to turn square into circle*/
 }
 
 .resizer.middle-right {
