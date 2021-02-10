@@ -14,6 +14,8 @@ describe('CanvasResizerService', () => {
             'onMouseUp',
             'onMouseLeave',
             'eventToCoordinate',
+            'calculateDeltaX',
+            'calculateDeltaY',
         ]);
         TestBed.configureTestingModule({
             providers: [{ provide: MouseHandlerService, useValue: mouseServiceSpy }],
@@ -57,4 +59,17 @@ describe('CanvasResizerService', () => {
         service.onBottomRightResizerClick();
         expect(service.status).toBe(Status.BOTTOM_RIGHT_RESIZE);
     });
+
+    it('should be able to calculate new canvas size', () => {
+        const canvasSize = { x: 100, y: 100 };
+        const expectedCanvas = { x: 101, y: 102 };
+        // service.status = Status.BOTTOM_RIGHT_RESIZE;
+        // spyOn(mouseServiceSpy, 'calculateDeltaX').and.returnValue(1);
+        // spyOn(mouseServiceSpy, 'calculateDeltaY').and.returnValue(2);
+
+        spyOn(service, 'calculateNewCanvasSize').withArgs(canvasSize);
+        expect(service.calculateNewCanvasSize).toEqual(expectedCanvas);
+    });
+
+    // it('canvas size should be 250x250 pixels', () => {});
 });
