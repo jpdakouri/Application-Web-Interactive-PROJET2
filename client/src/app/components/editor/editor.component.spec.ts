@@ -3,6 +3,7 @@ import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { ToolAttributeBarComponent } from '@app/components/tool-attribute-bar/tool-attribute-bar.component';
 import { ToolbarComponent } from '@app/components/toolbar/toolbar.component';
 import { KeyboardButton } from '@app/list-boutton-pressed';
+import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { ToolManagerServiceMock } from '@app/tests-mocks/tool-manager-mock';
 import { EditorComponent } from './editor.component';
 
@@ -10,12 +11,14 @@ fdescribe('EditorComponent', () => {
     let component: EditorComponent;
     let fixture: ComponentFixture<EditorComponent>;
     let toolManagerServiceMock: ToolManagerServiceMock;
+    // tslint:disable-next-line:prefer-const
+    // let emitterSpy: jasmine.SpyObj<ToolManagerServiceMock>;
 
     beforeEach(async(() => {
         toolManagerServiceMock = new ToolManagerServiceMock();
         TestBed.configureTestingModule({
             declarations: [EditorComponent, DrawingComponent, ToolAttributeBarComponent, ToolbarComponent],
-            providers: [{ provide: ToolManagerServiceMock, useValue: toolManagerServiceMock }],
+            providers: [{ provide: ToolManagerService, useValue: toolManagerServiceMock }],
         }).compileComponents();
     }));
 
@@ -31,9 +34,11 @@ fdescribe('EditorComponent', () => {
     });
 
     fit(' #onKeyUp should call set the right tool if input is valide ', () => {
-        const event = { key: KeyboardButton.InvalidInput } as KeyboardEvent;
-        const emitterSpy = spyOn(toolManagerServiceMock, 'emitToolChange').and.callThrough();
-        component.onKeyUp(event);
-        expect(emitterSpy).toHaveBeenCalled();
+        // tslint:disable:no-any
+        const teset = spyOn<any>(ToolManagerServiceMock, 'emitToolChange').and.callThrough();
+        console.log(teset);
+
+        component.onKeyUp({ key: KeyboardButton.Line } as KeyboardEvent);
+        expect(teset).toHaveBeenCalled();
     });
 });

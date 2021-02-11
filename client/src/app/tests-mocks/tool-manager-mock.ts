@@ -15,6 +15,10 @@ export class ToolManagerServiceMock {
     isCurrentTool(): boolean {
         return true;
     }
+    getCurrentDotRadius(): number {
+        // tslint:disable-next-line:no-magic-numbers
+        return 5;
+    }
 
     getCurrentLineThickness(): number {
         return 1;

@@ -28,6 +28,7 @@ export class EditorComponent {
         if (!event.shiftKey) {
             const toolKeyDown = this.toolFinder.get(event.key as KeyboardButton) as ToolsNames;
             if (!(toolKeyDown == undefined)) {
+                console.log(toolKeyDown);
                 this.toolManagerService.setCurrentTool(toolKeyDown);
                 this.toolManagerService.emitToolChange(toolKeyDown);
             }

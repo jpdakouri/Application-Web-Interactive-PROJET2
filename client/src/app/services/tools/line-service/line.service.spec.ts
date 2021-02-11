@@ -83,7 +83,7 @@ describe('LineService', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
         const keyboardEventFalse = {
-            key: KeyboardButton.RandomKey,
+            key: KeyboardButton.InvalidInput,
         } as KeyboardEvent;
 
         service.onMouseUp(mouseEvent);
