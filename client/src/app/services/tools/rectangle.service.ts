@@ -90,12 +90,11 @@ export class RectangleService extends Tool {
     }
 
     onKeyUp(event: KeyboardEvent): void {
-        if (this.shiftDown && !event.shiftKey) {
+        if (this.shiftDown && event.key === KeyboardKeys.Shift) {
             this.shiftDown = false;
             this.updatePreview();
         }
     }
-
     // drawDashedRectangle(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
     //     ctx.beginPath();
     //     ctx.lineWidth = this.lineThickness;

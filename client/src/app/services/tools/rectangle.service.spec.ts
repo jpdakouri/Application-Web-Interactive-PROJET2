@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { RectangleService } from './rectangle.service';
+import { RectangleService, shapeStyle } from './rectangle.service';
 
 export enum MouseButton {
     Left = 0,
@@ -27,7 +27,9 @@ describe('RectangleService', () => {
     let previewCtxStub: CanvasRenderingContext2D;
     let drawRectangleSpy: jasmine.Spy<any>;
     let drawSquareSpy: jasmine.Spy<any>;
-    let shitfDownSpy: jasmine.Spy<any>;
+    let drawOutlineSpy: jasmine.Spy<any>;
+    let drawFilledSpy: jasmine.Spy<any>;
+    let drawFilledOutlineSpy: jasmine.Spy<any>;
 
     // let updatePreviewSpy: jasmine.Spy<any>;
 
@@ -43,9 +45,11 @@ describe('RectangleService', () => {
 
         service = TestBed.inject(RectangleService);
         drawRectangleSpy = spyOn<any>(service, 'drawRectangle').and.callThrough();
-        drawSquareSpy = spyOn<any>(service, 'drawSquare').and.callThrough();
-        shitfDownSpy = spyOn<Boolean>(service, 'shiftDown').and.callThrough();
+        drawOutlineSpy = spyOn<any>(service, 'drawOutline').and.callThrough();
+        drawFilledSpy = spyOn<any>(service, 'drawFilled').and.callThrough();
+        drawFilledOutlineSpy = spyOn<any>(service, 'drawFilledOutline').and.callThrough();
         // updatePreviewSpy = spyOn<any>(service, 'drawRectangle').and.callThrough();
+        drawSquareSpy = spyOn<any>(service, 'drawSquare').and.callThrough();
 
         // Configuration du spy du service
         // tslint:disable:no-string-literal
@@ -78,20 +82,6 @@ describe('RectangleService', () => {
         expect(service.mouseDown).toEqual(false);
     });
 
-    // it('onMouseMove should call previewUpdate if the drawing has started', () => {
-    //     service.mouseDown = true;
-    //     service.mouseDownCoord = { x: 0, y: 0 };
-    //     const mouseStartEvent = {
-    //         offsetX: 0,
-    //         offsetY: 0,
-    //         button: 1,
-    //     } as MouseEvent;
-    //     service.onMouseDown(mouseStartEvent);
-    //     // service.onMouseUp(mouseStartEvent);
-    //     service.onMouseMove(mouseEvent);
-    //     expect(updatePreviewSpy).toHaveBeenCalled();
-    // });
-
     it(' onMouseUp should call drawRectangle if mouse was already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
@@ -115,26 +105,77 @@ describe('RectangleService', () => {
         } as KeyboardEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
 
-        // service.onKeyDown({
-        //     key: KeyboardKeys.Shift,
-        // } as KeyboardEvent);
-        // expect(updatePreviewSpy).toHaveBeenCalled();
-    });
-
-    it('onKeyup should update shift state and change back square to rectangle', () => {
-        service.onKeyUp({
-            key: KeyboardKeys.Escape,
+        service.onKeyDown({
+            key: KeyboardKeys.Shift,
         } as KeyboardEvent);
-        expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
+        expect(service['shiftDown']).toBeTrue();
+        expect(drawSquareSpy).toHaveBeenCalled();
     });
 
-    it('a square should be drawed in the first quadrant with drawSquare', () => {
+    it('onKeyup should update shift state', () => {
+        service['shiftDown'] = true;
+        service['firstGrid'] = { x: 10, y: 10 };
+        service.mouseDownCoord = { x: 50, y: 50 };
+
+        service.onKeyUp({
+            key: KeyboardKeys.Shift,
+        } as KeyboardEvent);
+        expect(service['shiftDown']).toBeFalse();
+    });
+
+    it('drawSquare should be called when shiftDown is true', () => {
         service.mouseDown = true;
-        const mouseFirstQ: Vec2 = {
-            x: 15,
-            y: 25,
-        };
+        service['shiftDown'] = true;
+
+        service.onMouseDown(mouseEvent);
+        service.onMouseMove(mouseEvent);
         expect(drawSquareSpy).toHaveBeenCalled();
-        expect(drawRectangleSpy).toHaveBeenCalled();
+    });
+
+    it('drawSquare should not be called when shiftDown is false ', () => {
+        service.mouseDown = true;
+        service['shiftDown'] = false;
+
+        service.onMouseDown(mouseEvent);
+        service.onMouseMove(mouseEvent);
+        expect(drawSquareSpy).not.toHaveBeenCalled();
+    });
+
+    it(' drawOutline should be called when shapeStyle Outline is selected', () => {
+        service.mouseDownCoord = { x: 25, y: 25 };
+
+        service['firstGrid'] = { x: 0, y: 0 };
+        service.mouseDown = true;
+        service['shapeStyle'] = shapeStyle.Outline;
+        service.onMouseDown(mouseEvent);
+        service.onMouseUp(mouseEvent);
+        expect(drawOutlineSpy).toHaveBeenCalledWith(jasmine.any(CanvasRenderingContext2D), service.mouseDownCoord);
+    });
+
+    it(' drawFilled should be called when shapeeStyke Filled is selected', () => {
+        service.mouseDownCoord = { x: 25, y: 25 };
+
+        service['firstGrid'] = { x: 0, y: 0 };
+        service.mouseDown = true;
+        service['shapeStyle'] = shapeStyle.Filled;
+        service.onMouseDown(mouseEvent);
+        service.onMouseUp(mouseEvent);
+        expect(drawFilledSpy).toHaveBeenCalledWith(jasmine.any(CanvasRenderingContext2D), service.mouseDownCoord);
+    });
+
+    it(' drawFilledOutline should be called when shapeeStyke  is selected', () => {
+        service.mouseDownCoord = { x: 25, y: 25 };
+
+        service.mouseDown = true;
+        service['shapeStyle'] = shapeStyle.FilledOutline;
+        service.onMouseDown(mouseEvent);
+        service.onMouseUp(mouseEvent);
+        expect(drawFilledOutlineSpy).toHaveBeenCalledWith(jasmine.any(CanvasRenderingContext2D), service.mouseDownCoord);
+    });
+
+    it(' isXgreater than Y', () => {
+        service.mouseDown = true;
+        service.mouseDownCoord = { x: 10, y: 0 };
+        expect(service['isXGreaterThanY']).toBe(true);
     });
 });
