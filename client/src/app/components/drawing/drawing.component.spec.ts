@@ -142,6 +142,7 @@ describe('DrawingComponent', () => {
         component['canvasSize'].x = FAKE_CANVAS_WIDTH;
         const editorMinWidth = FAKE_CANVAS_WIDTH + SIDEBAR_WIDTH + WORKING_ZONE_VISIBLE_PORTION;
         expect(component.computeEditorMinWidth()).toEqual(editorMinWidth);
+    });
     it(" should call the tool's mouse dbl click when receiving a mouse dbl click event", () => {
         const mouseEventSpy = spyOn(toolStub, 'onDblClick').and.callThrough();
         component.onDblClick();

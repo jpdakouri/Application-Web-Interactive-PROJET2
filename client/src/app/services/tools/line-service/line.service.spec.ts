@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
-import { KeyboardButton, MouseButton } from '@app/list-boutton-pressed';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { KeyboardButton, MouseButton } from '@app/utils/enums/list-boutton-pressed';
 import { LineService } from './line.service';
 
 // tslint:disable:no-any

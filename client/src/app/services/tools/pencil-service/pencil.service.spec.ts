@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
-import { MouseButton } from '@app/list-boutton-pressed';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MouseButton } from '@app/utils/enums/list-boutton-pressed';
 import { PencilService } from './pencil.service';
 
 // tslint:disable:no-any
