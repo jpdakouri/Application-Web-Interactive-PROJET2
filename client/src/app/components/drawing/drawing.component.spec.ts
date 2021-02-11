@@ -63,13 +63,16 @@ describe('DrawingComponent', () => {
         expect(drawingStub.restoreCanvas).toHaveBeenCalled();
     });
 
+    // TO DO: il faut écrire au prof pour la deuxième branche du if
+
     it('canvas should have a default WIDTH and HEIGHT that is half of working zone dimensions', () => {
         const MINIMUM_CANVAS_WIDTH = 250;
         const MINIMUM_CANVAS_HEIGHT = 250;
         const workingZoneWidth = window.innerWidth - TOOLBAR_WIDTH;
         const workingZoneHeight = window.innerHeight;
-        const canvasHeight = component.height;
-        const canvasWidth = component.width;
+        // tslint:disable: no-string-literal
+        const canvasHeight = component['canvasSize'].y;
+        const canvasWidth = component['canvasSize'].x;
         const desiredCanvasHeight = workingZoneHeight / 2;
         const desiredCanvasWidth = workingZoneWidth / 2;
         if (desiredCanvasHeight < MINIMUM_CANVAS_HEIGHT || desiredCanvasWidth < MINIMUM_CANVAS_WIDTH) {
@@ -116,6 +119,12 @@ describe('DrawingComponent', () => {
         component.onMouseLeave(event);
         expect(mouseEventSpy).toHaveBeenCalled();
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
+    });
+
+    it("#unloadHandler should call drawingService's #saveCanvas", () => {
+        spyOn(drawingStub, 'saveCanvas').and.callThrough();
+        component.unloadHandler();
+        expect(drawingStub.saveCanvas).toHaveBeenCalled();
     });
 
     it('#emitEditorMinWidth should call #computeEditorMinWidth', () => {

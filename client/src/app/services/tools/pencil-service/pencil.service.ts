@@ -5,7 +5,7 @@ import { CurrentColourService } from '@app/services/current-colour/current-colou
 // import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from '@app/components/drawing/drawing.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DEFAULT_MIN_THICKNESS } from '@app/services/tools/tools-constants';
-import { MouseButton } from '@app/utils/tests-mocks/mock-boutton-pressed';
+import { MouseButton } from '@app/utils/enums/list-boutton-pressed';
 
 // Ceci est une implémentation de base de l'outil Crayon pour aider à débuter le projet
 // L'implémentation ici ne couvre pas tous les critères d'accepetation du projet
