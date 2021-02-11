@@ -22,6 +22,7 @@ export class ToolManagerServiceMock {
     getCurrentShapeStyle(): ShapeStyle {
         return ShapeStyle.Outline;
     }
+    // tslint:disable:no-empty
 
     emitToolChange(): void {}
 
