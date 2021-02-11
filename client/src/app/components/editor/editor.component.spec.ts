@@ -3,16 +3,19 @@ import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { ToolAttributeBarComponent } from '@app/components/tool-attribute-bar/tool-attribute-bar.component';
 import { ToolbarComponent } from '@app/components/toolbar/toolbar.component';
 import { KeyboardButton } from '@app/list-boutton-pressed';
-import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
+import { ToolManagerServiceMock } from '@app/tests-mocks/tool-manager-mock';
 import { EditorComponent } from './editor.component';
 
 fdescribe('EditorComponent', () => {
     let component: EditorComponent;
     let fixture: ComponentFixture<EditorComponent>;
+    let toolManagerServiceMock: ToolManagerServiceMock;
 
     beforeEach(async(() => {
+        toolManagerServiceMock = new ToolManagerServiceMock();
         TestBed.configureTestingModule({
             declarations: [EditorComponent, DrawingComponent, ToolAttributeBarComponent, ToolbarComponent],
+            providers: [{ provide: ToolManagerServiceMock, useValue: toolManagerServiceMock }],
         }).compileComponents();
     }));
 
@@ -28,14 +31,9 @@ fdescribe('EditorComponent', () => {
     });
 
     fit(' #onKeyUp should call set the right tool if input is valide ', () => {
-        const goodInput = { key: KeyboardButton.Rectangle } as KeyboardEvent;
-        // const badInput = { key: KeyboardButton.RandomKey } as KeyboardEvent;
-        const toolManagerServiceSpy: jasmine.SpyObj<ToolManagerService> = jasmine.createSpyObj('ToolManagerService', [
-            'setCurrentTool',
-            'emitToolChange',
-        ]);
-        spyOn(component, 'onKeyUp');
-        component.onKeyUp(goodInput);
-        expect(toolManagerServiceSpy.emitToolChange).toHaveBeenCalled();
+        const event = { key: KeyboardButton.InvalidInput } as KeyboardEvent;
+        const emitterSpy = spyOn(toolManagerServiceMock, 'emitToolChange').and.callThrough();
+        component.onKeyUp(event);
+        expect(emitterSpy).toHaveBeenCalled();
     });
 });

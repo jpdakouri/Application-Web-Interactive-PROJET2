@@ -22,4 +22,7 @@ export class ToolManagerServiceMock {
     getCurrentShapeStyle(): ShapeStyle {
         return ShapeStyle.Outline;
     }
+    emitToolChange(): void {
+        return;
+    }
 }
