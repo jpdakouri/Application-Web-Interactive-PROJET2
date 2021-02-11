@@ -84,21 +84,25 @@ describe('DrawingComponent', () => {
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
     });
 
-    // it('should have a size of 250 x 250 pixels', () => {
-    //     // const width = 500;
-    //     // const height = 500;
-    //
-    //     spyOnProperty(window, 'innerWidth').and.returnValue('width');
-    //     spyOnProperty(window, 'innerHeight').and.returnValue('height');
-    // });
+    it('should change current tool to canvasResizer onmouseover', () => {
+        const mouseEventSpy = spyOn(component, 'onMouseOver').and.callThrough();
+        component.onMouseOver();
+        expect(mouseEventSpy).toHaveBeenCalled();
+        expect(component.currentTool).toBe(canvasResizerStub);
+    });
 
-    // it(' canvas should have the right size on init', () => {});
+    it('should save the canvas state before load', () => {
+        // @ts-ignore
+        const windowEventSpy = spyOn(component, 'unloadHandler').and.callThrough();
+        component.unloadHandler();
+        expect(windowEventSpy).toHaveBeenCalled();
+        expect(drawingStub.saveCanvas).toHaveBeenCalled();
+    });
 
-    // it('should save the canvas context on page load', () => {
-    //     spyOn(drawingStub, 'saveCanvas');
-    //     // spyOn(Window, '').and.callThrough();
-    //     expect(drawingStub.saveCanvas).toHaveBeenCalled();
-    // });
+    it('should return the right value for canvasResizerPreviewService', () => {
+        const getPreviewCanvasSizeSpy = spyOn(component, 'getPreviewCanvasSize');
+        expect(getPreviewCanvasSizeSpy).toBe({ x: component.width, y: component.height });
+    });
 
     it('should save the canvas state when a resizer is clicked', () => {
         const numberOfCallsToSaveCanvasMethod = 3;

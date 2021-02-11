@@ -106,34 +106,20 @@ export class CanvasResizerService extends Tool {
     }
 
     resizePreviewCanvas(): void {
-        // const deltaX = this.mouseService.startCoordinate.x - this.mouseService.currentCoordinate.x;
-        // const deltaY = this.mouseService.startCoordinate.y - this.mouseService.currentCoordinate.y;
-        // console.log('mouse start width = ' + this.mouseService.startCoordinate.x);
-        // console.log('mouse current width = ' + this.mouseService.currentCoordinate.y);
-        // console.log('deltaX = ' + deltaX);
-        // const start = this.canvasPreviewWidth;
-
         switch (this.status) {
             case Status.MIDDLE_RIGHT_RESIZE:
                 this.canvasPreviewWidth = this.mouseService.currentCoordinate.x - SIDEBAR_WIDTH;
-                // this.canvasPreviewWidth += deltaX;
-                // console.log('canvas resizer width = ' + this.canvasPreviewWidth);
                 break;
 
             case Status.MIDDLE_BOTTOM_RESIZE:
                 this.canvasPreviewHeight = this.mouseService.currentCoordinate.y;
-                // console.log('deltaY in rsz = ' + deltaY);
                 break;
 
             case Status.BOTTOM_RIGHT_RESIZE:
                 this.canvasPreviewWidth = this.mouseService.currentCoordinate.x - SIDEBAR_WIDTH;
                 this.canvasPreviewHeight = this.mouseService.currentCoordinate.y;
-
-                // console.log('deltaX in rsz = ' + deltaX + ' | deltaY in rsz = ' + deltaY);
                 break;
         }
-
-        // this.drawingService.restoreCanvas();
     }
 
     isResizing(): boolean {
@@ -144,52 +130,3 @@ export class CanvasResizerService extends Tool {
         this.status = status;
     }
 }
-
-// resizeCanvas(canvasSize: Coordinate): void {
-//     const deltaX = this.mouseService.calculateDeltaX();
-//     const deltaY = this.mouseService.calculateDeltaY();
-//
-//     switch (this.status) {
-//         case Status.MIDDLE_RIGHT_RESIZE:
-//             canvasSize.x += deltaX;
-//             break;
-//
-//         case Status.MIDDLE_BOTTOM_RESIZE:
-//             canvasSize.y += deltaY;
-//             break;
-//
-//         case Status.BOTTOM_RIGHT_RESIZE:
-//             canvasSize.x += deltaX;
-//             canvasSize.y += deltaY;
-//             break;
-//     }
-//     if (canvasSize.x < MINIMUM_WIDTH) canvasSize.x = MINIMUM_WIDTH;
-//     if (canvasSize.y < MINIMUM_HEIGHT) canvasSize.y = MINIMUM_HEIGHT;
-//
-//     this.drawingService.restoreCanvas();
-// }
-
-// @HostListener('window:mouseleave', ['$event'])
-// oneMouseLeave(event: MouseEvent): void {
-//     this.mouseService.onMouseLeave(this.mouseService.eventToCoordinate(event));
-// }
-
-// resizeCanvas(width: number, height: number): void {
-//     // this.isResizing = true;
-//     const deltaX = this.mouseService.calculateDeltaX();
-//     const deltaY = this.mouseService.calculateDeltaY();
-//     console.log('width before resize = ' + width);
-//
-//     // tslint:disable-next-line:prefer-switch
-//     if (this.status === Status.MIDDLE_RIGHT_RESIZE) width += deltaX;
-//     else if (this.status === Status.MIDDLE_BOTTOM_RESIZE) height += deltaY;
-//     else if (this.status === Status.BOTTOM_RIGHT_RESIZE) {
-//         width += deltaX;
-//         height += deltaY;
-//     }
-//     console.log('width after resize = ' + width);
-//
-//     // console.log('delatX = ' + deltaX);
-//     // console.log('delatY = ' + deltaY);
-//     this.drawingService.restoreCanvas();
-// }

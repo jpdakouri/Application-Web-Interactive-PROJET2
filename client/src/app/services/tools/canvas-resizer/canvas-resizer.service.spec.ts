@@ -1,14 +1,26 @@
 import { TestBed } from '@angular/core/testing';
+// import { Coordinate } from '@app/services/mouse-handler/coordinate';
 import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.service';
 import { CanvasResizerService, Status } from './canvas-resizer.service';
+//
+// class MockMouseService extends MouseHandlerService {
+//     startCoordinate: Coordinate = { x: 965, y: 400 };
+//     endCoordinate: Coordinate = { x: 456, y: 236 };
+//
+//     // tslint:disable-next-line:no-magic-numbers
+//     calculateDeltaX = (): number => 795;
+//     // tslint:disable-next-line:no-magic-numbers
+//     calculateDeltaY = (): number => 651;
+// }
 
 describe('CanvasResizerService', () => {
     let service: CanvasResizerService;
     let mouseEvent: MouseEvent;
-    let mouseServiceSpy: MouseHandlerService;
+    // const mouseServiceSpy: MockMouseService = new MockMouseService();
+    let mouseServiceSpy: jasmine.SpyObj<MouseHandlerService>;
 
     beforeEach(() => {
-        mouseServiceSpy = jasmine.createSpyObj('MouseHandlerService', [
+        mouseServiceSpy = jasmine.createSpyObj('MockMouseService', [
             'onMouseDown',
             'onMouseMove',
             'onMouseUp',
@@ -21,6 +33,7 @@ describe('CanvasResizerService', () => {
             providers: [{ provide: MouseHandlerService, useValue: mouseServiceSpy }],
         });
         service = TestBed.inject(CanvasResizerService);
+        // mouseServiceSpy = TestBed.inject(MockMouseService) as jasmine.SpyObj<MouseHandlerService>;
     });
 
     it('should be created', () => {
@@ -45,31 +58,32 @@ describe('CanvasResizerService', () => {
         expect(mouseServiceSpy.onMouseUp).toHaveBeenCalled();
     });
 
-    it('should  change status when #onMiddleRightResizerClicked called', () => {
+    it('should  change status when #onMiddleRightResizerClicked is called', () => {
         service.onMiddleRightResizerClick();
         expect(service.status).toBe(Status.MIDDLE_RIGHT_RESIZE);
     });
 
-    it('should  change status when #onMiddleBottomResizerClick called', () => {
+    it('should  change status when #onMiddleBottomResizerClick is called', () => {
         service.onMiddleBottomResizerClick();
         expect(service.status).toBe(Status.MIDDLE_BOTTOM_RESIZE);
     });
 
-    it('should  change status when #onBottomRightResizerClick called', () => {
+    it('should  change status when #onBottomRightResizerClick is called', () => {
         service.onBottomRightResizerClick();
         expect(service.status).toBe(Status.BOTTOM_RIGHT_RESIZE);
     });
 
-    it('should be able to calculate new canvas size', () => {
-        const canvasSize = { x: 100, y: 100 };
-        const expectedCanvas = { x: 101, y: 102 };
-        // service.status = Status.BOTTOM_RIGHT_RESIZE;
-        // spyOn(mouseServiceSpy, 'calculateDeltaX').and.returnValue(1);
-        // spyOn(mouseServiceSpy, 'calculateDeltaY').and.returnValue(2);
-
-        spyOn(service, 'calculateNewCanvasSize').withArgs(canvasSize);
-        expect(service.calculateNewCanvasSize).toEqual(expectedCanvas);
-    });
-
-    // it('canvas size should be 250x250 pixels', () => {});
+    // it('should be able to calculate new canvas size', () => {
+    //     service.status = Status.MIDDLE_RIGHT_RESIZE;
+    //     const canvasSize: Coordinate = { x: 789, y: 789 };
+    //     const expectedCanvas: Coordinate = { x: 20, y: 20 };
+    //     // tslint:disable-next-line:no-magic-numbers
+    //     // spyOn(mouseServiceSpy, 'calculateDeltaX').and.returnValue(350);
+    //     // deltaXSpy// mouseServiceSpy.endCoordinate = { x: 105, y: 510 }; // mouseServiceSpy.startCoordinate = { x: 10, y: 10 };
+    //     // spyOn(service, 'calculateNewCanvasSize').withArgs({ x: 789, y: 789 });
+    //     mouseServiceSpy.endCoordinate = { x: 599, y: 545 };
+    //     console.log('delatX ------------= ' + mouseServiceSpy.calculateDeltaX());
+    //     console.log('delatY ------------= ' + service.calculateNewCanvasSize(canvasSize).y);
+    //     expect(service.calculateNewCanvasSize).toEqual(expectedCanvas);
+    // });
 });
