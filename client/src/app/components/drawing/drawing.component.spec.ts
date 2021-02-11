@@ -110,7 +110,7 @@ describe('DrawingComponent', () => {
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
     });
 
-    it(" should call the tool's mouse leave when receiving a mouse up event", () => {
+    it(" should call the tool's mouse leave when receiving a mouse leave event", () => {
         const event = {} as MouseEvent;
         const mouseEventSpy = spyOn(toolStub, 'onMouseLeave').and.callThrough();
         component.onMouseLeave(event);
@@ -142,5 +142,25 @@ describe('DrawingComponent', () => {
         component['canvasSize'].x = FAKE_CANVAS_WIDTH;
         const editorMinWidth = FAKE_CANVAS_WIDTH + SIDEBAR_WIDTH + WORKING_ZONE_VISIBLE_PORTION;
         expect(component.computeEditorMinWidth()).toEqual(editorMinWidth);
+    it(" should call the tool's mouse dbl click when receiving a mouse dbl click event", () => {
+        const mouseEventSpy = spyOn(toolStub, 'onDblClick').and.callThrough();
+        component.onDblClick();
+        expect(mouseEventSpy).toHaveBeenCalled();
+    });
+
+    it(" should call the tool's key down when receiving a key down event", () => {
+        const event = {} as KeyboardEvent;
+        const mouseEventSpy = spyOn(toolStub, 'onKeyDown').and.callThrough();
+        component.onKeyDown(event);
+        expect(mouseEventSpy).toHaveBeenCalled();
+        expect(mouseEventSpy).toHaveBeenCalledWith(event);
+    });
+
+    it(" should call the tool's key up when receiving a key up event", () => {
+        const event = {} as KeyboardEvent;
+        const mouseEventSpy = spyOn(toolStub, 'onKeyUp').and.callThrough();
+        component.onKeyUp(event);
+        expect(mouseEventSpy).toHaveBeenCalled();
+        expect(mouseEventSpy).toHaveBeenCalledWith(event);
     });
 });
