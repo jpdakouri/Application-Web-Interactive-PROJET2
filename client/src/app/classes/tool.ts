@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ShapeStyle } from '@app/enums/shape-style';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { DEFAULT_COLOR_BLACK, DEFAULT_MIN_THICKNESS, DOT_RADIUS } from '@app/services/tools/tools-constants';
+import { DEFAULT_COLOR_BLACK, DEFAULT_DOT_RADIUS, DEFAULT_MIN_THICKNESS } from '@app/services/tools/tools-constants';
 import { Vec2 } from './vec2';
 
 // Ceci est justifié vu qu'on a des fonctions qui seront gérés par les classes enfant
@@ -17,7 +17,7 @@ export abstract class Tool {
     primaryColor?: string = DEFAULT_COLOR_BLACK;
     secondaryColor?: string = DEFAULT_COLOR_BLACK;
     shapeStyle?: ShapeStyle = ShapeStyle.Outline;
-    dotRadius?: number = DOT_RADIUS;
+    dotRadius?: number = DEFAULT_DOT_RADIUS;
     showDots?: boolean = false;
     mouseMoved: boolean = false;
 

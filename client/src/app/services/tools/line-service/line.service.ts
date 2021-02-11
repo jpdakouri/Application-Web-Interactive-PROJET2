@@ -4,7 +4,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { KeyboardButton, MouseButton } from '@app/list-boutton-pressed';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { DEFAULT_MIN_THICKNESS, DOT_RADIUS, PIXEL_DISTANCE, SHIFT_ANGLE } from '@app/services/tools/tools-constants';
+import { DEFAULT_DOT_RADIUS, DEFAULT_MIN_THICKNESS, PIXEL_DISTANCE, SHIFT_ANGLE } from '@app/services/tools/tools-constants';
 
 @Injectable({
     providedIn: 'root',
@@ -162,7 +162,7 @@ export class LineService extends Tool {
         if (this.showDots)
             for (const dot of path) {
                 ctx.beginPath();
-                ctx.arc(dot.x, dot.y, this.dotRadius ? this.dotRadius : DOT_RADIUS, 0, 2 * Math.PI, true);
+                ctx.arc(dot.x, dot.y, this.dotRadius ? this.dotRadius : DEFAULT_DOT_RADIUS, 0, 2 * Math.PI, true);
                 ctx.fillStyle = this.currentColourService.getSecondaryColorHex();
                 ctx.fill();
             }

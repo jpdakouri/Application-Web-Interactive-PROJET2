@@ -17,4 +17,4 @@ export const DEFAULT_RADIUS: number = DEFAULT_SIZE / DOT_DIVIDER;
 /**********************/
 export const PIXEL_DISTANCE = 20;
 export const SHIFT_ANGLE = 45;
-export const DOT_RADIUS = 5;
+export const DEFAULT_DOT_RADIUS = 5;

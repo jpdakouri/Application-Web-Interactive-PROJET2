@@ -68,9 +68,7 @@ export class CurrentColourService {
 
     getPrimaryColorHex(): string {
         const colorRGB = this.primaryColorRgb.split(RGB_RGBA_SEPARATOR, RGB_NUMBER_OF_COLOURS);
-        console.log(parseInt(colorRGB[0], 10));
-        // tslint:disable-next-line:radix
-        return this.rgbToHex(parseInt(colorRGB[0]), parseInt(colorRGB[1]), parseInt(colorRGB[2]));
+        return this.rgbToHex(parseInt(colorRGB[0], 10), parseInt(colorRGB[1], 10), parseInt(colorRGB[2], 10));
     }
 
     getSecondaryColorHex(): string {
@@ -78,11 +76,12 @@ export class CurrentColourService {
         return this.rgbToHex(parseInt(colorRGB[0], 10), parseInt(colorRGB[1], 10), parseInt(colorRGB[2], 10));
     }
 
-    rgbToHex(r: number, g: number, b: number): string {
+    // Inspiré de Stack Overflow
+    private rgbToHex(r: number, g: number, b: number): string {
         return '#' + this.componentToHex(r) + this.componentToHex(g) + this.componentToHex(b);
     }
 
-    componentToHex(component: number): string {
+    private componentToHex(component: number): string {
         const hex = component.toString(16);
         return hex.length === 1 ? '0' + hex : hex;
     }
