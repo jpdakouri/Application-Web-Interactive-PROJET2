@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MIN_ERASER_THICKNESS } from '@app/services/tools/tools-constants';
 import { MouseButton } from '@app/utils/enums/list-boutton-pressed';
-import { MIN_ERASER_THICKNESS } from '../tools-constants';
 
 @Injectable({
     providedIn: 'root',
