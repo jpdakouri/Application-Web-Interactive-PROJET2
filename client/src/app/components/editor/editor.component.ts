@@ -23,8 +23,8 @@ export class EditorComponent {
             .set(KeyboardButton.Pencil, ToolsNames.Pencil);
     }
 
-    @HostListener('keydown', ['$event'])
-    onKeyDown(event: KeyboardEvent): void {
+    @HostListener('keyup', ['$event'])
+    onKeyUp(event: KeyboardEvent): void {
         if (!event.shiftKey) {
             const toolKeyDown = this.toolFinder.get(event.key as KeyboardButton) as ToolsNames;
             if (!(toolKeyDown == undefined)) {
