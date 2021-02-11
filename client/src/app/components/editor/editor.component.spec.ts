@@ -1,4 +1,14 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSliderModule } from '@angular/material/slider';
+import { ColourHistoryComponent } from '@app/components/colour-components/colour-history/colour-history.component';
+import { ColourPaletteSelectorComponent } from '@app/components/colour-components/colour-palette-selector/colour-palette-selector.component';
+import { ColourSelectorComponent } from '@app/components/colour-components/colour-selector/colour-selector.component';
+import { CurrentColourComponent } from '@app/components/colour-components/current-color/current-colour.component';
+import { HueSelectorComponent } from '@app/components/colour-components/hue-selector/hue-selector.component';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { ToolAttributeBarComponent } from '@app/components/toolbar-components/tool-attribute-bar/tool-attribute-bar.component';
 import { ToolbarComponent } from '@app/components/toolbar-components/toolbar/toolbar.component';
@@ -10,7 +20,18 @@ describe('EditorComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [EditorComponent, DrawingComponent, ToolAttributeBarComponent, ToolbarComponent],
+            declarations: [
+                EditorComponent,
+                DrawingComponent,
+                ToolAttributeBarComponent,
+                ToolbarComponent,
+                ColourSelectorComponent,
+                ColourPaletteSelectorComponent,
+                ColourHistoryComponent,
+                CurrentColourComponent,
+                HueSelectorComponent,
+            ],
+            imports: [MatSliderModule, MatDividerModule, MatButtonModule, MatIconModule, FormsModule],
         }).compileComponents();
     }));
 

@@ -8,7 +8,7 @@
                 [value]="this.getCurrentLineThickness()"
                 #thicknessSlider
                 color="primary"
-                min="1"
+                [min]="showEraserThickness() ? 5 : 1"
                 max="30"
                 (input)="onThicknessChange($event)"
                 (change)="onThicknessChange($event)"

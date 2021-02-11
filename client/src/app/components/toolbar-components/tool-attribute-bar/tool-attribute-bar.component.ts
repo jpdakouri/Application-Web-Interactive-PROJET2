@@ -66,6 +66,10 @@ export class ToolAttributeBarComponent {
         return this.toolManagerService.isCurrentTool(ToolsNames.Ellipse) || this.toolManagerService.isCurrentTool(ToolsNames.Rectangle);
     }
 
+    showEraserThickness(): boolean {
+        return this.toolManagerService.isCurrentTool(ToolsNames.Eraser);
+    }
+
     isChecked(shapeStyle: ShapeStyle): boolean {
         return this.getCurrentShapeStyle() === shapeStyle;
     }

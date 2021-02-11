@@ -1,5 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
 import { ColourHistoryComponent } from '@app/components/colour-components/colour-history/colour-history.component';
 import { ColourPaletteSelectorComponent } from '@app/components/colour-components/colour-palette-selector/colour-palette-selector.component';
 import { CurrentColourComponent } from '@app/components/colour-components/current-color/current-colour.component';
@@ -19,7 +21,7 @@ describe('ColourSelectorComponent', () => {
                 ColourHistoryComponent,
                 CurrentColourComponent,
             ],
-            imports: [MatDividerModule],
+            imports: [MatDividerModule, MatIconModule, FormsModule],
         }).compileComponents();
     }));
 
