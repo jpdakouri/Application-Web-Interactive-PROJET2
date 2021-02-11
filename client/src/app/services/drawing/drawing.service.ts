@@ -8,7 +8,7 @@ export class DrawingService {
     previewCtx: CanvasRenderingContext2D;
     canvas: HTMLCanvasElement;
 
-    saveCanvas(width: number, height: number): void {
+    saveCanvas(): void {
         sessionStorage.setItem('canvasBuffer', this.canvas.toDataURL());
     }
 
@@ -19,7 +19,6 @@ export class DrawingService {
             image.src = dataURL;
             image.onload = () => {
                 this.baseCtx.drawImage(image, 0, 0);
-                this.previewCtx.drawImage(image, 0, 0);
             };
         }
     }

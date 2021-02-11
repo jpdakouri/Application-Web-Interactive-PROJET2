@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
-import { KeyboardKeys, MouseButton } from '@app/enums/rectangle-enums';
-import { ShapeStyle } from '@app/enums/shape-style';
+import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { DEFAULT_COLOR_BLACK, DEFAULT_MIN_THICKNESS } from '@app/services/tools/tools-constants';
+import { DEFAULT_MIN_THICKNESS } from '@app/services/tools/tools-constants';
+import { KeyboardKeys, MouseButton } from '@app/utils/enums/rectangle-enums';
+import { ShapeStyle } from '@app/utils/enums/shape-style';
 
 @Injectable({
     providedIn: 'root',
@@ -12,10 +13,13 @@ import { DEFAULT_COLOR_BLACK, DEFAULT_MIN_THICKNESS } from '@app/services/tools/
 export class RectangleService extends Tool {
     private firstGrid: Vec2;
     private shiftDown: boolean;
+    currentColourService: CurrentColourService;
 
-    constructor(drawingService: DrawingService) {
+    constructor(drawingService: DrawingService, currentColourService: CurrentColourService) {
         super(drawingService);
+        this.currentColourService = currentColourService;
     }
+
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         this.clearPath();
@@ -71,22 +75,22 @@ export class RectangleService extends Tool {
 
     drawOutline(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.beginPath();
-        ctx.strokeStyle = this.secondaryColor || DEFAULT_COLOR_BLACK;
+        ctx.strokeStyle = this.currentColourService.getSecondaryColorRgba();
         ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
         ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
     }
 
     drawFilled(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.beginPath();
-        ctx.fillStyle = this.primaryColor || DEFAULT_COLOR_BLACK;
+        ctx.fillStyle = this.currentColourService.getPrimaryColorRgba();
         ctx.fillRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
     }
 
     drawFilledOutline(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.beginPath();
-        ctx.fillStyle = this.primaryColor || DEFAULT_COLOR_BLACK;
+        ctx.fillStyle = this.currentColourService.getPrimaryColorRgba();
         ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
-        ctx.strokeStyle = this.secondaryColor || DEFAULT_COLOR_BLACK;
+        ctx.strokeStyle = this.currentColourService.getSecondaryColorRgba();
         ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
         ctx.fillRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
     }

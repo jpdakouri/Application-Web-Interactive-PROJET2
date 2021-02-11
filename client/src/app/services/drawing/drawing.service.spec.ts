@@ -24,4 +24,34 @@ describe('DrawingService', () => {
         const hasColoredPixels = pixelBuffer.some((color) => color !== 0);
         expect(hasColoredPixels).toEqual(false);
     });
+
+    it('#saveCanvas should save the canvas to session storage', () => {
+        const RECTANGLE_OFFSET = 20;
+        const RECTANGLE_DIMENSIONS = 20;
+        service.baseCtx.beginPath();
+        service.baseCtx.rect(RECTANGLE_OFFSET, RECTANGLE_OFFSET, RECTANGLE_DIMENSIONS, RECTANGLE_DIMENSIONS);
+        service.baseCtx.stroke();
+        service.saveCanvas();
+        const expectedCanvasDataURL = service.canvas.toDataURL();
+        const canvasDataURL = sessionStorage.getItem('canvasBuffer');
+        expect(canvasDataURL).toEqual(expectedCanvasDataURL);
+        service.baseCtx.beginPath();
+        service.baseCtx.rect(RECTANGLE_OFFSET + 1, RECTANGLE_OFFSET + 1, RECTANGLE_DIMENSIONS + 1, RECTANGLE_DIMENSIONS + 1);
+        service.baseCtx.stroke();
+        const differentCanvasURL = service.canvas.toDataURL();
+        expect(canvasDataURL).not.toEqual(differentCanvasURL);
+    });
+
+    // it('#restoreCanvas should restore canvas from session storage', () => {
+    //     const RECTANGLE_OFFSET = 20;
+    //     const RECTANGLE_DIMENSIONS = 20;
+    //     service.baseCtx.beginPath();
+    //     service.baseCtx.rect(RECTANGLE_OFFSET, RECTANGLE_OFFSET, RECTANGLE_DIMENSIONS, RECTANGLE_DIMENSIONS);
+    //     service.baseCtx.stroke();
+    //     const canvasDataURL = service.canvas.toDataURL();
+    //     sessionStorage.setItem('canvasBuffer', canvasDataURL);
+    //     spyOn(service.baseCtx, 'drawImage').and.callThrough();
+    //     service.restoreCanvas();
+    //     expect(service.baseCtx.drawImage).toHaveBeenCalled();
+    // });
 });

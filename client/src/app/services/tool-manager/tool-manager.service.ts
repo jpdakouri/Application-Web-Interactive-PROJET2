@@ -1,13 +1,13 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
-import { ShapeStyle } from '@app/enums/shape-style';
-import { ToolsNames } from '@app/enums/tools-names';
 import { EraserService } from '@app/services/tools/eraser-service/eraser.service';
 import { LineService } from '@app/services/tools/line-service/line.service';
 import { PencilService } from '@app/services/tools/pencil-service/pencil.service';
 import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
-import { CurrentAttributes } from '@app/types/current-attributes';
-import { ToolBox } from '@app/types/tool-box';
+import { ShapeStyle } from '@app/utils/enums/shape-style';
+import { ToolsNames } from '@app/utils/enums/tools-names';
+import { CurrentAttributes } from '@app/utils/types/current-attributes';
+import { ToolBox } from '@app/utils/types/tool-box';
 
 // tslint:disable: max-classes-per-file
 @Injectable({
@@ -46,17 +46,14 @@ export class ToolManagerService {
         };
         this.currentAttributes = {
             LineThickness: 1,
-            PrimaryColor: '#000000',
-            SecondaryColor: '#000000',
             ShapeStyle: ShapeStyle.Outline,
             DotRadius: 1,
-            ShowDots: true,
+            ShowDots: false,
         };
         this.shapeStyleSelection.set('Outline', ShapeStyle.Outline).set('Filled', ShapeStyle.Filled).set('FilledOutline', ShapeStyle.FilledOutline);
-        this.toolChangeEmitter.subscribe(() => {
+        this.toolChangeEmitter.subscribe((toolName: ToolsNames) => {
+            this.currentTool = toolName;
             const currentTool = this.toolBox[this.currentTool];
-            this.currentAttributes.PrimaryColor = currentTool.primaryColor;
-            this.currentAttributes.SecondaryColor = currentTool.secondaryColor;
             this.currentAttributes.ShapeStyle = currentTool.shapeStyle;
             this.currentAttributes.LineThickness = currentTool.lineThickness;
             this.currentAttributes.DotRadius = currentTool.dotRadius;
@@ -90,20 +87,6 @@ export class ToolManagerService {
         return this.currentAttributes.DotRadius;
     }
 
-    setCurrentPrimaryColor(color: string): void {
-        this.toolBox[this.currentTool].primaryColor = color;
-        this.currentAttributes.PrimaryColor = color;
-    }
-    getCurrentPrimaryColor(): string | undefined {
-        return this.currentAttributes.PrimaryColor;
-    }
-    setCurrentSecondaryColor(color: string): void {
-        this.toolBox[this.currentTool].secondaryColor = color;
-        this.currentAttributes.SecondaryColor = color;
-    }
-    getCurrentSecondaryColor(): string | undefined {
-        return this.currentAttributes.SecondaryColor;
-    }
     setCurrentShapeStyle(shapeStyleStr: string): void {
         const shapeStyle = this.shapeStyleSelection.get(shapeStyleStr);
         this.toolBox[this.currentTool].shapeStyle = shapeStyle;

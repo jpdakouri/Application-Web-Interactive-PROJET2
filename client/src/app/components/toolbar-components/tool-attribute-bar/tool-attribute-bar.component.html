@@ -1,0 +1,52 @@
+<div class="attribute-toolbar">
+    <app-colour-selector></app-colour-selector>
+    <div *ngIf="showLineThickness()">
+        <mat-divider></mat-divider>
+        <div class="line-thickness">
+            <h2 class="attribute-title">Épaisseur du trait: {{ this.getCurrentLineThickness() }}px</h2>
+            <mat-slider
+                [value]="this.getCurrentLineThickness()"
+                #thicknessSlider
+                color="primary"
+                [min]="showEraserThickness() ? 5 : 1"
+                max="30"
+                (input)="onThicknessChange($event)"
+                (change)="onThicknessChange($event)"
+                step="1"
+            ></mat-slider>
+        </div>
+        <mat-divider></mat-divider>
+    </div>
+    <div *ngIf="showShapeStyle()">
+        <div class="rectangle-ellipse-type">
+            <h2 class="attribute-title">Type d{{ showEllipseTitle() ? "'ellipse:" : 'e rectangle:' }}</h2>
+            <mat-button-toggle-group (change)="onShapeStyleChange($event)" name="ShapeStyle" aria-label="Shape Style">
+                <mat-button-toggle [checked]="isChecked(shapeStyle.Outline)" value="Outline">Contour</mat-button-toggle>
+                <mat-button-toggle [checked]="isChecked(shapeStyle.Filled)" value="Filled">Plein</mat-button-toggle>
+                <mat-button-toggle [checked]="isChecked(shapeStyle.FilledOutline)" value="FilledOutline">Plein avec contour</mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
+        <mat-divider></mat-divider>
+    </div>
+
+    <div *ngIf="showLineAttributes()">
+        <div class="dot-radius">
+            <h2 class="attribute-title">Rayon du point: {{ this.getCurrentDotRadius() }}px</h2>
+            <mat-slider
+                [value]="this.getCurrentDotRadius()"
+                #dotRadiusSlider
+                color="primary"
+                min="5"
+                max="20"
+                (input)="onDotRadiusChange($event)"
+                (change)="onDotRadiusChange($event)"
+                step="1"
+            ></mat-slider>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="show-dots">
+            <mat-checkbox (change)="onShowDotChange($event)"><h2 class="show-dots-title">Voir les points</h2></mat-checkbox>
+        </div>
+        <mat-divider></mat-divider>
+    </div>
+</div>
