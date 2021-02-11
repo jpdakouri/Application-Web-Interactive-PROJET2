@@ -173,9 +173,12 @@ describe('RectangleService', () => {
         expect(drawFilledOutlineSpy).toHaveBeenCalledWith(jasmine.any(CanvasRenderingContext2D), service.mouseDownCoord);
     });
 
-    it(' isXgreater than Y', () => {
+    it(' mouseCoord in x should be greater than the ones in y', () => {
         service.mouseDown = true;
-        service.mouseDownCoord = { x: 10, y: 0 };
-        expect(service['isXGreaterThanY']).toBe(true);
+        service.mouseDownCoord = { x: 1000, y: 1 };
+        service['firstGrid'] = { x: 0, y: 0 };
+        service.onMouseDown(mouseEvent);
+        service.onMouseUp(mouseEvent);
+        expect(service['isYGreaterThanX']).toHaveBeenCalled();
     });
 });
