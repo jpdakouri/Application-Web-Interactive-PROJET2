@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { KeyboardButton, MouseButton } from '@app/list-boutton-pressed';
+import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DEFAULT_MIN_THICKNESS, DOT_RADIUS, PIXEL_DISTANCE, SHIFT_ANGLE } from '@app/services/tools/tools-constants';
 
@@ -13,8 +14,8 @@ export class LineService extends Tool {
     private pathData: Vec2[];
     private shiftPressed: boolean;
 
-    constructor(drawingService: DrawingService) {
-        super(drawingService);
+    constructor(drawingService: DrawingService, currentColourService: CurrentColourService) {
+        super(drawingService, currentColourService);
         this.clearPath();
     }
 
@@ -143,6 +144,7 @@ export class LineService extends Tool {
         ctx.beginPath();
         ctx.moveTo(lastPoint.x, lastPoint.y);
         ctx.lineTo(previewPoint.x, previewPoint.y);
+        ctx.strokeStyle = this.currentColourService.getPrimaryColorHex();
         ctx.stroke();
     }
 
@@ -151,6 +153,7 @@ export class LineService extends Tool {
         ctx.moveTo(path[0].x, path[0].y);
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
+            ctx.strokeStyle = this.currentColourService.getPrimaryColorHex();
         }
         if (closedSegment) ctx.lineTo(path[0].x, path[0].y);
         ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
@@ -160,6 +163,7 @@ export class LineService extends Tool {
             for (const dot of path) {
                 ctx.beginPath();
                 ctx.arc(dot.x, dot.y, this.dotRadius ? this.dotRadius : DOT_RADIUS, 0, 2 * Math.PI, true);
+                ctx.fillStyle = this.currentColourService.getSecondaryColorHex();
                 ctx.fill();
             }
     }
