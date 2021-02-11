@@ -18,3 +18,8 @@ export const DEFAULT_RADIUS: number = DEFAULT_SIZE / DOT_DIVIDER;
 export const PIXEL_DISTANCE = 20;
 export const WAIT_TIME = 500;
 export const SHIFT_ANGLE = 45;
+
+/**********************/
+/****ERASER CONSTANTS****/
+/**********************/
+export const MIN_ERASER_THICKNESS = 5;
