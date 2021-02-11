@@ -3,6 +3,7 @@ import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { MouseButton } from '@app/list-boutton-pressed';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { DEFAULT_COLOR_BLACK } from '../tools-constants';
 import { PencilService } from './pencil.service';
 
 // tslint:disable:no-any
@@ -123,6 +124,7 @@ describe('PencilService', () => {
     // Exemple de test d'intégration qui est quand même utile
     it(' should change the pixel of the canvas ', () => {
         mouseEvent = { offsetX: 0, offsetY: 0, button: 0 } as MouseEvent;
+        baseCtxStub.fillStyle = DEFAULT_COLOR_BLACK;
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 1, offsetY: 0, button: 0 } as MouseEvent;
         service.onMouseUp(mouseEvent);
@@ -130,7 +132,7 @@ describe('PencilService', () => {
         // Premier pixel seulement
         const imageData: ImageData = baseCtxStub.getImageData(0, 0, 1, 1);
         // tslint:disable-next-line:no-magic-numbers
-        expect(imageData.data[0]).toEqual(255); // R
+        expect(imageData.data[0]).toEqual(0); // R
         expect(imageData.data[1]).toEqual(0); // G
         expect(imageData.data[2]).toEqual(0); // B
         // tslint:disable-next-line:no-magic-numbers
