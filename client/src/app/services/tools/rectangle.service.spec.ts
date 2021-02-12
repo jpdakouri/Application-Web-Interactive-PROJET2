@@ -125,6 +125,27 @@ describe('RectangleService', () => {
         expect(service['shiftDown']).toBeFalse();
     });
 
+    it('onKeyup should not update shift state if shiftDown is false', () => {
+        service['shiftDown'] = false;
+        service['firstGrid'] = { x: 10, y: 10 };
+        service.mouseDownCoord = { x: 50, y: 50 };
+
+        service.onKeyUp({
+            key: KeyboardKeys.Shift,
+        } as KeyboardEvent);
+        expect(service['shiftDown']).toBeTrue();
+    });
+
+    it('onKeyup should not update shift state if shiftDown is false', () => {
+        service['firstGrid'] = { x: 10, y: 10 };
+        service.mouseDownCoord = { x: 50, y: 50 };
+
+        service.onKeyDown({
+            key: KeyboardKeys.Shift,
+        } as KeyboardEvent);
+        expect(service['shiftDown']).toBeTrue();
+    });
+
     it('drawSquare should be called when shiftDown is true', () => {
         service.mouseDown = true;
         service['shiftDown'] = true;
@@ -189,5 +210,17 @@ describe('RectangleService', () => {
         service.drawSquare(val2);
         const expected2 = { x: 200, y: 200 } as Vec2;
         expect(val).toEqual(expected2);
+
+        service.mouseDownCoord = { x: 200, y: -300 };
+        const val3 = service.mouseDownCoord;
+        service.drawSquare(val3);
+        const expected3 = { x: 200, y: 200 } as Vec2;
+        expect(val).toEqual(expected3);
+
+        service.mouseDownCoord = { x: -300, y: -200 };
+        const val4 = service.mouseDownCoord;
+        service.drawSquare(val4);
+        const expected4 = { x: 200, y: 200 } as Vec2;
+        expect(val).toEqual(expected4);
     });
 });
