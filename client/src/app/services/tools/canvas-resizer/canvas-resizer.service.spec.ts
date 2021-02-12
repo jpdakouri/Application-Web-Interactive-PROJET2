@@ -2,42 +2,31 @@ import { TestBed } from '@angular/core/testing';
 import { Coordinate } from '@app/services/mouse-handler/coordinate';
 import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.service';
 import { CanvasResizerService, Status } from './canvas-resizer.service';
-//
-class MockMouseService extends MouseHandlerService {
-    startCoordinate: Coordinate = { x: 965, y: 400 };
-    endCoordinate: Coordinate = { x: 456, y: 236 };
 
-    // tslint:disable-next-line:no-magic-numbers
-    calculateDeltaX = (): number => 795;
-    // tslint:disable-next-line:no-magic-numbers
-    calculateDeltaY = (): number => 100;
-    onMouseDown(event: MouseEvent): void {
-        return;
-    }
-    onMouseUp(event: MouseEvent): void {
-        return;
-    }
-    onMouseMove(event: MouseEvent): void {
-        return;
-    }
+class MockMouseService extends MouseHandlerService {
+    deltaX: number = 400;
+    deltaY: number = 400;
+    calculateDeltaX = (): number => this.deltaX;
+    calculateDeltaY = (): number => this.deltaY;
+
+    // tslint:disable:no-empty
+    onMouseDown = (): void => {};
+    onMouseUp = (): void => {};
+    onMouseMove = (): void => {};
 }
 
 // tslint:disable:no-any
-fdescribe('CanvasResizerService', () => {
+describe('CanvasResizerService', () => {
     let mouseMock: MockMouseService;
     let service: CanvasResizerService;
     let mouseEvent: MouseEvent;
-    // let mouseServiceSpy: jasmine.SpyObj<MouseHandlerService>;
 
     beforeEach(() => {
         mouseMock = new MockMouseService();
-        // tslint:disable-next-line:max-line-length
-        // mouseServiceSpy = jasmine.createSpyObj('MockMouseService', ['onMouseDown', 'onMouseMove', 'onMouseUp', 'onMouseLeave', 'eventToCoordinate']);
         TestBed.configureTestingModule({
             providers: [{ provide: MouseHandlerService, useValue: mouseMock }],
         });
         service = TestBed.inject(CanvasResizerService);
-        // mouseServiceSpy = TestBed.inject(MockMouseService) as jasmine.SpyObj<MouseHandlerService>;
     });
 
     it('should be created', () => {
@@ -80,13 +69,15 @@ fdescribe('CanvasResizerService', () => {
         expect(service.status).toBe(Status.BOTTOM_RIGHT_RESIZE);
     });
 
-    it('should be able to calculate new canvas size', () => {
+    it('should be able to calculate new canvas size on middle right resizer click', () => {
+        service.setStatus(Status.MIDDLE_RIGHT_RESIZE);
         spyOn<any>(mouseMock, 'calculateDeltaX').and.callThrough();
         spyOn<any>(mouseMock, 'calculateDeltaY').and.callThrough();
-        // tslint:disable:no-string-literal
-        service['status'] = Status.MIDDLE_BOTTOM_RESIZE;
-        const val = service.calculateNewCanvasSize({ x: 300, y: 300 } as Coordinate);
-        const expected = { x: 300, y: 400 } as Coordinate;
-        expect(val).toEqual(expected);
+
+        const canvasSize = { x: 150, y: 300 } as Coordinate;
+        const expectedCanvasSize = { x: 550, y: 300 } as Coordinate;
+
+        const calculatedCanvasSize = service.calculateNewCanvasSize(canvasSize);
+        expect(calculatedCanvasSize).toEqual(expectedCanvasSize);
     });
 });
