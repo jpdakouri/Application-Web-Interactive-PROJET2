@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.service';
-import { CanvasResizerService } from '@app/services/tools/canvas-resizer/canvas-resizer.service';
+import { CanvasResizerService, Status } from '@app/services/tools/canvas-resizer/canvas-resizer.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { DrawingComponent } from './drawing.component';
 
@@ -57,6 +57,13 @@ describe('DrawingComponent', () => {
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
     });
 
+    it('current should not be canvasResizer on mousemove when not resizing ', () => {
+        canvasResizerStub.setStatus(Status.BOTTOM_RIGHT_RESIZE);
+        const event = {} as MouseEvent;
+        component.onMouseMove(event);
+        expect(component.currentTool).not.toBe(canvasResizerStub);
+    });
+
     it(" should call the tool's mouse down when receiving a mouse down event", () => {
         const event = {} as MouseEvent;
         const mouseEventSpy = spyOn(toolStub, 'onMouseDown').and.callThrough();
@@ -71,6 +78,16 @@ describe('DrawingComponent', () => {
         component.onMouseUp(event);
         expect(mouseEventSpy).toHaveBeenCalled();
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
+    });
+
+    it('should  resize the canvas on mouseUp when status is resizing', () => {
+        const event = {} as MouseEvent;
+        const mouseEventSpy = spyOn(toolStub, 'onMouseUp').and.callThrough();
+        const resizeSpy = spyOn(component, 'resizeCanvas').and.callThrough();
+        canvasResizerStub.setStatus(Status.BOTTOM_RIGHT_RESIZE);
+        component.onMouseUp(event);
+        expect(mouseEventSpy).toHaveBeenCalledWith(event);
+        expect(resizeSpy).toHaveBeenCalled();
     });
 
     it('should change current tool to canvasResizer onmouseover', () => {
@@ -112,5 +129,12 @@ describe('DrawingComponent', () => {
         spyOn(drawingStub, 'restoreCanvas');
         component.resizeCanvas();
         expect(drawingStub.restoreCanvas).toHaveBeenCalled();
+    });
+
+    it('canvasPreviewSize should be canvasSize on init', () => {
+        const calculatedPreviewCanvasSize = component.getPreviewCanvasSize();
+        const expectedPreviewCanvasSize = { x: component.width, y: component.height };
+        expect(calculatedPreviewCanvasSize.x).toEqual(expectedPreviewCanvasSize.x);
+        expect(calculatedPreviewCanvasSize.y).toEqual(expectedPreviewCanvasSize.y);
     });
 });

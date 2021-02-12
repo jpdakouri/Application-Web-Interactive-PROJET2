@@ -76,9 +76,7 @@ export class DrawingComponent implements OnInit, AfterViewInit {
     @HostListener('window:mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
         this.currentTool.onMouseMove(event);
-        if (!this.canvasResizerService.isResizing()) {
-            this.currentTool = this.tools[0];
-        }
+        if (!this.canvasResizerService.isResizing()) this.currentTool = this.tools[0];
     }
 
     @HostListener('window:mousedown', ['$event'])
