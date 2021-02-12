@@ -1,7 +1,9 @@
 import { TestBed } from '@angular/core/testing';
+import { EraserService } from '@app/services/tools/eraser-service/eraser.service';
 import { LineService } from '@app/services/tools/line-service/line.service';
 import { PencilService } from '@app/services/tools/pencil-service/pencil.service';
-import { AerosolService, EllipseService, EraserService, RectangleService, ToolManagerService } from './tool-manager.service';
+import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
+import { AerosolService, EllipseService, ToolManagerService } from './tool-manager.service';
 
 describe('ToolManagerService', () => {
     let service: ToolManagerService;

@@ -1,12 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-<<<<<<< HEAD
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { ToolManagerServiceMock } from '@app/tests-mocks/tool-manager-mock';
 import { ToolStub } from '@app/tests-mocks/tool-stub';
-=======
-import { PencilService } from '@app/services/tools/pencil.service';
->>>>>>> feature/pencil
+// import { PencilService } from '@app/services/tools/pencil.service';
 import { DrawingComponent } from './drawing.component';
 
 // TODO : Déplacer dans un fichier accessible à tous

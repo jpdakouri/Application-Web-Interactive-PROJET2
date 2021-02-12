@@ -14,6 +14,7 @@ export class EraserService extends Tool {
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
+        this.clearPath();
         this.width = this.lineThickness || DEFAULT_MIN_THICKNESS;
     }
 
@@ -22,28 +23,27 @@ export class EraserService extends Tool {
         if (this.mouseDown) {
             this.clearPath();
 
-            const mousePos = this.getPositionFromMouse(event);
-            this.pathData.push(mousePos);
-        }
-    }
-
-    onMouseMove(event: MouseEvent): void {
-        if (this.mouseDown) {
-            const mousePos = this.getPositionFromMouse(event);
-            this.pathData.push(mousePos);
-            // this.drawingService.previewCtx = this.drawingService.baseCtx;
-            this.erase(this.drawingService.baseCtx, this.pathData);
+            this.mouseDownCoord = this.getPositionFromMouse(event);
+            this.pathData.push(this.mouseDownCoord);
         }
     }
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
-            const mousePos = this.getPositionFromMouse(event);
-            this.pathData.push(mousePos);
+            const mousePosition = this.getPositionFromMouse(event);
+            this.pathData.push(mousePosition);
             this.erase(this.drawingService.baseCtx, this.pathData);
         }
         this.clearPath();
         this.mouseDown = false;
+    }
+
+    onMouseMove(event: MouseEvent): void {
+        if (this.mouseDown) {
+            const mousePosition = this.getPositionFromMouse(event);
+            this.pathData.push(mousePosition);
+            this.erase(this.drawingService.baseCtx, this.pathData);
+        }
     }
 
     onMouseLeave(event: MouseEvent): void {
