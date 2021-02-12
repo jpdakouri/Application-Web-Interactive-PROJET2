@@ -5,7 +5,7 @@ import { CanvasResizerService, Status } from './canvas-resizer.service';
 
 class MockMouseService extends MouseHandlerService {
     deltaX: number = 400;
-    deltaY: number = 400;
+    deltaY: number = 300;
     calculateDeltaX = (): number => this.deltaX;
     calculateDeltaY = (): number => this.deltaY;
 
@@ -27,6 +27,8 @@ describe('CanvasResizerService', () => {
             providers: [{ provide: MouseHandlerService, useValue: mouseMock }],
         });
         service = TestBed.inject(CanvasResizerService);
+        spyOn<any>(mouseMock, 'calculateDeltaX').and.callThrough();
+        spyOn<any>(mouseMock, 'calculateDeltaY').and.callThrough();
     });
 
     it('should be created', () => {
@@ -71,11 +73,19 @@ describe('CanvasResizerService', () => {
 
     it('should be able to calculate new canvas size on middle right resizer click', () => {
         service.setStatus(Status.MIDDLE_RIGHT_RESIZE);
-        spyOn<any>(mouseMock, 'calculateDeltaX').and.callThrough();
-        spyOn<any>(mouseMock, 'calculateDeltaY').and.callThrough();
 
         const canvasSize = { x: 150, y: 300 } as Coordinate;
         const expectedCanvasSize = { x: 550, y: 300 } as Coordinate;
+
+        const calculatedCanvasSize = service.calculateNewCanvasSize(canvasSize);
+        expect(calculatedCanvasSize).toEqual(expectedCanvasSize);
+    });
+
+    it('should be able to calculate new canvas size on middle bottom resizer click', () => {
+        service.setStatus(Status.MIDDLE_BOTTOM_RESIZE);
+
+        const canvasSize = { x: 500, y: 300 } as Coordinate;
+        const expectedCanvasSize = { x: 500, y: 600 } as Coordinate;
 
         const calculatedCanvasSize = service.calculateNewCanvasSize(canvasSize);
         expect(calculatedCanvasSize).toEqual(expectedCanvasSize);
