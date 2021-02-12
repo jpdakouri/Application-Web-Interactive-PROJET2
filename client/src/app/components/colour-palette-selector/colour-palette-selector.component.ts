@@ -21,7 +21,7 @@ export class ColourPaletteSelectorComponent implements AfterViewInit, OnChanges 
 
     constructor(private currentColourService: CurrentColourService) {}
 
-    draw(): void {
+    private draw(): void {
         const RGBA_WHITE = 'rgba(255,255,255,1)';
         const TRANSPARENT_RGBA_WHITE = 'rgba(255,255,255,0)';
         const RGBA_BLACK = 'rgba(0,0,0,1)';
@@ -76,9 +76,6 @@ export class ColourPaletteSelectorComponent implements AfterViewInit, OnChanges 
         const HUE_STRING = 'hue';
         if (changes[HUE_STRING]) {
             this.draw();
-            if (this.selectedPosition != undefined) {
-                this.selectedColor.emit(this.getRgbAtPosition(this.selectedPosition.x, this.selectedPosition.y));
-            }
         }
     }
 
@@ -91,7 +88,6 @@ export class ColourPaletteSelectorComponent implements AfterViewInit, OnChanges 
     }
 
     onMouseDown(mouseEvent: MouseEvent): void {
-        console.log('a');
         this.mousedown = true;
         this.selectedPosition = { x: mouseEvent.offsetX, y: mouseEvent.offsetY };
         this.draw();
@@ -104,7 +100,7 @@ export class ColourPaletteSelectorComponent implements AfterViewInit, OnChanges 
         }
     }
 
-    getRgbAtPosition(x: number, y: number): string {
+    private getRgbAtPosition(x: number, y: number): string {
         const IMAGE_DATA = this.canvasContext.getImageData(x, y, 1, 1).data;
         const RGBA_SEPARATOR = ',';
         return IMAGE_DATA[0] + RGBA_SEPARATOR + IMAGE_DATA[1] + RGBA_SEPARATOR + IMAGE_DATA[2];
