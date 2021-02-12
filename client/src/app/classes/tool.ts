@@ -15,6 +15,8 @@ export abstract class Tool {
 
     onMouseMove(event: MouseEvent): void {}
 
+    onMouseLeave(event: MouseEvent): void {}
+
     onKeyDown(event: KeyboardEvent): void {}
 
     onKeyUp(event: KeyboardEvent): void {}

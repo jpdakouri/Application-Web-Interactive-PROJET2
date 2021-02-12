@@ -104,9 +104,8 @@ export class EllipseService extends Tool {
         ctx.beginPath();
         ctx.strokeStyle = this.secondaryColor;
         ctx.lineWidth = this.lineThickness;
-        ctx.lineDashOffset = 6;
         const tempGrid = { ...this.mouseDownCoord };
-        ctx.strokeRect(tempGrid.x - finalGrid.x, tempGrid.x - finalGrid.x, finalGrid.x, finalGrid.y);
+        ctx.strokeRect(tempGrid.x - Math.abs(finalGrid.x - tempGrid.x), tempGrid.y - Math.abs(finalGrid.y - tempGrid.y), finalGrid.x, finalGrid.y);
         ctx.ellipse(this.firstGrid.x, this.firstGrid.y, Math.abs(finalGrid.x), Math.abs(finalGrid.y), 0, 0, REVOLUTION, false);
         ctx.stroke();
     }
@@ -191,7 +190,6 @@ export class EllipseService extends Tool {
         switch (this.shapeStyle) {
             case shapeStyle.Outline:
                 this.drawOutline(ctx, finalGrid);
-                // this.drawDashedRectangle(ctx, finalGrid);
                 break;
 
             case shapeStyle.Filled:
