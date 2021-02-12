@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
+import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { RectangleService, shapeStyle } from './rectangle.service';
 
@@ -25,6 +26,7 @@ describe('RectangleService', () => {
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
+    // tslint:disable:no-any
     let drawRectangleSpy: jasmine.Spy<any>;
     let drawSquareSpy: jasmine.Spy<any>;
     let drawOutlineSpy: jasmine.Spy<any>;
@@ -174,11 +176,18 @@ describe('RectangleService', () => {
     });
 
     it(' mouseCoord in x should be greater than the ones in y', () => {
-        service.mouseDown = true;
-        service.mouseDownCoord = { x: 1000, y: 1 };
+        service.mouseDownCoord = { x: 300, y: 200 };
         service['firstGrid'] = { x: 0, y: 0 };
-        service.onMouseDown(mouseEvent);
-        service.onMouseUp(mouseEvent);
-        expect(service['isYGreaterThanX']).toHaveBeenCalled();
+        service['shiftDown'] = true;
+        const expected = { x: 200, y: 200 } as Vec2;
+        const val = service.mouseDownCoord;
+        service.drawSquare(val);
+        expect(val).toEqual(expected);
+
+        service.mouseDownCoord = { x: -300, y: 200 };
+        const val2 = service.mouseDownCoord;
+        service.drawSquare(val2);
+        const expected2 = { x: 200, y: 200 } as Vec2;
+        expect(val).toEqual(expected2);
     });
 });

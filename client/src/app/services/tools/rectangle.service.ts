@@ -154,7 +154,7 @@ export class RectangleService extends Tool {
         return Math.abs(this.mouseDownCoord.y) > Math.abs(this.mouseDownCoord.x);
     }
 
-    private drawSquare(grid: Vec2): void {
+    drawSquare(grid: Vec2): void {
         if (this.isMouseInFirstQuadrant()) {
             grid.x = grid.y = Math.min(this.mouseDownCoord.x, this.mouseDownCoord.y);
         }
