@@ -109,15 +109,16 @@ describe('EllipseService', () => {
         expect(drawCircleSpy).toHaveBeenCalled();
     });
 
-    it('onKeyup should not update shift state if shiftDown is false', () => {
-        service['shiftDown'] = false;
+    it('onKeyup should update shift state', () => {
+        service['shiftDown'] = true;
         service['firstGrid'] = { x: 10, y: 10 };
+        const updatePreviewSpy = spyOn<any>(service, 'updatePreview').and.stub();
         service.mouseDownCoord = { x: 50, y: 50 };
-
         service.onKeyUp({
             key: KeyboardKeys.Shift,
         } as KeyboardEvent);
-        expect(service['shiftDown']).toBeTrue();
+        expect(updatePreviewSpy).toHaveBeenCalled();
+        expect(service['shiftDown']).toBeFalse();
     });
 
     it('onKeyup should not update shift state if shiftDown is false', () => {
@@ -158,38 +159,36 @@ describe('EllipseService', () => {
     });
 
     it(' drawOutline should be called when shapeStyle Outline is selected', () => {
-        service.mouseDownCoord = { x: 25, y: 25 };
-
-        service['firstGrid'] = { x: 0, y: 0 };
-        service.mouseDown = true;
         service['shapeStyle'] = shapeStyle.Outline;
-        service.onMouseDown(mouseEvent);
-        service.onMouseUp(mouseEvent);
-        expect(drawOutlineSpy).toHaveBeenCalledWith(jasmine.any(CanvasRenderingContext2D), service.mouseDownCoord);
+        // const contextSpyObj = jasmine.createSpyObj('CanvasRenderingContext2D', ['beginPath', 'strokeRect', 'ellipse', 'stroke']);
+        const ctxStub = {} as CanvasRenderingContext2D;
+        const finalGrid: Vec2 = { x: 100, y: 100 };
+        drawOutlineSpy.and.stub();
+        service['drawEllipse'](ctxStub, finalGrid);
+        expect(drawOutlineSpy).toHaveBeenCalledWith(ctxStub, finalGrid);
     });
 
     it(' drawFilled should be called when shapeeStyke Filled is selected', () => {
-        service.mouseDownCoord = { x: 25, y: 25 };
-
-        service['firstGrid'] = { x: 0, y: 0 };
-        service.mouseDown = true;
         service['shapeStyle'] = shapeStyle.Filled;
-        service.onMouseDown(mouseEvent);
-        service.onMouseUp(mouseEvent);
-        expect(drawFilledSpy).toHaveBeenCalledWith(jasmine.any(CanvasRenderingContext2D), service.mouseDownCoord);
+        // const contextSpyObj = jasmine.createSpyObj('CanvasRenderingContext2D', ['beginPath', 'strokeRect', 'ellipse', 'stroke']);
+        const ctxStub = {} as CanvasRenderingContext2D;
+        const finalGrid: Vec2 = { x: 100, y: 100 };
+        drawFilledSpy.and.stub();
+        service['drawEllipse'](ctxStub, finalGrid);
+        expect(drawFilledSpy).toHaveBeenCalledWith(ctxStub, finalGrid);
     });
 
     it(' drawFilledOutline should be called when shapeeStyke  is selected', () => {
-        service.mouseDownCoord = { x: 25, y: 25 };
-
-        service.mouseDown = true;
         service['shapeStyle'] = shapeStyle.FilledOutline;
-        service.onMouseDown(mouseEvent);
-        service.onMouseUp(mouseEvent);
-        expect(drawFilledOutlineSpy).toHaveBeenCalledWith(jasmine.any(CanvasRenderingContext2D), service.mouseDownCoord);
+        // const contextSpyObj = jasmine.createSpyObj('CanvasRenderingContext2D', ['beginPath', 'strokeRect', 'ellipse', 'stroke']);
+        const ctxStub = {} as CanvasRenderingContext2D;
+        const finalGrid: Vec2 = { x: 100, y: 100 };
+        drawFilledOutlineSpy.and.stub();
+        service['drawEllipse'](ctxStub, finalGrid);
+        expect(drawFilledOutlineSpy).toHaveBeenCalledWith(ctxStub, finalGrid);
     });
 
-    it(' mouseCoord in x should be greater than the ones in y', () => {
+    it(' every quadrant of drawCircle should be called', () => {
         service.mouseDownCoord = { x: 300, y: 200 };
         service['firstGrid'] = { x: 0, y: 0 };
         service['shiftDown'] = true;
