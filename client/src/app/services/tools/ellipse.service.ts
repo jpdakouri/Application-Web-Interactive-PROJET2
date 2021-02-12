@@ -141,31 +141,50 @@ export class EllipseService extends Tool {
         ctx.stroke();
     }
 
+    private isMouseInFirstQuadrant(): boolean {
+        // souris dans cadrant en bas a droite (+/+)
+        return Math.sign(this.mouseDownCoord.x) === sign.Positive && Math.sign(this.mouseDownCoord.y) === sign.Positive;
+    }
+
+    private isMouseInSecondQuadrant(): boolean {
+        // souris dans cadrant en haut a gauche (-/-)
+        return Math.sign(this.mouseDownCoord.x) === sign.Negative && Math.sign(this.mouseDownCoord.y) === sign.Negative;
+    }
+
+    private isMouseInThirdQuadrant(): boolean {
+        // souris dans cadrant en haute droite (+/-)
+        return Math.sign(this.mouseDownCoord.x) === sign.Negative && Math.sign(this.mouseDownCoord.y) === sign.Positive;
+    }
+
+    private isMouseInFourthQuadrant(): boolean {
+        // souris dans cadrant en haute droite (-/+)
+        return Math.sign(this.mouseDownCoord.x) === sign.Positive && Math.sign(this.mouseDownCoord.y) === sign.Negative;
+    }
+
+    private isXGreaterThanY(): boolean {
+        return Math.abs(this.mouseDownCoord.x) > Math.abs(this.mouseDownCoord.y);
+    }
+
+    private isYGreaterThanX(): boolean {
+        return Math.abs(this.mouseDownCoord.y) > Math.abs(this.mouseDownCoord.x);
+    }
+
     private drawCircle(grid: Vec2): void {
         // cadrant en bas a droite (+/+)
-        if (Math.sign(this.mouseDownCoord.x) === sign.Positive && Math.sign(this.mouseDownCoord.y) === sign.Positive) {
-            const min = Math.min(this.mouseDownCoord.x, this.mouseDownCoord.y);
-            grid.x = grid.y = min;
-        }
-        // cadrant en haut a gauche (-/-)
-        if (Math.sign(this.mouseDownCoord.x) === sign.Negative && Math.sign(this.mouseDownCoord.y) === sign.Negative) {
-            const max = Math.max(this.mouseDownCoord.x, this.mouseDownCoord.y);
-            grid.x = grid.y = max;
+        if (this.isMouseInFirstQuadrant()) {
+            grid.x = grid.y = Math.min(this.mouseDownCoord.x, this.mouseDownCoord.y);
         }
 
-        // cadrant en bas a gauche (-/+)
-        if (Math.sign(this.mouseDownCoord.x) === sign.Negative && Math.sign(this.mouseDownCoord.y) === sign.Positive) {
-            if (Math.abs(this.mouseDownCoord.x) > Math.abs(this.mouseDownCoord.y)) {
-                grid.x = -grid.y;
-            }
-            grid.y = -grid.x;
+        if (this.isMouseInSecondQuadrant()) {
+            grid.x = grid.y = Math.max(this.mouseDownCoord.x, this.mouseDownCoord.y);
         }
-        //  cadrant en haute droite (+/-)
-        if (Math.sign(this.mouseDownCoord.x) === sign.Positive && Math.sign(this.mouseDownCoord.y) === sign.Negative) {
-            if (Math.abs(this.mouseDownCoord.x) < Math.abs(this.mouseDownCoord.y)) {
-                grid.y = -grid.x;
-            }
-            grid.x = -grid.y;
+
+        if (this.isMouseInThirdQuadrant()) {
+            this.isXGreaterThanY() ? (grid.x = -grid.y) : (grid.y = -grid.x);
+        }
+
+        if (this.isMouseInFourthQuadrant()) {
+            this.isYGreaterThanX() ? (grid.x = -grid.y) : (grid.y = -grid.x);
         }
     }
 
