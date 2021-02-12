@@ -36,27 +36,4 @@ describe('DrawingService', () => {
         service.baseCtx.fillRect(0, 0, rectangleWidth, rectangleHeight);
         expect(service.isCanvasBlank()).toBeFalse();
     });
-
-    // it('should restoreCanvas on page load', () => {
-    //     spyOn(service, 'saveCanvas');
-    //     spyOn(service, 'restoreCanvas');
-    //     const rectangleWidth = 150;
-    //     const rectangleHeight = 75;
-    //     service.baseCtx.fillRect(0, 0, rectangleWidth, rectangleHeight);
-    //     service.saveCanvas(canvasTestHelper.canvas.width, canvasTestHelper.canvas.height);
-    //     // service.clearCanvas(service.baseCtx);
-    //
-    //     service.restoreCanvas();
-    //     expect(service.isCanvasBlank()).toBeFalse();
-    // });
-
-    // it('should calculate the working zone size', () => {
-    //     // @ts-ignore
-    //     const windowSize = {
-    //         innerHeight: 500,
-    //         innerWidth: 500,
-    //     } as Window;
-    //
-    //     expect(service.calculateWorkingZoneSize()).toBe({ x: 200, y: 200 });
-    // });
 });
