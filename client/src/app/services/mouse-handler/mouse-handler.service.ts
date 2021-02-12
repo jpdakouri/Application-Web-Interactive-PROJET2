@@ -31,23 +31,6 @@ export class MouseHandlerService {
         this.currentCoordinate = coordinateClick;
     }
 
-    // tslint:disable-next-line:no-empty
-    onMouseLeave(coordinate: Coordinate): void {}
-
-    calculateDistanceWrapper(): number {
-        const distance = this.calculateDistance(this.startCoordinate, this.endCoordinate);
-        return distance;
-    }
-
-    calculateDistance(startCoordinate: Coordinate, endCoordinate: Coordinate): number {
-        const distanceX = Math.abs(endCoordinate.x - startCoordinate.x);
-        const distanceY = Math.abs(endCoordinate.y - startCoordinate.y);
-
-        const totalDistance = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
-
-        return totalDistance;
-    }
-
     calculateDeltaX(): number {
         return this.endCoordinate.x - this.startCoordinate.x;
     }
@@ -59,12 +42,4 @@ export class MouseHandlerService {
     eventToCoordinate(event: MouseEvent): Coordinate {
         return { x: event.clientX, y: event.clientY };
     }
-
-    // private printToConsole(x: number): void {
-    //     console.log(`Total distance is ${x}`);
-    // }
-
-    // setMouseCoordinate(x: number, y: number): void {
-    //     this.currentCoordinate = { x, y };
-    // }
 }
