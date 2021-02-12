@@ -30,13 +30,8 @@ export class CanvasResizerService extends Tool {
     constructor(drawingService: DrawingService, mouseService: MouseHandlerService) {
         super(drawingService, mouseService);
         this.status = Status.OFF;
-    }
-
-    static calculateWorkingZoneSize(): Coordinate {
-        return {
-            x: window.innerWidth - SIDEBAR_WIDTH,
-            y: window.innerHeight,
-        };
+        this.canvasPreviewWidth = 0;
+        this.canvasPreviewHeight = 0;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -52,18 +47,23 @@ export class CanvasResizerService extends Tool {
         if (this.isResizing()) this.resizePreviewCanvas();
     }
 
+    isResizing(): boolean {
+        return this.status !== Status.OFF;
+    }
+
+    setStatus(status: Status): void {
+        this.status = status;
+    }
+
     onMiddleRightResizerClick(): void {
-        console.log('midd right resizer dragged!');
         this.setStatus(Status.MIDDLE_RIGHT_RESIZE);
     }
 
     onBottomRightResizerClick(): void {
-        console.log('right resizer clicked!');
         this.setStatus(Status.BOTTOM_RIGHT_RESIZE);
     }
 
     onMiddleBottomResizerClick(): void {
-        console.log('bott right resizer clicked!');
         this.setStatus(Status.MIDDLE_BOTTOM_RESIZE);
     }
 
@@ -92,17 +92,21 @@ export class CanvasResizerService extends Tool {
     }
 
     calculateCanvasSize(): Coordinate {
-        const workingZone: Coordinate = CanvasResizerService.calculateWorkingZoneSize();
-        console.log(workingZone);
+        const workingZone: Coordinate = this.calculateWorkingZoneSize();
         const newWidth = workingZone.x / 2;
         const newHeight = workingZone.y / 2;
-        let newCoordinate: Coordinate = { x: newWidth, y: newHeight };
+        const newCoordinate: Coordinate = { x: newWidth, y: newHeight };
 
-        console.log('newWidth = ' + newWidth);
-        if (workingZone.x < LOWER_BOUND_WIDTH || workingZone.y < LOWER_BOUND_HEIGHT) {
-            newCoordinate = { x: MINIMUM_WIDTH, y: MINIMUM_HEIGHT };
-        }
+        if (workingZone.x < LOWER_BOUND_WIDTH) newCoordinate.x = MINIMUM_WIDTH;
+        if (workingZone.y < LOWER_BOUND_HEIGHT) newCoordinate.y = MINIMUM_HEIGHT;
         return newCoordinate;
+    }
+
+    calculateWorkingZoneSize(): Coordinate {
+        return {
+            x: window.innerWidth - SIDEBAR_WIDTH,
+            y: window.innerHeight,
+        };
     }
 
     resizePreviewCanvas(): void {
@@ -120,13 +124,5 @@ export class CanvasResizerService extends Tool {
                 this.canvasPreviewHeight = this.mouseService.currentCoordinate.y;
                 break;
         }
-    }
-
-    isResizing(): boolean {
-        return this.status !== Status.OFF;
-    }
-
-    setStatus(status: Status): void {
-        this.status = status;
     }
 }
