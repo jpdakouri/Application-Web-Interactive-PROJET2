@@ -1,6 +1,5 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppMaterialModule } from './app-material/app-material.module';
@@ -13,7 +12,7 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
 
 @NgModule({
     declarations: [AppComponent, EditorComponent, SidebarComponent, DrawingComponent, MainPageComponent],
-    imports: [BrowserModule, HttpClientModule, AppRoutingModule, BrowserAnimationsModule, AppMaterialModule, MatTooltipModule],
+    imports: [BrowserModule, HttpClientModule, AppRoutingModule, BrowserAnimationsModule, AppMaterialModule],
     providers: [],
     bootstrap: [AppComponent],
 })

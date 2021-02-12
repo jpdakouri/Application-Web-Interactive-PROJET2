@@ -1,17 +1,25 @@
-.container {  // container de la page entiere
-    // width: 100%;
-    height: 100%;
+.container {
+    min-height: 100vh;
     display: flex;
 }
 
-.drawing-container { // zone de travail
+.drawing-container {
+    // zone de travail
+    min-height: 100vh;
+
     overflow: auto;
     flex: 1 1 auto;
     background-color: rgba(179, 179, 179, 0.6);
 }
 
-.drawing {
-    display: grid;
-    width: min-content;
-    outline: none;
+.sidebar-container {
+    min-height: 100vh;
+    border-right: 1px solid black;
+    width: 465px;
+    display: flex;
+    flex-direction: row;
+}
+
+.bars {
+    min-height: 100vh;
 }

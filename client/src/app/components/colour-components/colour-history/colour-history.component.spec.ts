@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SidebarComponent } from './sidebar.component';
+import { ColourHistoryComponent } from './colour-history.component';
 
-describe('SidebarComponent', () => {
-    let component: SidebarComponent;
-    let fixture: ComponentFixture<SidebarComponent>;
+describe('ColourHistoryComponent', () => {
+    let component: ColourHistoryComponent;
+    let fixture: ComponentFixture<ColourHistoryComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [SidebarComponent],
+            declarations: [ColourHistoryComponent],
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(SidebarComponent);
+        fixture = TestBed.createComponent(ColourHistoryComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

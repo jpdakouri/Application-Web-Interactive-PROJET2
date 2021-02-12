@@ -2,7 +2,9 @@ import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { PencilService } from './pencil-service';
+import { DEFAULT_COLOR_BLACK } from '@app/services/tools/tools-constants';
+import { MouseButton } from '@app/utils/enums/list-boutton-pressed';
+import { PencilService } from './pencil.service';
 
 // tslint:disable:no-any
 describe('PencilService', () => {
@@ -14,6 +16,7 @@ describe('PencilService', () => {
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let drawLineSpy: jasmine.Spy<any>;
+    let drawDotSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
@@ -27,6 +30,7 @@ describe('PencilService', () => {
 
         service = TestBed.inject(PencilService);
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
+        drawDotSpy = spyOn<any>(service, 'drawDot').and.callThrough();
 
         // Configuration du spy du service
         // tslint:disable:no-string-literal
@@ -36,7 +40,7 @@ describe('PencilService', () => {
         mouseEvent = {
             offsetX: 25,
             offsetY: 25,
-            button: 0,
+            button: MouseButton.Left,
         } as MouseEvent;
     });
 
@@ -59,18 +63,28 @@ describe('PencilService', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
-            button: 1, // TODO: Avoir ceci dans un enum accessible
+            button: MouseButton.Right,
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(service.mouseDown).toEqual(false);
     });
 
-    it(' onMouseUp should call drawLine if mouse was already down', () => {
+    it(' onMouseUp should call drawLine if mouse was already down and mouse moved', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
+        service.mouseMoved = true;
 
         service.onMouseUp(mouseEvent);
         expect(drawLineSpy).toHaveBeenCalled();
+    });
+
+    it(' onMouseUp should call drawDot if mouse was already down and mouse moved', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+        service.mouseMoved = false;
+
+        service.onMouseUp(mouseEvent);
+        expect(drawDotSpy).toHaveBeenCalled();
     });
 
     it(' onMouseUp should not call drawLine if mouse was not already down', () => {
@@ -79,6 +93,14 @@ describe('PencilService', () => {
 
         service.onMouseUp(mouseEvent);
         expect(drawLineSpy).not.toHaveBeenCalled();
+    });
+
+    it(' onMouseUp should not call drawDot if mouse was not already down', () => {
+        service.mouseDown = false;
+        service.mouseDownCoord = { x: 0, y: 0 };
+
+        service.onMouseUp(mouseEvent);
+        expect(drawDotSpy).not.toHaveBeenCalled();
     });
 
     it(' onMouseMove should call drawLine if mouse was already down', () => {
@@ -102,12 +124,14 @@ describe('PencilService', () => {
     // Exemple de test d'intégration qui est quand même utile
     it(' should change the pixel of the canvas ', () => {
         mouseEvent = { offsetX: 0, offsetY: 0, button: 0 } as MouseEvent;
+        baseCtxStub.fillStyle = DEFAULT_COLOR_BLACK;
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 1, offsetY: 0, button: 0 } as MouseEvent;
         service.onMouseUp(mouseEvent);
 
         // Premier pixel seulement
         const imageData: ImageData = baseCtxStub.getImageData(0, 0, 1, 1);
+        // tslint:disable-next-line:no-magic-numbers
         expect(imageData.data[0]).toEqual(0); // R
         expect(imageData.data[1]).toEqual(0); // G
         expect(imageData.data[2]).toEqual(0); // B
