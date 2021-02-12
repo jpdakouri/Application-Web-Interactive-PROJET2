@@ -1,7 +1,8 @@
 import { ColourHistoryService } from '@app/services/colour-history/colour-history.service';
 
 import { CurrentColourService } from './current-colour.service';
-
+// tslint:disable:no-string-literal
+// tslint:disable:no-any
 describe('CurrentColourService', () => {
     let service: CurrentColourService;
     let colourHistory: ColourHistoryService;

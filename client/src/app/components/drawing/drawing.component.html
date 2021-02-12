@@ -1,25 +1,8 @@
+<div #container id="canvas-container">
+    <div class="resizer middle-right" [ngStyle]="{ left: width + 'px', top: height / 2 - 2.5 + 'px' }"></div>
+    <div class="resizer bottom-right" [ngStyle]="{ left: width + 'px', top: height + 'px' }"></div>
+    <div class="resizer bottom-middle" [ngStyle]="{ left: width / 2 - 2.5 + 'px', top: height + 'px' }"></div>
 
-<!--  <div id="canvas-container">-->
-<!--    <canvas id="canvas" #baseCanvas [attr.width]="width" [attr.height]="height"></canvas>-->
-<!--    <canvas id="previewLayer" #previewCanvas [attr.width]="width" [attr.height]="height"></canvas>-->
-<!--  </div>-->
-
-
-<!--Version actuelle fonctionnelle-->
-<div id="canvas-container">
-
-  <div class='resizer middle-right'  [ngStyle]="{'left': width + 'px', 'top': (height/2 - 2.5) + 'px'}"
-                                     (click)="onMiddleRightClick()"></div>
-  <div class='resizer bottom-right'  [ngStyle]="{'left': width + 'px', 'top': height + 'px'}"
-                                     (click)="onMiddleRightClick()"></div>
-  <div class='resizer bottom-middle' [ngStyle]="{'left': (width/2 - 2.5) + 'px', 'top': height + 'px'}"
-                                     (click)="onMiddleRightClick()"></div>
-
-  <canvas id="canvas" #baseCanvas [attr.width]="width" [attr.height]="height"></canvas>
-  <canvas id="previewLayer" #previewCanvas [attr.width]="width" [attr.height]="height"></canvas>
-
+    <canvas id="canvas" #baseCanvas [attr.width]="width" [attr.height]="height"></canvas>
+    <canvas id="previewLayer" #previewCanvas [attr.width]="width" [attr.height]="height"></canvas>
 </div>
-
-
-
-

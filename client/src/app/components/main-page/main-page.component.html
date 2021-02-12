@@ -15,10 +15,12 @@
     <mat-grid-tile id="canvas" routerLink="/editor" [colspan]="1" [rowspan]="2">
         <mat-grid-tile-header class="tile-header">Créer un nouveau dessin</mat-grid-tile-header>
     </mat-grid-tile>
-    <mat-grid-tile (click)="alert()" id="sketchbook" [colspan]="1" [rowspan]="1">
+    <mat-grid-tile id="sketchbook" [colspan]="1" [rowspan]="1">
         <mat-grid-tile-header class="tile-header">Carrousel de dessins</mat-grid-tile-header>
     </mat-grid-tile>
 </mat-grid-list>
+
+<!--Je garde cette partie en commentaire car j'en aurais besoin au sprint 2 comme référence-->
 
 <!-- <div class="container">
     <h1 class="header-item">Bienvenue au cours {{ title }}</h1>

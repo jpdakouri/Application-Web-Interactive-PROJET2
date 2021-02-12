@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
-// import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from '@app/components/drawing/drawing.component';
+import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { DEFAULT_COLOR_BLACK, DEFAULT_MIN_THICKNESS } from '@app/services/tools/tools-constants';
-import { MouseButton } from '@app/tests-mocks/mock-boutton-pressed';
+import { DEFAULT_MIN_THICKNESS } from '@app/services/tools/tools-constants';
+import { MouseButton } from '@app/utils/enums/list-boutton-pressed';
 
 // Ceci est une implémentation de base de l'outil Crayon pour aider à débuter le projet
 // L'implémentation ici ne couvre pas tous les critères d'accepetation du projet
@@ -17,11 +17,13 @@ import { MouseButton } from '@app/tests-mocks/mock-boutton-pressed';
 export class PencilService extends Tool {
     private pathData: Vec2[];
     private radius: number;
+    currentColourService: CurrentColourService;
 
-    constructor(drawingService: DrawingService) {
-        super(drawingService);
+    constructor(drawingService: DrawingService, currentColourService: CurrentColourService) {
+        super(drawingService, currentColourService);
+        this.currentColourService = currentColourService;
         this.clearPath();
-        this.radius = this.lineThickness ? this.lineThickness : 1;
+        this.radius = this.lineThickness || DEFAULT_MIN_THICKNESS;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -74,7 +76,7 @@ export class PencilService extends Tool {
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.beginPath();
         ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
-        ctx.strokeStyle = this.primaryColor || DEFAULT_COLOR_BLACK;
+        ctx.strokeStyle = this.currentColourService.getPrimaryColorRgba();
         ctx.lineCap = 'round';
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
@@ -84,8 +86,8 @@ export class PencilService extends Tool {
 
     private drawDot(ctx: CanvasRenderingContext2D, point: Vec2): void {
         ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
-        ctx.strokeStyle = this.primaryColor || DEFAULT_COLOR_BLACK;
-        ctx.fillStyle = this.primaryColor || DEFAULT_COLOR_BLACK;
+        ctx.strokeStyle = this.currentColourService.getPrimaryColorRgba();
+        ctx.fillStyle = this.currentColourService.getPrimaryColorRgba();
         ctx.lineCap = 'round';
         ctx.beginPath();
         ctx.arc(point.x, point.y, this.radius, 0, 2 * Math.PI);

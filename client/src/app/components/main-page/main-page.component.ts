@@ -25,10 +25,6 @@ export class MainPageComponent {
         this.basicService.basicPost(newTimeMessage).subscribe();
     }
 
-    alert(): void {
-        alert("Cette fonctionnalité n'est pas encore implémentée cher ami");
-    }
-
     getMessagesFromServer(): void {
         this.basicService
             .basicGet()
