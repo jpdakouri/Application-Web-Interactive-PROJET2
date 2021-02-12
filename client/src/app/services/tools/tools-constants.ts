@@ -16,8 +16,8 @@ export const DEFAULT_RADIUS: number = DEFAULT_SIZE / DOT_DIVIDER;
 /****LINE CONSTANTS****/
 /**********************/
 export const PIXEL_DISTANCE = 20;
-export const WAIT_TIME = 500;
 export const SHIFT_ANGLE = 45;
+export const DEFAULT_DOT_RADIUS = 5;
 
 /**********************/
 /****ERASER CONSTANTS****/

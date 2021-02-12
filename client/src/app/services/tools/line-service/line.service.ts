@@ -3,7 +3,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { DEFAULT_MIN_THICKNESS, PIXEL_DISTANCE, SHIFT_ANGLE } from '@app/services/tools/tools-constants';
+import { DEFAULT_DOT_RADIUS, DEFAULT_MIN_THICKNESS, PIXEL_DISTANCE, SHIFT_ANGLE } from '@app/services/tools/tools-constants';
 import { KeyboardButton, MouseButton } from '@app/utils/enums/list-boutton-pressed';
 
 @Injectable({
@@ -13,10 +13,9 @@ export class LineService extends Tool {
     private started: boolean;
     private pathData: Vec2[];
     private shiftPressed: boolean;
-    currentColourService: CurrentColourService;
+
     constructor(drawingService: DrawingService, currentColourService: CurrentColourService) {
-        super(drawingService);
-        this.currentColourService = currentColourService;
+        super(drawingService, currentColourService);
         this.clearPath();
     }
 
@@ -146,7 +145,7 @@ export class LineService extends Tool {
         ctx.moveTo(lastPoint.x, lastPoint.y);
         ctx.lineTo(previewPoint.x, previewPoint.y);
         ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
-        ctx.strokeStyle = this.currentColourService.getPrimaryColorRgba();
+        ctx.strokeStyle = this.currentColourService.getPrimaryColorHex();
         ctx.stroke();
     }
 
@@ -155,16 +154,17 @@ export class LineService extends Tool {
         ctx.moveTo(path[0].x, path[0].y);
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
+            ctx.strokeStyle = this.currentColourService.getPrimaryColorHex();
         }
         if (closedSegment) ctx.lineTo(path[0].x, path[0].y);
         ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
-        ctx.strokeStyle = this.currentColourService.getPrimaryColorRgba();
         ctx.stroke();
 
         if (this.showDots)
             for (const dot of path) {
                 ctx.beginPath();
-                ctx.arc(dot.x, dot.y, this.dotRadius ? this.dotRadius : 1, 0, 2 * Math.PI, true);
+                ctx.arc(dot.x, dot.y, this.dotRadius ? this.dotRadius : DEFAULT_DOT_RADIUS, 0, 2 * Math.PI, true);
+                ctx.fillStyle = this.currentColourService.getSecondaryColorHex();
                 ctx.fill();
             }
     }

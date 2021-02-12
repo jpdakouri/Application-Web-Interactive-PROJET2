@@ -16,7 +16,7 @@ export class RectangleService extends Tool {
     currentColourService: CurrentColourService;
 
     constructor(drawingService: DrawingService, currentColourService: CurrentColourService) {
-        super(drawingService);
+        super(drawingService, currentColourService);
         this.currentColourService = currentColourService;
     }
 

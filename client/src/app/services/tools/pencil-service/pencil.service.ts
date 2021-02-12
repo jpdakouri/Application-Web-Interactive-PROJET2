@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
-// import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from '@app/components/drawing/drawing.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DEFAULT_MIN_THICKNESS } from '@app/services/tools/tools-constants';
 import { MouseButton } from '@app/utils/enums/list-boutton-pressed';
@@ -21,7 +20,7 @@ export class PencilService extends Tool {
     currentColourService: CurrentColourService;
 
     constructor(drawingService: DrawingService, currentColourService: CurrentColourService) {
-        super(drawingService);
+        super(drawingService, currentColourService);
         this.currentColourService = currentColourService;
         this.clearPath();
         this.radius = this.lineThickness || DEFAULT_MIN_THICKNESS;

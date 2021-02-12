@@ -4,6 +4,7 @@ const RGB_START = 'rgb(';
 const RGBA_START = 'rgba(';
 const RGB_RGBA_END = ')';
 const RGB_RGBA_SEPARATOR = ',';
+const RGB_NUMBER_OF_COLOURS = 3;
 @Injectable({
     providedIn: 'root',
 })
@@ -15,7 +16,7 @@ export class CurrentColourService {
 
     constructor(private colorHistory: ColourHistoryService) {
         const DEFAULT_PRIMARY_RGB = '0,0,0';
-        const DEFAULT_SECONDARY_RGB = '255,255,255';
+        const DEFAULT_SECONDARY_RGB = '0,0,0';
         const DEFAULT_TRANSPARENCY = '255';
 
         this.primaryColorRgb = DEFAULT_PRIMARY_RGB;
@@ -63,5 +64,25 @@ export class CurrentColourService {
         const temp = this.primaryColorRgb;
         this.primaryColorRgb = this.secondaryColorRgb;
         this.secondaryColorRgb = temp;
+    }
+
+    getPrimaryColorHex(): string {
+        const colorRGB = this.primaryColorRgb.split(RGB_RGBA_SEPARATOR, RGB_NUMBER_OF_COLOURS);
+        return this.rgbToHex(parseInt(colorRGB[0], 10), parseInt(colorRGB[1], 10), parseInt(colorRGB[2], 10));
+    }
+
+    getSecondaryColorHex(): string {
+        const colorRGB = this.secondaryColorRgb.split(RGB_RGBA_SEPARATOR, RGB_NUMBER_OF_COLOURS);
+        return this.rgbToHex(parseInt(colorRGB[0], 10), parseInt(colorRGB[1], 10), parseInt(colorRGB[2], 10));
+    }
+
+    // Inspiré de Stack Overflow
+    private rgbToHex(r: number, g: number, b: number): string {
+        return '#' + this.componentToHex(r) + this.componentToHex(g) + this.componentToHex(b);
+    }
+
+    private componentToHex(component: number): string {
+        const hex = component.toString(16);
+        return hex.length === 1 ? '0' + hex : hex;
     }
 }
