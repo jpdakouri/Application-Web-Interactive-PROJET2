@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
+import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { DEFAULT_COLOR_BLACK, DEFAULT_DOT_RADIUS, DEFAULT_MIN_THICKNESS } from '@app/services/tools/tools-constants';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { Vec2 } from './vec2';
 
@@ -11,16 +13,15 @@ import { Vec2 } from './vec2';
 export abstract class Tool {
     mouseDownCoord: Vec2;
     mouseDown: boolean = false;
-    lineThickness?: number = 1;
-    primaryColor?: string = '#ff0000';
-    secondaryColor?: string = '#000000';
+    lineThickness?: number = DEFAULT_MIN_THICKNESS;
+    primaryColor?: string = DEFAULT_COLOR_BLACK;
+    secondaryColor?: string = DEFAULT_COLOR_BLACK;
     shapeStyle?: ShapeStyle = ShapeStyle.Outline;
-    dotRadius?: number = 5;
+    dotRadius?: number = DEFAULT_DOT_RADIUS;
     showDots?: boolean = false;
     mouseMoved: boolean = false;
-    // shiftDown: boolean = false;
 
-    constructor(protected drawingService: DrawingService) {}
+    constructor(protected drawingService: DrawingService, protected currentColourService: CurrentColourService) {}
 
     onMouseDown(event: MouseEvent): void {}
 
