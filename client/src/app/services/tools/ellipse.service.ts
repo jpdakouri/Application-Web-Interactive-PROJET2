@@ -4,6 +4,7 @@ import { Vec2 } from '@app/classes/vec2';
 // import { KeyboardKeys, MouseButton } from '@app/enums/rectangle-enums';
 // import { ShapeStyle } from '@app/enums/shape-style';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+
 // import { DEFAULT_COLOR_BLACK, DEFAULT_MIN_THICKNESS } from '@app/services/tools/tools-constants';
 
 export enum MouseButton {
@@ -63,12 +64,10 @@ export class EllipseService extends Tool {
 
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
-            this.mouseDownCoord = this.getPositionFromMouse(event);
             this.mouseDownCoord.x = this.getPositionFromMouse(event).x - this.firstGrid.x;
             this.mouseDownCoord.y = this.getPositionFromMouse(event).y - this.firstGrid.y;
             this.updatePreview();
-            if (event.shiftKey) {
-                this.shiftDown = true;
+            if (this.shiftDown) {
                 this.drawCircle(this.mouseDownCoord);
                 // this.updatePreview();
             }
@@ -88,14 +87,14 @@ export class EllipseService extends Tool {
         if (event.key === KeyboardKeys.Escape) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.clearPath();
-        } else if (event.shiftKey) {
+        } else if (event.key === KeyboardKeys.Shift) {
             this.shiftDown = true;
             this.updatePreview();
         }
     }
 
     onKeyUp(event: KeyboardEvent): void {
-        if (this.shiftDown && !event.shiftKey) {
+        if (this.shiftDown && event.key === KeyboardKeys.Shift) {
             this.shiftDown = false;
             this.updatePreview();
         }
@@ -169,7 +168,7 @@ export class EllipseService extends Tool {
         return Math.abs(this.mouseDownCoord.y) > Math.abs(this.mouseDownCoord.x);
     }
 
-    private drawCircle(grid: Vec2): void {
+    drawCircle(grid: Vec2): void {
         // cadrant en bas a droite (+/+)
         if (this.isMouseInFirstQuadrant()) {
             grid.x = grid.y = Math.min(this.mouseDownCoord.x, this.mouseDownCoord.y);
