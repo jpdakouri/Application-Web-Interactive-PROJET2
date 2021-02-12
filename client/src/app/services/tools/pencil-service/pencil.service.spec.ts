@@ -3,7 +3,7 @@ import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { MouseButton } from '@app/list-boutton-pressed';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { DEFAULT_COLOR_BLACK } from '../tools-constants';
+import { DEFAULT_COLOR_BLACK } from '@app/services/tools/tools-constants';
 import { PencilService } from './pencil.service';
 
 // tslint:disable:no-any
