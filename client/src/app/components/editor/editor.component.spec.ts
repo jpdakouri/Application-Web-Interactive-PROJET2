@@ -7,7 +7,7 @@ import { ToolManagerService } from '@app/services/tool-manager/tool-manager.serv
 import { ToolManagerServiceMock } from '@app/tests-mocks/tool-manager-mock';
 import { EditorComponent } from './editor.component';
 
-fdescribe('EditorComponent', () => {
+describe('EditorComponent', () => {
     let component: EditorComponent;
     let fixture: ComponentFixture<EditorComponent>;
     let toolManagerServiceMock: ToolManagerServiceMock;
@@ -26,6 +26,8 @@ fdescribe('EditorComponent', () => {
         fixture = TestBed.createComponent(EditorComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
+        // tslint:disable:no-any
+        spyOn<any>(toolManagerServiceMock, 'emitToolChange').and.callThrough();
     });
 
     it('should create', () => {
@@ -33,17 +35,18 @@ fdescribe('EditorComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    fit(' #onKeyUp should call set the right tool if input is valide ', () => {
+    it(' #onKeyUp should call set the right tool if input is valide ', () => {
         const goodInput = { key: KeyboardButton.Rectangle } as KeyboardEvent;
-        // tslint:disable-next-line:no-any
-        spyOn<any>(toolManagerServiceMock, 'emitToolChange').and.callThrough();
         component.onKeyUp(goodInput);
         expect(toolManagerServiceMock.emitToolChange).toHaveBeenCalled();
-        // // tslint:disable:no-any
-        // const teset = spyOn<any>(ToolManagerServiceMock, 'emitToolChange').and.callThrough();
-        // console.log(teset);
+    });
 
-        // component.onKeyUp({ key: KeyboardButton.Line } as KeyboardEvent);
-        // expect(teset).toHaveBeenCalled();
+    it(' onKeyUp should not call emitToolChange if shift is pressed or the key is inalid ', () => {
+        component.onKeyUp({ shiftKey: true } as KeyboardEvent);
+        expect(toolManagerServiceMock.emitToolChange).not.toHaveBeenCalled();
+
+        const badInput = { key: KeyboardButton.InvalidInput } as KeyboardEvent;
+        component.onKeyUp(badInput);
+        expect(toolManagerServiceMock.emitToolChange).not.toHaveBeenCalled();
     });
 });
