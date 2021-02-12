@@ -90,4 +90,34 @@ describe('CanvasResizerService', () => {
         const calculatedCanvasSize = service.calculateNewCanvasSize(canvasSize);
         expect(calculatedCanvasSize).toEqual(expectedCanvasSize);
     });
+
+    it('should be able to calculate new canvas size on bottom resizer click', () => {
+        service.setStatus(Status.BOTTOM_RIGHT_RESIZE);
+
+        const canvasSize = { x: 500, y: 300 } as Coordinate;
+        const expectedCanvasSize = { x: 900, y: 600 } as Coordinate;
+
+        const calculatedCanvasSize = service.calculateNewCanvasSize(canvasSize);
+        expect(calculatedCanvasSize).toEqual(expectedCanvasSize);
+    });
+
+    it('new canvas should be 250 pixels when canvas width is lower than 250 pixels', () => {
+        service.setStatus(Status.BOTTOM_RIGHT_RESIZE);
+
+        const canvasSize = { x: -350, y: -300 } as Coordinate;
+        const expectedCanvasSize = { x: 250, y: 250 } as Coordinate;
+
+        const calculatedCanvasSize = service.calculateNewCanvasSize(canvasSize);
+        expect(calculatedCanvasSize).toEqual(expectedCanvasSize);
+    });
+
+    it('new canvas should be 250 pixels when canvas height is lower than 250 pixels', () => {
+        service.setStatus(Status.BOTTOM_RIGHT_RESIZE);
+
+        const canvasSize = { x: 350, y: -300 } as Coordinate;
+        const expectedCanvasSize = { x: 750, y: 250 } as Coordinate;
+
+        const calculatedCanvasSize = service.calculateNewCanvasSize(canvasSize);
+        expect(calculatedCanvasSize).toEqual(expectedCanvasSize);
+    });
 });
