@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
-const RGB_MAX = 255;
 const PERCENTAGE_MAX = 100;
-const PERCENTAGE_TO_ALPHA_RATIO = RGB_MAX / PERCENTAGE_MAX;
 @Component({
     selector: 'app-colour-selector',
     templateUrl: './colour-selector.component.html',
@@ -31,39 +29,39 @@ export class ColourSelectorComponent {
 
     onPrimaryColorTransparencyEntryChange(): void {
         if (this.isValidTransparency(this.primaryColourTransparency)) {
-            const TRANSPARENCY_RGB = Math.round(Number(this.primaryColourTransparency) * PERCENTAGE_TO_ALPHA_RATIO);
+            const TRANSPARENCY_RGB = Math.round(Number(this.primaryColourTransparency) / PERCENTAGE_MAX);
             this.currentColourService.setPrimaryColorTransparency(TRANSPARENCY_RGB.toString());
         }
     }
 
     onSecondaryColorTransparencyEntryChange(): void {
         if (this.isValidTransparency(this.secondaryColourTransparency)) {
-            const TRANSPARENCY_RGB = Math.round(Number(this.secondaryColourTransparency) * PERCENTAGE_TO_ALPHA_RATIO);
+            const TRANSPARENCY_RGB = Math.round(Number(this.secondaryColourTransparency) / PERCENTAGE_MAX);
             this.currentColourService.setSecondaryColorTransparency(TRANSPARENCY_RGB.toString());
         }
     }
 
     isValidRGB(): boolean {
-        console.log(this.rgbColor);
+        console.log("bonjour");
         if (this.rgbColor === '' || this.rgbColor == undefined) return false;
+
+        const HEX_CHARACTERS = ['0','1','2','3','4','5','6','7','8','9','a','A','b','B','c','C','d','D','e','E','f','F'];
+        const MIN_HEX_RGB_VALUE = 1;
+        const MAX_HEX_RGB_VALUE = 2;
+        const INDEX_ELEMENT_NOT_THERE = -1;
+
         const RGB_VALUES = this.rgbColor.split(',');
-        const MAX_RGB = 255;
         const RGB_COMPONENTS = 3;
-        if (RGB_VALUES.length !== RGB_COMPONENTS) return false;
+        if (RGB_VALUES.length != RGB_COMPONENTS) return false;
 
-        let containsNaN = false;
+        let validRgb = true;
         RGB_VALUES.forEach((value) => {
-            if (isNaN(Number(value))) containsNaN = true;
+            if (value.length < MIN_HEX_RGB_VALUE || value.length > MAX_HEX_RGB_VALUE) validRgb = false;
+            for (let i = 0; i < value.length - 1; i++) {
+                if (HEX_CHARACTERS.indexOf(value[i]) == INDEX_ELEMENT_NOT_THERE) validRgb = false;
+            }
         });
-        if (containsNaN) return false;
-
-        let containsValidNumbers = true;
-        RGB_VALUES.forEach((value) => {
-            if (Number(value) > 0 && Number(value) < MAX_RGB && !Number.isInteger(value)) containsValidNumbers = false;
-            if (!Number.isInteger(value)) containsValidNumbers = false;
-        });
-        console.log('a');
-        return containsValidNumbers;
+        return validRgb;
     }
 
     isValidTransparency(transparency: string): boolean {
@@ -72,11 +70,5 @@ export class ColourSelectorComponent {
         if (Number(transparency) == undefined) return false;
         if (Number.isInteger(Number(transparency))) return false;
         return Number(transparency) >= MIN_TRANSPARENCY && Number(transparency) <= MAX_TRANSPARENCY;
-    }
-
-    formatToRGBA(): string {
-        const RGBA_START = 'rgba(';
-        const RGBA_END = ',1)';
-        return RGBA_START + this.rgbColor + RGBA_END;
     }
 }
