@@ -18,6 +18,14 @@ canvas {
     position: relative;
 }
 
+#canvasResizerPreview {
+    position: relative;
+    border: 1px dashed;
+    min-width: 250px;
+    min-height:250px;
+    z-index: 100
+}
+
 .resizer {
     width: 5px;
     height: 5px;
