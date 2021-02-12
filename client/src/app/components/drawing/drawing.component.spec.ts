@@ -66,23 +66,54 @@ describe('DrawingComponent', () => {
     // TO DO: il faut écrire au prof pour la deuxième branche du if
 
     it('canvas should have a default WIDTH and HEIGHT that is half of working zone dimensions', () => {
-        const MINIMUM_CANVAS_WIDTH = 250;
-        const MINIMUM_CANVAS_HEIGHT = 250;
-        const workingZoneWidth = window.innerWidth - TOOLBAR_WIDTH;
-        const workingZoneHeight = window.innerHeight;
+        const EXPECTED_CANVAS_WIDTH = 300;
+        const EXPECTED_CANVAS_HEIGHT = 300;
+        const WORKING_ZONE_HEIGHT = 600;
+        const WORKING_ZONE_WIDTH = 600;
+        spyOnProperty(window, 'innerHeight', 'get').and.returnValue(WORKING_ZONE_HEIGHT);
+        spyOnProperty(window, 'innerWidth', 'get').and.returnValue(WORKING_ZONE_WIDTH + TOOLBAR_WIDTH);
+        component.setCanvasSize();
         // tslint:disable: no-string-literal
         const canvasHeight = component['canvasSize'].y;
         const canvasWidth = component['canvasSize'].x;
-        const desiredCanvasHeight = workingZoneHeight / 2;
-        const desiredCanvasWidth = workingZoneWidth / 2;
-        if (desiredCanvasHeight < MINIMUM_CANVAS_HEIGHT || desiredCanvasWidth < MINIMUM_CANVAS_WIDTH) {
-            expect(canvasHeight).toEqual(MINIMUM_CANVAS_HEIGHT);
-            expect(canvasWidth).toEqual(MINIMUM_CANVAS_WIDTH);
-        } else {
-            expect(canvasHeight).toEqual(workingZoneHeight / 2);
-            expect(canvasWidth).toEqual(workingZoneWidth / 2);
-        }
+        expect(canvasHeight).toEqual(EXPECTED_CANVAS_HEIGHT);
+        expect(canvasWidth).toEqual(EXPECTED_CANVAS_WIDTH);
     });
+
+    it('canvas should have a 250px WIDTH and HEIGHT that half of working zone dimensions is smaller than 250px', () => {
+        const EXPECTED_CANVAS_WIDTH = 250;
+        const EXPECTED_CANVAS_HEIGHT = 250;
+        const WORKING_ZONE_HEIGHT = 400;
+        const WORKING_ZONE_WIDTH = 400;
+        spyOnProperty(window, 'innerHeight', 'get').and.returnValue(WORKING_ZONE_HEIGHT);
+        spyOnProperty(window, 'innerWidth', 'get').and.returnValue(WORKING_ZONE_WIDTH + TOOLBAR_WIDTH);
+        component.setCanvasSize();
+        // tslint:disable: no-string-literal
+        const canvasHeight = component['canvasSize'].y;
+        const canvasWidth = component['canvasSize'].x;
+        expect(canvasHeight).toEqual(EXPECTED_CANVAS_HEIGHT);
+        expect(canvasWidth).toEqual(EXPECTED_CANVAS_WIDTH);
+    });
+
+    // it('canvas should have a default WIDTH and HEIGHT that is half of working zone dimensions', () => {
+    //     const MINIMUM_CANVAS_WIDTH = 250;
+    //     const MINIMUM_CANVAS_HEIGHT = 250;
+    //     const spy = spyOnProperty(window, 'innerHeight', 'get').and.returnValue();
+    //     const workingZoneWidth = window.innerWidth - TOOLBAR_WIDTH;
+    //     const workingZoneHeight = window.innerHeight;
+    //     // tslint:disable: no-string-literal
+    //     const canvasHeight = component['canvasSize'].y;
+    //     const canvasWidth = component['canvasSize'].x;
+    //     const desiredCanvasHeight = workingZoneHeight / 2;
+    //     const desiredCanvasWidth = workingZoneWidth / 2;
+    //     if (desiredCanvasHeight < MINIMUM_CANVAS_HEIGHT || desiredCanvasWidth < MINIMUM_CANVAS_WIDTH) {
+    //         expect(canvasHeight).toEqual(MINIMUM_CANVAS_HEIGHT);
+    //         expect(canvasWidth).toEqual(MINIMUM_CANVAS_WIDTH);
+    //     } else {
+    //         expect(canvasHeight).toEqual(workingZoneHeight / 2);
+    //         expect(canvasWidth).toEqual(workingZoneWidth / 2);
+    //     }
+    // });
 
     it('should get stubTool', () => {
         const currentTool = component.currentTool;
