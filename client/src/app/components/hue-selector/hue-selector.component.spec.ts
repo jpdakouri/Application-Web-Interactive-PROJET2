@@ -20,13 +20,15 @@ describe('HueSelectorComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
-    /* 
+    it('the gradient is drawn correctly', () => {
+        component.ngAfterViewInit();
+        expect(false).toBeTruthy();
+    });
     it('the selector does not move if not clicked', () => {
-            component.ngAfterViewInit()
         expect(false).toBeTruthy();
     });
 
-    it('the color is correctly emitted', () => {
+    it('the color is emitted if the cursor is on the component canvas', () => {
         component.ngAfterViewInit()
         expect(false).toBeTruthy();
     });
@@ -34,5 +36,5 @@ describe('HueSelectorComponent', () => {
     it('the color is not emitted if the cursor is not at a valid position', () => {
         component.ngAfterViewInit()
         expect(false).toBeTruthy();
-    }); */
+    });
 });
