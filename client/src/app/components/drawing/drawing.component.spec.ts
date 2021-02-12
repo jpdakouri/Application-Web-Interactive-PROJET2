@@ -44,17 +44,6 @@ describe('DrawingComponent', () => {
         fixture.detectChanges();
     });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
-
-    // it('should have a default WIDTH and HEIGHT', () => {
-    //     const height = component.height;
-    //     const width = component.width;
-    //     expect(height).toEqual(DEFAULT_HEIGHT);
-    //     expect(width).toEqual(DEFAULT_WIDTH);
-    // });
-
     it('should get stubTool', () => {
         const currentTool = component.currentTool;
         expect(currentTool).toEqual(toolStub);
@@ -89,19 +78,6 @@ describe('DrawingComponent', () => {
         component.onMouseOver();
         expect(mouseEventSpy).toHaveBeenCalled();
         expect(component.currentTool).toBe(canvasResizerStub);
-    });
-
-    it('should save the canvas state before load', () => {
-        // @ts-ignore
-        const windowEventSpy = spyOn(component, 'unloadHandler').and.callThrough();
-        component.unloadHandler();
-        expect(windowEventSpy).toHaveBeenCalled();
-        expect(drawingStub.saveCanvas).toHaveBeenCalled();
-    });
-
-    it('should return the right value for canvasResizerPreviewService', () => {
-        const getPreviewCanvasSizeSpy = spyOn(component, 'getPreviewCanvasSize');
-        expect(getPreviewCanvasSizeSpy).toBe({ x: component.width, y: component.height });
     });
 
     it('should save the canvas state when a resizer is clicked', () => {

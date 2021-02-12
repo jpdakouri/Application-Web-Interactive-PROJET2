@@ -20,7 +20,7 @@ export class DrawingComponent implements OnInit, AfterViewInit {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     // On utilise ce canvas pour dessiner sans affecter le dessin final
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
-
+    // On utilise ce canvas pour le rectangle de prévisualisation
     @ViewChild('canvasResizerPreview', { static: false }) canvasResizerPreview: ElementRef<HTMLDivElement>;
 
     private baseCtx: CanvasRenderingContext2D;
@@ -49,12 +49,7 @@ export class DrawingComponent implements OnInit, AfterViewInit {
         this.drawingService.canvas.style.backgroundColor = DEFAULT_WHITE;
         this.canvasResizerService.canvasPreviewWidth = this.canvasSize.x;
         this.canvasResizerService.canvasPreviewHeight = this.canvasSize.y;
-        // this.setCanvasSize();
-
-        // this.drawingService.restoreCanvas();
-        // if (this.drawingService.isCanvasBlank()) {
-        //     this.openConfirmationDialog();
-        // }
+        this.drawingService.restoreCanvas();
     }
 
     setCanvasSize(): void {
@@ -64,6 +59,18 @@ export class DrawingComponent implements OnInit, AfterViewInit {
     resizeCanvas(): void {
         this.canvasSize = this.canvasResizerService.calculateNewCanvasSize(this.canvasSize);
         this.drawingService.restoreCanvas();
+    }
+
+    get width(): number {
+        return this.canvasSize.x;
+    }
+
+    get height(): number {
+        return this.canvasSize.y;
+    }
+
+    getPreviewCanvasSize(): Coordinate {
+        return { x: this.canvasResizerService.canvasPreviewWidth, y: this.canvasResizerService.canvasPreviewHeight };
     }
 
     @HostListener('window:mousemove', ['$event'])
@@ -85,12 +92,7 @@ export class DrawingComponent implements OnInit, AfterViewInit {
 
         if (this.canvasResizerService.isResizing()) this.resizeCanvas();
         this.canvasResizerService.setStatus(Status.OFF);
-        this.drawingService.saveCanvas(this.drawingService.canvas.width, this.drawingService.canvas.height);
-    }
-
-    @HostListener('window:beforeunload', ['$event'])
-    unloadHandler(): void {
-        this.drawingService.saveCanvas(this.width, this.height);
+        this.drawingService.saveCanvas();
     }
 
     @HostListener('window:mouseover', ['$event'])
@@ -98,39 +100,21 @@ export class DrawingComponent implements OnInit, AfterViewInit {
         this.currentTool = this.tools[1];
     }
 
-    get width(): number {
-        return this.canvasSize.x;
-    }
-
-    get height(): number {
-        return this.canvasSize.y;
-    }
-
-    getPreviewCanvasSize(): Coordinate {
-        return { x: this.canvasResizerService.canvasPreviewWidth, y: this.canvasResizerService.canvasPreviewHeight };
-    }
-
     onMiddleRightResizerClick(): void {
         this.currentTool = this.tools[1];
-        this.drawingService.saveCanvas(this.width, this.height);
+        this.drawingService.saveCanvas();
         this.canvasResizerService.onMiddleRightResizerClick();
     }
 
     onBottomRightResizerClick(): void {
         this.currentTool = this.tools[1];
-        this.drawingService.saveCanvas(this.width, this.height);
+        this.drawingService.saveCanvas();
         this.canvasResizerService.onBottomRightResizerClick();
     }
 
     onMiddleBottomResizerClick(): void {
         this.currentTool = this.tools[1];
-        this.drawingService.saveCanvas(this.width, this.height);
+        this.drawingService.saveCanvas();
         this.canvasResizerService.onMiddleBottomResizerClick();
     }
 }
-
-// @HostListener('window:mouseleave', ['$event'])
-// oneMouseLeave(event: MouseEvent): void {
-//     // this.drawingService.saveCanvas(this.width, this.height);
-//     this.currentTool.onMouseLeave(event);
-// }
