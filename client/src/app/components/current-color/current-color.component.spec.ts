@@ -1,24 +1,21 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 
 import { CurrentColorComponent } from './current-color.component';
 
 describe('CurrentColorComponent', () => {
     let component: CurrentColorComponent;
-    let fixture: ComponentFixture<CurrentColorComponent>;
-
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [CurrentColorComponent],
-        }).compileComponents();
-    }));
-
+    let serviceSpy: jasmine.SpyObj<CurrentColourService>;
     beforeEach(() => {
-        fixture = TestBed.createComponent(CurrentColorComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
+        serviceSpy = jasmine.createSpyObj('CurrentColorService', ['swapColors']);
+        component = new CurrentColorComponent(serviceSpy);
     });
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+    it('swapcolors calls the swapcolors method of the current color service', () => {
+        component.swapColours();
+        expect(serviceSpy.swapColors).toHaveBeenCalled();
     });
 });
