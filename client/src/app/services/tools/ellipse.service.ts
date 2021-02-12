@@ -105,7 +105,7 @@ export class EllipseService extends Tool {
         ctx.strokeStyle = this.secondaryColor;
         ctx.lineWidth = this.lineThickness;
         ctx.lineDashOffset = 6;
-        const tempGrid = this.mouseDownCoord;
+        const tempGrid = { ...this.mouseDownCoord };
         ctx.strokeRect(tempGrid.x - finalGrid.x, tempGrid.x - finalGrid.x, finalGrid.x, finalGrid.y);
         ctx.ellipse(this.firstGrid.x, this.firstGrid.y, Math.abs(finalGrid.x), Math.abs(finalGrid.y), 0, 0, REVOLUTION, false);
         ctx.stroke();

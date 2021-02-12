@@ -58,7 +58,7 @@ describe('EllipseService', () => {
         mouseEvent = {
             offsetX: 25,
             offsetY: 25,
-            button: 0,
+            button: MouseButton.Left,
         } as MouseEvent;
 
         it('should be created', () => {
