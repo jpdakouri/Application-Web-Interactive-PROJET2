@@ -126,17 +126,6 @@ describe('RectangleService', () => {
     });
 
     it('onKeyup should not update shift state if shiftDown is false', () => {
-        service['shiftDown'] = false;
-        service['firstGrid'] = { x: 10, y: 10 };
-        service.mouseDownCoord = { x: 50, y: 50 };
-
-        service.onKeyUp({
-            key: KeyboardKeys.Shift,
-        } as KeyboardEvent);
-        expect(service['shiftDown']).toBeTrue();
-    });
-
-    it('onKeyup should not update shift state if shiftDown is false', () => {
         service['firstGrid'] = { x: 10, y: 10 };
         service.mouseDownCoord = { x: 50, y: 50 };
 
