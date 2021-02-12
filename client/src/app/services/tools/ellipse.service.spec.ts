@@ -96,6 +96,19 @@ describe('EllipseService', () => {
         expect(drawEllipseSpy).not.toHaveBeenCalled();
     });
 
+    it(' keys should perform their task', () => {
+        service.onKeyDown({
+            key: KeyboardKeys.Escape,
+        } as KeyboardEvent);
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+
+        service.onKeyDown({
+            key: KeyboardKeys.Shift,
+        } as KeyboardEvent);
+        expect(service['shiftDown']).toBeTrue();
+        expect(drawCircleSpy).toHaveBeenCalled();
+    });
+
     it('onKeyup should not update shift state if shiftDown is false', () => {
         service['shiftDown'] = false;
         service['firstGrid'] = { x: 10, y: 10 };
