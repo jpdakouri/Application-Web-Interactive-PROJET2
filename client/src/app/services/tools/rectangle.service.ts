@@ -95,13 +95,6 @@ export class RectangleService extends Tool {
             this.updatePreview();
         }
     }
-    // drawDashedRectangle(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
-    //     ctx.beginPath();
-    //     ctx.lineWidth = this.lineThickness;
-    //     ctx.setLineDash([2]);
-    //     ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
-    //     ctx.fill();
-    // }
 
     drawOutline(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.beginPath();
