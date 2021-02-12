@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { Coordinate } from '@app/services/mouse-handler/coordinate';
+import { Coordinate } from '@app/classes/coordinate';
 import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.service';
 import { CanvasResizerService, Status } from './canvas-resizer.service';
 

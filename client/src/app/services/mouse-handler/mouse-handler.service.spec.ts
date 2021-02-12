@@ -4,7 +4,7 @@
 
 import { TestBed } from '@angular/core/testing';
 
-import { Coordinate } from './coordinate';
+import { Coordinate } from '@app/classes/coordinate';
 import { MouseHandlerService } from './mouse-handler.service';
 
 describe('MouseHandlerService', () => {

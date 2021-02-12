@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
+import { Coordinate } from '@app/classes/coordinate';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { Coordinate } from '@app/services/mouse-handler/coordinate';
 import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.service';
 
 export const MINIMUM_WIDTH = 250;

@@ -3,7 +3,7 @@
 /////////////////////////////////////
 
 import { Injectable } from '@angular/core';
-import { Coordinate } from './coordinate';
+import { Coordinate } from '@app/classes/coordinate';
 
 @Injectable({
     providedIn: 'root',
