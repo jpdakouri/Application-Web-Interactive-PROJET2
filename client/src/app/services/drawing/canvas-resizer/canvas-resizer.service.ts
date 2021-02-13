@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Coordinate } from '@app/classes/coordinate';
-import { LOWER_BOUND_HEIGHT, LOWER_BOUND_WIDTH, MINIMUM_HEIGHT, MINIMUM_WIDTH, SIDEBAR_WIDTH } from '@app/components/drawing/drawing-constants';
+import { LOWER_BOUND_HEIGHT, LOWER_BOUND_WIDTH, MINIMUM_HEIGHT, MINIMUM_WIDTH, SIDEBAR_WIDTH } from '@app/services/drawing/drawing-constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.service';
 import { Status } from '@app/utils/enums/canvas-resizer-status';
+export * from '@app/utils/enums/canvas-resizer-status';
 
 @Injectable({
     providedIn: 'root',

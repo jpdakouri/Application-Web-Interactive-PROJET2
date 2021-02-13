@@ -178,7 +178,7 @@ describe('CanvasResizerService', () => {
     });
 
     it('should be able to calculate canvas size', () => {
-        const windowWidth = 1214;
+        const windowWidth = 1215;
         const windowHeight = 800;
         const expectedCanvasSize = { x: 375, y: 400 };
 
@@ -186,8 +186,8 @@ describe('CanvasResizerService', () => {
         window.resizeTo(windowWidth, windowHeight);
 
         const calculatedCanvasSize = service.calculateCanvasSize() as Coordinate;
-        expect(calculatedCanvasSize.x).toEqual(expectedCanvasSize.x);
-        expect(calculatedCanvasSize.y).toEqual(expectedCanvasSize.y);
+        expect(calculatedCanvasSize.x).toBe(expectedCanvasSize.x);
+        expect(calculatedCanvasSize.y).toBe(expectedCanvasSize.y);
     });
 
     it('canvasSize should be 250x250 pixels when working zone size is lower than 250x250 pixels ', () => {
