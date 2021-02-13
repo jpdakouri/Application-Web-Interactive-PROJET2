@@ -27,7 +27,7 @@ export class ToolbarComponent {
 
     onCreateNewDrawing(): void {
         if (!this.drawingService.isCanvasBlank()) {
-            if (!confirm("Le canvas n'est pas vide! Voulez-vous garder vos modifs?'")) {
+            if (confirm("Le canvas n'est pas vide! Êtes-vous de vouloir continuer?")) {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.drawingService.clearCanvas(this.drawingService.baseCtx);
             }

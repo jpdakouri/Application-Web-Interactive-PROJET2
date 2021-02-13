@@ -16,4 +16,5 @@ export enum KeyboardButton {
     Ellipse = '2',
     Eraser = 'e',
     InvalidInput = 'h',
+    NewDrawing = '0',
 }
