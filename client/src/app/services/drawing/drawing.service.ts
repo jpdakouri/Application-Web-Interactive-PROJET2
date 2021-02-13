@@ -19,11 +19,20 @@ export class DrawingService {
             image.src = dataURL;
             image.onload = () => {
                 this.baseCtx.drawImage(image, 0, 0);
+                this.previewCtx.drawImage(image, 0, 0);
             };
         }
     }
 
     clearCanvas(context: CanvasRenderingContext2D): void {
         context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    isCanvasBlank(): boolean {
+        // @ts-ignore
+        return !this.canvas
+            .getContext('2d')
+            .getImageData(0, 0, this.canvas.width, this.canvas.height)
+            .data.some((channel: number) => channel !== 0);
     }
 }

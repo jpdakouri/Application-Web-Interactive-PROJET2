@@ -10,7 +10,6 @@ import { MouseButton } from '@app/utils/enums/list-boutton-pressed';
 // L'implémentation ici ne couvre pas tous les critères d'accepetation du projet
 // Vous êtes encouragés de modifier et compléter le code.
 // N'oubliez pas de regarder les tests dans le fichier spec.ts aussi!
-
 @Injectable({
     providedIn: 'root',
 })
