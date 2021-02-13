@@ -64,12 +64,10 @@ export class EllipseService extends Tool {
 
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
+            // const grid: Vec2 = { ...this.mouseDownCoord };
             this.mouseDownCoord.x = this.getPositionFromMouse(event).x - this.firstGrid.x;
             this.mouseDownCoord.y = this.getPositionFromMouse(event).y - this.firstGrid.y;
             this.updatePreview();
-            if (this.shiftDown) {
-                this.updatePreview();
-            }
         }
     }
 
@@ -98,18 +96,17 @@ export class EllipseService extends Tool {
     onKeyUp(event: KeyboardEvent): void {
         if (this.shiftDown && event.key === KeyboardKeys.Shift) {
             this.shiftDown = false;
-            this.drawCircle(this.mouseDownCoord);
-            this.drawEllipse(this.drawingService.previewCtx, this.mouseDownCoord);
-            this.clearPath();
+            this.updatePreview();
         }
     }
 
     drawPerimeter(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
-        const width = Math.abs(finalGrid.x);
-        const height = Math.abs(finalGrid.y);
         ctx.strokeStyle = 'black';
 
+        const width = Math.abs(finalGrid.x);
+        const height = Math.abs(finalGrid.y);
         const startCoord = { ...this.firstGrid };
+
         if (finalGrid.x < 0) {
             startCoord.x += finalGrid.x;
         }
@@ -123,11 +120,13 @@ export class EllipseService extends Tool {
         ctx.beginPath();
         ctx.strokeStyle = this.secondaryColor;
         ctx.lineWidth = this.lineThickness;
-        const width = Math.abs(finalGrid.x);
-        const height = Math.abs(finalGrid.y);
+
         const startCoord = { ...this.firstGrid };
+        const width = finalGrid.x;
+        const height = finalGrid.y;
 
         ctx.ellipse(startCoord.x + width / 2, startCoord.y + height / 2, width / 2, height / 2, 0, 0, REVOLUTION, false);
+        // ctx.ellipse(startCoord.x + width / 2, startCoord.y + height / 2, -150, 150, 0, REVOLUTION, 0, false);
         ctx.stroke();
     }
 
@@ -200,7 +199,6 @@ export class EllipseService extends Tool {
     }
 
     drawCircle(grid: Vec2): void {
-        // cadrant en bas a droite (+/+)
         if (this.isMouseInFirstQuadrant()) {
             console.log(this.mouseDownCoord);
             grid.x = grid.y = Math.min(this.mouseDownCoord.x, this.mouseDownCoord.y);
@@ -242,15 +240,12 @@ export class EllipseService extends Tool {
     private updatePreview(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         const currentCoord = { ...this.mouseDownCoord };
-        // ctx.beginPath();
         this.drawingService.previewCtx.beginPath();
-        // this.drawPerimeter()
         this.drawPerimeter(this.drawingService.previewCtx, currentCoord);
         if (this.shiftDown) {
             this.drawCircle(currentCoord);
         }
         this.drawEllipse(this.drawingService.previewCtx, currentCoord);
-        // end path
         this.drawingService.previewCtx.closePath();
     }
 
