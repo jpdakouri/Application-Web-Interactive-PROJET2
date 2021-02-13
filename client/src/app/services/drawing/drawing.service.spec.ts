@@ -88,4 +88,15 @@ describe('DrawingService', () => {
             done();
         }, 500);
     });
+
+    // it('should create new drawing', () => {
+    //     const rectangleWidth = 1;
+    //     const rectangleHeight = 1;
+    //     service.baseCtx.fillRect(0, 0, rectangleWidth, rectangleHeight);
+    //
+    //     spyOn(service, 'createNewDrawing').and.callThrough();
+    //     spyOn(service, 'isCanvasBlank').and.callThrough().and.returnValue(false);
+    //     spyOn(window, 'confirm').and.returnValue(true);
+    //     expect(service.isCanvasBlank).toBeTrue();
+    // });
 });

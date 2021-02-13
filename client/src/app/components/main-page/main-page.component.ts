@@ -36,17 +36,4 @@ export class MainPageComponent {
             )
             .subscribe(this.message);
     }
-
-    // // tslint:disable-next-line:typedef
-    // temp() {
-    //     sessionStorage.getItem('canvasBuffer');
-    // }
-    // onCreateNewDrawing(): void {
-    //     if (!sessionStorage.getItem('canvasBuffer')) {
-    //         if (confirm("Le canvas n'est pas vide! Voulez-vous garder vos modifs?")) {
-    //             sessionStorage.clear();
-    //         }
-    //     }
-    //     this.router.navigate(['editor']);
-    // }
 }
