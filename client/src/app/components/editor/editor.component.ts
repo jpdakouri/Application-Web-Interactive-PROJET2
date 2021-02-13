@@ -40,7 +40,6 @@ export class EditorComponent implements AfterViewInit {
     @HostListener('keyup', ['$event'])
     onKeyUp(event: KeyboardEvent): void {
         if (event.ctrlKey && event.key === KeyboardButton.NewDrawing) {
-            console.log('event');
             this.onCreateNewDrawing();
         }
 
@@ -55,11 +54,6 @@ export class EditorComponent implements AfterViewInit {
     }
 
     onCreateNewDrawing(): void {
-        if (!this.drawingService.isCanvasBlank()) {
-            if (confirm("Le canvas n'est pas vide! Voulez-vous malgré tout continuer?")) {
-                this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                this.drawingService.clearCanvas(this.drawingService.baseCtx);
-            }
-        }
+        this.drawingService.createNewDrawing();
     }
 }

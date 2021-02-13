@@ -3,7 +3,6 @@
 
     width: 120px;
     padding: 0 10px;
-    // background-color: rgb(230, 239, 246);
 }
 
 .flex-container {
@@ -26,7 +25,7 @@
     padding: 10px 0;
 }
 
-.new-drawing {
+.drawing-option-container {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
@@ -47,8 +46,20 @@
 }
 
 
-
 .new-drawing-container {
-  margin-bottom: 50px;
+  margin-bottom: 5px;
 
+}
+
+.save-container {
+  margin-bottom: 5px;
+}
+
+.view-carousel-container {
+  margin-bottom: 5px;
+
+}
+
+.export-container {
+  margin-bottom: 5px;
 }
