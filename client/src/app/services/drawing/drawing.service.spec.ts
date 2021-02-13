@@ -89,14 +89,25 @@ describe('DrawingService', () => {
         }, 500);
     });
 
-    // it('should create new drawing', () => {
-    //     const rectangleWidth = 1;
-    //     const rectangleHeight = 1;
-    //     service.baseCtx.fillRect(0, 0, rectangleWidth, rectangleHeight);
-    //
-    //     spyOn(service, 'createNewDrawing').and.callThrough();
-    //     spyOn(service, 'isCanvasBlank').and.callThrough().and.returnValue(false);
-    //     spyOn(window, 'confirm').and.returnValue(true);
-    //     expect(service.isCanvasBlank).toBeTrue();
-    // });
+    it('should create new drawing when canvas is not blank', () => {
+        const clearCanvasStub = spyOn(service, 'clearCanvas').and.stub();
+        const rectangleWidth = 1;
+        const rectangleHeight = 1;
+        service.baseCtx.fillRect(0, 0, rectangleWidth, rectangleHeight);
+        spyOn(window, 'confirm').and.returnValue(true);
+        service.createNewDrawing();
+        const isCanvasBlank = service.isCanvasBlank();
+
+        expect(window.confirm).toHaveBeenCalledWith("Le canvas n'est pas vide! Êtes-vous sûr de vouloir continuer?");
+        expect(clearCanvasStub).toHaveBeenCalledTimes(2);
+        expect(isCanvasBlank).toBeFalse();
+    });
+
+    it('should do nothing when canvas is blank on create new drawing', () => {
+        spyOn(window, 'confirm').and.returnValue(false);
+        const clearCanvasStub = spyOn(service, 'clearCanvas').and.stub();
+        service.createNewDrawing();
+        expect(clearCanvasStub).not.toHaveBeenCalled();
+        expect(service.isCanvasBlank()).toBeTrue();
+    });
 });
