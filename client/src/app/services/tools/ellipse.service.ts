@@ -107,7 +107,6 @@ export class EllipseService extends Tool {
     drawPerimeter(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         const width = Math.abs(finalGrid.x);
         const height = Math.abs(finalGrid.y);
-        ctx.lineDashOffset = 10;
         ctx.strokeStyle = 'black';
 
         const startCoord = { ...this.firstGrid };
@@ -126,8 +125,8 @@ export class EllipseService extends Tool {
         ctx.lineWidth = this.lineThickness;
         const width = Math.abs(finalGrid.x);
         const height = Math.abs(finalGrid.y);
-
         const startCoord = { ...this.firstGrid };
+
         ctx.ellipse(startCoord.x + width / 2, startCoord.y + height / 2, width / 2, height / 2, 0, 0, REVOLUTION, false);
         ctx.stroke();
     }
@@ -135,21 +134,32 @@ export class EllipseService extends Tool {
     drawFilled(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.beginPath();
         ctx.fillStyle = this.primaryColour;
-        ctx.ellipse(this.firstGrid.x, this.firstGrid.y, Math.abs(finalGrid.x), Math.abs(finalGrid.y), 0, 0, REVOLUTION, false);
+        ctx.lineWidth = this.lineThickness;
+
+        const width = Math.abs(finalGrid.x);
+        const height = Math.abs(finalGrid.y);
+        const startCoord = { ...this.firstGrid };
+
+        ctx.ellipse(startCoord.x + width / 2, startCoord.y + height / 2, width / 2, height / 2, 0, 0, REVOLUTION, false);
         ctx.fill();
         ctx.stroke();
     }
 
     drawFilledOutline(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.beginPath();
-        ctx.fillStyle = this.primaryColour;
+        ctx.strokeStyle = this.primaryColour;
+        ctx.fillStyle = this.secondaryColor;
         ctx.lineWidth = this.lineThickness;
-        ctx.strokeStyle = this.secondaryColor;
+
+        const width = Math.abs(finalGrid.x);
+        const height = Math.abs(finalGrid.y);
+        const startCoord = { ...this.firstGrid };
+
         ctx.ellipse(
-            this.firstGrid.x,
-            this.firstGrid.y,
-            Math.abs(finalGrid.x) - this.lineThickness,
-            Math.abs(finalGrid.y) - this.lineThickness,
+            startCoord.x + width / 2,
+            startCoord.y + height / 2,
+            width / 2 - this.lineThickness,
+            height / 2 - this.lineThickness,
             0,
             0,
             REVOLUTION,
@@ -157,7 +167,7 @@ export class EllipseService extends Tool {
         );
         ctx.fill();
         ctx.stroke();
-        ctx.ellipse(this.firstGrid.x, this.firstGrid.y, Math.abs(finalGrid.x), Math.abs(finalGrid.y), 0, 0, REVOLUTION, false);
+        ctx.ellipse(startCoord.x + width / 2, startCoord.y + height / 2, width / 2, height / 2, 0, 0, REVOLUTION, false);
         ctx.stroke();
     }
 
@@ -192,11 +202,12 @@ export class EllipseService extends Tool {
     drawCircle(grid: Vec2): void {
         // cadrant en bas a droite (+/+)
         if (this.isMouseInFirstQuadrant()) {
+            console.log(this.mouseDownCoord);
             grid.x = grid.y = Math.min(this.mouseDownCoord.x, this.mouseDownCoord.y);
         }
 
         if (this.isMouseInSecondQuadrant()) {
-            grid.x = grid.y = Math.max(this.mouseDownCoord.x, this.mouseDownCoord.y);
+            grid.x = grid.y = Math.min(this.mouseDownCoord.x, this.mouseDownCoord.y);
         }
 
         if (this.isMouseInThirdQuadrant()) {
@@ -226,7 +237,6 @@ export class EllipseService extends Tool {
                 this.drawOutline(ctx, finalGrid);
                 break;
         }
-        // ctx.stroke();
     }
 
     private updatePreview(): void {
