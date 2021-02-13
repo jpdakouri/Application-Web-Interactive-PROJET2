@@ -11,6 +11,8 @@ import { MouseButton } from '@app/tests-mocks/mock-boutton-pressed';
 export class EraserService extends Tool {
     private pathData: Vec2[];
     private width: number;
+    // tslint:disable-next-line:typedef
+    cursor = document.querySelector('canvas');
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
@@ -22,7 +24,7 @@ export class EraserService extends Tool {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.clearPath();
-
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
         }
@@ -39,8 +41,10 @@ export class EraserService extends Tool {
     }
 
     onMouseMove(event: MouseEvent): void {
+        const mousePosition = this.getPositionFromMouse(event);
+        this.cursor?.setAttribute('style', 'cursor = none;');
+        // this.cursor?.setAttribute('style', 'background-color')
         if (this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             this.erase(this.drawingService.baseCtx, this.pathData);
         }

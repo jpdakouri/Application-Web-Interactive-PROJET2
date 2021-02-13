@@ -1,3 +1,4 @@
+// import { NgStyle } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
@@ -32,6 +33,21 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
+    private cursorHeight: number;
+
+    // tslint:disable-next-line:typedef
+    eraserCursor = {
+        cursor: 'none',
+        position: 'inherit',
+        width: '30px',
+        height: '30px',
+        top: '100px',
+        left: '100px',
+        border: '2px solid black',
+        backgroundColor: 'white',
+        transform: 'translate(-50%, -50%)',
+        zIndex: '50',
+    };
     // private currentDrawing: CanvasRenderingContext2D;
     currentTool: Tool;
     toolManagerService: ToolManagerService;
@@ -74,6 +90,14 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     @HostListener('mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
         this.currentTool.onMouseMove(event);
+        // tslint:disable-next-line:no-magic-numbers
+        this.cursorHeight = this.currentTool.lineThickness || 50;
+
+        this.eraserCursor.height = this.cursorHeight + 'px';
+        this.eraserCursor.width = this.cursorHeight + 'px';
+        const mousePosition = this.currentTool.getPositionFromMouse(event);
+        this.eraserCursor.left = mousePosition.x + 'px';
+        this.eraserCursor.top = mousePosition.y + 'px';
     }
 
     @HostListener('mousedown', ['$event'])

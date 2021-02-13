@@ -8,6 +8,8 @@
 <!--Version actuelle fonctionnelle-->
 <div id="canvas-container">
 
+  <div [ngStyle]='eraserCursor'></div>
+
   <div class='resizer middle-right'  [ngStyle]="{'left': width + 'px', 'top': (height/2 - 2.5) + 'px'}"
                                      (click)="onMiddleRightClick()"></div>
   <div class='resizer bottom-right'  [ngStyle]="{'left': width + 'px', 'top': height + 'px'}"

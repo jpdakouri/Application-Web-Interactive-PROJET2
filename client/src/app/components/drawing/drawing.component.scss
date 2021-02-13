@@ -19,6 +19,19 @@ canvas {
     position: relative;
 }
 
+/*.eraser {
+    cursor: wait;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 5px;
+    height: 5px;
+    border: 1px solid black;
+    transform: translate(-50%, -50%);
+    background-color: #fff; 
+    z-index: 5;
+}*/
+
 .resizer {
     width: 5px;
     height: 5px;
