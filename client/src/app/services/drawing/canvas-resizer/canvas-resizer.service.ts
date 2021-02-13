@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Coordinate } from '@app/classes/coordinate';
-import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.service';
 
@@ -10,7 +9,13 @@ export const MINIMUM_HEIGHT = 250;
 export const LOWER_BOUND_WIDTH = 500;
 export const LOWER_BOUND_HEIGHT = 500;
 
-export const SIDEBAR_WIDTH = 294;
+// export const SIDEBAR_WIDTH = 294;
+
+// export const SIDEBAR_WIDTH = 425;
+
+export const SIDEBAR_WIDTH = 464;
+
+// const WORKING_ZONE_VISIBLE_PORTION = 100;
 
 export const enum Status {
     OFF = 0,
@@ -22,16 +27,17 @@ export const enum Status {
 @Injectable({
     providedIn: 'root',
 })
-export class CanvasResizerService extends Tool {
+export class CanvasResizerService {
     status: Status;
     canvasPreviewWidth: number;
     canvasPreviewHeight: number;
+    private mouseService: MouseHandlerService;
 
     constructor(drawingService: DrawingService, mouseService: MouseHandlerService) {
-        super(drawingService, mouseService);
         this.status = Status.OFF;
         this.canvasPreviewWidth = 0;
         this.canvasPreviewHeight = 0;
+        this.mouseService = mouseService;
     }
 
     onMouseDown(event: MouseEvent): void {

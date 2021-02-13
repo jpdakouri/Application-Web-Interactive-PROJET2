@@ -33,6 +33,7 @@ describe('LineService', () => {
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
         previewUpdateSpy = spyOn<any>(service, 'previewUpdate').and.callThrough();
         desiredAngleSpy = spyOn<any>(service, 'desiredAngle').and.callThrough();
+        spyOn<any>(service, 'getPositionFromMouse').and.returnValue({ x: 100, y: 100 });
 
         // Configuration du spy du service
         // tslint:disable:no-string-literal
@@ -40,8 +41,10 @@ describe('LineService', () => {
         service['drawingService'].previewCtx = previewCtxStub;
 
         mouseEvent = {
-            offsetX: 40,
-            offsetY: 40,
+            offsetX: 100,
+            offsetY: 100,
+            x: 100,
+            y: 100,
             button: MouseButton.Left,
         } as MouseEvent;
     });
@@ -51,7 +54,7 @@ describe('LineService', () => {
     });
 
     it(' mouseDown should set mouseDownCoord to correct position', () => {
-        const expectedResult: Vec2 = { x: 40, y: 40 };
+        const expectedResult: Vec2 = { x: 100, y: 100 };
         service.onMouseDown(mouseEvent);
         expect(service.mouseDownCoord).toEqual(expectedResult);
     });
@@ -93,6 +96,14 @@ describe('LineService', () => {
     });
 
     it(' onMouseUp should call desiredAngle if mouse was already down and shift pressed', () => {
+        mouseEvent = {
+            offsetX: 40,
+            offsetY: 40,
+            x: 100,
+            y: 100,
+            button: MouseButton.Left,
+        } as MouseEvent;
+        // spyOn<any>(service, 'getPositionFromMouse').and.returnValue({ x: 100, y: 100 });
         service['pathData'].push({ x: 0, y: 0 });
         service.mouseDown = true;
         service['shiftPressed'] = true;

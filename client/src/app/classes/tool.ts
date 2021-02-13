@@ -40,7 +40,10 @@ export abstract class Tool {
     onKeyDown(event: KeyboardEvent): void {}
 
     getPositionFromMouse(event: MouseEvent): Vec2 {
-        return { x: event.offsetX, y: event.offsetY };
+        return {
+            x: event.x - this.drawingService.canvas.getBoundingClientRect().left,
+            y: event.y - this.drawingService.canvas.getBoundingClientRect().top,
+        };
     }
 
     updateAttributesManager(): void {}

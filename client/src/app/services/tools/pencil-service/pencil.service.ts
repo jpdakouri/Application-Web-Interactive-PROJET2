@@ -3,18 +3,8 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.service';
 import { DEFAULT_MIN_THICKNESS } from '@app/services/tools/tools-constants';
 import { MouseButton } from '@app/utils/enums/list-boutton-pressed';
-
-// TODO : Déplacer ça dans un fichier séparé accessible par tous
-export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
-}
 
 // Ceci est une implémentation de base de l'outil Crayon pour aider à débuter le projet
 // L'implémentation ici ne couvre pas tous les critères d'accepetation du projet
