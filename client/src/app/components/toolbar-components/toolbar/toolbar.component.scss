@@ -3,6 +3,7 @@
 
     width: 120px;
     padding: 0 10px;
+    // background-color: rgb(230, 239, 246);
 }
 
 .flex-container {
@@ -25,6 +26,13 @@
     padding: 10px 0;
 }
 
+.new-drawing {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 10px 0;
+}
+
 .mat-divider {
     border-top-width: 1px;
     border-top-color: #3f51b5;
@@ -36,4 +44,11 @@
 
 .pencil-button-container {
     margin-bottom: 5px;
+}
+
+
+
+.new-drawing-container {
+  margin-bottom: 50px;
+
 }
