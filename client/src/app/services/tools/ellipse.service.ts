@@ -68,7 +68,6 @@ export class EllipseService extends Tool {
             this.mouseDownCoord.y = this.getPositionFromMouse(event).y - this.firstGrid.y;
             this.updatePreview();
             if (this.shiftDown) {
-                // this.drawCircle(this.mouseDownCoord);
                 this.updatePreview();
             }
         }
@@ -76,11 +75,13 @@ export class EllipseService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
-            // this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            // this.drawEllipse(this.drawingService.baseCtx, this.mouseDownCoord);
-            // this.clearPath();
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            if (this.shiftDown) {
+                this.drawCircle(this.mouseDownCoord);
+            }
+            this.drawEllipse(this.drawingService.baseCtx, this.mouseDownCoord);
+            this.clearPath();
         }
-        // this.drawEllipse(this.drawingService.baseCtx, this.mouseDownCoord);
         this.mouseDown = false;
     }
 
@@ -97,8 +98,9 @@ export class EllipseService extends Tool {
     onKeyUp(event: KeyboardEvent): void {
         if (this.shiftDown && event.key === KeyboardKeys.Shift) {
             this.shiftDown = false;
-            // this.updatePreview();
-            this.drawEllipse(this.drawingService.baseCtx, this.mouseDownCoord);
+            this.drawCircle(this.mouseDownCoord);
+            this.drawEllipse(this.drawingService.previewCtx, this.mouseDownCoord);
+            this.clearPath();
         }
     }
 
@@ -122,20 +124,10 @@ export class EllipseService extends Tool {
         ctx.beginPath();
         ctx.strokeStyle = this.secondaryColor;
         ctx.lineWidth = this.lineThickness;
-        // const tempGrid = { ...this.mouseDownCoord };
         const width = Math.abs(finalGrid.x);
         const height = Math.abs(finalGrid.y);
 
         const startCoord = { ...this.firstGrid };
-        // if (finalGrid.x < 0) {
-        //     startCoord.x += finalGrid.x;
-        // }
-        // if (finalGrid.y < 0) {
-        //     startCoord.y += finalGrid.y;
-        // }
-
-        // ctx.strokeRect(startCoord.x, startCoord.y, width, height);
-
         ctx.ellipse(startCoord.x + width / 2, startCoord.y + height / 2, width / 2, height / 2, 0, 0, REVOLUTION, false);
         ctx.stroke();
     }
