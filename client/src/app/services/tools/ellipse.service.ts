@@ -83,6 +83,16 @@ export class EllipseService extends Tool {
         this.mouseDown = false;
     }
 
+    onMouseLeave(event: MouseEvent): void {
+        // this.drawEllipse(this.drawingService.baseCtx, this.mouseDownCoord);
+        // this.updatePreview();
+        // if (this.mouseDownCoord.x > this.drawingService.canvas.width || this.mouseDownCoord.y > this.drawingService.canvas.height) {
+        //     this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        // }
+        let count = 0;
+        count++;
+        console.log(count);
+    }
     onKeyDown(event: KeyboardEvent): void {
         if (event.key === KeyboardKeys.Escape) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -125,7 +135,7 @@ export class EllipseService extends Tool {
         const width = finalGrid.x;
         const height = finalGrid.y;
 
-        ctx.ellipse(startCoord.x + width / 2, startCoord.y + height / 2, width / 2, height / 2, 0, 0, REVOLUTION, false);
+        ctx.ellipse(startCoord.x + width / 2, startCoord.y + height / 2, Math.abs(width / 2), Math.abs(height / 2), 0, 0, REVOLUTION, false);
         // ctx.ellipse(startCoord.x + width / 2, startCoord.y + height / 2, -150, 150, 0, REVOLUTION, 0, false);
         ctx.stroke();
     }
@@ -205,7 +215,7 @@ export class EllipseService extends Tool {
         }
 
         if (this.isMouseInSecondQuadrant()) {
-            grid.x = grid.y = Math.min(this.mouseDownCoord.x, this.mouseDownCoord.y);
+            grid.x = grid.y = Math.max(this.mouseDownCoord.x, this.mouseDownCoord.y);
         }
 
         if (this.isMouseInThirdQuadrant()) {
