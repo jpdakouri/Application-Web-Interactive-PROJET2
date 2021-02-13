@@ -3,7 +3,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { DEFAULT_DOT_RADIUS, DEFAULT_MIN_THICKNESS, PIXEL_DISTANCE, SHIFT_ANGLE } from '@app/services/tools/tools-constants';
+import { DEFAULT_DOT_RADIUS, DEFAULT_MIN_THICKNESS, PIXEL_DISTANCE, SHIFT_ANGLE_45 } from '@app/services/tools/tools-constants';
 import { KeyboardButton, MouseButton } from '@app/utils/enums/list-boutton-pressed';
 
 @Injectable({
@@ -109,30 +109,23 @@ export class LineService extends Tool {
 
         const distX = mousePosition.x - lastDot.x;
         const distY = mousePosition.y - lastDot.y;
+        console.log(Math.atan(distX/distY));
 
+        // Push segments at 0 (or 180) and 90 (or 270) degres
         clsDots.push({ x: lastDot.x, y: mousePosition.y });
         clsDots.push({ x: mousePosition.x, y: lastDot.y });
 
+        // Push the 3rd segments at 45 degre in the right quadrant
         if ((distX > 0 && distY < 0) || (distX <= 0 && distY >= 0)) {
-            clsDots.push({ x: mousePosition.x, y: lastDot.y - distX * Math.tan(SHIFT_ANGLE) });
+            clsDots.push({ x: mousePosition.x, y: lastDot.y - distX * Math.tan(SHIFT_ANGLE_45) });
         } else {
-            clsDots.push({ x: mousePosition.x, y: lastDot.y + distX * Math.tan(SHIFT_ANGLE) });
+            clsDots.push({ x: mousePosition.x, y: lastDot.y + distX * Math.tan(SHIFT_ANGLE_45) });
         }
         return this.closestDot(mousePosition, clsDots);
     }
 
     private closestDot(original: Vec2, dots: Vec2[]): Vec2 {
-        let clsDot = original;
-        let smallestDist = Number.MAX_VALUE;
-        for (const dot of dots) {
-            const distx = original.x - dot.x;
-            const distY = original.y - dot.y;
-            const distance = Math.sqrt(distx * distx + distY * distY);
-            if (distance < smallestDist) {
-                clsDot = dot;
-                smallestDist = distance;
-            }
-        }
+        const clsDot = original;
         return clsDot;
     }
 
