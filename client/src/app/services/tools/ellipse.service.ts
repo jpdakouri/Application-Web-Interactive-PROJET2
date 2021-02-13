@@ -68,16 +68,17 @@ export class EllipseService extends Tool {
             this.mouseDownCoord.y = this.getPositionFromMouse(event).y - this.firstGrid.y;
             this.updatePreview();
             if (this.shiftDown) {
-                this.drawCircle(this.mouseDownCoord);
-                // this.updatePreview();
+                // this.drawCircle(this.mouseDownCoord);
+                this.updatePreview();
             }
         }
     }
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
-            this.drawEllipse(this.drawingService.baseCtx, this.mouseDownCoord);
-            this.clearPath();
+            // this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            // this.drawEllipse(this.drawingService.baseCtx, this.mouseDownCoord);
+            // this.clearPath();
         }
         // this.drawEllipse(this.drawingService.baseCtx, this.mouseDownCoord);
         this.mouseDown = false;
@@ -96,17 +97,46 @@ export class EllipseService extends Tool {
     onKeyUp(event: KeyboardEvent): void {
         if (this.shiftDown && event.key === KeyboardKeys.Shift) {
             this.shiftDown = false;
-            this.updatePreview();
+            // this.updatePreview();
+            this.drawEllipse(this.drawingService.baseCtx, this.mouseDownCoord);
         }
+    }
+
+    drawPerimeter(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+        const width = Math.abs(finalGrid.x);
+        const height = Math.abs(finalGrid.y);
+        ctx.lineDashOffset = 10;
+        ctx.strokeStyle = 'black';
+
+        const startCoord = { ...this.firstGrid };
+        if (finalGrid.x < 0) {
+            startCoord.x += finalGrid.x;
+        }
+        if (finalGrid.y < 0) {
+            startCoord.y += finalGrid.y;
+        }
+        ctx.strokeRect(startCoord.x, startCoord.y, width, height);
     }
 
     drawOutline(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.beginPath();
         ctx.strokeStyle = this.secondaryColor;
         ctx.lineWidth = this.lineThickness;
-        const tempGrid = { ...this.mouseDownCoord };
-        ctx.strokeRect(tempGrid.x - Math.abs(finalGrid.x - tempGrid.x), tempGrid.y - Math.abs(finalGrid.y - tempGrid.y), finalGrid.x, finalGrid.y);
-        ctx.ellipse(this.firstGrid.x, this.firstGrid.y, Math.abs(finalGrid.x), Math.abs(finalGrid.y), 0, 0, REVOLUTION, false);
+        // const tempGrid = { ...this.mouseDownCoord };
+        const width = Math.abs(finalGrid.x);
+        const height = Math.abs(finalGrid.y);
+
+        const startCoord = { ...this.firstGrid };
+        // if (finalGrid.x < 0) {
+        //     startCoord.x += finalGrid.x;
+        // }
+        // if (finalGrid.y < 0) {
+        //     startCoord.y += finalGrid.y;
+        // }
+
+        // ctx.strokeRect(startCoord.x, startCoord.y, width, height);
+
+        ctx.ellipse(startCoord.x + width / 2, startCoord.y + height / 2, width / 2, height / 2, 0, 0, REVOLUTION, false);
         ctx.stroke();
     }
 
@@ -182,7 +212,7 @@ export class EllipseService extends Tool {
         }
 
         if (this.isMouseInFourthQuadrant()) {
-            this.isYGreaterThanX() ? (grid.x = -grid.y) : (grid.y = -grid.x);
+            this.isYGreaterThanX() ? (grid.y = -grid.x) : (grid.x = -grid.y);
         }
     }
 
@@ -204,16 +234,22 @@ export class EllipseService extends Tool {
                 this.drawOutline(ctx, finalGrid);
                 break;
         }
+        // ctx.stroke();
     }
 
     private updatePreview(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         const currentCoord = { ...this.mouseDownCoord };
+        // ctx.beginPath();
+        this.drawingService.previewCtx.beginPath();
+        // this.drawPerimeter()
+        this.drawPerimeter(this.drawingService.previewCtx, currentCoord);
         if (this.shiftDown) {
             this.drawCircle(currentCoord);
-            this.drawEllipse(this.drawingService.previewCtx, currentCoord);
         }
         this.drawEllipse(this.drawingService.previewCtx, currentCoord);
+        // end path
+        this.drawingService.previewCtx.closePath();
     }
 
     private clearPath(): void {
