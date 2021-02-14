@@ -32,6 +32,7 @@ describe('EllipseService', () => {
     let drawOutlineSpy: jasmine.Spy<any>;
     let drawFilledSpy: jasmine.Spy<any>;
     let drawFilledOutlineSpy: jasmine.Spy<any>;
+    let drawPerimeterSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
@@ -49,6 +50,7 @@ describe('EllipseService', () => {
         drawOutlineSpy = spyOn<any>(service, 'drawOutline').and.callThrough();
         drawFilledSpy = spyOn<any>(service, 'drawFilled').and.callThrough();
         drawFilledOutlineSpy = spyOn<any>(service, 'drawFilledOutline').and.callThrough();
+        drawPerimeterSpy = spyOn<any>(service, 'drawPerimeter').and.callThrough();
 
         // Configuration du spy du service
         // tslint:disable:no-string-literal
@@ -131,6 +133,16 @@ describe('EllipseService', () => {
         expect(service['shiftDown']).toBeTrue();
     });
 
+    it('onKeyup should not update shift state if shiftDown is false', () => {
+        service['firstGrid'] = { x: 10, y: 10 };
+        service.mouseDownCoord = { x: 50, y: 50 };
+
+        service.onKeyDown({
+            key: KeyboardKeys.Shift,
+        } as KeyboardEvent);
+        expect(service['shiftDown']).toBeTrue();
+    });
+
     it('drawCircle should be called when shiftDown is true', () => {
         service.mouseDown = true;
         service['shiftDown'] = true;
@@ -140,12 +152,12 @@ describe('EllipseService', () => {
         expect(drawCircleSpy).toHaveBeenCalled();
     });
 
-    it('drawCircle should be called when shiftDown is true', () => {
+    it('on MouseUp drawCircle should be called when shiftDown is true', () => {
         service.mouseDown = true;
         service['shiftDown'] = true;
-
+        // const contextSpyObj = jasmine.createSpyObj('MouseEvent', []);
         service.onMouseDown(mouseEvent);
-        service.onMouseMove(mouseEvent);
+        service.onMouseUp(mouseEvent);
         expect(drawCircleSpy).toHaveBeenCalled();
     });
 
@@ -160,32 +172,30 @@ describe('EllipseService', () => {
 
     it(' drawOutline should be called when shapeStyle Outline is selected', () => {
         service['shapeStyle'] = shapeStyle.Outline;
-        // const contextSpyObj = jasmine.createSpyObj('CanvasRenderingContext2D', ['beginPath', 'strokeRect', 'ellipse', 'stroke']);
-        const ctxStub = {} as CanvasRenderingContext2D;
+        const contextSpyObj = jasmine.createSpyObj('CanvasRenderingContext2D', ['beginPath', 'ellipse', 'stroke']);
+        // const ctxStub = {} as CanvasRenderingContext2D;
         const finalGrid: Vec2 = { x: 100, y: 100 };
         drawOutlineSpy.and.stub();
-        service['drawEllipse'](ctxStub, finalGrid);
-        expect(drawOutlineSpy).toHaveBeenCalledWith(ctxStub, finalGrid);
+        service['drawEllipse'](contextSpyObj, finalGrid);
+        expect(drawOutlineSpy).toHaveBeenCalledWith(contextSpyObj, finalGrid);
     });
 
-    it(' drawFilled should be called when shapeeStyke Filled is selected', () => {
+    it(' drawFilled should be called when shapeStyke Filled is selected', () => {
+        service['firstGrid'] = { x: 0, y: 0 };
+        service.mouseDown = true;
         service['shapeStyle'] = shapeStyle.Filled;
-        // const contextSpyObj = jasmine.createSpyObj('CanvasRenderingContext2D', ['beginPath', 'strokeRect', 'ellipse', 'stroke']);
-        const ctxStub = {} as CanvasRenderingContext2D;
-        const finalGrid: Vec2 = { x: 100, y: 100 };
-        drawFilledSpy.and.stub();
-        service['drawEllipse'](ctxStub, finalGrid);
-        expect(drawFilledSpy).toHaveBeenCalledWith(ctxStub, finalGrid);
+        service.onMouseDown(mouseEvent);
+        service.onMouseUp(mouseEvent);
+        expect(drawFilledSpy).toHaveBeenCalledWith(jasmine.any(CanvasRenderingContext2D), service.mouseDownCoord);
     });
 
-    it(' drawFilledOutline should be called when shapeeStyke  is selected', () => {
+    it(' drawFilledOutline should be called when shapeStyke is selected', () => {
         service['shapeStyle'] = shapeStyle.FilledOutline;
-        // const contextSpyObj = jasmine.createSpyObj('CanvasRenderingContext2D', ['beginPath', 'strokeRect', 'ellipse', 'stroke']);
-        const ctxStub = {} as CanvasRenderingContext2D;
+        const contextSpyObj = jasmine.createSpyObj('CanvasRenderingContext2D', ['beginPath', 'ellipse', 'fill', 'stroke']);
         const finalGrid: Vec2 = { x: 100, y: 100 };
-        drawFilledOutlineSpy.and.stub();
-        service['drawEllipse'](ctxStub, finalGrid);
-        expect(drawFilledOutlineSpy).toHaveBeenCalledWith(ctxStub, finalGrid);
+        drawOutlineSpy.and.stub();
+        service['drawEllipse'](contextSpyObj, finalGrid);
+        expect(drawFilledOutlineSpy).toHaveBeenCalledWith(contextSpyObj, finalGrid);
     });
 
     it(' every quadrant of drawCircle should be called', () => {
@@ -214,5 +224,22 @@ describe('EllipseService', () => {
         service.drawCircle(val4);
         const expected4 = { x: 200, y: 200 } as Vec2;
         expect(val).toEqual(expected4);
+    });
+
+    it(' drawPerimeter works even when there is a negative coordinate in x', () => {
+        // service['shapeStyle'] = shapeStyle.Outline;
+        const contextSpyObj = jasmine.createSpyObj('CanvasRenderingContext2D', ['strokeRect', 'strokeStyle']);
+        const finalGrid: Vec2 = { x: -100, y: 100 };
+        drawPerimeterSpy.and.stub();
+        service['drawPerimeter'](contextSpyObj, finalGrid);
+        expect(drawPerimeterSpy).toHaveBeenCalledWith(contextSpyObj, finalGrid);
+    });
+
+    it(' drawPerimeter works even when there is a negative coordinate in x', () => {
+        const contextSpyObj = jasmine.createSpyObj('CanvasRenderingContext2D', ['strokeRect', 'strokeStyle']);
+        const finalGrid: Vec2 = { x: 100, y: -100 };
+        drawPerimeterSpy.and.stub();
+        service['drawPerimeter'](contextSpyObj, finalGrid);
+        expect(drawPerimeterSpy).toHaveBeenCalledWith(contextSpyObj, finalGrid);
     });
 });
