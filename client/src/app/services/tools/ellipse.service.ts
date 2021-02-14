@@ -83,16 +83,6 @@ export class EllipseService extends Tool {
         this.mouseDown = false;
     }
 
-    // onMouseLeave(event: MouseEvent): void {
-    //     // this.drawEllipse(this.drawingService.baseCtx, this.mouseDownCoord);
-    //     // this.updatePreview();
-    //     // if (this.mouseDownCoord.x > this.drawingService.canvas.width || this.mouseDownCoord.y > this.drawingService.canvas.height) {
-    //     //     this.drawingService.clearCanvas(this.drawingService.previewCtx);
-    //     // }
-    //     let count = 0;
-    //     count++;
-    //     console.log(count);
-    // }
     onKeyDown(event: KeyboardEvent): void {
         if (event.key === KeyboardKeys.Escape) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
