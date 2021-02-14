@@ -11,3 +11,8 @@ export enum KeyboardKeys {
     Shift = 'Shift',
     One = '1',
 }
+
+export enum sign {
+    Negative = -1,
+    Positive = 1,
+}

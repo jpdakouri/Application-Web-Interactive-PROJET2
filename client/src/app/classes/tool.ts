@@ -34,10 +34,9 @@ export abstract class Tool {
     onMouseLeave(event: MouseEvent): void {}
 
     onDblClick(): void {}
+    onKeyDown(event: KeyboardEvent): void {}
 
     onKeyUp(event: KeyboardEvent): void {}
-
-    onKeyDown(event: KeyboardEvent): void {}
 
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return {

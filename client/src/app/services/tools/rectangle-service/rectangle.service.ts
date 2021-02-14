@@ -4,7 +4,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DEFAULT_MIN_THICKNESS } from '@app/services/tools/tools-constants';
-import { KeyboardKeys, MouseButton } from '@app/utils/enums/rectangle-enums';
+import { KeyboardKeys, MouseButton, sign } from '@app/utils/enums/rectangle-enums';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 
 @Injectable({
@@ -21,8 +21,8 @@ export class RectangleService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.mouseDown = event.button === MouseButton.Left;
         this.clearPath();
+        this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.firstGrid = this.getPositionFromMouse(event);
             this.updatePreview();
@@ -35,23 +35,16 @@ export class RectangleService extends Tool {
             this.mouseDownCoord.x = this.getPositionFromMouse(event).x - this.firstGrid.x;
             this.mouseDownCoord.y = this.getPositionFromMouse(event).y - this.firstGrid.y;
             this.updatePreview();
-
-            if (event.shiftKey) {
-                this.shiftDown = true;
-                if (Math.abs(this.mouseDownCoord.x) > Math.abs(this.mouseDownCoord.y)) {
-                    this.mouseDownCoord.y = this.mouseDownCoord.x;
-                } else if (Math.abs(this.mouseDownCoord.x) < Math.abs(this.mouseDownCoord.y)) {
-                    this.mouseDownCoord.x = this.mouseDownCoord.y;
-                }
-                this.updatePreview();
+            if (this.shiftDown) {
+                this.drawSquare(this.mouseDownCoord);
             }
         }
     }
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
-            this.drawRectangle(this.drawingService.previewCtx, this.mouseDownCoord);
-            this.updatePreview();
+            this.drawRectangle(this.drawingService.baseCtx, this.mouseDownCoord);
+            this.clearPath();
         }
         this.mouseDown = false;
     }
@@ -60,14 +53,14 @@ export class RectangleService extends Tool {
         if (event.key === KeyboardKeys.Escape) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.clearPath();
-        } else if (event.shiftKey) {
+        } else if (event.key === KeyboardKeys.Shift) {
             this.shiftDown = true;
             this.updatePreview();
         }
     }
 
     onKeyUp(event: KeyboardEvent): void {
-        if (this.shiftDown && !event.shiftKey) {
+        if (this.shiftDown && event.key === KeyboardKeys.Shift) {
             this.shiftDown = false;
             this.updatePreview();
         }
@@ -75,6 +68,7 @@ export class RectangleService extends Tool {
 
     drawOutline(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.beginPath();
+        // this.drawDashedRectangle(ctx, finalGrid);
         ctx.strokeStyle = this.currentColourService.getSecondaryColorRgba();
         ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
         ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
@@ -93,6 +87,52 @@ export class RectangleService extends Tool {
         ctx.strokeStyle = this.currentColourService.getSecondaryColorRgba();
         ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
         ctx.fillRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+    }
+
+    private isMouseInFirstQuadrant(): boolean {
+        // souris dans cadrant en bas a droite (+/+)
+        return Math.sign(this.mouseDownCoord.x) === sign.Positive && Math.sign(this.mouseDownCoord.y) === sign.Positive;
+    }
+
+    private isMouseInSecondQuadrant(): boolean {
+        // souris dans cadrant en haut a gauche (-/-)
+        return Math.sign(this.mouseDownCoord.x) === sign.Negative && Math.sign(this.mouseDownCoord.y) === sign.Negative;
+    }
+
+    private isMouseInThirdQuadrant(): boolean {
+        // souris dans cadrant en haute droite (+/-)
+        return Math.sign(this.mouseDownCoord.x) === sign.Negative && Math.sign(this.mouseDownCoord.y) === sign.Positive;
+    }
+
+    private isMouseInFourthQuadrant(): boolean {
+        // souris dans cadrant en haute droite (-/+)
+        return Math.sign(this.mouseDownCoord.x) === sign.Positive && Math.sign(this.mouseDownCoord.y) === sign.Negative;
+    }
+
+    private isXGreaterThanY(): boolean {
+        return Math.abs(this.mouseDownCoord.x) > Math.abs(this.mouseDownCoord.y);
+    }
+
+    private isYGreaterThanX(): boolean {
+        return Math.abs(this.mouseDownCoord.y) > Math.abs(this.mouseDownCoord.x);
+    }
+
+    drawSquare(grid: Vec2): void {
+        if (this.isMouseInFirstQuadrant()) {
+            grid.x = grid.y = Math.min(this.mouseDownCoord.x, this.mouseDownCoord.y);
+        }
+
+        if (this.isMouseInSecondQuadrant()) {
+            grid.x = grid.y = Math.max(this.mouseDownCoord.x, this.mouseDownCoord.y);
+        }
+
+        if (this.isMouseInThirdQuadrant()) {
+            this.isXGreaterThanY() ? (grid.x = -grid.y) : (grid.y = -grid.x);
+        }
+
+        if (this.isMouseInFourthQuadrant()) {
+            this.isYGreaterThanX() ? (grid.x = -grid.y) : (grid.y = -grid.x);
+        }
     }
 
     private drawRectangle(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
@@ -117,15 +157,12 @@ export class RectangleService extends Tool {
 
     private updatePreview(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.drawRectangle(this.drawingService.previewCtx, this.mouseDownCoord);
-
+        const currentCoord = { ...this.mouseDownCoord };
         if (this.shiftDown) {
-            if (this.mouseDownCoord.x > this.mouseDownCoord.y) {
-                this.mouseDownCoord.y = this.mouseDownCoord.x;
-            } else if (this.mouseDownCoord.x < this.mouseDownCoord.y) {
-                this.mouseDownCoord.x = this.mouseDownCoord.y;
-            }
+            this.drawSquare(currentCoord);
+            this.drawRectangle(this.drawingService.previewCtx, currentCoord);
         }
+        this.drawRectangle(this.drawingService.previewCtx, currentCoord);
     }
 
     private clearPath(): void {
