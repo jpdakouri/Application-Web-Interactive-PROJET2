@@ -20,6 +20,7 @@ export abstract class Tool {
     dotRadius?: number = DEFAULT_DOT_RADIUS;
     showDots?: boolean = false;
     mouseMoved: boolean = false;
+    eraserActive?: boolean = false;
 
     constructor(protected drawingService: DrawingService, protected currentColourService: CurrentColourService) {}
 

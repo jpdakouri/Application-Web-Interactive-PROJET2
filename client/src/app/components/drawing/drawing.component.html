@@ -23,6 +23,8 @@
         matTooltipPosition="below"
     ></div>
 
+    <div *ngIf="eraserActive" [ngStyle]="eraserCursor"></div>
+
     <canvas
         id="canvas"
         #baseCanvas

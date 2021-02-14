@@ -4,6 +4,7 @@ import { Tool } from '@app/classes/tool';
 import { CanvasResizerService, Status } from '@app/services/drawing/canvas-resizer/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
+import { MIN_ERASER_THICKNESS } from '@app/services/tools/tools-constants';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 
 // TODO : Avoir un fichier séparé pour les constantes ?
@@ -35,6 +36,22 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
     // private tools: Tool[];
+
+    // tslint:disable-next-line:typedef
+    eraserCursor = {
+        cursor: 'none',
+        position: 'absolute',
+        width: '3px',
+        height: '3px',
+        top: '0px',
+        left: '0px',
+        border: '2px solid black',
+        backgroundColor: 'white',
+        transform: 'translate(-50%, -50%)',
+        zIndex: '3',
+    };
+    private cursorHeight: number;
+    eraserActive: boolean = false;
     currentTool: Tool;
     toolManagerService: ToolManagerService;
     canvasResizerService: CanvasResizerService;
@@ -113,6 +130,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             this.canvasResizerService.onMouseMove(event);
         } else {
             this.currentTool.onMouseMove(event);
+            this.updateEraserCursor(event);
         }
     }
 
@@ -146,6 +164,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     @HostListener('mouseleave', ['$event'])
     onMouseLeave(event: MouseEvent): void {
         this.currentTool.onMouseLeave(event);
+        this.eraserActive = this.currentTool.eraserActive || false;
     }
 
     @HostListener('dblclick', ['$event'])
@@ -185,5 +204,18 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     computeEditorMinWidth(): number {
         return this.width + SIDEBAR_WIDTH + WORKING_ZONE_VISIBLE_PORTION;
+    }
+
+    // tslint:disable-next-line:no-empty
+    onMiddleRightClick(): void {}
+
+    updateEraserCursor(event: MouseEvent): void {
+        this.cursorHeight = this.currentTool.lineThickness || MIN_ERASER_THICKNESS;
+        this.eraserCursor.height = this.cursorHeight - 2 + 'px';
+        this.eraserCursor.width = this.cursorHeight - 2 + 'px';
+        const mousePosition = this.currentTool.getPositionFromMouse(event);
+        this.eraserCursor.left = mousePosition.x + 'px';
+        this.eraserCursor.top = mousePosition.y + 'px';
+        this.eraserActive = this.currentTool.eraserActive || false;
     }
 }
