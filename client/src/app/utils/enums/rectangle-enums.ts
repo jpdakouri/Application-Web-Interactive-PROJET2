@@ -9,7 +9,6 @@ export enum MouseButton {
 export enum KeyboardKeys {
     Escape = 'Escape',
     Shift = 'Shift',
-    One = '1',
 }
 
 export enum sign {
