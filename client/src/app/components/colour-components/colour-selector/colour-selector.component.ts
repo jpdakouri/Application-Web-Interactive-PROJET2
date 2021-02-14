@@ -44,20 +44,20 @@ export class ColourSelectorComponent {
     isValidRGB(): boolean {
         if (this.rgbColor === '' || this.rgbColor == undefined) return false;
 
-        const HEX_CHARACTERS = ['0','1','2','3','4','5','6','7','8','9','a','A','b','B','c','C','d','D','e','E','f','F'];
+        const HEX_CHARACTERS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'A', 'b', 'B', 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F'];
         const MIN_HEX_RGB_VALUE = 1;
         const MAX_HEX_RGB_VALUE = 2;
         const INDEX_ELEMENT_NOT_THERE = -1;
 
         const RGB_VALUES = this.rgbColor.split(',');
         const RGB_COMPONENTS = 3;
-        if (RGB_VALUES.length != RGB_COMPONENTS) return false;
+        if (RGB_VALUES.length !== RGB_COMPONENTS) return false;
 
         let validRgb = true;
         RGB_VALUES.forEach((value) => {
             if (value.length < MIN_HEX_RGB_VALUE || value.length > MAX_HEX_RGB_VALUE) validRgb = false;
             for (let i = 0; i < value.length - 1; i++) {
-                if (HEX_CHARACTERS.indexOf(value[i]) == INDEX_ELEMENT_NOT_THERE) validRgb = false;
+                if (HEX_CHARACTERS.indexOf(value[i]) === INDEX_ELEMENT_NOT_THERE) validRgb = false;
             }
         });
         return validRgb;
@@ -66,7 +66,7 @@ export class ColourSelectorComponent {
     isValidTransparency(transparency: string): boolean {
         const MIN_TRANSPARENCY = 0;
         const MAX_TRANSPARENCY = 100;
-        if (transparency == '') return false;
+        if (transparency === '') return false;
         if (Number(transparency) == undefined) return false;
         if (!Number.isInteger(Number(transparency))) return false;
         return Number(transparency) >= MIN_TRANSPARENCY && Number(transparency) <= MAX_TRANSPARENCY;

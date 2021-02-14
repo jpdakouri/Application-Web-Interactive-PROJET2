@@ -87,7 +87,7 @@ export class HueSelectorComponent implements AfterViewInit {
         this.sliderCanvasContext.stroke();
         this.sliderCanvasContext.closePath();
     }
-    
+
     private generateGradient(): CanvasGradient {
         const GRADIENT = this.sliderCanvasContext.createLinearGradient(0, 0, 0, this.sliderCanvas.nativeElement.height);
         const RGBA_RED = 'rgba(255, 0, 0, 1)';
