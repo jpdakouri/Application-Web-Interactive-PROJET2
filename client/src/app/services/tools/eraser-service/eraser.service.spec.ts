@@ -28,6 +28,7 @@ describe('EraserService', () => {
 
         service = TestBed.inject(EraserService);
         eraseSpy = spyOn<any>(service, 'erase').and.callThrough();
+        spyOn<any>(service, 'getPositionFromMouse').and.returnValue({ x: 100, y: 100 });
 
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub;
@@ -45,7 +46,7 @@ describe('EraserService', () => {
     });
 
     it(' mouseDown should set mouseDownCoord to correct position', () => {
-        const expectedResult: Vec2 = { x: 25, y: 25 };
+        const expectedResult: Vec2 = { x: 100, y: 100 };
         service.onMouseDown(mouseEvent);
         expect(service.mouseDownCoord).toEqual(expectedResult);
     });

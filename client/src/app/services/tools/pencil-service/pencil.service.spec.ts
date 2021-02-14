@@ -29,6 +29,7 @@ describe('PencilService', () => {
         service = TestBed.inject(PencilService);
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
         drawDotSpy = spyOn<any>(service, 'drawDot').and.callThrough();
+        spyOn<any>(service, 'getPositionFromMouse').and.returnValue({ x: 100, y: 100 });
 
         // Configuration du spy du service
         // tslint:disable:no-string-literal
@@ -47,7 +48,7 @@ describe('PencilService', () => {
     });
 
     it(' mouseDown should set mouseDownCoord to correct position', () => {
-        const expectedResult: Vec2 = { x: 25, y: 25 };
+        const expectedResult: Vec2 = { x: 100, y: 100 };
         service.onMouseDown(mouseEvent);
         expect(service.mouseDownCoord).toEqual(expectedResult);
     });

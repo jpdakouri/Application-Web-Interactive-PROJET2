@@ -5,6 +5,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { ToolsNames } from '@app/enums/tools-names';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
+import { EraserService } from '@app/services/tools/eraser-service/eraser.service';
 
 // TODO : Avoir un fichier séparé pour les constantes ?
 export const DEFAULT_WIDTH = 1000;
@@ -33,21 +34,23 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
-    private cursorHeight: number;
 
     // tslint:disable-next-line:typedef
     eraserCursor = {
         cursor: 'none',
-        position: 'inherit',
-        width: '30px',
-        height: '30px',
-        top: '100px',
-        left: '100px',
+        position: 'absolute',
+        width: '3px',
+        height: '3px',
+        top: '0px',
+        left: '0px',
         border: '2px solid black',
         backgroundColor: 'white',
         transform: 'translate(-50%, -50%)',
-        zIndex: '50',
+        zIndex: '3',
     };
+    cursorHeight: number;
+    eraserActive: boolean = false;
+    eraserService: EraserService;
     // private currentDrawing: CanvasRenderingContext2D;
     currentTool: Tool;
     toolManagerService: ToolManagerService;
@@ -90,14 +93,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     @HostListener('mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
         this.currentTool.onMouseMove(event);
-        // tslint:disable-next-line:no-magic-numbers
-        this.cursorHeight = this.currentTool.lineThickness || 50;
-
-        this.eraserCursor.height = this.cursorHeight + 'px';
-        this.eraserCursor.width = this.cursorHeight + 'px';
-        const mousePosition = this.currentTool.getPositionFromMouse(event);
-        this.eraserCursor.left = mousePosition.x + 'px';
-        this.eraserCursor.top = mousePosition.y + 'px';
+        this.updateEraserCursor(event);
     }
 
     @HostListener('mousedown', ['$event'])
@@ -118,6 +114,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     @HostListener('mouseleave', ['$event'])
     onMouseLeave(event: MouseEvent): void {
         this.currentTool.onMouseLeave(event);
+        this.eraserActive = this.currentTool.eraserActive || false;
     }
 
     @HostListener('dblclick', ['$event'])
@@ -167,4 +164,14 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     // tslint:disable-next-line:no-empty
     onMiddleRightClick(): void {}
+
+    updateEraserCursor(event: MouseEvent): void {
+        this.cursorHeight = this.currentTool.lineThickness || 50;
+        this.eraserCursor.height = this.cursorHeight - 2 + 'px';
+        this.eraserCursor.width = this.cursorHeight - 2 + 'px';
+        const mousePosition = this.currentTool.getPositionFromMouse(event);
+        this.eraserCursor.left = mousePosition.x + 'px';
+        this.eraserCursor.top = mousePosition.y + 'px';
+        this.eraserActive = this.currentTool.eraserActive || false;
+    }
 }
