@@ -95,6 +95,20 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.currentTool = this.toolManagerService.getCurrentToolInstance();
     }
 
+    @HostListener('window:mouseleave', ['$event'])
+    onMouseLeave(event: MouseEvent): void {
+        this.currentTool.onMouseLeave(event);
+    }
+    @HostListener('window:keydown', ['$event'])
+    onKeyDown(event: KeyboardEvent): void {
+        this.currentTool.onKeyDown(event);
+    }
+
+    @HostListener('window:keyup', ['$event'])
+    onKeyUp(event: KeyboardEvent): void {
+        this.currentTool.onKeyUp(event);
+    }
+
     get width(): number {
         return this.canvasSize.x;
     }
@@ -143,24 +157,9 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.drawingService.saveCanvas();
     }
 
-    @HostListener('mouseleave', ['$event'])
-    onMouseLeave(event: MouseEvent): void {
-        this.currentTool.onMouseLeave(event);
-    }
-
     @HostListener('dblclick', ['$event'])
     onDblClick(): void {
         this.currentTool.onDblClick();
-    }
-
-    @HostListener('keydown', ['$event'])
-    onKeyDown(event: KeyboardEvent): void {
-        this.currentTool.onKeyDown(event);
-    }
-
-    @HostListener('window:keyup', ['$event'])
-    onKeyUp(event: KeyboardEvent): void {
-        this.currentTool.onKeyUp(event);
     }
 
     onMiddleRightResizerClick(): void {
