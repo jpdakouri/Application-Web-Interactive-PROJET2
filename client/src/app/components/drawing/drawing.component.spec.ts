@@ -16,7 +16,7 @@ const TOOLBAR_WIDTH = 425;
 describe('DrawingComponent', () => {
     let component: DrawingComponent;
     let fixture: ComponentFixture<DrawingComponent>;
-    // let toolStub: ToolStub;
+    let toolStub: ToolStub;
     let drawingStub: DrawingService;
     let mouseStub: MouseHandlerService;
     let canvasResizerStub: CanvasResizerService;

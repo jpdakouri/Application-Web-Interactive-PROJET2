@@ -52,6 +52,7 @@ describe('EllipseService', () => {
         drawFilledSpy = spyOn<any>(service, 'drawFilled').and.callThrough();
         drawFilledOutlineSpy = spyOn<any>(service, 'drawFilledOutline').and.callThrough();
         drawPerimeterSpy = spyOn<any>(service, 'drawPerimeter').and.callThrough();
+        spyOn<any>(service, 'getPositionFromMouse').and.returnValue({ x: 100, y: 100 });
 
         // Configuration du spy du service
         // tslint:disable:no-string-literal
