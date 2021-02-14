@@ -101,8 +101,8 @@ export class EllipseService extends Tool {
         ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
 
         const startCoord = { ...this.firstGrid };
-        const width = Math.abs(finalGrid.x);
-        const height = Math.abs(finalGrid.y);
+        const width = finalGrid.x;
+        const height = finalGrid.y;
 
         ctx.ellipse(startCoord.x + width / 2, startCoord.y + height / 2, Math.abs(width / 2), Math.abs(height / 2), 0, 0, REVOLUTION, false);
         ctx.fill();
@@ -116,14 +116,14 @@ export class EllipseService extends Tool {
         ctx.strokeStyle = this.currentColourService.getSecondaryColorRgba();
 
         const startCoord = { ...this.firstGrid };
-        const width = Math.abs(finalGrid.x);
-        const height = Math.abs(finalGrid.y);
+        const width = finalGrid.x;
+        const height = finalGrid.y;
 
         ctx.ellipse(
             startCoord.x + width / 2,
             startCoord.y + height / 2,
-            width / 2 - (this.lineThickness || DEFAULT_MIN_THICKNESS),
-            height / 2 - (this.lineThickness || DEFAULT_MIN_THICKNESS),
+            Math.abs(width / 2 - (this.lineThickness || DEFAULT_MIN_THICKNESS)),
+            Math.abs(height / 2 - (this.lineThickness || DEFAULT_MIN_THICKNESS)),
             0,
             0,
             REVOLUTION,
