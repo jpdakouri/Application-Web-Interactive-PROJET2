@@ -128,8 +128,8 @@ export class LineService extends Tool {
                 return { x: mousePosition.x, y: lastDot.y + distX * Math.tan(SHIFT_ANGLE_45) };
             }
         }
-        // 90 (270 case)
-        if (angle > SHIFT_ANGLE_45 / 2 || -angle > SHIFT_ANGLE_45 / 2) {
+        // 90 (270) case
+        if (angle > SHIFT_ANGLE_45 + SHIFT_ANGLE_HALF_45 / 2 || -angle > SHIFT_ANGLE_45 + SHIFT_ANGLE_HALF_45 / 2) {
             return { x: lastDot.x, y: mousePosition.y };
         }
         // 0 (180) case
