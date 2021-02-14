@@ -100,11 +100,11 @@ export class EllipseService extends Tool {
         ctx.fillStyle = this.currentColourService.getPrimaryColorRgba();
         ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
 
+        const startCoord = { ...this.firstGrid };
         const width = Math.abs(finalGrid.x);
         const height = Math.abs(finalGrid.y);
-        const startCoord = { ...this.firstGrid };
 
-        ctx.ellipse(startCoord.x + width / 2, startCoord.y + height / 2, width / 2, height / 2, 0, 0, REVOLUTION, false);
+        ctx.ellipse(startCoord.x + width / 2, startCoord.y + height / 2, Math.abs(width / 2), Math.abs(height / 2), 0, 0, REVOLUTION, false);
         ctx.fill();
         ctx.stroke();
     }
@@ -115,9 +115,9 @@ export class EllipseService extends Tool {
         ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
         ctx.strokeStyle = this.currentColourService.getSecondaryColorRgba();
 
+        const startCoord = { ...this.firstGrid };
         const width = Math.abs(finalGrid.x);
         const height = Math.abs(finalGrid.y);
-        const startCoord = { ...this.firstGrid };
 
         ctx.ellipse(
             startCoord.x + width / 2,
@@ -131,7 +131,7 @@ export class EllipseService extends Tool {
         );
         ctx.fill();
         ctx.stroke();
-        ctx.ellipse(startCoord.x + width / 2, startCoord.y + height / 2, width / 2, height / 2, 0, 0, REVOLUTION, false);
+        ctx.ellipse(startCoord.x + width / 2, startCoord.y + height / 2, Math.abs(width / 2), Math.abs(height / 2), 0, 0, REVOLUTION, false);
         ctx.stroke();
     }
 
