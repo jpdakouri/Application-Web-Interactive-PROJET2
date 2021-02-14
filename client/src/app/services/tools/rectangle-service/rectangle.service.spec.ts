@@ -2,22 +2,9 @@ import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { KeyboardKeys, MouseButton } from '@app/utils/enums/rectangle-enums';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { RectangleService } from './rectangle.service';
-
-export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
-}
-
-export enum KeyboardKeys {
-    Escape = 'Escape',
-    Shift = 'Shift',
-    One = '1',
-}
 
 describe('RectangleService', () => {
     let service: RectangleService;
@@ -33,8 +20,7 @@ describe('RectangleService', () => {
     let drawOutlineSpy: jasmine.Spy<any>;
     let drawFilledSpy: jasmine.Spy<any>;
     let drawFilledOutlineSpy: jasmine.Spy<any>;
-
-    // let updatePreviewSpy: jasmine.Spy<any>;
+    let drawPerimeterSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
@@ -51,7 +37,7 @@ describe('RectangleService', () => {
         drawOutlineSpy = spyOn<any>(service, 'drawOutline').and.callThrough();
         drawFilledSpy = spyOn<any>(service, 'drawFilled').and.callThrough();
         drawFilledOutlineSpy = spyOn<any>(service, 'drawFilledOutline').and.callThrough();
-        // updatePreviewSpy = spyOn<any>(service, 'drawRectangle').and.callThrough();
+        drawPerimeterSpy = spyOn<any>(service, 'drawPerimeter').and.callThrough();
         drawSquareSpy = spyOn<any>(service, 'drawSquare').and.callThrough();
         spyOn<any>(service, 'getPositionFromMouse').and.returnValue({ x: 100, y: 100 });
 
@@ -80,7 +66,7 @@ describe('RectangleService', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
-            button: 1, // TODO: Avoir ceci dans un enum accessible
+            button: MouseButton.Right,
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(service.mouseDown).toEqual(false);
@@ -102,8 +88,6 @@ describe('RectangleService', () => {
     });
 
     it(' keys should perform their task', () => {
-        // service.mouseDownCoord = { x: 20, y: 20 };
-
         service.onKeyDown({
             key: KeyboardKeys.Escape,
         } as KeyboardEvent);
@@ -213,5 +197,21 @@ describe('RectangleService', () => {
         service.drawSquare(val4);
         const expected4 = { x: 200, y: 200 } as Vec2;
         expect(val).toEqual(expected4);
+    });
+
+    it(' drawPerimeter works even when there is a negative coordinate in x', () => {
+        const contextSpyObj = jasmine.createSpyObj('CanvasRenderingContext2D', ['strokeRect', 'strokeStyle']);
+        const finalGrid: Vec2 = { x: -100, y: 100 };
+        drawPerimeterSpy.and.stub();
+        service['drawPerimeter'](contextSpyObj, finalGrid);
+        expect(drawPerimeterSpy).toHaveBeenCalledWith(contextSpyObj, finalGrid);
+    });
+
+    it(' drawPerimeter works even when there is a negative coordinate in x', () => {
+        const contextSpyObj = jasmine.createSpyObj('CanvasRenderingContext2D', ['strokeRect', 'strokeStyle']);
+        const finalGrid: Vec2 = { x: 100, y: -100 };
+        drawPerimeterSpy.and.stub();
+        service['drawPerimeter'](contextSpyObj, finalGrid);
+        expect(drawPerimeterSpy).toHaveBeenCalledWith(contextSpyObj, finalGrid);
     });
 });

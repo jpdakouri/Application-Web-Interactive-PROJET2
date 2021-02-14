@@ -2,22 +2,9 @@ import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { KeyboardKeys, MouseButton } from '@app/utils/enums/rectangle-enums';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { EllipseService } from './ellipse.service';
-
-export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
-}
-
-export enum KeyboardKeys {
-    Escape = 'Escape',
-    Shift = 'Shift',
-    One = '1',
-}
 
 describe('EllipseService', () => {
     let service: EllipseService;
@@ -79,7 +66,7 @@ describe('EllipseService', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
-            button: 1, // TODO: Avoir ceci dans un enum accessible
+            button: MouseButton.Right,
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(service.mouseDown).toEqual(false);
@@ -157,7 +144,6 @@ describe('EllipseService', () => {
     it('on MouseUp drawCircle should be called when shiftDown is true', () => {
         service.mouseDown = true;
         service['shiftDown'] = true;
-        // const contextSpyObj = jasmine.createSpyObj('MouseEvent', []);
         service.onMouseDown(mouseEvent);
         service.onMouseUp(mouseEvent);
         expect(drawCircleSpy).toHaveBeenCalled();
@@ -175,7 +161,6 @@ describe('EllipseService', () => {
     it(' drawOutline should be called when shapeStyle Outline is selected', () => {
         service['shapeStyle'] = ShapeStyle.Outline;
         const contextSpyObj = jasmine.createSpyObj('CanvasRenderingContext2D', ['beginPath', 'ellipse', 'stroke']);
-        // const ctxStub = {} as CanvasRenderingContext2D;
         const finalGrid: Vec2 = { x: 100, y: 100 };
         drawOutlineSpy.and.stub();
         service['drawEllipse'](contextSpyObj, finalGrid);
@@ -229,7 +214,6 @@ describe('EllipseService', () => {
     });
 
     it(' drawPerimeter works even when there is a negative coordinate in x', () => {
-        // service['shapeStyle'] = shapeStyle.Outline;
         const contextSpyObj = jasmine.createSpyObj('CanvasRenderingContext2D', ['strokeRect', 'strokeStyle']);
         const finalGrid: Vec2 = { x: -100, y: 100 };
         drawPerimeterSpy.and.stub();
