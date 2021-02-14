@@ -25,6 +25,18 @@ describe('DrawingService', () => {
         expect(hasColoredPixels).toEqual(false);
     });
 
+    it('should return true when canvas is blank', () => {
+        service.clearCanvas(service.baseCtx);
+        expect(service.isCanvasBlank()).toBeTrue();
+    });
+
+    it('should return false when canvas is not blank', () => {
+        const rectangleWidth = 1;
+        const rectangleHeight = 1;
+        service.baseCtx.fillRect(0, 0, rectangleWidth, rectangleHeight);
+        expect(service.isCanvasBlank()).toBeFalse();
+    });
+
     it('#saveCanvas should save the canvas to session storage', () => {
         const RECTANGLE_OFFSET = 20;
         const RECTANGLE_DIMENSIONS = 20;
@@ -43,6 +55,7 @@ describe('DrawingService', () => {
     });
 
     it('#restoreCanvas should restore canvas from session storage', async (done) => {
+        // tslint:disable:no-magic-numbers
         service.canvas.width = 10;
         service.canvas.height = 10;
         const RECTANGLE_OFFSET = 2;

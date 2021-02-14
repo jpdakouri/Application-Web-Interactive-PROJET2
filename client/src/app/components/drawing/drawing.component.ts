@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, OnInit, Output, ViewChild } from '@angular/core';
+import { Coordinate } from '@app/classes/coordinate';
 import { Tool } from '@app/classes/tool';
-import { Vec2 } from '@app/classes/vec2';
+import { CanvasResizerService, Status } from '@app/services/drawing/canvas-resizer/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { ToolsNames } from '@app/utils/enums/tools-names';
@@ -8,12 +9,6 @@ import { ToolsNames } from '@app/utils/enums/tools-names';
 // TODO : Avoir un fichier séparé pour les constantes ?
 export const DEFAULT_WIDTH = 1000;
 export const DEFAULT_HEIGHT = 800;
-
-export const MINIMUM_WIDTH = 250;
-export const MINIMUM_HEIGHT = 250;
-
-export const LOWER_BOUND_WIDTH = 500;
-export const LOWER_BOUND_HEIGHT = 500;
 
 export const DEFAULT_WHITE = '#fff';
 
@@ -30,29 +25,41 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     // On utilise ce canvas pour dessiner sans affecter le dessin final
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
+    // On utilise ce canvas pour le rectangle de prévisualisation
+    @ViewChild('canvasResizerPreview', { static: false }) canvasResizerPreview: ElementRef<HTMLDivElement>;
     @Output() editorMinWidthEmitter: EventEmitter<number> = new EventEmitter<number>();
 
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
-    private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
-    // private currentDrawing: CanvasRenderingContext2D;
+    private canvasSize: Coordinate = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
+
+    // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
+    // private tools: Tool[];
     currentTool: Tool;
     toolManagerService: ToolManagerService;
+    canvasResizerService: CanvasResizerService;
 
-    constructor(private drawingService: DrawingService, toolManagerService: ToolManagerService) {
+    isMoverResizer: boolean;
+
+    constructor(private drawingService: DrawingService, toolManagerService: ToolManagerService, canvasResizerService: CanvasResizerService) {
         this.toolManagerService = toolManagerService;
+        this.canvasResizerService = canvasResizerService;
     }
 
     ngOnInit(): void {
         this.updateCurrentTool();
         this.setCanvasSize();
         this.subscribeToToolChange();
-    }
 
-    subscribeToToolChange(): void {
-        this.toolManagerService.toolChangeEmitter.subscribe((toolName: ToolsNames) => {
-            this.updateCurrentTool();
-        });
+        // if (sessionStorage.getItem('canvasBuffer')) {
+        //     console.log('rentr/ dans le premier if');
+        //     if (confirm("le canvas n'est pas vide! Voulez vous garder vos modifications?")) {
+        //         // sessionStorage.setItem('canvasBuffer', this.drawingService.canvas.toDataURL());
+        //         this.drawingService.restoreCanvas();
+        //         // sessionStorage.clear();
+        //     }
+        // }
+        // sessionStorage.clear();
     }
 
     ngAfterViewInit(): void {
@@ -62,7 +69,26 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
         this.drawingService.canvas.style.backgroundColor = DEFAULT_WHITE;
+        this.canvasResizerService.canvasPreviewWidth = this.canvasSize.x;
+        this.canvasResizerService.canvasPreviewHeight = this.canvasSize.y;
         this.drawingService.restoreCanvas();
+    }
+
+    subscribeToToolChange(): void {
+        this.toolManagerService.toolChangeEmitter.subscribe((toolName: ToolsNames) => {
+            this.updateCurrentTool();
+        });
+    }
+
+    setCanvasSize(): void {
+        this.canvasSize = this.canvasResizerService.calculateCanvasSize();
+        this.emitEditorMinWidth();
+    }
+
+    resizeCanvas(): void {
+        this.canvasSize = this.canvasResizerService.calculateNewCanvasSize(this.canvasSize);
+        this.drawingService.restoreCanvas();
+        this.emitEditorMinWidth();
     }
 
     updateCurrentTool(): void {
@@ -77,19 +103,39 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         return this.canvasSize.y;
     }
 
-    @HostListener('mousemove', ['$event'])
+    getPreviewCanvasSize(): Coordinate {
+        return { x: this.canvasResizerService.canvasPreviewWidth, y: this.canvasResizerService.canvasPreviewHeight };
+    }
+
+    @HostListener('window:mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
-        this.currentTool.onMouseMove(event);
+        if (this.canvasResizerService.isResizing()) {
+            this.canvasResizerService.onMouseMove(event);
+        } else {
+            this.currentTool.onMouseMove(event);
+        }
     }
 
-    @HostListener('mousedown', ['$event'])
+    @HostListener('window:mousedown', ['$event'])
     onMouseDown(event: MouseEvent): void {
-        this.currentTool.onMouseDown(event);
+        if (this.canvasResizerService.isResizing()) {
+            this.canvasResizerService.onMouseDown(event);
+        } else {
+            this.currentTool.onMouseDown(event);
+        }
     }
 
-    @HostListener('mouseup', ['$event'])
+    @HostListener('window:mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
-        this.currentTool.onMouseUp(event);
+        if (this.canvasResizerService.isResizing()) {
+            this.drawingService.saveCanvas();
+            this.canvasResizerService.onMouseUp(event);
+            this.resizeCanvas();
+            this.canvasResizerService.setStatus(Status.OFF);
+            console.log('onMuseUp de resizer !!!!');
+        } else {
+            this.currentTool.onMouseUp(event);
+        }
     }
 
     @HostListener('window:beforeunload', ['$event'])
@@ -117,40 +163,26 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.currentTool.onKeyUp(event);
     }
 
-    setCanvasSize(): void {
-        this.canvasSize.x = this.workingZoneSize().x / 2;
-        this.canvasSize.y = this.workingZoneSize().y / 2;
-        if (this.workingZoneSize().x < LOWER_BOUND_WIDTH || this.workingZoneSize().y < LOWER_BOUND_HEIGHT) {
-            this.canvasSize.x = MINIMUM_WIDTH;
-            this.canvasSize.y = MINIMUM_HEIGHT;
-        }
-        this.emitEditorMinWidth();
+    onMiddleRightResizerClick(): void {
+        this.drawingService.saveCanvas();
+        this.canvasResizerService.onMiddleRightResizerClick();
     }
 
-    workingZoneSize(): Vec2 {
-        return {
-            x: window.innerWidth - SIDEBAR_WIDTH,
-            y: window.innerHeight,
-        };
+    onBottomRightResizerClick(): void {
+        this.drawingService.saveCanvas();
+        this.canvasResizerService.onBottomRightResizerClick();
     }
 
-    isCanvasBlank(): boolean {
-        // return this.currentDrawing;
-        return false;
-    }
-
-    saveDrawing(): void {
-        this.baseCtx.save();
-    }
-
-    restoreDrawing(): void {
-        this.baseCtx.restore();
+    onMiddleBottomResizerClick(): void {
+        this.drawingService.saveCanvas();
+        this.canvasResizerService.onMiddleBottomResizerClick();
     }
 
     emitEditorMinWidth(): void {
         const editorMinWidth = this.computeEditorMinWidth();
         this.editorMinWidthEmitter.emit(editorMinWidth);
     }
+
     computeEditorMinWidth(): number {
         return this.width + SIDEBAR_WIDTH + WORKING_ZONE_VISIBLE_PORTION;
     }
