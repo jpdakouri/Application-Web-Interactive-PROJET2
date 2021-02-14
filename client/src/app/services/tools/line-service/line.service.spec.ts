@@ -79,6 +79,13 @@ fdescribe('LineService', () => {
         expect(drawLineSpy).toHaveBeenCalled();
     });
 
+    it(' onMouseUp should not call drawLine if mouse was not down', () => {
+        service.mouseDown = false;
+
+        service.onMouseUp(mouseEvent);
+        expect(drawLineSpy).not.toHaveBeenCalled();
+    });
+
     it(' onMouseUp should not call desiredAngle if mouse was already down and shift not pressed', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
@@ -128,7 +135,13 @@ fdescribe('LineService', () => {
         expect(previewUpdateSpy).toHaveBeenCalled();
     });
 
-    // canva size value to add
+    it('onMouseMove should not call previewUpdate if the drawing has not started', () => {
+        service.mouseDown = false;
+        service.onMouseMove(mouseEvent);
+
+        expect(previewUpdateSpy).not.toHaveBeenCalled();
+    });
+
     it('onMouseLeave should stop the preview if drawing has started ', () => {
         service['pathData'].push({ x: 0, y: 0 });
         service['started'] = true;
@@ -138,6 +151,15 @@ fdescribe('LineService', () => {
         } as MouseEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawLineSpy).toHaveBeenCalled();
+    });
+
+    it('onMouseLeave not should not call drawLine if drawing has not started ', () => {
+        service['started'] = false;
+        service.onMouseLeave({
+            offsetX: 25,
+            offsetY: 25,
+        } as MouseEvent);
+        expect(drawLineSpy).not.toHaveBeenCalled();
     });
 
     it(' onDblClick should adapt if last point is 20px close to start', () => {
@@ -204,9 +226,11 @@ fdescribe('LineService', () => {
         } as KeyboardEvent);
         expect(service['started']).toBeFalse();
 
-        // TypeError: event.preventDefault is not a function
         service['pathData'].push({ x: 0, y: 0 }, service.mouseDownCoord);
         const event = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButton.Backspace });
+        service.onKeyDown(event);
+        expect(event.preventDefault).toHaveBeenCalled();
+
         service.onKeyDown(event);
         expect(event.preventDefault).toHaveBeenCalled();
     });
@@ -220,5 +244,14 @@ fdescribe('LineService', () => {
             key: KeyboardButton.Shift,
         } as KeyboardEvent);
         expect(service['shiftPressed']).toBeFalse();
+    });
+
+    it('onKeyup should not call previewUpdate if shift isnt pressed', () => {
+        service['shiftPressed'] = false;
+
+        service.onKeyUp({
+            key: KeyboardButton.InvalidInput,
+        } as KeyboardEvent);
+        expect(previewUpdateSpy).not.toHaveBeenCalled();
     });
 });
