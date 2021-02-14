@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { IndexService } from '@app/services/index/index.service';
 import { Message } from '@common/communication/message';
 import { BehaviorSubject } from 'rxjs';
@@ -14,7 +15,7 @@ export class MainPageComponent {
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
     isPendingDrawing: boolean = false;
 
-    constructor(private basicService: IndexService) {}
+    constructor(private basicService: IndexService, private drawingService: DrawingService) {}
 
     sendTimeToServer(): void {
         const newTimeMessage: Message = {
@@ -37,16 +38,7 @@ export class MainPageComponent {
             .subscribe(this.message);
     }
 
-    // // tslint:disable-next-line:typedef
-    // temp() {
-    //     sessionStorage.getItem('canvasBuffer');
-    // }
-    // onCreateNewDrawing(): void {
-    //     if (!sessionStorage.getItem('canvasBuffer')) {
-    //         if (confirm("Le canvas n'est pas vide! Voulez-vous garder vos modifs?")) {
-    //             sessionStorage.clear();
-    //         }
-    //     }
-    //     this.router.navigate(['editor']);
-    // }
+    onCreateNewDrawing(): void {
+        this.drawingService.createNewDrawing();
+    }
 }

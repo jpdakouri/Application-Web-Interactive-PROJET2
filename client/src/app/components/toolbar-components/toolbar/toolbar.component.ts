@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 @Component({
@@ -9,9 +10,11 @@ import { ToolsNames } from '@app/utils/enums/tools-names';
 export class ToolbarComponent {
     toolsNames: typeof ToolsNames = ToolsNames;
     toolManagerService: ToolManagerService;
+    drawingService: DrawingService;
 
-    constructor(toolManagerService: ToolManagerService) {
+    constructor(toolManagerService: ToolManagerService, drawingService: DrawingService) {
         this.toolManagerService = toolManagerService;
+        this.drawingService = drawingService;
     }
 
     setCurrentTool(toolName: ToolsNames): void {
@@ -20,5 +23,9 @@ export class ToolbarComponent {
 
     isSelected(toolName: ToolsNames): boolean {
         return this.toolManagerService.isCurrentTool(toolName);
+    }
+
+    onCreateNewDrawing(): void {
+        this.drawingService.createNewDrawing();
     }
 }

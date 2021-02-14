@@ -9,13 +9,16 @@ import { of } from 'rxjs';
 import { MainPageComponent } from './main-page.component';
 
 import SpyObj = jasmine.SpyObj;
+import { DrawingService } from '@app/services/drawing/drawing.service';
 
 describe('MainPageComponent', () => {
     let component: MainPageComponent;
     let fixture: ComponentFixture<MainPageComponent>;
     let indexServiceSpy: SpyObj<IndexService>;
+    let drawingServiceSpy: SpyObj<DrawingService>;
 
     beforeEach(async(() => {
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['createNewDrawing']);
         indexServiceSpy = jasmine.createSpyObj('IndexService', ['basicGet', 'basicPost']);
         indexServiceSpy.basicGet.and.returnValue(of({ title: '', body: '' }));
         indexServiceSpy.basicPost.and.returnValue(of());
@@ -23,7 +26,10 @@ describe('MainPageComponent', () => {
         TestBed.configureTestingModule({
             imports: [RouterTestingModule, HttpClientModule, MatGridListModule, MatIconModule, MatToolbarModule],
             declarations: [MainPageComponent],
-            providers: [{ provide: IndexService, useValue: indexServiceSpy }],
+            providers: [
+                { provide: IndexService, useValue: indexServiceSpy },
+                { provide: DrawingService, useValue: drawingServiceSpy },
+            ],
         }).compileComponents();
     }));
 
@@ -49,5 +55,10 @@ describe('MainPageComponent', () => {
     it('should call basicPost when calling sendTimeToServer', () => {
         component.sendTimeToServer();
         expect(indexServiceSpy.basicPost).toHaveBeenCalled();
+    });
+
+    it('should create new drawing when new drawing button is clicked', () => {
+        component.onCreateNewDrawing();
+        expect(drawingServiceSpy.createNewDrawing).toHaveBeenCalled();
     });
 });

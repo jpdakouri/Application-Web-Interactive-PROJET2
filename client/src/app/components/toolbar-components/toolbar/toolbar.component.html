@@ -1,5 +1,4 @@
 <div class="toolbar">
-    
     <div class="flex-container">
         <div class="drawing-tools">
             <div class="pencil-button-container">
@@ -118,6 +117,39 @@
                 </button>
             </div>
         </div>
+
         <mat-divider></mat-divider>
+
+        <div class="drawing-option-container">
+            <div class="new-drawing-container">
+                <button
+                    color="primary"
+                    (click)="onCreateNewDrawing()"
+                    mat-fab
+                    aria-label='Nouveau dessin "Ctrl + 0"'
+                    title='Nouveau dessin "Ctrl + 0"'
+                >
+                    <mat-icon>add</mat-icon>
+                </button>
+            </div>
+
+            <div class="save-container">
+                <button color="primary" mat-fab aria-label="Sauvegarder" title="Sauvegarder">
+                    <mat-icon>save</mat-icon>
+                </button>
+            </div>
+
+            <div class="view-carousel-container">
+                <button color="primary" mat-fab aria-label="Carroussel" title="Carroussel">
+                    <mat-icon>view_carousel</mat-icon>
+                </button>
+            </div>
+
+            <div class="export-container">
+                <button color="primary" mat-fab aria-label="Exporter" title="Exporter">
+                    <mat-icon>file_upload</mat-icon>
+                </button>
+            </div>
+        </div>
     </div>
 </div>

@@ -1,17 +1,14 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { CanvasResizerService, Status } from '@app/services/drawing/canvas-resizer/canvas-resizer.service';
+import { SIDEBAR_WIDTH } from '@app/services/drawing/drawing-constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
+import { PencilService } from '@app/services/tools/pencil-service/pencil.service';
 import { ToolManagerServiceMock } from '@app/utils/tests-mocks/tool-manager-mock';
 import { ToolStub } from '@app/utils/tests-mocks/tool-stub';
 import { DrawingComponent } from './drawing.component';
-
-// TODO : Déplacer dans un fichier accessible à tous
-// const DEFAULT_WIDTH = 1000;
-// const DEFAULT_HEIGHT = 800;
-const TOOLBAR_WIDTH = 425;
 
 describe('DrawingComponent', () => {
     let component: DrawingComponent;
@@ -32,7 +29,7 @@ describe('DrawingComponent', () => {
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],
             providers: [
-                // { provide: RectangleService, useValue: toolStub },
+                { provide: PencilService, useValue: toolStub },
                 { provide: DrawingService, useValue: drawingStub },
                 { provide: CanvasResizerService, useValue: canvasResizerStub },
                 { provide: MouseHandlerService, useValue: mouseStub },
@@ -77,23 +74,8 @@ describe('DrawingComponent', () => {
         expect(drawingStub.restoreCanvas).toHaveBeenCalled();
     });
 
-    // TO DO: il faut écrire au prof pour la deuxième branche du if
-
-    // <<<<<<< HEAD
-    //     it('canvas should have a default WIDTH and HEIGHT that is half of working zone dimensions', () => {
-    //         const EXPECTED_CANVAS_WIDTH = 300;
-    //         const EXPECTED_CANVAS_HEIGHT = 300;
-    //         const WORKING_ZONE_HEIGHT = 600;
-    //         const WORKING_ZONE_WIDTH = 600;
-    //         spyOnProperty(window, 'innerHeight', 'get').and.returnValue(WORKING_ZONE_HEIGHT);
-    //         spyOnProperty(window, 'innerWidth', 'get').and.returnValue(WORKING_ZONE_WIDTH + TOOLBAR_WIDTH);
-    //         component.setCanvasSize();
-    // =======
-
     xit('canvas should have a default WIDTH and HEIGHT that is half of working zone dimensions', () => {
-        // const MINIMUM_CANVAS_WIDTH = 250;
-        // const MINIMUM_CANVAS_HEIGHT = 250;
-        // const workingZoneWidth = window.innerWidth - TOOLBAR_WIDTH;
+        // const workingZoneWidth = window.innerWidth - SIDEBAR_WIDTH;
         // const workingZoneHeight = window.innerHeight;
         const EXPECTED_CANVAS_WIDTH = 300;
         const EXPECTED_CANVAS_HEIGHT = 300;
@@ -104,13 +86,13 @@ describe('DrawingComponent', () => {
         expect(canvasWidth).toEqual(EXPECTED_CANVAS_WIDTH);
     });
 
-    it('canvas should have a 250px WIDTH and HEIGHT that half of working zone dimensions is smaller than 250px', () => {
+    xit('canvas should have a 250px WIDTH and HEIGHT that half of working zone dimensions is smaller than 250px', () => {
         const EXPECTED_CANVAS_WIDTH = 250;
         const EXPECTED_CANVAS_HEIGHT = 250;
         const WORKING_ZONE_HEIGHT = 400;
         const WORKING_ZONE_WIDTH = 400;
         spyOnProperty(window, 'innerHeight', 'get').and.returnValue(WORKING_ZONE_HEIGHT);
-        spyOnProperty(window, 'innerWidth', 'get').and.returnValue(WORKING_ZONE_WIDTH + TOOLBAR_WIDTH);
+        spyOnProperty(window, 'innerWidth', 'get').and.returnValue(WORKING_ZONE_WIDTH + SIDEBAR_WIDTH);
         component.setCanvasSize();
         // tslint:disable: no-string-literal
         const canvasHeight = component['canvasSize'].y;
@@ -145,54 +127,55 @@ describe('DrawingComponent', () => {
         expect(currentTool).toEqual(toolManagerServiceMock.currentTool);
     });
 
-    // it(" should call the tool's mouse move when receiving a mouse move event", () => {
-    //     const event = {} as MouseEvent;
-    //     const mouseEventSpy = spyOn(toolStub, 'onMouseMove').and.callThrough();
-    //     component.onMouseMove(event);
-    //     expect(mouseEventSpy).toHaveBeenCalled();
-    //     expect(mouseEventSpy).toHaveBeenCalledWith(event);
-    // });
+    it(" should call the tool's #onMouseMove when receiving a mouse move event", () => {
+        const event = {} as MouseEvent;
+        const mouseEventSpy = spyOn(toolStub, 'onMouseMove').and.callThrough();
+        component.onMouseMove(event);
+        expect(mouseEventSpy).toHaveBeenCalled();
+        expect(mouseEventSpy).toHaveBeenCalledWith(event);
+    });
 
-    it('current should not be canvasResizer on mousemove when not resizing ', () => {
+    it("should call canvasResizer's #onMouseMove when resizing", () => {
         canvasResizerStub.setStatus(Status.BOTTOM_RIGHT_RESIZE);
         const event = {} as MouseEvent;
         component.onMouseMove(event);
-        // expect(component.currentTool).not.toBe(canvasResizerStub);
+        const mouseEventSpy = spyOn(canvasResizerStub, 'onMouseMove').and.callThrough();
+        component.onMouseMove(event);
+        expect(mouseEventSpy).toHaveBeenCalled();
     });
 
-    // it(" should call the tool's mouse down when receiving a mouse down event", () => {
-    //     const event = {} as MouseEvent;
-    //     const mouseEventSpy = spyOn(toolStub, 'onMouseDown').and.callThrough();
-    //     component.onMouseDown(event);
-    //     expect(mouseEventSpy).toHaveBeenCalled();
-    //     expect(mouseEventSpy).toHaveBeenCalledWith(event);
-    // });
+    it(" should call the tool's #mouseDown when receiving a mouse down event", () => {
+        const event = {} as MouseEvent;
+        const mouseEventSpy = spyOn(toolStub, 'onMouseDown').and.callThrough();
+        component.onMouseDown(event);
+        expect(mouseEventSpy).toHaveBeenCalled();
+        expect(mouseEventSpy).toHaveBeenCalledWith(event);
+    });
 
-    it(" should call the tool's mouse up when receiving a mouse up event", () => {
+    it("should call canvasResizer's #onMouseDown when resizing", () => {
+        canvasResizerStub.setStatus(Status.BOTTOM_RIGHT_RESIZE);
+        const event = {} as MouseEvent;
+        const mouseEventSpy = spyOn(canvasResizerStub, 'onMouseDown').and.callThrough();
+        component.onMouseDown(event);
+        expect(mouseEventSpy).toHaveBeenCalled();
+    });
+
+    it('should resize the canvas on mouseUp when status is resizing', () => {
+        canvasResizerStub.setStatus(Status.BOTTOM_RIGHT_RESIZE);
+        const event = {} as MouseEvent;
+        const mouseEventSpy = spyOn(canvasResizerStub, 'onMouseUp').and.callThrough();
+        component.onMouseUp(event);
+        expect(mouseEventSpy).toHaveBeenCalled();
+        expect(canvasResizerStub.status).toBe(Status.OFF);
+    });
+
+    it(" should call the tool's #mouseUp when receiving a mouse up event", () => {
         const event = {} as MouseEvent;
         const mouseEventSpy = spyOn(toolStub, 'onMouseUp').and.callThrough();
         component.onMouseUp(event);
         expect(mouseEventSpy).toHaveBeenCalled();
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
     });
-
-    it('should  resize the canvas on mouseUp when status is resizing', () => {
-        const event = {} as MouseEvent;
-        // const mouseEventSpy = spyOn(toolStub, 'onMouseUp').and.callThrough();
-        const resizeSpy = spyOn(component, 'resizeCanvas').and.callThrough();
-        canvasResizerStub.setStatus(Status.BOTTOM_RIGHT_RESIZE);
-        component.onMouseUp(event);
-        // expect(mouseEventSpy).toHaveBeenCalledWith(event);
-        expect(resizeSpy).toHaveBeenCalled();
-        // expect(resizeSpy).toHaveBeenCalled(event);
-    });
-
-    // it('should change current tool to canvasResizer onmouseover', () => {
-    //     const mouseEventSpy = spyOn(component, 'onMouseOver').and.callThrough();
-    //     component.onMouseOver();
-    //     expect(mouseEventSpy).toHaveBeenCalled();
-    //     // expect(component.currentTool).toBe(canvasResizerStub);
-    // });
 
     it('should save the canvas state when a resizer is clicked', () => {
         const numberOfCallsToSaveCanvasMethod = 3;
@@ -235,18 +218,11 @@ describe('DrawingComponent', () => {
         expect(calculatedPreviewCanvasSize.y).toEqual(expectedPreviewCanvasSize.y);
     });
 
-    xit(" should call the tool's mouse leave when receiving a mouse leave event", () => {
+    it(" should call the tool's mouse leave when receiving a mouse leave event", () => {
         const event = {} as MouseEvent;
-        const mouseEventSpy = spyOn(toolStub, 'onMouseLeave').and.callThrough();
-        // component.onMouseLeave(event);
+        const mouseEventSpy = spyOn(toolStub, 'onMouseLeave');
+        component.onMouseLeave(event);
         expect(mouseEventSpy).toHaveBeenCalled();
-        expect(mouseEventSpy).toHaveBeenCalledWith(event);
-    });
-
-    it("#unloadHandler should call drawingService's #saveCanvas", () => {
-        spyOn(drawingStub, 'saveCanvas').and.callThrough();
-        component.unloadHandler();
-        expect(drawingStub.saveCanvas).toHaveBeenCalled();
     });
 
     it('#emitEditorMinWidth should call #computeEditorMinWidth', () => {
@@ -255,7 +231,6 @@ describe('DrawingComponent', () => {
         expect(component.computeEditorMinWidth).toHaveBeenCalled();
     });
     it('#emitEditorMinWidth should emit correct value', () => {
-        const SIDEBAR_WIDTH = 425;
         const FAKE_CANVAS_WIDTH = 100;
         const WORKING_ZONE_VISIBLE_PORTION = 100;
         // tslint:disable-next-line: no-string-literal
@@ -265,8 +240,8 @@ describe('DrawingComponent', () => {
         component.emitEditorMinWidth();
         expect(component.editorMinWidthEmitter.emit).toHaveBeenCalledWith(editorMinWidth);
     });
+
     it('#computeEditorMinWidth should compute the correct value', () => {
-        const SIDEBAR_WIDTH = 425;
         const FAKE_CANVAS_WIDTH = 100;
         const WORKING_ZONE_VISIBLE_PORTION = 100;
         // tslint:disable-next-line: no-string-literal
@@ -274,6 +249,7 @@ describe('DrawingComponent', () => {
         const editorMinWidth = FAKE_CANVAS_WIDTH + SIDEBAR_WIDTH + WORKING_ZONE_VISIBLE_PORTION;
         expect(component.computeEditorMinWidth()).toEqual(editorMinWidth);
     });
+
     it(" should call the tool's mouse dbl click when receiving a mouse dbl click event", () => {
         const mouseEventSpy = spyOn(toolStub, 'onDblClick').and.callThrough();
         component.onDblClick();

@@ -12,8 +12,7 @@
     <mat-grid-tile [style.cursor]="isPendingDrawing ? 'pointer' : 'auto'" id="paintbrushes" [colspan]="1" [rowspan]="1">
         <mat-grid-tile-header *ngIf="isPendingDrawing" class="tile-header">Ouvrir un dessin</mat-grid-tile-header>
     </mat-grid-tile>
-<!--  <mat-grid-tile id="canvas" routerLink="/editor" [colspan]="1" [rowspan]="2">-->
-    <mat-grid-tile id="canvas" routerLink="/editor" [colspan]="1" [rowspan]="2">
+    <mat-grid-tile id="canvas" routerLink="/editor" [colspan]="1" [rowspan]="2" (click)="onCreateNewDrawing()">
         <mat-grid-tile-header class="tile-header">Créer un nouveau dessin</mat-grid-tile-header>
     </mat-grid-tile>
     <mat-grid-tile id="sketchbook" [colspan]="1" [rowspan]="1">

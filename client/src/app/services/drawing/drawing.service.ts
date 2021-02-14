@@ -35,4 +35,14 @@ export class DrawingService {
             .getImageData(0, 0, this.canvas.width, this.canvas.height)
             .data.some((channel: number) => channel !== 0);
     }
+
+    createNewDrawing(): void {
+        if (sessionStorage.getItem('canvasBuffer') && !this.isCanvasBlank()) {
+            if (!confirm("Le canvas n'est pas vide! Voulez-vous garder vos modifications?")) {
+                this.clearCanvas(this.previewCtx);
+                this.clearCanvas(this.baseCtx);
+                sessionStorage.clear();
+            }
+        }
+    }
 }
