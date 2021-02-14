@@ -31,9 +31,9 @@ export abstract class Tool {
 
     onMouseEnter(event: MouseEvent): void {}
 
+    onDblClick(): void {}
     onMouseLeave(event: MouseEvent): void {}
 
-    onDblClick(): void {}
     onKeyDown(event: KeyboardEvent): void {}
 
     onKeyUp(event: KeyboardEvent): void {}

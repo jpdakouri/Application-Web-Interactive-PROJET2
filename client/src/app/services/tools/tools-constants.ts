@@ -23,3 +23,8 @@ export const DEFAULT_DOT_RADIUS = 5;
 /****ERASER CONSTANTS****/
 /**********************/
 export const MIN_ERASER_THICKNESS = 5;
+
+/**********************/
+/****ELLIPSE CONSTANTS****/
+/**********************/
+export const REVOLUTION = 360;
