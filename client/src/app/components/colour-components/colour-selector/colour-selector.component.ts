@@ -66,8 +66,9 @@ export class ColourSelectorComponent {
     isValidTransparency(transparency: string): boolean {
         const MIN_TRANSPARENCY = 0;
         const MAX_TRANSPARENCY = 100;
+        if (transparency == '') return false;
         if (Number(transparency) == undefined) return false;
-        if (Number.isInteger(Number(transparency))) return false;
+        if (!Number.isInteger(Number(transparency))) return false;
         return Number(transparency) >= MIN_TRANSPARENCY && Number(transparency) <= MAX_TRANSPARENCY;
     }
 }

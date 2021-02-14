@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 
 @Component({
@@ -9,7 +9,6 @@ import { CurrentColourService } from '@app/services/current-colour/current-colou
 export class ColourPaletteSelectorComponent implements AfterViewInit, OnChanges {
     // Code inspiré par https://malcoded.com/posts/angular-color-picker/
     @Input() hue: string;
-    @Output() selectedColor: EventEmitter<string> = new EventEmitter(true);
     @ViewChild('paletteCanvas') paletteCanvas: ElementRef<HTMLCanvasElement>;
     private canvasContext: CanvasRenderingContext2D;
     private mousedown: boolean = false;

@@ -1,13 +1,13 @@
 import { ColourHistoryService } from '@app/services/colour-history/colour-history.service';
 
 import { CurrentColourService } from './current-colour.service';
-// tslint:disable:no-string-literal
-// tslint:disable:no-any
 describe('CurrentColourService', () => {
     let service: CurrentColourService;
-    let colourHistory: ColourHistoryService;
+
+    let colourHistory: jasmine.SpyObj<ColourHistoryService>;
+
     beforeEach(() => {
-        colourHistory = new ColourHistoryService();
+        colourHistory = jasmine.createSpyObj('ColourHistoryService', ['pushColour']);
         service = new CurrentColourService(colourHistory);
     });
 
@@ -19,8 +19,8 @@ describe('CurrentColourService', () => {
         const newSecondaryColor = '2,2,2';
         service.setPrimaryColorRgb(newPrimaryColor);
         service.setSecondaryColorRgb(newSecondaryColor);
-        expect(service.getPrimaryColorRgb).toBe('rgb(1,1,1)');
-        expect(service.getSecondaryColorRgb).toBe('rgb(2,2,2)');
+        expect(service.getPrimaryColorRgb()).toBe('rgb(1,1,1)');
+        expect(service.getSecondaryColorRgb()).toBe('rgb(2,2,2)');
         expect(colourHistory.pushColour).toHaveBeenCalledTimes(2);
     });
     it('RGBA setters and getters work properly', () => {
@@ -28,8 +28,8 @@ describe('CurrentColourService', () => {
         const newSecondaryTransparency = '0.3';
         service.setPrimaryColorTransparency(newPrimaryTransparency);
         service.setSecondaryColorTransparency(newSecondaryTransparency);
-        expect(service.getPrimaryColorRgba).toBe('rgba(0,0,0,0.5)');
-        expect(service.getSecondaryColorRgba).toBe('rgba(255,255,255,0.3)');
+        expect(service.getPrimaryColorRgba()).toBe('rgba(0,0,0,0.5)');
+        expect(service.getSecondaryColorRgba()).toBe('rgba(255,255,255,0.3)');
         expect(colourHistory.pushColour).toHaveBeenCalledTimes(0);
     });
     it('swapColors only swaps RGB colors', () => {
@@ -38,9 +38,8 @@ describe('CurrentColourService', () => {
         service.setPrimaryColorTransparency(newPrimaryTransparency);
         service.setSecondaryColorTransparency(newSecondaryTransparency);
         service.swapColors();
-        expect(service.getPrimaryColorRgba).toBe('rgba(255,255,255,0.5)');
-        expect(service.getSecondaryColorRgba).toBe('rgba(0,0,0,0.3)');
+        expect(service.getPrimaryColorRgba()).toBe('rgba(255,255,255,0.5)');
+        expect(service.getSecondaryColorRgba()).toBe('rgba(0,0,0,0.3)');
         expect(colourHistory.pushColour).toHaveBeenCalledTimes(0);
     });
-
 });

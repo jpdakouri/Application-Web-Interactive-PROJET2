@@ -1,14 +1,13 @@
-import { ColourHistoryService } from '@app/services/colour-history/colour-history.service';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 
 import { ColourSelectorComponent } from './colour-selector.component';
 
 describe('ColourSelectorComponent', () => {
-    let currentColorService: CurrentColourService;
+    let currentColorService: jasmine.SpyObj<CurrentColourService>;
     let component: ColourSelectorComponent;
 
     beforeEach(() => {
-        currentColorService = new CurrentColourService(new ColourHistoryService());
+        currentColorService = jasmine.createSpyObj('CurrentColourService', ['setPrimaryColorTransparency', 'setSecondaryColorTransparency']);
         component = new ColourSelectorComponent(currentColorService);
     });
 
@@ -48,8 +47,8 @@ describe('ColourSelectorComponent', () => {
     });
 
     it('if the transparencies that the user enters are valid, then the set functions of the currentcolorservice are called', () => {
-        component.primaryColourTransparency = '0.1';
-        component.secondaryColourTransparency = '1';
+        component.primaryColourTransparency = '0';
+        component.secondaryColourTransparency = '100';
         component.onPrimaryColorTransparencyEntryChange();
         component.onSecondaryColorTransparencyEntryChange();
         expect(currentColorService.setPrimaryColorTransparency).toHaveBeenCalled();
@@ -59,6 +58,8 @@ describe('ColourSelectorComponent', () => {
         component.primaryColourTransparency = '-1';
         component.secondaryColourTransparency = '101';
         component.onPrimaryColorTransparencyEntryChange();
+        component.onSecondaryColorTransparencyEntryChange();
+        component.secondaryColourTransparency = '1.1';
         component.onSecondaryColorTransparencyEntryChange();
         expect(currentColorService.setPrimaryColorTransparency).toHaveBeenCalledTimes(0);
         expect(currentColorService.setSecondaryColorTransparency).toHaveBeenCalledTimes(0);

@@ -51,7 +51,7 @@ export class HueSelectorComponent implements AfterViewInit {
         this.drawSelectorInteriorBlackOutline();
     }
 
-    drawSelectorWhiteInterior(): void {
+    private drawSelectorWhiteInterior(): void {
         this.sliderCanvasContext.beginPath();
         this.sliderCanvasContext.strokeStyle = SELECTOR_COLOR;
         this.sliderCanvasContext.lineWidth = SELECTOR_WIDTH;
@@ -60,7 +60,7 @@ export class HueSelectorComponent implements AfterViewInit {
         this.sliderCanvasContext.closePath();
     }
 
-    drawSelectorBlackOutline(): void {
+    private drawSelectorBlackOutline(): void {
         this.sliderCanvasContext.beginPath();
         this.sliderCanvasContext.strokeStyle = SELECTOR_OUTLINE_COLOR;
         this.sliderCanvasContext.lineWidth = SELECTOR_OUTLINE_WIDTH;
@@ -74,7 +74,7 @@ export class HueSelectorComponent implements AfterViewInit {
         this.sliderCanvasContext.closePath();
     }
 
-    drawSelectorInteriorBlackOutline(): void {
+    private drawSelectorInteriorBlackOutline(): void {
         this.sliderCanvasContext.beginPath();
         this.sliderCanvasContext.strokeStyle = SELECTOR_OUTLINE_COLOR;
         this.sliderCanvasContext.lineWidth = SELECTOR_OUTLINE_WIDTH;
@@ -87,7 +87,7 @@ export class HueSelectorComponent implements AfterViewInit {
         this.sliderCanvasContext.stroke();
         this.sliderCanvasContext.closePath();
     }
-
+    
     private generateGradient(): CanvasGradient {
         const GRADIENT = this.sliderCanvasContext.createLinearGradient(0, 0, 0, this.sliderCanvas.nativeElement.height);
         const RGBA_RED = 'rgba(255, 0, 0, 1)';
@@ -124,7 +124,7 @@ export class HueSelectorComponent implements AfterViewInit {
         this.isMouseDown = true;
         this.selectedHeight = mouseEvent.offsetY;
         this.draw();
-        this.emitColor(mouseEvent.offsetX, mouseEvent.offsetY);
+        if (this.isValidPosition(mouseEvent.offsetX, mouseEvent.offsetY)) this.emitColor(mouseEvent.offsetX, mouseEvent.offsetY);
     }
 
     onMouseMove(mouseEvent: MouseEvent): void {
@@ -137,6 +137,7 @@ export class HueSelectorComponent implements AfterViewInit {
 
     private isValidPosition(x: number, y: number): boolean {
         const EXCLUDED_SIDE_WIDTH = 5;
+        console.log(x, y);
         return (
             x >= EXCLUDED_SIDE_WIDTH &&
             x <= this.sliderCanvas.nativeElement.width - EXCLUDED_SIDE_WIDTH &&

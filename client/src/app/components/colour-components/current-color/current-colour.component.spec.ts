@@ -14,6 +14,6 @@ describe('CurrentColorComponent', () => {
     });
     it('swapcolors calls the swapcolors method of the current color service', () => {
         component.swapColours();
-        expect(serviceSpy.swapColors.calls).toBeTruthy();
+        expect(serviceSpy.swapColors).toHaveBeenCalled();
     });
 });
