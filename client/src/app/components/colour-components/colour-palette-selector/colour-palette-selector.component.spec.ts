@@ -1,9 +1,9 @@
-// import { SimpleChanges } from '@angular/core';
+import { SimpleChange } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { ColourPaletteSelectorComponent } from './colour-palette-selector.component';
 
-// const TOP_LEFT_CORNER_RGB = 254;
+const TOP_LEFT_CORNER_RGB = 255;
 describe('ColourPaletteSelectorComponent', () => {
     let component: ColourPaletteSelectorComponent;
     let fixture: ComponentFixture<ColourPaletteSelectorComponent>;
@@ -27,37 +27,37 @@ describe('ColourPaletteSelectorComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    // it('ngAfterViewInit draws the palette', () => {
-    //     component.ngAfterViewInit();
-    //     const topLeftPixelColor = canvasContext.getImageData(0, 0, 1, 1).data;
-    //     expect(topLeftPixelColor[0]).toBe(TOP_LEFT_CORNER_RGB);
-    //     expect(topLeftPixelColor[1]).toBe(TOP_LEFT_CORNER_RGB);
-    //     expect(topLeftPixelColor[2]).toBe(TOP_LEFT_CORNER_RGB);
-    // });
-    // it('onMouseDown draws the palette', () => {
-    //     const clickEvent = new MouseEvent('mousedown');
-    //     component.onMouseDown(clickEvent);
-    //     const topLeftPixelColor = canvasContext.getImageData(0, 0, 1, 1).data;
-    //     expect(topLeftPixelColor[0]).toBe(TOP_LEFT_CORNER_RGB);
-    //     expect(topLeftPixelColor[1]).toBe(TOP_LEFT_CORNER_RGB);
-    //     expect(topLeftPixelColor[2]).toBe(TOP_LEFT_CORNER_RGB);
-    // });
-    // it('onMouseMove draws the palette', () => {
-    //     const moveEvent = new MouseEvent('mousemove');
-    //     component.onMouseMove(moveEvent);
-    //     const topLeftPixelColor = canvasContext.getImageData(0, 0, 1, 1).data;
-    //     expect(topLeftPixelColor[0]).toBe(TOP_LEFT_CORNER_RGB);
-    //     expect(topLeftPixelColor[1]).toBe(TOP_LEFT_CORNER_RGB);
-    //     expect(topLeftPixelColor[2]).toBe(TOP_LEFT_CORNER_RGB);
-    // });
-    // it('ngOnChanges draws the palette when the hue is changed', () => {
-    //     const redHue = 'rgba(255,0,0,1)';
-    //     component.ngOnChanges({ hue: new SimpleChange(null, redHue, false) });
-    //     const topLeftPixelColor = canvasContext.getImageData(0, 0, 1, 1).data;
-    //     expect(topLeftPixelColor[0]).toBe(TOP_LEFT_CORNER_RGB);
-    //     expect(topLeftPixelColor[1]).toBe(TOP_LEFT_CORNER_RGB);
-    //     expect(topLeftPixelColor[2]).toBe(TOP_LEFT_CORNER_RGB);
-    // });
+    it('ngAfterViewInit draws the palette', () => {
+        component.ngAfterViewInit();
+        const topLeftPixelColor = canvasContext.getImageData(0, 0, 1, 1).data;
+        expect(topLeftPixelColor[0]).toBe(TOP_LEFT_CORNER_RGB);
+        expect(topLeftPixelColor[1]).toBe(TOP_LEFT_CORNER_RGB);
+        expect(topLeftPixelColor[2]).toBe(TOP_LEFT_CORNER_RGB);
+    });
+    it('onMouseDown draws the palette', () => {
+        const clickEvent = new MouseEvent('mousedown');
+        component.onMouseDown(clickEvent);
+        const topLeftPixelColor = canvasContext.getImageData(0, 0, 1, 1).data;
+        expect(topLeftPixelColor[0]).toBe(TOP_LEFT_CORNER_RGB);
+        expect(topLeftPixelColor[1]).toBe(TOP_LEFT_CORNER_RGB);
+        expect(topLeftPixelColor[2]).toBe(TOP_LEFT_CORNER_RGB);
+    });
+    it('onMouseMove draws the palette', () => {
+        const moveEvent = new MouseEvent('mousemove');
+        component.onMouseMove(moveEvent);
+        const topLeftPixelColor = canvasContext.getImageData(0, 0, 1, 1).data;
+        expect(topLeftPixelColor[0]).toBe(TOP_LEFT_CORNER_RGB);
+        expect(topLeftPixelColor[1]).toBe(TOP_LEFT_CORNER_RGB);
+        expect(topLeftPixelColor[2]).toBe(TOP_LEFT_CORNER_RGB);
+    });
+    it('ngOnChanges draws the palette when the hue is changed', () => {
+        const redHue = 'rgba(255,0,0,1)';
+        component.ngOnChanges({ hue: new SimpleChange(null, redHue, false) });
+        const topLeftPixelColor = canvasContext.getImageData(0, 0, 1, 1).data;
+        expect(topLeftPixelColor[0]).toBe(TOP_LEFT_CORNER_RGB);
+        expect(topLeftPixelColor[1]).toBe(TOP_LEFT_CORNER_RGB);
+        expect(topLeftPixelColor[2]).toBe(TOP_LEFT_CORNER_RGB);
+    });
 
     it('a circular selector is drawn around the selected location', () => {
         const clickLocation = 100;
