@@ -122,11 +122,28 @@ describe('PencilService', () => {
         expect(drawLineSpy).not.toHaveBeenCalled();
     });
 
+    it(' onMouseLeave should not call drawLine if mouse was not already down', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = false;
+
+        service.onMouseLeave(mouseEvent);
+        expect(drawLineSpy).not.toHaveBeenCalled();
+    });
+
+    it(' onMouseLeave should call drawLine if mouse was not already down', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+
+        service.onMouseLeave(mouseEvent);
+        expect(drawLineSpy).toHaveBeenCalled();
+    });
+
     // Exemple de test d'intégration qui est quand même utile
     xit(' should change the pixel of the canvas ', () => {
         mouseEvent = { offsetX: 0, offsetY: 0, button: 0 } as MouseEvent;
         baseCtxStub.fillStyle = DEFAULT_COLOR_BLACK;
         service.onMouseDown(mouseEvent);
+        service.mouseMoved = true;
         mouseEvent = { offsetX: 1, offsetY: 0, button: 0 } as MouseEvent;
         service.onMouseUp(mouseEvent);
 
