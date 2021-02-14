@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 
 @Component({
@@ -9,7 +9,6 @@ import { CurrentColourService } from '@app/services/current-colour/current-colou
 export class ColourPaletteSelectorComponent implements AfterViewInit, OnChanges {
     // Code inspiré par https://malcoded.com/posts/angular-color-picker/
     @Input() hue: string;
-    @Output() selectedColor: EventEmitter<string> = new EventEmitter(true);
     @ViewChild('paletteCanvas') paletteCanvas: ElementRef<HTMLCanvasElement>;
     private canvasContext: CanvasRenderingContext2D;
     private mousedown: boolean = false;
@@ -21,7 +20,7 @@ export class ColourPaletteSelectorComponent implements AfterViewInit, OnChanges 
 
     constructor(private currentColourService: CurrentColourService) {}
 
-    draw(): void {
+    private draw(): void {
         const RGBA_WHITE = 'rgba(255,255,255,1)';
         const TRANSPARENT_RGBA_WHITE = 'rgba(255,255,255,0)';
         const RGBA_BLACK = 'rgba(0,0,0,1)';
@@ -76,9 +75,6 @@ export class ColourPaletteSelectorComponent implements AfterViewInit, OnChanges 
         const HUE_STRING = 'hue';
         if (changes[HUE_STRING]) {
             this.draw();
-            if (this.selectedPosition != undefined) {
-                this.selectedColor.emit(this.getRgbAtPosition(this.selectedPosition.x, this.selectedPosition.y));
-            }
         }
     }
 
@@ -86,8 +82,7 @@ export class ColourPaletteSelectorComponent implements AfterViewInit, OnChanges 
     onMouseUp(mouseEvent: MouseEvent): void {
         this.mousedown = false;
         if (mouseEvent.button === 0) this.currentColourService.setPrimaryColorRgb(this.getRgbAtPosition(mouseEvent.offsetX, mouseEvent.offsetY));
-        else if (mouseEvent.button === 2)
-            this.currentColourService.setSecondaryColorRgb(this.getRgbAtPosition(mouseEvent.offsetX, mouseEvent.offsetY));
+        else this.currentColourService.setSecondaryColorRgb(this.getRgbAtPosition(mouseEvent.offsetX, mouseEvent.offsetY));
     }
 
     onMouseDown(mouseEvent: MouseEvent): void {
@@ -103,7 +98,7 @@ export class ColourPaletteSelectorComponent implements AfterViewInit, OnChanges 
         }
     }
 
-    getRgbAtPosition(x: number, y: number): string {
+    private getRgbAtPosition(x: number, y: number): string {
         const IMAGE_DATA = this.canvasContext.getImageData(x, y, 1, 1).data;
         const RGBA_SEPARATOR = ',';
         return IMAGE_DATA[0] + RGBA_SEPARATOR + IMAGE_DATA[1] + RGBA_SEPARATOR + IMAGE_DATA[2];

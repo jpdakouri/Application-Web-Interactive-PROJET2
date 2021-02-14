@@ -1,26 +1,19 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { CurrentColourComponent } from './current-colour.component';
+import { CurrentColourComponent } from '@app/components/colour-components/current-color/current-colour.component';
+import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 
 describe('CurrentColorComponent', () => {
     let component: CurrentColourComponent;
-    let fixture: ComponentFixture<CurrentColourComponent>;
-
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [CurrentColourComponent],
-            imports: [MatIconModule, MatButtonModule],
-        }).compileComponents();
-    }));
-
+    let serviceSpy: jasmine.SpyObj<CurrentColourService>;
     beforeEach(() => {
-        fixture = TestBed.createComponent(CurrentColourComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
+        serviceSpy = jasmine.createSpyObj('CurrentColorService', ['swapColors']);
+        component = new CurrentColourComponent(serviceSpy);
     });
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+    it('swapcolors calls the swapcolors method of the current color service', () => {
+        component.swapColours();
+        expect(serviceSpy.swapColors).toHaveBeenCalled();
     });
 });
