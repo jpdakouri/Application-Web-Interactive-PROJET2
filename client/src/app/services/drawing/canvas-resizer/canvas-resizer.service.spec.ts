@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { Coordinate } from '@app/classes/coordinate';
 import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.service';
-import { CanvasResizerService, Status } from './canvas-resizer.service';
+import { Status } from '@app/utils/enums/canvas-resizer-status';
+import { CanvasResizerService } from './canvas-resizer.service';
 
 class MockMouseService extends MouseHandlerService {
     deltaX: number = 400;
@@ -153,10 +154,10 @@ describe('CanvasResizerService', () => {
         expect(calculatedCanvasSize).toEqual(expectedCanvasSize);
     });
 
-    xit('should be able to calculate previewCanvas width on middle right resize', () => {
+    it('should be able to calculate previewCanvas width on middle right resize', () => {
         service.setStatus(Status.MIDDLE_RIGHT_RESIZE);
         service.resizePreviewCanvas();
-        const expectedWidth = 306;
+        const expectedWidth = 250;
         expect(service.canvasPreviewWidth).toEqual(expectedWidth);
     });
 
@@ -167,29 +168,29 @@ describe('CanvasResizerService', () => {
         expect(service.canvasPreviewHeight).toEqual(expectedHeight);
     });
 
-    xit('should be able to calculate previewCanvas width and height on bottom right resize', () => {
+    it('should be able to calculate previewCanvas width and height on bottom right resize', () => {
         service.setStatus(Status.BOTTOM_RIGHT_RESIZE);
         service.resizePreviewCanvas();
-        const expectedWidth = 306;
+        const expectedWidth = 250;
         const expectedHeight = 450;
         expect(service.canvasPreviewWidth).toEqual(expectedWidth);
         expect(service.canvasPreviewHeight).toEqual(expectedHeight);
     });
 
-    xit('should be able to calculate canvas size', () => {
-        const windowWidth = 1214;
+    it('should be able to calculate canvas size', () => {
+        const windowWidth = 1215;
         const windowHeight = 800;
-        const expectedCanvasSize = { x: 460, y: 400 };
+        const expectedCanvasSize = { x: 375, y: 400 };
 
         // we resize the window to always have the size during the test
         window.resizeTo(windowWidth, windowHeight);
 
         const calculatedCanvasSize = service.calculateCanvasSize() as Coordinate;
-        expect(calculatedCanvasSize.x).toEqual(expectedCanvasSize.x);
-        expect(calculatedCanvasSize.y).toEqual(expectedCanvasSize.y);
+        expect(calculatedCanvasSize.x).toBe(expectedCanvasSize.x);
+        expect(calculatedCanvasSize.y).toBe(expectedCanvasSize.y);
     });
 
-    xit('canvasSize should be 250x250 pixels when working zone size is lower than 250x250 pixels ', () => {
+    it('canvasSize should be 250x250 pixels when working zone size is lower than 250x250 pixels ', () => {
         const windowWidth = 500;
         const windowHeight = 400;
         const expectedCanvasSize = { x: 250, y: 250 };
