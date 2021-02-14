@@ -18,12 +18,12 @@ export class ColourSelectorComponent {
     constructor(private currentColourService: CurrentColourService) {}
 
     setPrimaryColor(): void {
-        this.currentColourService.setPrimaryColorRgb(this.rgbColor);
+        this.currentColourService.setPrimaryColorRgb(this.convertHexColorToDec());
         this.rgbColor = '';
     }
 
     setSecondaryColor(): void {
-        this.currentColourService.setSecondaryColorRgb(this.rgbColor);
+        this.currentColourService.setSecondaryColorRgb(this.convertHexColorToDec());
         this.rgbColor = '';
     }
 
@@ -70,5 +70,15 @@ export class ColourSelectorComponent {
         if (Number(transparency) == undefined) return false;
         if (!Number.isInteger(Number(transparency))) return false;
         return Number(transparency) >= MIN_TRANSPARENCY && Number(transparency) <= MAX_TRANSPARENCY;
+    }
+
+    private convertHexColorToDec(): string {
+        let convertedString = '';
+        const rgbValues = this.rgbColor.split(',');
+        for (const rgbValue of rgbValues) {
+            if (convertedString !== '') convertedString += ',';
+            convertedString += parseInt(rgbValue, 16).toString();
+        }
+        return convertedString;
     }
 }

@@ -137,7 +137,6 @@ export class HueSelectorComponent implements AfterViewInit {
 
     private isValidPosition(x: number, y: number): boolean {
         const EXCLUDED_SIDE_WIDTH = 5;
-        console.log(x, y);
         return (
             x >= EXCLUDED_SIDE_WIDTH &&
             x <= this.sliderCanvas.nativeElement.width - EXCLUDED_SIDE_WIDTH &&

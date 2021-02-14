@@ -28,9 +28,8 @@ describe('ColourHistoryService', () => {
         expect(service.getColour(0)).toBe(newColor);
     });
 
-    it('pushColour adds the new color to the front', () => {
-        const newColor = 'rgb(0,0,0)';
-        service.pushColour(newColor);
-        expect(service.getColour(0)).toBe(newColor);
+    it('getColors returns empty string for an invalid index', () => {
+        const invalidIndex = -1;
+        expect(service.getColour(invalidIndex)).toBe('');
     });
 });

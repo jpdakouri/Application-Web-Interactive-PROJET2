@@ -82,8 +82,7 @@ export class ColourPaletteSelectorComponent implements AfterViewInit, OnChanges 
     onMouseUp(mouseEvent: MouseEvent): void {
         this.mousedown = false;
         if (mouseEvent.button === 0) this.currentColourService.setPrimaryColorRgb(this.getRgbAtPosition(mouseEvent.offsetX, mouseEvent.offsetY));
-        else if (mouseEvent.button === 2)
-            this.currentColourService.setSecondaryColorRgb(this.getRgbAtPosition(mouseEvent.offsetX, mouseEvent.offsetY));
+        else this.currentColourService.setSecondaryColorRgb(this.getRgbAtPosition(mouseEvent.offsetX, mouseEvent.offsetY));
     }
 
     onMouseDown(mouseEvent: MouseEvent): void {
