@@ -68,6 +68,7 @@ describe('EditorComponent', () => {
         component.ngAfterViewInit();
         expect(component.setEditorMinWidth).toHaveBeenCalled();
     });
+
     it('#saveEditorMinWidth should set this.editorMinWidth to correct value', () => {
         const EDITOR_MIN_WIDTH_FAKE_VALUE = 100;
         component.saveEditorMinWidth(EDITOR_MIN_WIDTH_FAKE_VALUE);

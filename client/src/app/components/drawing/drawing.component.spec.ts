@@ -225,11 +225,11 @@ describe('DrawingComponent', () => {
         expect(mouseEventSpy).toHaveBeenCalled();
     });
 
-    it("#unloadHandler should call drawingService's #saveCanvas", () => {
-        spyOn(drawingStub, 'saveCanvas').and.callThrough();
-        component.unloadHandler();
-        expect(drawingStub.saveCanvas).toHaveBeenCalled();
-    });
+    // it("#unloadHandler should call drawingService's #saveCanvas", () => {
+    //     spyOn(drawingStub, 'saveCanvas').and.callThrough();
+    //     component.unloadHandler();
+    //     expect(drawingStub.saveCanvas).toHaveBeenCalled();
+    // });
 
     it('#emitEditorMinWidth should call #computeEditorMinWidth', () => {
         spyOn(component, 'computeEditorMinWidth').and.callThrough();
