@@ -43,6 +43,7 @@ describe('DrawingService', () => {
     });
 
     it('#restoreCanvas should restore canvas from session storage', async (done) => {
+        // tslint:disable:no-magic-numbers
         service.canvas.width = 10;
         service.canvas.height = 10;
         const RECTANGLE_OFFSET = 2;

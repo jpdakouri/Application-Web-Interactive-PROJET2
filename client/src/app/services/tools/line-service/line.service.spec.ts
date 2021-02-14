@@ -6,7 +6,7 @@ import { KeyboardButton, MouseButton } from '@app/utils/enums/list-boutton-press
 import { LineService } from './line.service';
 
 // tslint:disable:no-any
-describe('LineService', () => {
+fdescribe('LineService', () => {
     const DETECTION_RANGE = 15;
     let service: LineService;
     let mouseEvent: MouseEvent;
@@ -94,6 +94,20 @@ describe('LineService', () => {
 
     it(' onMouseUp should call desiredAngle if mouse was already down and shift pressed', () => {
         service['pathData'].push({ x: 0, y: 0 });
+        service.mouseDown = true;
+        service['shiftPressed'] = true;
+
+        service.onMouseUp(mouseEvent);
+        expect(desiredAngleSpy).toHaveBeenCalled();
+
+        service['pathData'].push({ x: 2, y: 1 });
+        service.mouseDown = true;
+        service['shiftPressed'] = true;
+
+        service.onMouseUp(mouseEvent);
+        expect(desiredAngleSpy).toHaveBeenCalled();
+
+        service['pathData'].push({ x: 2, y: 0 });
         service.mouseDown = true;
         service['shiftPressed'] = true;
 
