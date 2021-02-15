@@ -115,12 +115,13 @@ export class LineService extends Tool {
 
         const distX = mousePosition.x - lastDot.x;
         const distY = mousePosition.y - lastDot.y;
+        // transform rad in degrees
         angle = (Math.atan(distY / distX) * HALF_CIRCLE) / Math.PI;
 
         // 45 (135, 225, 315) case
         if (
-            (angle >= SHIFT_ANGLE_45 / 2 && angle <= SHIFT_ANGLE_45 + SHIFT_ANGLE_HALF_45 / 2) ||
-            (-angle >= SHIFT_ANGLE_45 / 2 && -angle <= SHIFT_ANGLE_45 + SHIFT_ANGLE_HALF_45 / 2)
+            (angle >= SHIFT_ANGLE_HALF_45 && angle <= SHIFT_ANGLE_45 + SHIFT_ANGLE_HALF_45 / 2) ||
+            (-angle >= SHIFT_ANGLE_HALF_45 && -angle <= SHIFT_ANGLE_45 + SHIFT_ANGLE_HALF_45 / 2)
         ) {
             if ((distX > 0 && distY < 0) || (distX <= 0 && distY >= 0)) {
                 return { x: mousePosition.x, y: lastDot.y - distX * Math.tan(SHIFT_ANGLE_45) };
@@ -171,11 +172,6 @@ export class LineService extends Tool {
 
     private verifyLastPoint(dotToVerify: Vec2): boolean {
         const lastDot = this.pathData[this.pathData.length - 1];
-        return (
-            lastDot.x + PIXEL_DISTANCE > dotToVerify.x &&
-            lastDot.x - PIXEL_DISTANCE < dotToVerify.x &&
-            lastDot.y + PIXEL_DISTANCE > dotToVerify.y &&
-            lastDot.y - PIXEL_DISTANCE < dotToVerify.y
-        );
+        return Math.abs(lastDot.x - dotToVerify.x) <= PIXEL_DISTANCE && Math.abs(lastDot.y - dotToVerify.y) <= PIXEL_DISTANCE;
     }
 }

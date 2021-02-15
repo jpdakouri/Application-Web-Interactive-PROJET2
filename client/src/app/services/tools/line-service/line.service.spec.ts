@@ -122,6 +122,22 @@ fdescribe('LineService', () => {
         expect(desiredAngleSpy).toHaveBeenCalled();
     });
 
+    it(' onMouseUp should call desiredAngle if mouse was already down and shift pressed', () => {
+        service['pathData'].push({ x: 0, y: 0 });
+        service.mouseDown = true;
+        service['shiftPressed'] = true;
+
+        service.onMouseUp({ offsetX: 1, offsetY: 3, button: MouseButton.Right } as MouseEvent);
+        expect(desiredAngleSpy).toHaveBeenCalled();
+
+        service['pathData'].push({ x: 0, y: 0 });
+        service.mouseDown = true;
+        service['shiftPressed'] = true;
+
+        service.onMouseUp({ offsetX: 2, offsetY: -3, button: MouseButton.Right } as MouseEvent);
+        expect(desiredAngleSpy).toHaveBeenCalled();
+    });
+
     it('onMouseMove should call previewUpdate if the drawing has started', () => {
         service.mouseDown = true;
         const mouseStartEvent = {
