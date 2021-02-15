@@ -20,6 +20,10 @@ export class ColourHistoryComponent {
         this.currentColorService.setSecondaryColorRgb(this.filterRGB(colour));
     }
 
+    createArray(size: number): number[] {
+        return Array(size);
+    }
+
     private filterRGB(colour: string): string {
         const RGB_BEGIN_INDICATOR = '(';
         const RGB_END_INDICATOR = ')';

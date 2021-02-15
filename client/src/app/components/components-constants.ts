@@ -1,12 +1,4 @@
-// tslint:disable-next-line:prettier
-// Color-Palette-selector
-
-export const RGBA_WHITE = 'rgba(255,255,255,1)';
-export const TRANSPARENT_RGBA_WHITE = 'rgba(255,255,255,0)';
-export const RGBA_BLACK = 'rgba(0,0,0,1)';
-export const TRANSPARENT_RGBA_BLACK = 'rgba(0,0,0,0)';
-
-// color-selector
+// color-selector-component
 export const PERCENTAGE_MAX = 100;
 export const MIN_HEX_RGB_VALUE = 1;
 export const MAX_HEX_RGB_VALUE = 2;
@@ -14,3 +6,28 @@ export const INDEX_ELEMENT_NOT_THERE = -1;
 export const RGB_COMPONENTS = 3;
 export const MIN_TRANSPARENCY = 0;
 export const MAX_TRANSPARENCY = 100;
+// current-color-component
+
+// hue-selector-constats
+export const SELECTOR_WIDTH = 5;
+export const SELECTOR_COLOR = 'white';
+export const SELECTOR_OUTLINE_WIDTH = 1;
+export const SELECTOR_OUTLINE_COLOR = '#000000';
+export const SELECTOR_OUTLINE_TOP_LEFT_X = -1;
+export const SELECTOR_OUTLINE_OFFSET_3PX = 3;
+export const SELECTOR_OUTLINE_OFFSET_6PX = 6;
+export const EXCLUDED_SIDE_WIDTH = 5;
+
+// Colours
+export enum Colours {
+    RGBA_WHITE = 'rgba(255,255,255,1)',
+    RGBA_RED = 'rgba(255, 0, 0, 1)',
+    RGBA_YELLOW = 'rgba(255, 255, 0, 1)',
+    RGBA_GREEN = 'rgba(0, 255, 0, 1)',
+    RGBA_CYAN = 'rgba(0, 255, 255, 1)',
+    RGBA_BLUE = 'rgba(0, 0, 255, 1)',
+    RGBA_PURPLE = 'rgba(255, 0, 255, 1)',
+    RGBA_BLACK = 'rgba(0,0,0,1)',
+    TRANSPARENT_RGBA_WHITE = 'rgba(255,255,255,0)',
+    TRANSPARENT_RGBA_BLACK = 'rgba(0,0,0,0)',
+}

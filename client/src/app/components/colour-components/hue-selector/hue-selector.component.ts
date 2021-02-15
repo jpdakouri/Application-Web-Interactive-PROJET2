@@ -1,5 +1,7 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Output, ViewChild } from '@angular/core';
 import {
+    Colours,
+    EXCLUDED_SIDE_WIDTH,
     SELECTOR_COLOR,
     SELECTOR_OUTLINE_COLOR,
     SELECTOR_OUTLINE_OFFSET_3PX,
@@ -7,7 +9,7 @@ import {
     SELECTOR_OUTLINE_TOP_LEFT_X,
     SELECTOR_OUTLINE_WIDTH,
     SELECTOR_WIDTH,
-} from './hue-selector-constants';
+} from '@app/components/components-constants';
 @Component({
     selector: 'app-hue-selector',
     templateUrl: './hue-selector.component.html',
@@ -28,17 +30,17 @@ export class HueSelectorComponent implements AfterViewInit {
 
     private draw(): void {
         if (!this.sliderCanvasContext) {
-            const CONTEXT = this.sliderCanvas.nativeElement.getContext('2d');
-            if (CONTEXT != null) {
-                this.sliderCanvasContext = CONTEXT;
+            const context = this.sliderCanvas.nativeElement.getContext('2d');
+            if (context != null) {
+                this.sliderCanvasContext = context;
             }
         }
-        const CANVAS_WIDTH = this.sliderCanvas.nativeElement.width;
-        const CANVAS_HEIGHT = this.sliderCanvas.nativeElement.height;
+        const canvasWidth = this.sliderCanvas.nativeElement.width;
+        const canvasHeight = this.sliderCanvas.nativeElement.height;
 
-        this.sliderCanvasContext.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+        this.sliderCanvasContext.clearRect(0, 0, canvasWidth, canvasHeight);
         this.sliderCanvasContext.beginPath();
-        this.sliderCanvasContext.rect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+        this.sliderCanvasContext.rect(0, 0, canvasWidth, canvasHeight);
         this.sliderCanvasContext.fillStyle = this.generateGradient();
         this.sliderCanvasContext.fill();
         this.sliderCanvasContext.closePath();
@@ -90,28 +92,22 @@ export class HueSelectorComponent implements AfterViewInit {
 
     private generateGradient(): CanvasGradient {
         const GRADIENT = this.sliderCanvasContext.createLinearGradient(0, 0, 0, this.sliderCanvas.nativeElement.height);
-        const RGBA_RED = 'rgba(255, 0, 0, 1)';
-        const RGBA_YELLOW = 'rgba(255, 255, 0, 1)';
-        const RGBA_GREEN = 'rgba(0, 255, 0, 1)';
-        const RGBA_CYAN = 'rgba(0, 255, 255, 1)';
-        const RGBA_BLUE = 'rgba(0, 0, 255, 1)';
-        const RGBA_PURPLE = 'rgba(255, 0, 255, 1)';
 
         let gradientPartCount = 0;
         const GRADIENT_PARTS = 6;
-        GRADIENT.addColorStop(gradientPartCount / GRADIENT_PARTS, RGBA_RED);
+        GRADIENT.addColorStop(gradientPartCount / GRADIENT_PARTS, Colours.RGBA_RED);
         gradientPartCount++;
-        GRADIENT.addColorStop(gradientPartCount / GRADIENT_PARTS, RGBA_YELLOW);
+        GRADIENT.addColorStop(gradientPartCount / GRADIENT_PARTS, Colours.RGBA_YELLOW);
         gradientPartCount++;
-        GRADIENT.addColorStop(gradientPartCount / GRADIENT_PARTS, RGBA_GREEN);
+        GRADIENT.addColorStop(gradientPartCount / GRADIENT_PARTS, Colours.RGBA_GREEN);
         gradientPartCount++;
-        GRADIENT.addColorStop(gradientPartCount / GRADIENT_PARTS, RGBA_CYAN);
+        GRADIENT.addColorStop(gradientPartCount / GRADIENT_PARTS, Colours.RGBA_CYAN);
         gradientPartCount++;
-        GRADIENT.addColorStop(gradientPartCount / GRADIENT_PARTS, RGBA_BLUE);
+        GRADIENT.addColorStop(gradientPartCount / GRADIENT_PARTS, Colours.RGBA_BLUE);
         gradientPartCount++;
-        GRADIENT.addColorStop(gradientPartCount / GRADIENT_PARTS, RGBA_PURPLE);
+        GRADIENT.addColorStop(gradientPartCount / GRADIENT_PARTS, Colours.RGBA_PURPLE);
         gradientPartCount++;
-        GRADIENT.addColorStop(gradientPartCount / GRADIENT_PARTS, RGBA_RED);
+        GRADIENT.addColorStop(gradientPartCount / GRADIENT_PARTS, Colours.RGBA_RED);
         return GRADIENT;
     }
 
@@ -124,7 +120,9 @@ export class HueSelectorComponent implements AfterViewInit {
         this.isMouseDown = true;
         this.selectedHeight = mouseEvent.offsetY;
         this.draw();
-        if (this.isValidPosition(mouseEvent.offsetX, mouseEvent.offsetY)) this.emitColor(mouseEvent.offsetX, mouseEvent.offsetY);
+        if (this.isValidPosition(mouseEvent.offsetX, mouseEvent.offsetY)) {
+            this.emitColor(mouseEvent.offsetX, mouseEvent.offsetY);
+        }
     }
 
     onMouseMove(mouseEvent: MouseEvent): void {
@@ -136,7 +134,6 @@ export class HueSelectorComponent implements AfterViewInit {
     }
 
     private isValidPosition(x: number, y: number): boolean {
-        const EXCLUDED_SIDE_WIDTH = 5;
         return (
             x >= EXCLUDED_SIDE_WIDTH &&
             x <= this.sliderCanvas.nativeElement.width - EXCLUDED_SIDE_WIDTH &&
@@ -146,14 +143,14 @@ export class HueSelectorComponent implements AfterViewInit {
     }
 
     private emitColor(x: number, y: number): void {
-        const RGBA_COLOR = this.getColorAtPosition(x, y);
-        this.color.emit(RGBA_COLOR);
+        const rgbaColor = this.getColorAtPosition(x, y);
+        this.color.emit(rgbaColor);
     }
 
     private getColorAtPosition(x: number, y: number): string {
-        const IMAGE_DATA = this.sliderCanvasContext.getImageData(x, y, 1, 1).data;
+        const imageData = this.sliderCanvasContext.getImageData(x, y, 1, 1).data;
         const RGBA_START = 'rgba(';
         const RGBA_ALPHA = ',1)';
-        return RGBA_START + IMAGE_DATA[0] + ',' + IMAGE_DATA[1] + ',' + IMAGE_DATA[2] + RGBA_ALPHA;
+        return RGBA_START + imageData[0] + ',' + imageData[1] + ',' + imageData[2] + RGBA_ALPHA;
     }
 }
