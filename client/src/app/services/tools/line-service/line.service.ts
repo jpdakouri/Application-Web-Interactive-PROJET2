@@ -3,7 +3,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { DEFAULT_DOT_RADIUS, DEFAULT_MIN_THICKNESS, PIXEL_DISTANCE, SHIFT_ANGLE } from '@app/services/tools/tools-constants';
+import { DEFAULT_DOT_RADIUS, DEFAULT_MIN_THICKNESS, PIXEL_DISTANCE, SHIFT_ANGLE_45, SHIFT_ANGLE_HALF_45 } from '@app/services/tools/tools-constants';
 import { KeyboardButton, MouseButton } from '@app/utils/enums/list-boutton-pressed';
 
 @Injectable({
@@ -103,37 +103,42 @@ export class LineService extends Tool {
     }
 
     private desiredAngle(mousePosition: Vec2): Vec2 {
+        let angle = 0;
         const lastDot = this.pathData[this.pathData.length - 1];
-        let clsDots: Vec2[];
-        clsDots = [];
 
         const distX = mousePosition.x - lastDot.x;
         const distY = mousePosition.y - lastDot.y;
-
-        clsDots.push({ x: lastDot.x, y: mousePosition.y });
-        clsDots.push({ x: mousePosition.x, y: lastDot.y });
-
-        if ((distX > 0 && distY < 0) || (distX <= 0 && distY >= 0)) {
-            clsDots.push({ x: mousePosition.x, y: lastDot.y - distX * Math.tan(SHIFT_ANGLE) });
-        } else {
-            clsDots.push({ x: mousePosition.x, y: lastDot.y + distX * Math.tan(SHIFT_ANGLE) });
-        }
-        return this.closestDot(mousePosition, clsDots);
-    }
-
-    private closestDot(original: Vec2, dots: Vec2[]): Vec2 {
-        let clsDot = original;
-        let smallestDist = Number.MAX_VALUE;
-        for (const dot of dots) {
-            const distx = original.x - dot.x;
-            const distY = original.y - dot.y;
-            const distance = Math.sqrt(distx * distx + distY * distY);
-            if (distance < smallestDist) {
-                clsDot = dot;
-                smallestDist = distance;
+        // transform rad in degrees
+        angle = Math.atan(distY / distX);
+        // 45 (135, 225, 315) case
+        if (this.isBetweenAxes(angle)) {
+            if ((distX <= 0 && distY >= 0) || (distX > 0 && distY < 0)) {
+                // second or fourth quadrant
+                // Math.tan requires rad
+                // tslint:disable:no-magic-numbers
+                return { x: mousePosition.x, y: lastDot.y - distX * Math.round(Math.tan(SHIFT_ANGLE_45)) };
+            } else {
+                // first and third quadrant
+                return { x: mousePosition.x, y: lastDot.y + distX * Math.round(Math.tan(SHIFT_ANGLE_45)) };
             }
         }
-        return clsDot;
+        // 90 (270) case
+        if (this.isNearYAxis(angle)) {
+            return { x: lastDot.x, y: mousePosition.y };
+        }
+        // 0 (180) case
+        return { x: mousePosition.x, y: lastDot.y };
+    }
+
+    private isBetweenAxes(angle: number): boolean {
+        return (
+            (angle >= SHIFT_ANGLE_HALF_45 && angle <= SHIFT_ANGLE_45 + SHIFT_ANGLE_HALF_45) ||
+            (-angle >= SHIFT_ANGLE_HALF_45 && -angle <= SHIFT_ANGLE_45 + SHIFT_ANGLE_HALF_45)
+        );
+    }
+
+    private isNearYAxis(angle: number): boolean {
+        return angle > SHIFT_ANGLE_45 + SHIFT_ANGLE_HALF_45 || -angle > SHIFT_ANGLE_45 + SHIFT_ANGLE_HALF_45;
     }
 
     private clearPath(): void {
@@ -171,11 +176,6 @@ export class LineService extends Tool {
 
     private verifyLastPoint(dotToVerify: Vec2): boolean {
         const lastDot = this.pathData[this.pathData.length - 1];
-        return (
-            lastDot.x + PIXEL_DISTANCE > dotToVerify.x &&
-            lastDot.x - PIXEL_DISTANCE < dotToVerify.x &&
-            lastDot.y + PIXEL_DISTANCE > dotToVerify.y &&
-            lastDot.y - PIXEL_DISTANCE < dotToVerify.y
-        );
+        return Math.abs(lastDot.x - dotToVerify.x) <= PIXEL_DISTANCE && Math.abs(lastDot.y - dotToVerify.y) <= PIXEL_DISTANCE;
     }
 }

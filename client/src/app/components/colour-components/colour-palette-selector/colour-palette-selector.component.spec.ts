@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { ColourPaletteSelectorComponent } from './colour-palette-selector.component';
 
-const TOP_LEFT_CORNER_RGB = 255;
+const TOP_LEFT_CORNER_RGB = 254;
 describe('ColourPaletteSelectorComponent', () => {
     let component: ColourPaletteSelectorComponent;
     let fixture: ComponentFixture<ColourPaletteSelectorComponent>;

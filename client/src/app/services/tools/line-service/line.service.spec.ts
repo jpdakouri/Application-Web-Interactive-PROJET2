@@ -16,9 +16,6 @@ describe('LineService', () => {
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
-    let drawLineSpy: jasmine.Spy<any>;
-    let previewUpdateSpy: jasmine.Spy<any>;
-    let desiredAngleSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
@@ -30,16 +27,12 @@ describe('LineService', () => {
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
 
         service = TestBed.inject(LineService);
-        drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
-        previewUpdateSpy = spyOn<any>(service, 'previewUpdate').and.callThrough();
-        desiredAngleSpy = spyOn<any>(service, 'desiredAngle').and.callThrough();
-        spyOn<any>(service, 'getPositionFromMouse').and.returnValue({ x: 100, y: 100 });
 
         // Configuration du spy du service
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
-
+        spyOn<any>(service, 'getPositionFromMouse').and.returnValue({ x: 100, y: 100 });
         mouseEvent = {
             offsetX: 100,
             offsetY: 100,
@@ -77,9 +70,18 @@ describe('LineService', () => {
     it(' onMouseUp should call drawLine if mouse was already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
+        const drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
 
         service.onMouseUp(mouseEvent);
         expect(drawLineSpy).toHaveBeenCalled();
+    });
+
+    it(' onMouseUp should not call drawLine if mouse was not down', () => {
+        service.mouseDown = false;
+        const drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
+
+        service.onMouseUp(mouseEvent);
+        expect(drawLineSpy).not.toHaveBeenCalled();
     });
 
     it(' onMouseUp should not call desiredAngle if mouse was already down and shift not pressed', () => {
@@ -88,6 +90,7 @@ describe('LineService', () => {
         const keyboardEventFalse = {
             key: KeyboardButton.InvalidInput,
         } as KeyboardEvent;
+        const desiredAngleSpy = spyOn<any>(service, 'desiredAngle').and.callThrough();
 
         service.onMouseUp(mouseEvent);
         service.onKeyDown(keyboardEventFalse);
@@ -107,9 +110,21 @@ describe('LineService', () => {
         service['pathData'].push({ x: 0, y: 0 });
         service.mouseDown = true;
         service['shiftPressed'] = true;
+        const desiredAngleSpy = spyOn<any>(service, 'desiredAngle').and.callThrough();
 
         service.onMouseUp(mouseEvent);
         expect(desiredAngleSpy).toHaveBeenCalled();
+    });
+
+    it(' desiredAngle shoulld return the right value', () => {
+        service['pathData'].push({ x: 0, y: 0 });
+        expect(service['desiredAngle']({ x: 2, y: -3 })).toEqual({ x: 2, y: -2 });
+
+        service['pathData'].push({ x: 0, y: 0 });
+        expect(service['desiredAngle']({ x: -10, y: 7 })).toEqual({ x: -10, y: 10 });
+
+        service['pathData'].push({ x: 0, y: 0 });
+        expect(service['desiredAngle']({ x: 1, y: -3 })).toEqual({ x: 0, y: -3 });
     });
 
     it('onMouseMove should call previewUpdate if the drawing has started', () => {
@@ -119,16 +134,28 @@ describe('LineService', () => {
             offsetY: 0,
             button: MouseButton.Left,
         } as MouseEvent;
+        const previewUpdateSpy = spyOn<any>(service, 'previewUpdate').and.callThrough();
         service.onMouseUp(mouseStartEvent);
         service.onMouseMove(mouseEvent);
 
         expect(previewUpdateSpy).toHaveBeenCalled();
     });
 
-    // canva size value to add
+    it('onMouseMove should not call previewUpdate if the drawing has not started', () => {
+        service.mouseDown = false;
+        const previewUpdateSpy = spyOn<any>(service, 'previewUpdate').and.callThrough();
+        service.onMouseMove(mouseEvent);
+
+        expect(previewUpdateSpy).not.toHaveBeenCalled();
+    });
+
     it('onMouseLeave should stop the preview if drawing has started ', () => {
         service['pathData'].push({ x: 0, y: 0 });
         service['started'] = true;
+        const drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
+        service['lineThickness'] = undefined;
+        service['dotRadius'] = undefined;
+        service['showDots'] = true;
         service.onMouseLeave({
             offsetX: 25,
             offsetY: 25,
@@ -137,11 +164,22 @@ describe('LineService', () => {
         expect(drawLineSpy).toHaveBeenCalled();
     });
 
+    it('onMouseLeave not should not call drawLine if drawing has not started ', () => {
+        service['started'] = false;
+        const drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
+        service.onMouseLeave({
+            offsetX: 25,
+            offsetY: 25,
+        } as MouseEvent);
+        expect(drawLineSpy).not.toHaveBeenCalled();
+    });
+
     it(' onDblClick should adapt if last point is 20px close to start', () => {
         const comparingArray: Vec2[] = [
             { x: 0, y: 0 },
             { x: mouseEvent.offsetX, y: mouseEvent.offsetY },
         ];
+        const drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
 
         service['pathData'].push({ x: 0, y: 0 });
         service['pathData'].push({ x: mouseEvent.offsetX, y: mouseEvent.offsetY });
@@ -158,6 +196,7 @@ describe('LineService', () => {
             { x: 0, y: 0 },
             { x: mouseEvent.offsetX, y: mouseEvent.offsetY },
         ];
+        const drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
         service.showDots = true;
         service.dotRadius = 1;
 
@@ -176,6 +215,7 @@ describe('LineService', () => {
             { x: mouseEvent.offsetX, y: mouseEvent.offsetY },
             { x: mouseEvent.offsetX + DETECTION_RANGE * 2, y: mouseEvent.offsetY - DETECTION_RANGE },
         ];
+        const drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
 
         service['pathData'].push({ x: 0, y: 0 });
         // double click
@@ -201,9 +241,11 @@ describe('LineService', () => {
         } as KeyboardEvent);
         expect(service['started']).toBeFalse();
 
-        // TypeError: event.preventDefault is not a function
         service['pathData'].push({ x: 0, y: 0 }, service.mouseDownCoord);
         const event = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButton.Backspace });
+        service.onKeyDown(event);
+        expect(event.preventDefault).toHaveBeenCalled();
+
         service.onKeyDown(event);
         expect(event.preventDefault).toHaveBeenCalled();
     });
@@ -211,11 +253,22 @@ describe('LineService', () => {
     it('onKeyup should update shift state', () => {
         service['shiftPressed'] = true;
         service.mouseDownCoord = { x: 20, y: 20 };
+        service['lineThickness'] = undefined;
         service['pathData'].push({ x: 0, y: 0 }, service.mouseDownCoord);
 
         service.onKeyUp({
             key: KeyboardButton.Shift,
         } as KeyboardEvent);
         expect(service['shiftPressed']).toBeFalse();
+    });
+
+    it('onKeyup should not call previewUpdate if shift isnt pressed', () => {
+        service['shiftPressed'] = false;
+        const previewUpdateSpy = spyOn<any>(service, 'previewUpdate').and.callThrough();
+
+        service.onKeyUp({
+            key: KeyboardButton.InvalidInput,
+        } as KeyboardEvent);
+        expect(previewUpdateSpy).not.toHaveBeenCalled();
     });
 });
