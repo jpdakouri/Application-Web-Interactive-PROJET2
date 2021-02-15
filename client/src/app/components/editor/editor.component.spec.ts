@@ -17,16 +17,14 @@ import { ToolManagerService } from '@app/services/tool-manager/tool-manager.serv
 import { ToolManagerServiceMock } from '@app/tests-mocks/tool-manager-mock';
 import { KeyboardButton } from '@app/utils/enums/list-boutton-pressed';
 import { EditorComponent } from './editor.component';
-import SpyObj = jasmine.SpyObj;
 
 describe('EditorComponent', () => {
     let component: EditorComponent;
     let fixture: ComponentFixture<EditorComponent>;
     let toolManagerServiceMock: ToolManagerServiceMock;
-    let drawingServiceSpy: SpyObj<DrawingService>;
+    let drawingServiceSpy: jasmine.SpyObj<DrawingService>;
 
     // tslint:disable-next-line:prefer-const
-    // let emitterSpy: jasmine.SpyObj<ToolManagerServiceMock>;
 
     beforeEach(async(() => {
         drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['createNewDrawing', 'restoreCanvas']);

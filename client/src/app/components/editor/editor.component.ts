@@ -10,6 +10,8 @@ import { ToolsNames } from '@app/utils/enums/tools-names';
     styleUrls: ['./editor.component.scss'],
 })
 export class EditorComponent implements AfterViewInit {
+    private toolFinder: Map<KeyboardButton, ToolsNames>;
+
     constructor(private toolManagerService: ToolManagerService, private drawingService: DrawingService) {
         this.toolFinder = new Map<KeyboardButton, ToolsNames>();
         this.toolFinder
@@ -23,8 +25,6 @@ export class EditorComponent implements AfterViewInit {
     editorMinWidth: number;
     @ViewChild('editor') editor: ElementRef<HTMLCanvasElement>;
     @ViewChild('container', { static: false }) container: ElementRef<HTMLCanvasElement>;
-
-    private toolFinder: Map<KeyboardButton, ToolsNames>;
 
     ngAfterViewInit(): void {
         this.setEditorMinWidth();
