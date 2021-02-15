@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { Coordinate } from '@app/classes/coordinate';
+import { Vec2 } from '@app/classes/vec2';
 import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.service';
 import { Status } from '@app/utils/enums/canvas-resizer-status';
 import { CanvasResizerService } from './canvas-resizer.service';
@@ -8,9 +8,9 @@ class MockMouseService extends MouseHandlerService {
     deltaX: number = 400;
     deltaY: number = 300;
 
-    startCoordinate: Coordinate = { x: 400, y: 200 };
-    currentCoordinate: Coordinate = { x: 600, y: 450 };
-    endCoordinate: Coordinate = { x: 500, y: 400 };
+    startCoordinate: Vec2 = { x: 400, y: 200 };
+    currentCoordinate: Vec2 = { x: 600, y: 450 };
+    endCoordinate: Vec2 = { x: 500, y: 400 };
 
     calculateDeltaX = (): number => this.deltaX;
     calculateDeltaY = (): number => this.deltaY;
@@ -107,8 +107,8 @@ describe('CanvasResizerService', () => {
     it('should be able to calculate new canvas size on middle right resizer click', () => {
         service.setStatus(Status.MIDDLE_RIGHT_RESIZE);
 
-        const canvasSize = { x: 150, y: 300 } as Coordinate;
-        const expectedCanvasSize = { x: 550, y: 300 } as Coordinate;
+        const canvasSize = { x: 150, y: 300 } as Vec2;
+        const expectedCanvasSize = { x: 550, y: 300 } as Vec2;
 
         const calculatedCanvasSize = service.calculateNewCanvasSize(canvasSize);
         expect(calculatedCanvasSize).toEqual(expectedCanvasSize);
@@ -117,8 +117,8 @@ describe('CanvasResizerService', () => {
     it('should be able to calculate new canvas size on middle bottom resizer click', () => {
         service.setStatus(Status.MIDDLE_BOTTOM_RESIZE);
 
-        const canvasSize = { x: 500, y: 300 } as Coordinate;
-        const expectedCanvasSize = { x: 500, y: 600 } as Coordinate;
+        const canvasSize = { x: 500, y: 300 } as Vec2;
+        const expectedCanvasSize = { x: 500, y: 600 } as Vec2;
 
         const calculatedCanvasSize = service.calculateNewCanvasSize(canvasSize);
         expect(calculatedCanvasSize).toEqual(expectedCanvasSize);
@@ -127,8 +127,8 @@ describe('CanvasResizerService', () => {
     it('should be able to calculate new canvas size on bottom resizer click', () => {
         service.setStatus(Status.BOTTOM_RIGHT_RESIZE);
 
-        const canvasSize = { x: 500, y: 300 } as Coordinate;
-        const expectedCanvasSize = { x: 900, y: 600 } as Coordinate;
+        const canvasSize = { x: 500, y: 300 } as Vec2;
+        const expectedCanvasSize = { x: 900, y: 600 } as Vec2;
 
         const calculatedCanvasSize = service.calculateNewCanvasSize(canvasSize);
         expect(calculatedCanvasSize).toEqual(expectedCanvasSize);
@@ -137,8 +137,8 @@ describe('CanvasResizerService', () => {
     it('new canvas size should be 250 pixels when canvas width is lower than 250 pixels', () => {
         service.setStatus(Status.BOTTOM_RIGHT_RESIZE);
 
-        const canvasSize = { x: -350, y: -300 } as Coordinate;
-        const expectedCanvasSize = { x: 250, y: 250 } as Coordinate;
+        const canvasSize = { x: -350, y: -300 } as Vec2;
+        const expectedCanvasSize = { x: 250, y: 250 } as Vec2;
 
         const calculatedCanvasSize = service.calculateNewCanvasSize(canvasSize);
         expect(calculatedCanvasSize).toEqual(expectedCanvasSize);
@@ -147,8 +147,8 @@ describe('CanvasResizerService', () => {
     it('new canvas size should be 250 pixels when canvas height is lower than 250 pixels', () => {
         service.setStatus(Status.BOTTOM_RIGHT_RESIZE);
 
-        const canvasSize = { x: 350, y: -300 } as Coordinate;
-        const expectedCanvasSize = { x: 750, y: 250 } as Coordinate;
+        const canvasSize = { x: 350, y: -300 } as Vec2;
+        const expectedCanvasSize = { x: 750, y: 250 } as Vec2;
 
         const calculatedCanvasSize = service.calculateNewCanvasSize(canvasSize);
         expect(calculatedCanvasSize).toEqual(expectedCanvasSize);
@@ -185,7 +185,7 @@ describe('CanvasResizerService', () => {
         // we resize the window to always have the size during the test
         window.resizeTo(windowWidth, windowHeight);
 
-        const calculatedCanvasSize = service.calculateCanvasSize() as Coordinate;
+        const calculatedCanvasSize = service.calculateCanvasSize();
         expect(calculatedCanvasSize.x).toBe(expectedCanvasSize.x);
         expect(calculatedCanvasSize.y).toBe(expectedCanvasSize.y);
     });
@@ -198,7 +198,7 @@ describe('CanvasResizerService', () => {
         // we resize the window to always have the size during the test
         window.resizeTo(windowWidth, windowHeight);
 
-        const calculatedCanvasSize = service.calculateCanvasSize() as Coordinate;
+        const calculatedCanvasSize = service.calculateCanvasSize();
         expect(calculatedCanvasSize.x).toEqual(expectedCanvasSize.x);
         expect(calculatedCanvasSize.y).toEqual(expectedCanvasSize.y);
     });

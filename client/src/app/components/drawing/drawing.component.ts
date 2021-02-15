@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, OnInit, Output, ViewChild } from '@angular/core';
-import { Coordinate } from '@app/classes/coordinate';
 import { Tool } from '@app/classes/tool';
+import { Vec2 } from '@app/classes/vec2';
 import { DEFAULT_HEIGHT, DEFAULT_WHITE, DEFAULT_WIDTH, SIDEBAR_WIDTH, WORKING_ZONE_VISIBLE_PORTION } from '@app/components/components-constants';
 import { CanvasResizerService } from '@app/services/drawing/canvas-resizer/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -23,7 +23,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
-    private canvasSize: Coordinate = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
+    private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
 
     currentTool: Tool;
     toolManagerService: ToolManagerService;
@@ -81,7 +81,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         return this.canvasSize.y;
     }
 
-    getPreviewCanvasSize(): Coordinate {
+    getPreviewCanvasSize(): Vec2 {
         return { x: this.canvasResizerService.canvasPreviewWidth, y: this.canvasResizerService.canvasPreviewHeight };
     }
 
