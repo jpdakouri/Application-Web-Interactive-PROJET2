@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { AerosolService } from '@app/services/tools/aerosol-service/aerosol.service';
 import { EllipseService } from '@app/services/tools/ellipse-service/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service/eraser.service';
 import { LineService } from '@app/services/tools/line-service/line.service';
@@ -6,7 +7,7 @@ import { PencilService } from '@app/services/tools/pencil-service/pencil.service
 import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { ToolsNames } from '@app/utils/enums/tools-names';
-import { AerosolService, ToolManagerService } from './tool-manager.service';
+import { ToolManagerService } from './tool-manager.service';
 
 describe('ToolManagerService', () => {
     let service: ToolManagerService;
@@ -19,11 +20,11 @@ describe('ToolManagerService', () => {
 
     beforeEach(() => {
         lineServiceSpy = jasmine.createSpyObj('LineService', ['onMouseMove']);
-        rectangleServiceSpy = jasmine.createSpyObj('LineService', ['onMouseMove']);
-        ellipseServiceSpy = jasmine.createSpyObj('LineService', ['onMouseMove']);
-        pencilServiceSpy = jasmine.createSpyObj('LineService', ['onMouseMove']);
-        aerosolServiceSpy = jasmine.createSpyObj('LineService', ['onMouseMove']);
-        eraserServiceSpy = jasmine.createSpyObj('LineService', ['onMouseMove']);
+        rectangleServiceSpy = jasmine.createSpyObj('RectangleService', ['onMouseMove']);
+        ellipseServiceSpy = jasmine.createSpyObj('EllipseService', ['onMouseMove']);
+        pencilServiceSpy = jasmine.createSpyObj('PencilService', ['onMouseMove']);
+        aerosolServiceSpy = jasmine.createSpyObj('AerosolService', ['onMouseMove']);
+        eraserServiceSpy = jasmine.createSpyObj('EraserService', ['onMouseMove']);
         TestBed.configureTestingModule({
             providers: [
                 { provide: PencilService, useValue: pencilServiceSpy },
