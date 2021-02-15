@@ -4,7 +4,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DEFAULT_DOT_RADIUS, DEFAULT_MIN_THICKNESS, PIXEL_DISTANCE, SHIFT_ANGLE } from '@app/services/tools/tools-constants';
-import { KeyboardButton, MouseButton } from '@app/utils/enums/list-boutton-pressed';
+import { KeyboardButtons, MouseButtons } from '@app/utils/enums/list-boutton-pressed';
 
 @Injectable({
     providedIn: 'root',
@@ -20,7 +20,7 @@ export class LineService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.mouseDown = event.button === MouseButton.Left;
+        this.mouseDown = event.button === MouseButtons.Left;
         this.mouseDownCoord = this.getPositionFromMouse(event);
     }
 
@@ -66,16 +66,16 @@ export class LineService extends Tool {
 
     onKeyDown(event: KeyboardEvent): void {
         switch (event.key) {
-            case KeyboardButton.Shift:
+            case KeyboardButtons.Shift:
                 this.shiftPressed = true;
                 this.previewUpdate();
                 break;
-            case KeyboardButton.Escape:
+            case KeyboardButtons.Escape:
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.clearPath();
                 this.started = false;
                 break;
-            case KeyboardButton.Backspace:
+            case KeyboardButtons.Backspace:
                 if (this.pathData.length > 1) {
                     this.pathData.pop();
                 }
@@ -88,7 +88,7 @@ export class LineService extends Tool {
     }
 
     onKeyUp(event: KeyboardEvent): void {
-        if (this.shiftPressed && event.key === KeyboardButton.Shift) {
+        if (this.shiftPressed && event.key === KeyboardButtons.Shift) {
             this.shiftPressed = false;
             this.previewUpdate();
         }

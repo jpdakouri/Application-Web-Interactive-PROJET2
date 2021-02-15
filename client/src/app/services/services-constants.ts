@@ -11,6 +11,11 @@ export enum RgbSettings {
     DEFAULT_TRANSPARENCY = '1',
 }
 
+export enum Sign {
+    Negative = -1,
+    Positive = 1,
+}
+
 export const DEFAULT_COLOUR = RgbSettings.RGB_START + RgbSettings.DEFAULT_SECONDARY_RGB + RgbSettings.RGB_RGBA_END;
 
 /****************************/

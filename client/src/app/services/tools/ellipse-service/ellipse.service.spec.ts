@@ -3,7 +3,7 @@ import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EllipseService } from '@app/services/tools/ellipse-service/ellipse.service';
-import { KeyboardKeys, MouseButton } from '@app/utils/enums/rectangle-enums';
+import { KeyboardButtons, MouseButtons } from '@app/utils/enums/list-boutton-pressed';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 
 describe('EllipseService', () => {
@@ -55,7 +55,7 @@ describe('EllipseService', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
-            button: MouseButton.Right,
+            button: MouseButtons.Right,
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(service.mouseDown).toEqual(false);
@@ -102,14 +102,14 @@ describe('EllipseService', () => {
 
     it(' keys should perform their task', () => {
         service.onKeyDown({
-            key: KeyboardKeys.Escape,
+            key: KeyboardButtons.Escape,
         } as KeyboardEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
 
         const drawCircleSpy = spyOn<any>(service, 'drawCircle').and.callThrough();
         service['shiftDown'] = false;
         service.onKeyDown({
-            key: KeyboardKeys.Shift,
+            key: KeyboardButtons.Shift,
         } as KeyboardEvent);
         expect(service['shiftDown']).toBeTrue();
         expect(drawCircleSpy).toHaveBeenCalled();
@@ -120,7 +120,7 @@ describe('EllipseService', () => {
         service['firstGrid'] = { x: 10, y: 10 };
         service.mouseDownCoord = { x: 50, y: 50 };
         service.onKeyUp({
-            key: KeyboardKeys.Shift,
+            key: KeyboardButtons.Shift,
         } as KeyboardEvent);
 
         expect(service['shiftDown']).toBeFalse();
@@ -131,7 +131,7 @@ describe('EllipseService', () => {
         service['firstGrid'] = { x: 10, y: 10 };
         service.mouseDownCoord = { x: 50, y: 50 };
         service.onKeyUp({
-            key: KeyboardKeys.Shift,
+            key: KeyboardButtons.Shift,
         } as KeyboardEvent);
         const updatePreviewSpy = spyOn<any>(service, 'updatePreview').and.stub();
         expect(updatePreviewSpy).not.toHaveBeenCalled();
@@ -142,7 +142,7 @@ describe('EllipseService', () => {
         service.mouseDownCoord = { x: 50, y: 50 };
 
         service.onKeyDown({
-            key: KeyboardKeys.Shift,
+            key: KeyboardButtons.Shift,
         } as KeyboardEvent);
         expect(service['shiftDown']).toBeTrue();
     });

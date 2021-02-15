@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { KeyboardKeys, MouseButton } from '@app/utils/enums/rectangle-enums';
+import { KeyboardButtons, MouseButtons } from '@app/utils/enums/list-boutton-pressed';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { RectangleService } from './rectangle.service';
 
@@ -55,7 +55,7 @@ describe('RectangleService', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
-            button: MouseButton.Right,
+            button: MouseButtons.Right,
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(service.mouseDown).toEqual(false);
@@ -102,14 +102,14 @@ describe('RectangleService', () => {
 
     it(' keys should perform their task', () => {
         service.onKeyDown({
-            key: KeyboardKeys.Escape,
+            key: KeyboardButtons.Escape,
         } as KeyboardEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
 
         const drawSquareSpy = spyOn<any>(service, 'drawSquare').and.callThrough();
         service['shiftDown'] = false;
         service.onKeyDown({
-            key: KeyboardKeys.Shift,
+            key: KeyboardButtons.Shift,
         } as KeyboardEvent);
         expect(service['shiftDown']).toBeTrue();
         expect(drawSquareSpy).toHaveBeenCalled();
@@ -120,7 +120,7 @@ describe('RectangleService', () => {
         service['firstGrid'] = { x: 10, y: 10 };
         service.mouseDownCoord = { x: 50, y: 50 };
         service.onKeyUp({
-            key: KeyboardKeys.Shift,
+            key: KeyboardButtons.Shift,
         } as KeyboardEvent);
 
         expect(service['shiftDown']).toBeFalse();
@@ -131,7 +131,7 @@ describe('RectangleService', () => {
         service['firstGrid'] = { x: 10, y: 10 };
         service.mouseDownCoord = { x: 50, y: 50 };
         service.onKeyUp({
-            key: KeyboardKeys.Shift,
+            key: KeyboardButtons.Shift,
         } as KeyboardEvent);
         const updatePreviewSpy = spyOn<any>(service, 'updatePreview').and.stub();
         expect(updatePreviewSpy).not.toHaveBeenCalled();
@@ -142,7 +142,7 @@ describe('RectangleService', () => {
         service.mouseDownCoord = { x: 50, y: 50 };
 
         service.onKeyDown({
-            key: KeyboardKeys.Shift,
+            key: KeyboardButtons.Shift,
         } as KeyboardEvent);
         expect(service['shiftDown']).toBeTrue();
     });

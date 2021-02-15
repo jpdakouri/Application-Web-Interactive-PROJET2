@@ -3,8 +3,9 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { Sign } from '@app/services/services-constants';
 import { DEFAULT_MIN_THICKNESS } from '@app/services/tools/tools-constants';
-import { KeyboardKeys, MouseButton, sign } from '@app/utils/enums/rectangle-enums';
+import { KeyboardButtons, MouseButtons } from '@app/utils/enums/list-boutton-pressed';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 
 @Injectable({
@@ -22,7 +23,7 @@ export class RectangleService extends Tool {
 
     onMouseDown(event: MouseEvent): void {
         this.clearPath();
-        this.mouseDown = event.button === MouseButton.Left;
+        this.mouseDown = event.button === MouseButtons.Left;
         if (this.mouseDown) {
             this.firstGrid = this.getPositionFromMouse(event);
             this.updatePreview();
@@ -50,18 +51,18 @@ export class RectangleService extends Tool {
     }
 
     onKeyDown(event: KeyboardEvent): void {
-        if (event.key === KeyboardKeys.Escape) {
+        if (event.key === KeyboardButtons.Escape) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.clearPath();
         }
-        if (event.key === KeyboardKeys.Shift) {
+        if (event.key === KeyboardButtons.Shift) {
             this.shiftDown = true;
             this.updatePreview();
         }
     }
 
     onKeyUp(event: KeyboardEvent): void {
-        if (this.shiftDown && event.key === KeyboardKeys.Shift) {
+        if (this.shiftDown && event.key === KeyboardButtons.Shift) {
             this.shiftDown = false;
             this.updatePreview();
         }
@@ -106,23 +107,23 @@ export class RectangleService extends Tool {
     }
 
     private isMouseInFirstQuadrant(): boolean {
-        // souris dans cadrant en bas a droite (+/+)
-        return Math.sign(this.mouseDownCoord.x) === sign.Positive && Math.sign(this.mouseDownCoord.y) === sign.Positive;
+        //  mouse is in first quadrant (+/+)
+        return Math.sign(this.mouseDownCoord.x) === Sign.Positive && Math.sign(this.mouseDownCoord.y) === Sign.Positive;
     }
 
     private isMouseInSecondQuadrant(): boolean {
-        // souris dans cadrant en haut a gauche (-/-)
-        return Math.sign(this.mouseDownCoord.x) === sign.Negative && Math.sign(this.mouseDownCoord.y) === sign.Negative;
+        // mouse is in third quadrant (-/-)
+        return Math.sign(this.mouseDownCoord.x) === Sign.Negative && Math.sign(this.mouseDownCoord.y) === Sign.Negative;
     }
 
     private isMouseInThirdQuadrant(): boolean {
-        // souris dans cadrant en haute droite (+/-)
-        return Math.sign(this.mouseDownCoord.x) === sign.Negative && Math.sign(this.mouseDownCoord.y) === sign.Positive;
+        // mouse is in fourth quadrant (-/+)
+        return Math.sign(this.mouseDownCoord.x) === Sign.Negative && Math.sign(this.mouseDownCoord.y) === Sign.Positive;
     }
 
     private isMouseInFourthQuadrant(): boolean {
-        // souris dans cadrant en haute droite (-/+)
-        return Math.sign(this.mouseDownCoord.x) === sign.Positive && Math.sign(this.mouseDownCoord.y) === sign.Negative;
+        // mouse is in second quadrant (+/-)
+        return Math.sign(this.mouseDownCoord.x) === Sign.Positive && Math.sign(this.mouseDownCoord.y) === Sign.Negative;
     }
 
     private isXGreaterThanY(): boolean {

@@ -4,7 +4,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MIN_ERASER_THICKNESS } from '@app/services/tools/tools-constants';
-import { MouseButton } from '@app/utils/enums/list-boutton-pressed';
+import { MouseButtons } from '@app/utils/enums/list-boutton-pressed';
 
 @Injectable({
     providedIn: 'root',
@@ -20,7 +20,7 @@ export class EraserService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.mouseDown = event.button === MouseButton.Left;
+        this.mouseDown = event.button === MouseButtons.Left;
         if (this.mouseDown) {
             this.clearPath();
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
