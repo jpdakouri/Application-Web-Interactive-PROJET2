@@ -129,6 +129,8 @@ describe('DrawingComponent', () => {
 
     it(" should call the tool's #onMouseMove when receiving a mouse move event", () => {
         const event = {} as MouseEvent;
+        // tslint:disable-next-line:no-any
+        spyOn<any>(toolStub, 'getPositionFromMouse').and.returnValue({ x: 100, y: 100 });
         const mouseEventSpy = spyOn(toolStub, 'onMouseMove').and.callThrough();
         component.onMouseMove(event);
         expect(mouseEventSpy).toHaveBeenCalled();

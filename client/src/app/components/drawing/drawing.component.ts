@@ -5,9 +5,11 @@ import { CanvasResizerService } from '@app/services/drawing/canvas-resizer/canva
 import { DEFAULT_HEIGHT, DEFAULT_WHITE, DEFAULT_WIDTH, SIDEBAR_WIDTH, WORKING_ZONE_VISIBLE_PORTION } from '@app/services/drawing/drawing-constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
+import { EraserService } from '@app/services/tools/eraser-service/eraser.service';
 import { MIN_ERASER_THICKNESS } from '@app/services/tools/tools-constants';
 import { Status } from '@app/utils/enums/canvas-resizer-status';
 import { ToolsNames } from '@app/utils/enums/tools-names';
+import { EraserCursor } from '@app/utils/types/eraser-cursor';
 
 @Component({
     selector: 'app-drawing',
@@ -26,8 +28,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     private previewCtx: CanvasRenderingContext2D;
     private canvasSize: Coordinate = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
 
-    // tslint:disable-next-line:typedef
-    eraserCursor = {
+    eraserCursor: EraserCursor = {
         cursor: 'none',
         position: 'absolute',
         width: '3px',
@@ -44,6 +45,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     currentTool: Tool;
     toolManagerService: ToolManagerService;
     canvasResizerService: CanvasResizerService;
+    eraserService: EraserService;
 
     constructor(private drawingService: DrawingService, toolManagerService: ToolManagerService, canvasResizerService: CanvasResizerService) {
         this.toolManagerService = toolManagerService;
@@ -101,7 +103,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         return { x: this.canvasResizerService.canvasPreviewWidth, y: this.canvasResizerService.canvasPreviewHeight };
     }
 
-    @HostListener('window:mousemove', ['$event'])
+    @HostListener('mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
         if (this.canvasResizerService.isResizing()) {
             this.canvasResizerService.onMouseMove(event);
@@ -111,7 +113,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         }
     }
 
-    @HostListener('window:mousedown', ['$event'])
+    @HostListener('mousedown', ['$event'])
     onMouseDown(event: MouseEvent): void {
         if (this.canvasResizerService.isResizing()) {
             this.canvasResizerService.onMouseDown(event);
@@ -120,7 +122,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         }
     }
 
-    @HostListener('window:mouseup', ['$event'])
+    @HostListener('mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
         if (this.canvasResizerService.isResizing()) {
             this.canvasResizerService.onMouseUp(event);
