@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { DEFAULT_COLOUR } from '@app/services/services-constants';
 export const HISTORY_LENGTH = 10;
 @Injectable({
     providedIn: 'root',
@@ -7,7 +8,6 @@ export class ColourHistoryService {
     private colours: string[];
 
     constructor() {
-        const DEFAULT_COLOUR = 'rgb(255,255,255)';
         this.colours = [];
         for (let i = 0; i < HISTORY_LENGTH; i++) {
             this.colours.push(DEFAULT_COLOUR);

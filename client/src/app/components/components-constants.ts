@@ -1,4 +1,7 @@
 // color-selector-component
+/****************************/
+/***GLOBAL COLOR SELECTOR CONSTANTS***/
+/****************************/
 export const PERCENTAGE_MAX = 100;
 export const MIN_HEX_RGB_VALUE = 1;
 export const MAX_HEX_RGB_VALUE = 2;
@@ -6,9 +9,14 @@ export const INDEX_ELEMENT_NOT_THERE = -1;
 export const RGB_COMPONENTS = 3;
 export const MIN_TRANSPARENCY = 0;
 export const MAX_TRANSPARENCY = 100;
-// current-color-component
 
-// hue-selector-constats
+/****************************/
+/***GLOBAL CURRENT COLOR CONSTANTS***/
+/****************************/
+
+/****************************/
+/***GLOBAL HUE SELECTOR CONSTANTS***/
+/****************************/
 export const SELECTOR_WIDTH = 5;
 export const SELECTOR_COLOR = 'white';
 export const SELECTOR_OUTLINE_WIDTH = 1;
@@ -18,7 +26,9 @@ export const SELECTOR_OUTLINE_OFFSET_3PX = 3;
 export const SELECTOR_OUTLINE_OFFSET_6PX = 6;
 export const EXCLUDED_SIDE_WIDTH = 5;
 
-// Colours
+/****************************/
+/***COLOURS***/
+/****************************/
 export enum Colours {
     RGBA_WHITE = 'rgba(255,255,255,1)',
     RGBA_RED = 'rgba(255, 0, 0, 1)',

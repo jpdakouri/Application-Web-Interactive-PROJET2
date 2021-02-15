@@ -171,11 +171,6 @@ export class LineService extends Tool {
 
     private verifyLastPoint(dotToVerify: Vec2): boolean {
         const lastDot = this.pathData[this.pathData.length - 1];
-        return (
-            lastDot.x + PIXEL_DISTANCE > dotToVerify.x &&
-            lastDot.x - PIXEL_DISTANCE < dotToVerify.x &&
-            lastDot.y + PIXEL_DISTANCE > dotToVerify.y &&
-            lastDot.y - PIXEL_DISTANCE < dotToVerify.y
-        );
+        return Math.abs(lastDot.x - dotToVerify.x) <= PIXEL_DISTANCE && Math.abs(lastDot.y - dotToVerify.y) <= PIXEL_DISTANCE;
     }
 }

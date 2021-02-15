@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
+import { DEFAULT_COLOUR } from '@app/services/services-constants';
 import { ColourHistoryService, HISTORY_LENGTH } from './colour-history.service';
 
-const DEFAULT_COLOUR = 'rgb(255,255,255)';
 describe('ColourHistoryService', () => {
     let service: ColourHistoryService;
 
