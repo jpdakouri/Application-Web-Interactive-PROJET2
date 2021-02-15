@@ -205,7 +205,7 @@ describe('RectangleService', () => {
         expect(drawFilledOutlineSpy).toHaveBeenCalledWith(jasmine.any(CanvasRenderingContext2D), service.mouseDownCoord);
     });
 
-    it('should draw rectangle/square in the first quadrant', () => {
+    it('should draw rectangle/square in the first quadrant (+/+)', () => {
         service.mouseDownCoord = { x: 300, y: 200 };
         service['shiftDown'] = true;
         const expected = { x: 200, y: 200 } as Vec2;
@@ -214,7 +214,7 @@ describe('RectangleService', () => {
         expect(val).toEqual(expected);
     });
 
-    it('should draw a wide (height < width) rectangle/square in the third quadrant', () => {
+    it('should draw a wide (height < width) rectangle/square in the third quadrant (-/+)', () => {
         service.mouseDownCoord = { x: -300, y: 200 };
         const expected = { x: -200, y: 200 } as Vec2;
         const value = service.mouseDownCoord;
@@ -223,7 +223,7 @@ describe('RectangleService', () => {
         expect(value).toEqual(expected);
     });
 
-    it(' should draw a wide (height < width) rectangle/square in the fourth quadrant ', () => {
+    it(' should draw a wide (height < width) rectangle/square in the fourth quadrant (+/-) ', () => {
         service.mouseDownCoord = { x: 300, y: -200 };
         const expected = { x: 200, y: -200 } as Vec2;
         const value = service.mouseDownCoord;
@@ -232,7 +232,7 @@ describe('RectangleService', () => {
         expect(value).toEqual(expected);
     });
 
-    it(' should draw a wid (height < width) rectangle/square in the second quadrant ', () => {
+    it(' should draw a wide (height < width) rectangle/square in the second quadrant (-/-)', () => {
         service.mouseDownCoord = { x: -300, y: -200 };
         const expected = { x: -200, y: -200 } as Vec2;
         const value = service.mouseDownCoord;
@@ -241,7 +241,7 @@ describe('RectangleService', () => {
         expect(value).toEqual(expected);
     });
 
-    it(' should draw a large (height > width) rectangle/square in the fourth quadrant ', () => {
+    it(' should draw a large (height > width) rectangle/square in the fourth quadrant (+/-)', () => {
         service.mouseDownCoord = { x: 200, y: -300 };
         const expected = { x: 200, y: -200 } as Vec2;
         const value = service.mouseDownCoord;
