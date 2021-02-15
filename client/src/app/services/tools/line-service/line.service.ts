@@ -3,14 +3,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import {
-    DEFAULT_DOT_RADIUS,
-    DEFAULT_MIN_THICKNESS,
-    HALF_CIRCLE,
-    PIXEL_DISTANCE,
-    SHIFT_ANGLE_45,
-    SHIFT_ANGLE_HALF_45,
-} from '@app/services/tools/tools-constants';
+import { DEFAULT_DOT_RADIUS, DEFAULT_MIN_THICKNESS, PIXEL_DISTANCE, SHIFT_ANGLE_45, SHIFT_ANGLE_HALF_45 } from '@app/services/tools/tools-constants';
 import { KeyboardButton, MouseButton } from '@app/utils/enums/list-boutton-pressed';
 
 @Injectable({
@@ -116,16 +109,17 @@ export class LineService extends Tool {
         const distX = mousePosition.x - lastDot.x;
         const distY = mousePosition.y - lastDot.y;
         // transform rad in degrees
-        angle = (Math.atan(distY / distX) * HALF_CIRCLE) / Math.PI;
+        angle = Math.atan(distY / distX);
         // 45 (135, 225, 315) case
         if (this.isBetweenAxes(angle)) {
             if ((distX <= 0 && distY >= 0) || (distX > 0 && distY < 0)) {
                 // second or fourth quadrant
                 // Math.tan requires rad
-                return { x: mousePosition.x, y: lastDot.y - distX * Math.round(Math.tan(Math.PI / (HALF_CIRCLE / SHIFT_ANGLE_45))) };
+                // tslint:disable:no-magic-numbers
+                return { x: mousePosition.x, y: lastDot.y - distX * Math.round(Math.tan(SHIFT_ANGLE_45)) };
             } else {
                 // first and third quadrant
-                return { x: mousePosition.x, y: lastDot.y + distX * Math.round(Math.tan(Math.PI / (HALF_CIRCLE / SHIFT_ANGLE_45))) };
+                return { x: mousePosition.x, y: lastDot.y + distX * Math.round(Math.tan(SHIFT_ANGLE_45)) };
             }
         }
         // 90 (270) case
@@ -144,7 +138,7 @@ export class LineService extends Tool {
     }
 
     private isNearYAxis(angle: number): boolean {
-        return angle > SHIFT_ANGLE_45 + SHIFT_ANGLE_HALF_45 / 2 || -angle > SHIFT_ANGLE_45 + SHIFT_ANGLE_HALF_45 / 2;
+        return angle > SHIFT_ANGLE_45 + SHIFT_ANGLE_HALF_45 || -angle > SHIFT_ANGLE_45 + SHIFT_ANGLE_HALF_45;
     }
 
     private clearPath(): void {

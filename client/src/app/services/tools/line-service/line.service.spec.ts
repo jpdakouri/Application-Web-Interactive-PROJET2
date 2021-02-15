@@ -108,10 +108,13 @@ describe('LineService', () => {
 
     it(' desiredAngle shoulld return the right value', () => {
         service['pathData'].push({ x: 0, y: 0 });
-        expect(service['desiredAngle']({ x: 2, y: -3 })).toEqual({ x: 0, y: -3 });
+        expect(service['desiredAngle']({ x: 2, y: -3 })).toEqual({ x: 2, y: -2 });
 
         service['pathData'].push({ x: 0, y: 0 });
         expect(service['desiredAngle']({ x: -10, y: 7 })).toEqual({ x: -10, y: 10 });
+
+        service['pathData'].push({ x: 0, y: 0 });
+        expect(service['desiredAngle']({ x: 1, y: -3 })).toEqual({ x: 0, y: -3 });
     });
 
     it('onMouseMove should call previewUpdate if the drawing has started', () => {
