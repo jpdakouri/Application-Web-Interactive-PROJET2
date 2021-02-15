@@ -138,8 +138,8 @@ export class LineService extends Tool {
 
     private isBetweenAxes(angle: number): boolean {
         return (
-            (angle >= SHIFT_ANGLE_HALF_45 && angle <= SHIFT_ANGLE_45 + SHIFT_ANGLE_HALF_45 / 2) ||
-            (-angle >= SHIFT_ANGLE_HALF_45 && -angle <= SHIFT_ANGLE_45 + SHIFT_ANGLE_HALF_45 / 2)
+            (angle >= SHIFT_ANGLE_HALF_45 && angle <= SHIFT_ANGLE_45 + SHIFT_ANGLE_HALF_45) ||
+            (-angle >= SHIFT_ANGLE_HALF_45 && -angle <= SHIFT_ANGLE_45 + SHIFT_ANGLE_HALF_45)
         );
     }
 

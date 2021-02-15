@@ -6,7 +6,7 @@ import { KeyboardButton, MouseButton } from '@app/utils/enums/list-boutton-press
 import { LineService } from './line.service';
 
 // tslint:disable:no-any
-fdescribe('LineService', () => {
+describe('LineService', () => {
     const DETECTION_RANGE = 15;
     let service: LineService;
     let mouseEvent: MouseEvent;
