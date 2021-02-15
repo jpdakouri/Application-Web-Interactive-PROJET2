@@ -165,7 +165,6 @@ export class EllipseService extends Tool {
 
     drawCircle(grid: Vec2): void {
         if (this.isMouseInFirstQuadrant()) {
-            console.log(this.mouseDownCoord);
             grid.x = grid.y = Math.min(this.mouseDownCoord.x, this.mouseDownCoord.y);
         }
 

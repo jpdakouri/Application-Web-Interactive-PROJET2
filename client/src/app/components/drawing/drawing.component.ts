@@ -28,6 +28,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     currentTool: Tool;
     toolManagerService: ToolManagerService;
     canvasResizerService: CanvasResizerService;
+    toolsNames: typeof ToolsNames = ToolsNames;
 
     constructor(private drawingService: DrawingService, toolManagerService: ToolManagerService, canvasResizerService: CanvasResizerService) {
         this.toolManagerService = toolManagerService;
@@ -157,5 +158,9 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     computeEditorMinWidth(): number {
         return this.width + SIDEBAR_WIDTH + WORKING_ZONE_VISIBLE_PORTION;
+    }
+
+    isCurrentTool(toolName: ToolsNames): boolean {
+        return this.toolManagerService.isCurrentTool(toolName);
     }
 }

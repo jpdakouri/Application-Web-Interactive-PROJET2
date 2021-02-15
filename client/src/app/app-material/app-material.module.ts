@@ -6,6 +6,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
@@ -20,6 +21,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
         MatButtonModule,
         MatSliderModule,
         MatButtonToggleModule,
+        MatInputModule,
     ],
     exports: [
         MatToolbarModule,
@@ -30,6 +32,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
         MatSliderModule,
         MatButtonToggleModule,
         MatCheckboxModule,
+        MatInputModule,
     ],
 })
 export class AppMaterialModule {}

@@ -3,20 +3,32 @@
     <app-colour-palette-selector [hue]="hue"></app-colour-palette-selector>
 </div>
 <mat-divider></mat-divider>
-<div class="color-text-input">
-    <div>
-        <h4>Select RGB manually in hex (ex: 12,7F,7A)</h4>
-        <input [(ngModel)]="rgbColor" />
-        <div *ngIf="isValidRGB()">
-            <button (click)="setPrimaryColor()">Set primary color</button>
-            <button (click)="setSecondaryColor()">Set secondary color</button>
-        </div>
+
+<div class="hex-input">
+    <h3>Entrez la couleur en format HEX</h3>
+    <mat-form-field>
+        <input matInput placeholder="ex: 12,7F,7A" [(ngModel)]="rgbColor" />
+    </mat-form-field>
+    <div *ngIf="isValidRGB()">
+        <button mat-raised-button color="primary" (click)="setPrimaryColor()">Définir comme couleur primaire</button>
+        <button mat-raised-button color="primary" (click)="setSecondaryColor()">Définir comme couleur secondaire</button>
     </div>
-    <div>
-        <h4>Change transparency (0-100)</h4>
-        <input [(ngModel)]="primaryColourTransparency" (keyup)="onPrimaryColorTransparencyEntryChange()" />
-        <input [(ngModel)]="secondaryColourTransparency" (keyup)="onSecondaryColorTransparencyEntryChange()" />
-    </div>
+</div>
+<mat-divider></mat-divider>
+
+<div class="alpha-input">
+    <h3>Entrez la transparence en % (0-100)</h3>
+    <mat-form-field>
+        <input matInput placeholder="% couleur primaire" [(ngModel)]="primaryColourTransparency" (keyup)="onPrimaryColorTransparencyEntryChange()" />
+    </mat-form-field>
+    <mat-form-field>
+        <input
+            matInput
+            placeholder="% couleur secondaire"
+            [(ngModel)]="secondaryColourTransparency"
+            (keyup)="onSecondaryColorTransparencyEntryChange()"
+        />
+    </mat-form-field>
 </div>
 <mat-divider></mat-divider>
 <app-current-colour></app-current-colour>

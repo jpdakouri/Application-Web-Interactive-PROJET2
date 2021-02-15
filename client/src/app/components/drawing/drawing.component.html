@@ -31,6 +31,7 @@
         (mousedown)="onMouseDown($event)"
         (mouseup)="onMouseUp($event)"
         (mousemove)="onMouseMove($event)"
+        [style.cursor]="isCurrentTool(toolsNames.Eraser) ? 'none' : 'crosshair'"
     ></canvas>
     <canvas
         id="previewLayer"
@@ -40,6 +41,7 @@
         (mousedown)="onMouseDown($event)"
         (mouseup)="onMouseUp($event)"
         (mousemove)="onMouseMove($event)"
+        [style.cursor]="isCurrentTool(toolsNames.Eraser) ? 'none' : 'crosshair'"
     ></canvas>
 
     <div

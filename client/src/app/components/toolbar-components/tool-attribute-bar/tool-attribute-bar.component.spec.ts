@@ -4,7 +4,9 @@ import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatSliderChange, MatSliderModule } from '@angular/material/slider';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ColourHistoryComponent } from '@app/components/colour-components/colour-history/colour-history.component';
 import { ColourPaletteSelectorComponent } from '@app/components/colour-components/colour-palette-selector/colour-palette-selector.component';
 import { ColourSelectorComponent } from '@app/components/colour-components/colour-selector/colour-selector.component';
@@ -44,7 +46,16 @@ describe('ToolAttributeBarComponent', () => {
                 HueSelectorComponent,
             ],
             providers: [{ provide: ToolManagerService, useValue: toolManagerServiceSpy }],
-            imports: [MatButtonToggleModule, MatSliderModule, MatDividerModule, MatCheckboxModule, FormsModule, MatIconModule],
+            imports: [
+                BrowserAnimationsModule,
+                MatInputModule,
+                MatButtonToggleModule,
+                MatSliderModule,
+                MatDividerModule,
+                MatCheckboxModule,
+                FormsModule,
+                MatIconModule,
+            ],
         }).compileComponents();
     }));
 

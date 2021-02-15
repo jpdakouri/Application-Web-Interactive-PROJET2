@@ -11,12 +11,11 @@ import { MouseButton } from '@app/utils/enums/list-boutton-pressed';
 })
 export class EraserService extends Tool {
     private pathData: Vec2[];
-    private width: number;
 
     constructor(drawingService: DrawingService, currentColourService: CurrentColourService) {
         super(drawingService, currentColourService);
         this.clearPath();
-        this.width = this.lineThickness || MIN_ERASER_THICKNESS;
+        this.lineThickness = MIN_ERASER_THICKNESS;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -57,9 +56,8 @@ export class EraserService extends Tool {
     }
 
     private erase(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        this.width = this.lineThickness || MIN_ERASER_THICKNESS;
         ctx.strokeStyle = 'white';
-        ctx.lineWidth = this.width;
+        ctx.lineWidth = this.lineThickness || MIN_ERASER_THICKNESS;
         ctx.lineCap = 'square';
         ctx.beginPath();
         for (const point of path) {

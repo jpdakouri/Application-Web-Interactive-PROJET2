@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { CanvasResizerService, Status } from '@app/services/drawing/canvas-resizer/canvas-resizer.service';
 import { SIDEBAR_WIDTH } from '@app/services/drawing/drawing-constants';
@@ -35,6 +36,7 @@ describe('DrawingComponent', () => {
                 { provide: MouseHandlerService, useValue: mouseStub },
                 { provide: ToolManagerService, useValue: toolManagerServiceMock },
             ],
+            imports: [MatTooltipModule],
         }).compileComponents();
     }));
 

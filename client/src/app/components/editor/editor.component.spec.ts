@@ -1,9 +1,14 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ColourHistoryComponent } from '@app/components/colour-components/colour-history/colour-history.component';
 import { ColourPaletteSelectorComponent } from '@app/components/colour-components/colour-palette-selector/colour-palette-selector.component';
 import { ColourSelectorComponent } from '@app/components/colour-components/colour-selector/colour-selector.component';
@@ -43,7 +48,18 @@ describe('EditorComponent', () => {
                 CurrentColourComponent,
                 HueSelectorComponent,
             ],
-            imports: [MatSliderModule, MatDividerModule, MatButtonModule, MatIconModule, FormsModule],
+            imports: [
+                MatCheckboxModule,
+                MatButtonToggleModule,
+                MatInputModule,
+                BrowserAnimationsModule,
+                MatSliderModule,
+                MatDividerModule,
+                MatButtonModule,
+                MatIconModule,
+                FormsModule,
+                MatTooltipModule,
+            ],
             providers: [
                 { provide: ToolManagerService, useValue: toolManagerServiceMock },
                 { provide: DrawingService, useValue: drawingServiceSpy },
