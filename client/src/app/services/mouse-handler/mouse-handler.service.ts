@@ -40,7 +40,6 @@ export class MouseHandlerService {
     }
 
     eventToCoordinate(event: MouseEvent): Coordinate {
-        console.log('{ x: ' + event.x + ' y : ' + event.y);
         return { x: event.x, y: event.y };
     }
 }

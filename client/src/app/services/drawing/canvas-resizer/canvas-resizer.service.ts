@@ -1,28 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Coordinate } from '@app/classes/coordinate';
+import { LOWER_BOUND_HEIGHT, LOWER_BOUND_WIDTH, MINIMUM_HEIGHT, MINIMUM_WIDTH, SIDEBAR_WIDTH } from '@app/services/drawing/drawing-constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.service';
-
-export const MINIMUM_WIDTH = 250;
-export const MINIMUM_HEIGHT = 250;
-
-export const LOWER_BOUND_WIDTH = 500;
-export const LOWER_BOUND_HEIGHT = 500;
-
-// export const SIDEBAR_WIDTH = 294;
-
-// export const SIDEBAR_WIDTH = 425;
-
-export const SIDEBAR_WIDTH = 464;
-
-// const WORKING_ZONE_VISIBLE_PORTION = 100;
-
-export const enum Status {
-    OFF = 0,
-    MIDDLE_BOTTOM_RESIZE = 1,
-    BOTTOM_RIGHT_RESIZE = 2,
-    MIDDLE_RIGHT_RESIZE = 3,
-}
+import { Status } from '@app/utils/enums/canvas-resizer-status';
+export * from '@app/utils/enums/canvas-resizer-status';
 
 @Injectable({
     providedIn: 'root',
@@ -130,5 +112,8 @@ export class CanvasResizerService {
                 this.canvasPreviewHeight = this.mouseService.currentCoordinate.y;
                 break;
         }
+
+        if (this.canvasPreviewWidth < MINIMUM_WIDTH) this.canvasPreviewWidth = MINIMUM_WIDTH;
+        if (this.canvasPreviewHeight < MINIMUM_HEIGHT) this.canvasPreviewHeight = MINIMUM_HEIGHT;
     }
 }

@@ -1,11 +1,12 @@
 import { TestBed } from '@angular/core/testing';
+import { EllipseService } from '@app/services/tools/ellipse-service/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service/eraser.service';
 import { LineService } from '@app/services/tools/line-service/line.service';
 import { PencilService } from '@app/services/tools/pencil-service/pencil.service';
 import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { ToolsNames } from '@app/utils/enums/tools-names';
-import { AerosolService, EllipseService, ToolManagerService } from './tool-manager.service';
+import { AerosolService, ToolManagerService } from './tool-manager.service';
 
 describe('ToolManagerService', () => {
     let service: ToolManagerService;

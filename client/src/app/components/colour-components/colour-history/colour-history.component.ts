@@ -21,6 +21,6 @@ export class ColourHistoryComponent {
     private filterRGB(colour: string): string {
         const RGB_BEGIN_INDICATOR = '(';
         const RGB_END_INDICATOR = ')';
-        return colour.substring(colour.indexOf(RGB_BEGIN_INDICATOR) + 1, colour.indexOf(RGB_END_INDICATOR) - 1);
+        return colour.substring(colour.indexOf(RGB_BEGIN_INDICATOR) + 1, colour.indexOf(RGB_END_INDICATOR));
     }
 }

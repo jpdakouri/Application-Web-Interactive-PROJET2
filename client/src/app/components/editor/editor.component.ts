@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { KeyboardButton } from '@app/utils/enums/list-boutton-pressed';
 import { ToolsNames } from '@app/utils/enums/tools-names';
@@ -9,7 +10,7 @@ import { ToolsNames } from '@app/utils/enums/tools-names';
     styleUrls: ['./editor.component.scss'],
 })
 export class EditorComponent implements AfterViewInit {
-    constructor(private toolManagerService: ToolManagerService) {
+    constructor(private toolManagerService: ToolManagerService, private drawingService: DrawingService) {
         this.toolFinder = new Map<KeyboardButton, ToolsNames>();
         this.toolFinder
             .set(KeyboardButton.Line, ToolsNames.Line)
@@ -38,6 +39,10 @@ export class EditorComponent implements AfterViewInit {
     }
     @HostListener('keyup', ['$event'])
     onKeyUp(event: KeyboardEvent): void {
+        if (event.ctrlKey && event.key === KeyboardButton.NewDrawing) {
+            this.onCreateNewDrawing();
+        }
+
         if (!event.shiftKey) {
             const toolKeyDown = this.toolFinder.get(event.key as KeyboardButton) as ToolsNames;
             if (!(toolKeyDown == undefined)) {
@@ -46,5 +51,9 @@ export class EditorComponent implements AfterViewInit {
                 this.toolManagerService.emitToolChange(toolKeyDown);
             }
         }
+    }
+
+    onCreateNewDrawing(): void {
+        this.drawingService.createNewDrawing();
     }
 }

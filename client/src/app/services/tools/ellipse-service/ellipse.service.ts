@@ -3,14 +3,14 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { DEFAULT_MIN_THICKNESS } from '@app/services/tools/tools-constants';
+import { DEFAULT_MIN_THICKNESS, REVOLUTION } from '@app/services/tools/tools-constants';
 import { KeyboardKeys, MouseButton, sign } from '@app/utils/enums/rectangle-enums';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 
 @Injectable({
     providedIn: 'root',
 })
-export class RectangleService extends Tool {
+export class EllipseService extends Tool {
     private firstGrid: Vec2;
     private shiftDown: boolean;
     currentColourService: CurrentColourService;
@@ -39,11 +39,11 @@ export class RectangleService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
-            this.drawRectangle(this.drawingService.previewCtx, this.mouseDownCoord);
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
             if (this.shiftDown) {
-                this.drawSquare(this.mouseDownCoord);
+                this.drawCircle(this.mouseDownCoord);
             }
-            this.drawRectangle(this.drawingService.baseCtx, this.mouseDownCoord);
+            this.drawEllipse(this.drawingService.baseCtx, this.mouseDownCoord);
             this.clearPath();
         }
         this.mouseDown = false;
@@ -86,13 +86,27 @@ export class RectangleService extends Tool {
         ctx.beginPath();
         ctx.strokeStyle = this.currentColourService.getSecondaryColorRgba();
         ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
-        ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+
+        const startCoord = { ...this.firstGrid };
+        const width = finalGrid.x;
+        const height = finalGrid.y;
+
+        ctx.ellipse(startCoord.x + width / 2, startCoord.y + height / 2, Math.abs(width / 2), Math.abs(height / 2), 0, 0, REVOLUTION, false);
+        ctx.stroke();
     }
 
     drawFilled(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.beginPath();
         ctx.fillStyle = this.currentColourService.getPrimaryColorRgba();
-        ctx.fillRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+        ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
+
+        const startCoord = { ...this.firstGrid };
+        const width = finalGrid.x;
+        const height = finalGrid.y;
+
+        ctx.ellipse(startCoord.x + width / 2, startCoord.y + height / 2, Math.abs(width / 2), Math.abs(height / 2), 0, 0, REVOLUTION, false);
+        ctx.fill();
+        ctx.stroke();
     }
 
     drawFilledOutline(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
@@ -100,8 +114,25 @@ export class RectangleService extends Tool {
         ctx.fillStyle = this.currentColourService.getPrimaryColorRgba();
         ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
         ctx.strokeStyle = this.currentColourService.getSecondaryColorRgba();
-        ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
-        ctx.fillRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+
+        const startCoord = { ...this.firstGrid };
+        const width = finalGrid.x;
+        const height = finalGrid.y;
+
+        ctx.ellipse(
+            startCoord.x + width / 2,
+            startCoord.y + height / 2,
+            Math.abs(width / 2 - (this.lineThickness || DEFAULT_MIN_THICKNESS)),
+            Math.abs(height / 2 - (this.lineThickness || DEFAULT_MIN_THICKNESS)),
+            0,
+            0,
+            REVOLUTION,
+            false,
+        );
+        ctx.fill();
+        ctx.stroke();
+        ctx.ellipse(startCoord.x + width / 2, startCoord.y + height / 2, Math.abs(width / 2), Math.abs(height / 2), 0, 0, REVOLUTION, false);
+        ctx.stroke();
     }
 
     private isMouseInFirstQuadrant(): boolean {
@@ -132,8 +163,9 @@ export class RectangleService extends Tool {
         return Math.abs(this.mouseDownCoord.y) > Math.abs(this.mouseDownCoord.x);
     }
 
-    drawSquare(grid: Vec2): void {
+    drawCircle(grid: Vec2): void {
         if (this.isMouseInFirstQuadrant()) {
+            console.log(this.mouseDownCoord);
             grid.x = grid.y = Math.min(this.mouseDownCoord.x, this.mouseDownCoord.y);
         }
 
@@ -150,7 +182,7 @@ export class RectangleService extends Tool {
         }
     }
 
-    private drawRectangle(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+    private drawEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         switch (this.shapeStyle) {
             case ShapeStyle.Outline:
                 this.drawOutline(ctx, finalGrid);
@@ -176,9 +208,9 @@ export class RectangleService extends Tool {
         this.drawingService.previewCtx.beginPath();
         this.drawPerimeter(this.drawingService.previewCtx, currentCoord);
         if (this.shiftDown) {
-            this.drawSquare(currentCoord);
+            this.drawCircle(currentCoord);
         }
-        this.drawRectangle(this.drawingService.previewCtx, currentCoord);
+        this.drawEllipse(this.drawingService.previewCtx, currentCoord);
         this.drawingService.previewCtx.closePath();
     }
 

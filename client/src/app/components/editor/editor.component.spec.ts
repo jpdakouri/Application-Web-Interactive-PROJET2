@@ -12,19 +12,24 @@ import { HueSelectorComponent } from '@app/components/colour-components/hue-sele
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { ToolAttributeBarComponent } from '@app/components/toolbar-components/tool-attribute-bar/tool-attribute-bar.component';
 import { ToolbarComponent } from '@app/components/toolbar-components/toolbar/toolbar.component';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { ToolManagerServiceMock } from '@app/tests-mocks/tool-manager-mock';
 import { KeyboardButton } from '@app/utils/enums/list-boutton-pressed';
 import { EditorComponent } from './editor.component';
+import SpyObj = jasmine.SpyObj;
 
 describe('EditorComponent', () => {
     let component: EditorComponent;
     let fixture: ComponentFixture<EditorComponent>;
     let toolManagerServiceMock: ToolManagerServiceMock;
+    let drawingServiceSpy: SpyObj<DrawingService>;
+
     // tslint:disable-next-line:prefer-const
     // let emitterSpy: jasmine.SpyObj<ToolManagerServiceMock>;
 
     beforeEach(async(() => {
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['createNewDrawing', 'restoreCanvas']);
         toolManagerServiceMock = new ToolManagerServiceMock();
         TestBed.configureTestingModule({
             declarations: [
@@ -39,7 +44,10 @@ describe('EditorComponent', () => {
                 HueSelectorComponent,
             ],
             imports: [MatSliderModule, MatDividerModule, MatButtonModule, MatIconModule, FormsModule],
-            providers: [{ provide: ToolManagerService, useValue: toolManagerServiceMock }],
+            providers: [
+                { provide: ToolManagerService, useValue: toolManagerServiceMock },
+                { provide: DrawingService, useValue: drawingServiceSpy },
+            ],
         }).compileComponents();
     }));
 
@@ -60,6 +68,7 @@ describe('EditorComponent', () => {
         component.ngAfterViewInit();
         expect(component.setEditorMinWidth).toHaveBeenCalled();
     });
+
     it('#saveEditorMinWidth should set this.editorMinWidth to correct value', () => {
         const EDITOR_MIN_WIDTH_FAKE_VALUE = 100;
         component.saveEditorMinWidth(EDITOR_MIN_WIDTH_FAKE_VALUE);
@@ -75,7 +84,7 @@ describe('EditorComponent', () => {
         expect(editorMinWidth).toEqual(EDITOR_MIN_WIDTH_FAKE_VALUE);
     });
 
-    it(' #onKeyUp should call set the right tool if input is valide ', () => {
+    it(' #onKeyUp should call set the right tool if input is valid', () => {
         const goodInput = { key: KeyboardButton.Rectangle } as KeyboardEvent;
         component.onKeyUp(goodInput);
         expect(toolManagerServiceMock.emitToolChange).toHaveBeenCalled();
@@ -88,5 +97,22 @@ describe('EditorComponent', () => {
         const badInput = { key: KeyboardButton.InvalidInput } as KeyboardEvent;
         component.onKeyUp(badInput);
         expect(toolManagerServiceMock.emitToolChange).not.toHaveBeenCalled();
+    });
+
+    it(' #onKeyUp should call create new drawing if input is valid ', () => {
+        const goodInput = { key: KeyboardButton.NewDrawing, ctrlKey: true } as KeyboardEvent;
+        component.onKeyUp(goodInput);
+        expect(drawingServiceSpy.createNewDrawing).toHaveBeenCalled();
+    });
+
+    it(' #onKeyUp should not call create new drawing if input is invalid ', () => {
+        const goodInput = { key: KeyboardButton.NewDrawing, ctrlKey: false } as KeyboardEvent;
+        component.onKeyUp(goodInput);
+        expect(drawingServiceSpy.createNewDrawing).not.toHaveBeenCalled();
+    });
+
+    it('should create new drawing when new drawing button is clicked', () => {
+        component.onCreateNewDrawing();
+        expect(drawingServiceSpy.createNewDrawing).toHaveBeenCalled();
     });
 });

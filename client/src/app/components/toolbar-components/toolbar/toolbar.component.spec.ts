@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 import { ToolbarComponent } from './toolbar.component';
@@ -12,12 +13,18 @@ describe('ToolbarComponent', () => {
     let component: ToolbarComponent;
     let fixture: ComponentFixture<ToolbarComponent>;
     let toolManagerServiceSpy: SpyObj<ToolManagerService>;
+    let drawingServiceSpy: SpyObj<DrawingService>;
+
     beforeEach(async(() => {
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['createNewDrawing']);
         toolManagerServiceSpy = jasmine.createSpyObj('ToolManagerService', ['setCurrentTool', 'emitToolChange', 'isCurrentTool']);
 
         TestBed.configureTestingModule({
             declarations: [ToolbarComponent],
-            providers: [{ provide: ToolManagerService, useValue: toolManagerServiceSpy }],
+            providers: [
+                { provide: ToolManagerService, useValue: toolManagerServiceSpy },
+                { provide: DrawingService, useValue: drawingServiceSpy },
+            ],
             imports: [MatIconModule, MatDividerModule, MatButtonModule],
         }).compileComponents();
     }));
@@ -53,5 +60,10 @@ describe('ToolbarComponent', () => {
         expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(5)).not.toEqual([ToolsNames.Pencil]);
         expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(6)).toEqual([ToolsNames.Pencil]);
         expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(6)).not.toEqual([ToolsNames.Eraser]);
+    });
+
+    it('should create new drawing when new drawing button is clicked', () => {
+        component.onCreateNewDrawing();
+        expect(drawingServiceSpy.createNewDrawing).toHaveBeenCalled();
     });
 });

@@ -51,7 +51,7 @@ export class HueSelectorComponent implements AfterViewInit {
         this.drawSelectorInteriorBlackOutline();
     }
 
-    drawSelectorWhiteInterior(): void {
+    private drawSelectorWhiteInterior(): void {
         this.sliderCanvasContext.beginPath();
         this.sliderCanvasContext.strokeStyle = SELECTOR_COLOR;
         this.sliderCanvasContext.lineWidth = SELECTOR_WIDTH;
@@ -60,7 +60,7 @@ export class HueSelectorComponent implements AfterViewInit {
         this.sliderCanvasContext.closePath();
     }
 
-    drawSelectorBlackOutline(): void {
+    private drawSelectorBlackOutline(): void {
         this.sliderCanvasContext.beginPath();
         this.sliderCanvasContext.strokeStyle = SELECTOR_OUTLINE_COLOR;
         this.sliderCanvasContext.lineWidth = SELECTOR_OUTLINE_WIDTH;
@@ -74,7 +74,7 @@ export class HueSelectorComponent implements AfterViewInit {
         this.sliderCanvasContext.closePath();
     }
 
-    drawSelectorInteriorBlackOutline(): void {
+    private drawSelectorInteriorBlackOutline(): void {
         this.sliderCanvasContext.beginPath();
         this.sliderCanvasContext.strokeStyle = SELECTOR_OUTLINE_COLOR;
         this.sliderCanvasContext.lineWidth = SELECTOR_OUTLINE_WIDTH;
@@ -124,7 +124,7 @@ export class HueSelectorComponent implements AfterViewInit {
         this.isMouseDown = true;
         this.selectedHeight = mouseEvent.offsetY;
         this.draw();
-        this.emitColor(mouseEvent.offsetX, mouseEvent.offsetY);
+        if (this.isValidPosition(mouseEvent.offsetX, mouseEvent.offsetY)) this.emitColor(mouseEvent.offsetX, mouseEvent.offsetY);
     }
 
     onMouseMove(mouseEvent: MouseEvent): void {
