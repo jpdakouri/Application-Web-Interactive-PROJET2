@@ -153,32 +153,37 @@ describe('ToolManagerService', () => {
         expect(emitterSpy).toHaveBeenCalledWith(ToolsNames.Rectangle);
     });
 
-    it('#emitToolChange should update all currentAttributes values', () => {
-        const FAKE_DOT_RADIUS = 5;
-        const FAKE_LINE_THICKNESS = 10;
+    it('#emitToolChange should update all currentAttributes shapeStyle and showDots', () => {
         const FAKE_SHAPE_STYLE = ShapeStyle.Outline;
         const FAKE_SHOW_DOTS = true;
-        const WRONG_FAKE_DOT_RADIUS = 15;
-        const WRONG_FAKE_LINE_THICKNESS = 20;
         const WRONG_FAKE_SHAPE_STYLE = ShapeStyle.Filled;
         const WRONG_FAKE_SHOW_DOTS = false;
-        service.toolBox[ToolsNames.Pencil].dotRadius = WRONG_FAKE_DOT_RADIUS;
-        service.toolBox[ToolsNames.Pencil].lineThickness = WRONG_FAKE_LINE_THICKNESS;
         service.toolBox[ToolsNames.Pencil].shapeStyle = WRONG_FAKE_SHAPE_STYLE;
         service.toolBox[ToolsNames.Pencil].showDots = WRONG_FAKE_SHOW_DOTS;
         service.currentTool = ToolsNames.Pencil;
-        service.toolBox[ToolsNames.Rectangle].dotRadius = FAKE_DOT_RADIUS;
-        service.toolBox[ToolsNames.Rectangle].lineThickness = FAKE_LINE_THICKNESS;
         service.toolBox[ToolsNames.Rectangle].shapeStyle = FAKE_SHAPE_STYLE;
         service.toolBox[ToolsNames.Rectangle].showDots = FAKE_SHOW_DOTS;
         service.emitToolChange(ToolsNames.Rectangle);
-        expect(service.currentAttributes.DotRadius).toEqual(FAKE_DOT_RADIUS);
-        expect(service.currentAttributes.LineThickness).toEqual(FAKE_LINE_THICKNESS);
         expect(service.currentAttributes.ShapeStyle).toEqual(FAKE_SHAPE_STYLE);
         expect(service.currentAttributes.ShowDots).toEqual(FAKE_SHOW_DOTS);
-        expect(service.currentAttributes.DotRadius).not.toEqual(WRONG_FAKE_DOT_RADIUS);
-        expect(service.currentAttributes.LineThickness).not.toEqual(WRONG_FAKE_LINE_THICKNESS);
         expect(service.currentAttributes.ShapeStyle).not.toEqual(WRONG_FAKE_SHAPE_STYLE);
         expect(service.currentAttributes.ShowDots).not.toEqual(WRONG_FAKE_SHOW_DOTS);
+    });
+
+    it('#emitToolChange should update currentAttributes dotRadius and lineThickness', () => {
+        const FAKE_DOT_RADIUS = 5;
+        const FAKE_LINE_THICKNESS = 10;
+        const WRONG_FAKE_DOT_RADIUS = 15;
+        const WRONG_FAKE_LINE_THICKNESS = 20;
+        service.toolBox[ToolsNames.Pencil].dotRadius = WRONG_FAKE_DOT_RADIUS;
+        service.toolBox[ToolsNames.Pencil].lineThickness = WRONG_FAKE_LINE_THICKNESS;
+        service.currentTool = ToolsNames.Pencil;
+        service.toolBox[ToolsNames.Rectangle].dotRadius = FAKE_DOT_RADIUS;
+        service.toolBox[ToolsNames.Rectangle].lineThickness = FAKE_LINE_THICKNESS;
+        service.emitToolChange(ToolsNames.Rectangle);
+        expect(service.currentAttributes.DotRadius).toEqual(FAKE_DOT_RADIUS);
+        expect(service.currentAttributes.LineThickness).toEqual(FAKE_LINE_THICKNESS);
+        expect(service.currentAttributes.DotRadius).not.toEqual(WRONG_FAKE_DOT_RADIUS);
+        expect(service.currentAttributes.LineThickness).not.toEqual(WRONG_FAKE_LINE_THICKNESS);
     });
 });

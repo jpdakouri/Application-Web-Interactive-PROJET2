@@ -103,26 +103,6 @@ describe('DrawingComponent', () => {
         expect(canvasWidth).toEqual(EXPECTED_CANVAS_WIDTH);
     });
 
-    // it('canvas should have a default WIDTH and HEIGHT that is half of working zone dimensions', () => {
-    //     const MINIMUM_CANVAS_WIDTH = 250;
-    //     const MINIMUM_CANVAS_HEIGHT = 250;
-    //     const spy = spyOnProperty(window, 'innerHeight', 'get').and.returnValue();
-    //     const workingZoneWidth = window.innerWidth - TOOLBAR_WIDTH;
-    //     const workingZoneHeight = window.innerHeight;
-    //     // tslint:disable: no-string-literal
-    //     const canvasHeight = component['canvasSize'].y;
-    //     const canvasWidth = component['canvasSize'].x;
-    //     const desiredCanvasHeight = workingZoneHeight / 2;
-    //     const desiredCanvasWidth = workingZoneWidth / 2;
-    //     if (desiredCanvasHeight < MINIMUM_CANVAS_HEIGHT || desiredCanvasWidth < MINIMUM_CANVAS_WIDTH) {
-    //         expect(canvasHeight).toEqual(MINIMUM_CANVAS_HEIGHT);
-    //         expect(canvasWidth).toEqual(MINIMUM_CANVAS_WIDTH);
-    //     } else {
-    //         expect(canvasHeight).toEqual(workingZoneHeight / 2);
-    //         expect(canvasWidth).toEqual(workingZoneWidth / 2);
-    //     }
-    // });
-
     it('should get stubTool', () => {
         const currentTool = component.currentTool;
         expect(currentTool).toEqual(toolStub);

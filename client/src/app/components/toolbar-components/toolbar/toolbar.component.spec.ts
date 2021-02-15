@@ -46,20 +46,11 @@ describe('ToolbarComponent', () => {
     });
     it("#isSelected should call toolManagerService's #isCurrentTool with correct argument", () => {
         // tslint:disable: no-magic-numbers
-
         component.isSelected(ToolsNames.Pencil);
         expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(0)).toEqual([ToolsNames.Pencil]);
-        expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(0)).not.toEqual([ToolsNames.Line]);
-        expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(1)).toEqual([ToolsNames.Aerosol]);
-        expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(1)).not.toEqual([ToolsNames.Ellipse]);
         expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(2)).toEqual([ToolsNames.Eraser]);
-        expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(3)).toEqual([ToolsNames.Rectangle]);
-        expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(3)).not.toEqual([ToolsNames.Aerosol]);
         expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(4)).toEqual([ToolsNames.Ellipse]);
-        expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(5)).toEqual([ToolsNames.Line]);
-        expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(5)).not.toEqual([ToolsNames.Pencil]);
         expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(6)).toEqual([ToolsNames.Pencil]);
-        expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(6)).not.toEqual([ToolsNames.Eraser]);
     });
 
     it('should create new drawing when new drawing button is clicked', () => {
