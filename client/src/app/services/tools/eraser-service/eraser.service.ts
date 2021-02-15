@@ -39,6 +39,7 @@ export class EraserService extends Tool {
     }
 
     onMouseMove(event: MouseEvent): void {
+        this.eraserActive = true;
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
@@ -47,6 +48,7 @@ export class EraserService extends Tool {
     }
 
     onMouseLeave(event: MouseEvent): void {
+        this.eraserActive = false;
         if (this.mouseDown) {
             this.pathData.push(this.getPositionFromMouse(event));
             this.erase(this.drawingService.baseCtx, this.pathData);

@@ -5,8 +5,10 @@ import { CanvasResizerService } from '@app/services/canvas-resizer/canvas-resize
 import { DEFAULT_HEIGHT, DEFAULT_WHITE, DEFAULT_WIDTH, SIDEBAR_WIDTH, WORKING_ZONE_VISIBLE_PORTION } from '@app/services/drawing/drawing-constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
+import { MIN_ERASER_THICKNESS } from '@app/services/tools/tools-constants';
 import { Status } from '@app/utils/enums/canvas-resizer-status';
 import { ToolsNames } from '@app/utils/enums/tools-names';
+import { EraserCursor } from '@app/utils/interfaces/eraser-cursor';
 
 @Component({
     selector: 'app-drawing',
@@ -25,6 +27,20 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     private previewCtx: CanvasRenderingContext2D;
     private canvasSize: Coordinate = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
 
+    eraserCursor: EraserCursor = {
+        cursor: 'none',
+        position: 'absolute',
+        width: '3px',
+        height: '3px',
+        top: '0px',
+        left: '0px',
+        border: '2px solid black',
+        backgroundColor: 'white',
+        transform: 'translate(-50%, -50%)',
+        zIndex: '3',
+    };
+    private cursorHeight: number;
+    eraserActive: boolean = false;
     currentTool: Tool;
     toolManagerService: ToolManagerService;
     canvasResizerService: CanvasResizerService;
@@ -86,16 +102,17 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         return { x: this.canvasResizerService.canvasPreviewWidth, y: this.canvasResizerService.canvasPreviewHeight };
     }
 
-    @HostListener('window:mousemove', ['$event'])
+    @HostListener('mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
         if (this.canvasResizerService.isResizing()) {
             this.canvasResizerService.onMouseMove(event);
         } else {
             this.currentTool.onMouseMove(event);
+            this.updateEraserCursor(event);
         }
     }
 
-    @HostListener('window:mousedown', ['$event'])
+    @HostListener('mousedown', ['$event'])
     onMouseDown(event: MouseEvent): void {
         if (this.canvasResizerService.isResizing()) {
             this.canvasResizerService.onMouseDown(event);
@@ -104,7 +121,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         }
     }
 
-    @HostListener('window:mouseup', ['$event'])
+    @HostListener('mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
         if (this.canvasResizerService.isResizing()) {
             this.canvasResizerService.onMouseUp(event);
@@ -119,6 +136,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     @HostListener('mouseleave', ['$event'])
     onMouseLeave(event: MouseEvent): void {
         this.currentTool.onMouseLeave(event);
+        this.eraserActive = this.currentTool.eraserActive || false;
     }
 
     @HostListener('dblclick', ['$event'])
@@ -162,5 +180,15 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     isCurrentTool(toolName: ToolsNames): boolean {
         return this.toolManagerService.isCurrentTool(toolName);
+    }
+
+    updateEraserCursor(event: MouseEvent): void {
+        this.cursorHeight = this.currentTool.lineThickness || MIN_ERASER_THICKNESS;
+        this.eraserCursor.height = this.cursorHeight - 2 + 'px';
+        this.eraserCursor.width = this.cursorHeight - 2 + 'px';
+        const mousePosition = this.currentTool.getPositionFromMouse(event);
+        this.eraserCursor.left = mousePosition.x + 'px';
+        this.eraserCursor.top = mousePosition.y + 'px';
+        this.eraserActive = this.currentTool.eraserActive || false;
     }
 }
