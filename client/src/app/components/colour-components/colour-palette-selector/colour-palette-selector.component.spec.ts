@@ -3,14 +3,13 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { ColourPaletteSelectorComponent } from './colour-palette-selector.component';
 
-const TOP_LEFT_CORNER_RGB_BROWSER_1 = 255;
-const TOP_LEFT_CORNER_RGB_BROWSER_2 = 254;
+
 const RGB_ARRAY_SIZE = 3;
 describe('ColourPaletteSelectorComponent', () => {
     let component: ColourPaletteSelectorComponent;
     let fixture: ComponentFixture<ColourPaletteSelectorComponent>;
     let canvasContext: CanvasRenderingContext2D;
-
+    let browserSpecificTopLeftColor: number;
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [ColourPaletteSelectorComponent],
@@ -23,6 +22,8 @@ describe('ColourPaletteSelectorComponent', () => {
         fixture.detectChanges();
         const context = component.paletteCanvas.nativeElement.getContext('2d');
         if (context != null) canvasContext = context;
+        // The gradient is drawn differently by different browsers
+        browserSpecificTopLeftColor = canvasContext.getImageData(0, 0, 1, 1).data[0];
     });
 
     it('should create', () => {
@@ -33,64 +34,36 @@ describe('ColourPaletteSelectorComponent', () => {
         component.ngAfterViewInit();
         let topLeftPixelColor = canvasContext.getImageData(0, 0, 1, 1).data;
         topLeftPixelColor = topLeftPixelColor.slice(0, RGB_ARRAY_SIZE);
-        const isBrowser1 = topLeftPixelColor.some((pixel) => pixel === TOP_LEFT_CORNER_RGB_BROWSER_1);
-        if (isBrowser1) {
-            expect(topLeftPixelColor[0]).toBe(TOP_LEFT_CORNER_RGB_BROWSER_1);
-            expect(topLeftPixelColor[1]).toBe(TOP_LEFT_CORNER_RGB_BROWSER_1);
-            expect(topLeftPixelColor[2]).toBe(TOP_LEFT_CORNER_RGB_BROWSER_1);
-        } else {
-            expect(topLeftPixelColor[0]).toBe(TOP_LEFT_CORNER_RGB_BROWSER_2);
-            expect(topLeftPixelColor[1]).toBe(TOP_LEFT_CORNER_RGB_BROWSER_2);
-            expect(topLeftPixelColor[2]).toBe(TOP_LEFT_CORNER_RGB_BROWSER_2);
-        }
+        expect(topLeftPixelColor[0]).toBe(browserSpecificTopLeftColor);
+        expect(topLeftPixelColor[1]).toBe(browserSpecificTopLeftColor);
+        expect(topLeftPixelColor[2]).toBe(browserSpecificTopLeftColor);
     });
     it('onMouseDown draws the palette', () => {
         const clickEvent = new MouseEvent('mousedown');
         component.onMouseDown(clickEvent);
         let topLeftPixelColor = canvasContext.getImageData(0, 0, 1, 1).data;
         topLeftPixelColor = topLeftPixelColor.slice(0, RGB_ARRAY_SIZE);
-        const isBrowser1 = topLeftPixelColor.some((pixel) => pixel === TOP_LEFT_CORNER_RGB_BROWSER_1);
-        if (isBrowser1) {
-            expect(topLeftPixelColor[0]).toBe(TOP_LEFT_CORNER_RGB_BROWSER_1);
-            expect(topLeftPixelColor[1]).toBe(TOP_LEFT_CORNER_RGB_BROWSER_1);
-            expect(topLeftPixelColor[2]).toBe(TOP_LEFT_CORNER_RGB_BROWSER_1);
-        } else {
-            expect(topLeftPixelColor[0]).toBe(TOP_LEFT_CORNER_RGB_BROWSER_2);
-            expect(topLeftPixelColor[1]).toBe(TOP_LEFT_CORNER_RGB_BROWSER_2);
-            expect(topLeftPixelColor[2]).toBe(TOP_LEFT_CORNER_RGB_BROWSER_2);
-        }
+        expect(topLeftPixelColor[0]).toBe(browserSpecificTopLeftColor);
+        expect(topLeftPixelColor[1]).toBe(browserSpecificTopLeftColor);
+        expect(topLeftPixelColor[2]).toBe(browserSpecificTopLeftColor);
     });
     it('onMouseMove draws the palette', () => {
         const moveEvent = new MouseEvent('mousemove');
         component.onMouseMove(moveEvent);
         let topLeftPixelColor = canvasContext.getImageData(0, 0, 1, 1).data;
         topLeftPixelColor = topLeftPixelColor.slice(0, RGB_ARRAY_SIZE);
-        const isBrowser1 = topLeftPixelColor.some((pixel) => pixel === TOP_LEFT_CORNER_RGB_BROWSER_1);
-        if (isBrowser1) {
-            expect(topLeftPixelColor[0]).toBe(TOP_LEFT_CORNER_RGB_BROWSER_1);
-            expect(topLeftPixelColor[1]).toBe(TOP_LEFT_CORNER_RGB_BROWSER_1);
-            expect(topLeftPixelColor[2]).toBe(TOP_LEFT_CORNER_RGB_BROWSER_1);
-        } else {
-            expect(topLeftPixelColor[0]).toBe(TOP_LEFT_CORNER_RGB_BROWSER_2);
-            expect(topLeftPixelColor[1]).toBe(TOP_LEFT_CORNER_RGB_BROWSER_2);
-            expect(topLeftPixelColor[2]).toBe(TOP_LEFT_CORNER_RGB_BROWSER_2);
-        }
+        expect(topLeftPixelColor[0]).toBe(browserSpecificTopLeftColor);
+        expect(topLeftPixelColor[1]).toBe(browserSpecificTopLeftColor);
+        expect(topLeftPixelColor[2]).toBe(browserSpecificTopLeftColor);
     });
     it('ngOnChanges draws the palette when the hue is changed', () => {
         const redHue = 'rgba(255,0,0,1)';
         component.ngOnChanges({ hue: new SimpleChange(null, redHue, false) });
         let topLeftPixelColor = canvasContext.getImageData(0, 0, 1, 1).data;
         topLeftPixelColor = topLeftPixelColor.slice(0, RGB_ARRAY_SIZE);
-        const isBrowser1 = topLeftPixelColor.some((pixel) => pixel === TOP_LEFT_CORNER_RGB_BROWSER_1);
-        if (isBrowser1) {
-            expect(topLeftPixelColor[0]).toBe(TOP_LEFT_CORNER_RGB_BROWSER_1);
-            expect(topLeftPixelColor[1]).toBe(TOP_LEFT_CORNER_RGB_BROWSER_1);
-            expect(topLeftPixelColor[2]).toBe(TOP_LEFT_CORNER_RGB_BROWSER_1);
-        } else {
-            expect(topLeftPixelColor[0]).toBe(TOP_LEFT_CORNER_RGB_BROWSER_2);
-            expect(topLeftPixelColor[1]).toBe(TOP_LEFT_CORNER_RGB_BROWSER_2);
-            expect(topLeftPixelColor[2]).toBe(TOP_LEFT_CORNER_RGB_BROWSER_2);
-        }
+        expect(topLeftPixelColor[0]).toBe(browserSpecificTopLeftColor);
+        expect(topLeftPixelColor[1]).toBe(browserSpecificTopLeftColor);
+        expect(topLeftPixelColor[2]).toBe(browserSpecificTopLeftColor);
     });
 
     it('a circular selector is drawn around the selected location', () => {
