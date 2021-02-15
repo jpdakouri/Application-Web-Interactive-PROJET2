@@ -33,7 +33,6 @@ describe('LineService', () => {
         service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
         spyOn<any>(service, 'getPositionFromMouse').and.returnValue({ x: 100, y: 100 });
-
         mouseEvent = {
             offsetX: 100,
             offsetY: 100,

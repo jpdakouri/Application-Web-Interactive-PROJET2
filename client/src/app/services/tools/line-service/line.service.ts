@@ -115,7 +115,6 @@ export class LineService extends Tool {
             if ((distX <= 0 && distY >= 0) || (distX > 0 && distY < 0)) {
                 // second or fourth quadrant
                 // Math.tan requires rad
-                // tslint:disable:no-magic-numbers
                 return { x: mousePosition.x, y: lastDot.y - distX * Math.round(Math.tan(SHIFT_ANGLE_45)) };
             } else {
                 // first and third quadrant
