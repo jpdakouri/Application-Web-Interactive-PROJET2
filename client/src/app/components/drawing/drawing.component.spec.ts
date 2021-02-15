@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { CanvasResizerService, Status } from '@app/services/canvas-resizer/canvas-resizer.service';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
-import { CanvasResizerService, Status } from '@app/services/drawing/canvas-resizer/canvas-resizer.service';
 import { SIDEBAR_WIDTH } from '@app/services/drawing/drawing-constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.service';

@@ -29,11 +29,9 @@ export class DrawingService {
     }
 
     isCanvasBlank(): boolean {
-        // @ts-ignore
-        return !this.canvas
-            .getContext('2d')
-            .getImageData(0, 0, this.canvas.width, this.canvas.height)
-            .data.some((channel: number) => channel !== 0);
+        const pixelBuffer = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height).data;
+        const hasSomeColoredPixels = pixelBuffer.some((channel: number) => channel !== 0);
+        return !hasSomeColoredPixels;
     }
 
     createNewDrawing(): void {
