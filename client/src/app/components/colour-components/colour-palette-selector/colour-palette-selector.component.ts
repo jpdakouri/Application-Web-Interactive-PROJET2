@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, HostListener, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
-import { RGBA_BLACK, RGBA_WHITE, TRANSPARENT_RGBA_BLACK, TRANSPARENT_RGBA_WHITE } from '@app/components/components-constants';
+import { Colours } from '@app/components/components-constants';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 @Component({
     selector: 'app-colour-palette-selector',
@@ -33,19 +33,19 @@ export class ColourPaletteSelectorComponent implements AfterViewInit, OnChanges 
             const width = this.paletteCanvas.nativeElement.width;
             const height = this.paletteCanvas.nativeElement.height;
 
-            this.canvasContext.fillStyle = this.hue || RGBA_WHITE;
+            this.canvasContext.fillStyle = this.hue || Colours.RGBA_WHITE;
             this.canvasContext.fillRect(0, 0, width, height);
 
             const whiteGrad = this.canvasContext.createLinearGradient(0, 0, width, 0);
-            whiteGrad.addColorStop(0, RGBA_WHITE);
-            whiteGrad.addColorStop(1, TRANSPARENT_RGBA_WHITE);
+            whiteGrad.addColorStop(0, Colours.RGBA_WHITE);
+            whiteGrad.addColorStop(1, Colours.TRANSPARENT_RGBA_WHITE);
 
             this.canvasContext.fillStyle = whiteGrad;
             this.canvasContext.fillRect(0, 0, width, height);
 
             const blackGrad = this.canvasContext.createLinearGradient(0, 0, 0, height);
-            blackGrad.addColorStop(0, TRANSPARENT_RGBA_BLACK);
-            blackGrad.addColorStop(1, RGBA_BLACK);
+            blackGrad.addColorStop(0, Colours.TRANSPARENT_RGBA_BLACK);
+            blackGrad.addColorStop(1, Colours.RGBA_BLACK);
 
             this.canvasContext.fillStyle = blackGrad;
             this.canvasContext.fillRect(0, 0, width, height);
