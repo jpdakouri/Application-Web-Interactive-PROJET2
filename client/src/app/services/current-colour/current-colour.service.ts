@@ -58,6 +58,7 @@ export class CurrentColourService {
         this.primaryColorTransparency = transparency;
     }
     setSecondaryColorTransparency(transparency: string): void {
+        console.log(transparency);
         this.secondaryColorTransparency = transparency;
     }
     swapColors(): void {

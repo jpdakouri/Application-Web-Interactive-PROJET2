@@ -29,14 +29,14 @@ export class ColourSelectorComponent {
 
     onPrimaryColorTransparencyEntryChange(): void {
         if (this.isValidTransparency(this.primaryColourTransparency)) {
-            const TRANSPARENCY_RGB = Math.round(Number(this.primaryColourTransparency) / PERCENTAGE_MAX);
+            const TRANSPARENCY_RGB = Number(this.primaryColourTransparency) / PERCENTAGE_MAX;
             this.currentColourService.setPrimaryColorTransparency(TRANSPARENCY_RGB.toString());
         }
     }
 
     onSecondaryColorTransparencyEntryChange(): void {
         if (this.isValidTransparency(this.secondaryColourTransparency)) {
-            const TRANSPARENCY_RGB = Math.round(Number(this.secondaryColourTransparency) / PERCENTAGE_MAX);
+            const TRANSPARENCY_RGB = Number(this.secondaryColourTransparency) / PERCENTAGE_MAX;
             this.currentColourService.setSecondaryColorTransparency(TRANSPARENCY_RGB.toString());
         }
     }

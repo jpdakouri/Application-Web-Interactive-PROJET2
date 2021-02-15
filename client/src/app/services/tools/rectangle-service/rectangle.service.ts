@@ -67,7 +67,7 @@ export class RectangleService extends Tool {
     }
 
     drawPerimeter(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
-        ctx.strokeStyle = 'black';
+        ctx.strokeStyle = this.currentColourService.getSecondaryColorRgba();
 
         const startCoord = { ...this.firstGrid };
         const width = Math.abs(finalGrid.x);
