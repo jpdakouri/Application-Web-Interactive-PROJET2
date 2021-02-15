@@ -101,7 +101,6 @@ describe('EraserService', () => {
     it(' onMouseLeave should call erase if mouse was already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
-
         service.onMouseLeave(mouseEvent);
         expect(eraseSpy).toHaveBeenCalled();
     });
@@ -109,7 +108,6 @@ describe('EraserService', () => {
     it(' onMouseLeave should not call erase if mouse was not already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = false;
-
         service.onMouseLeave(mouseEvent);
         expect(eraseSpy).not.toHaveBeenCalled();
     });

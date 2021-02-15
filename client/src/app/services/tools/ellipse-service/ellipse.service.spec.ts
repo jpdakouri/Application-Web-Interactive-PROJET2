@@ -191,24 +191,24 @@ describe('EllipseService', () => {
         service['shiftDown'] = true;
         const expected = { x: 200, y: 200 } as Vec2;
         const val = service.mouseDownCoord;
-        service.drawCircle(val);
+        service['drawCircle'](val);
         expect(val).toEqual(expected);
 
         service.mouseDownCoord = { x: -300, y: 200 };
         const val2 = service.mouseDownCoord;
-        service.drawCircle(val2);
+        service['drawCircle'](val2);
         const expected2 = { x: 200, y: 200 } as Vec2;
         expect(val).toEqual(expected2);
 
         service.mouseDownCoord = { x: 200, y: -300 };
         const val3 = service.mouseDownCoord;
-        service.drawCircle(val3);
+        service['drawCircle'](val3);
         const expected3 = { x: 200, y: 200 } as Vec2;
         expect(val).toEqual(expected3);
 
         service.mouseDownCoord = { x: -300, y: -200 };
         const val4 = service.mouseDownCoord;
-        service.drawCircle(val4);
+        service['drawCircle'](val4);
         const expected4 = { x: 200, y: 200 } as Vec2;
         expect(val).toEqual(expected4);
     });
@@ -216,7 +216,6 @@ describe('EllipseService', () => {
     it(' drawPerimeter works even when there is a negative coordinate in x', () => {
         const contextSpyObj = jasmine.createSpyObj('CanvasRenderingContext2D', ['strokeRect', 'strokeStyle']);
         const finalGrid: Vec2 = { x: -100, y: 100 };
-        drawPerimeterSpy.and.stub();
         service['drawPerimeter'](contextSpyObj, finalGrid);
         expect(drawPerimeterSpy).toHaveBeenCalledWith(contextSpyObj, finalGrid);
     });
@@ -224,7 +223,6 @@ describe('EllipseService', () => {
     it(' drawPerimeter works even when there is a negative coordinate in x', () => {
         const contextSpyObj = jasmine.createSpyObj('CanvasRenderingContext2D', ['strokeRect', 'strokeStyle']);
         const finalGrid: Vec2 = { x: 100, y: -100 };
-        drawPerimeterSpy.and.stub();
         service['drawPerimeter'](contextSpyObj, finalGrid);
         expect(drawPerimeterSpy).toHaveBeenCalledWith(contextSpyObj, finalGrid);
     });

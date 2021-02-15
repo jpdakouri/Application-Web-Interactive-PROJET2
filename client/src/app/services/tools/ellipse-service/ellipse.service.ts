@@ -3,7 +3,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { DEFAULT_MIN_THICKNESS, REVOLUTION } from '@app/services/tools/tools-constants';
+import { DEFAULT_MIN_THICKNESS } from '@app/services/tools/tools-constants';
 import { KeyboardKeys, MouseButton, sign } from '@app/utils/enums/rectangle-enums';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 
@@ -91,7 +91,7 @@ export class EllipseService extends Tool {
         const width = finalGrid.x;
         const height = finalGrid.y;
 
-        ctx.ellipse(startCoord.x + width / 2, startCoord.y + height / 2, Math.abs(width / 2), Math.abs(height / 2), 0, 0, REVOLUTION, false);
+        ctx.ellipse(startCoord.x + width / 2, startCoord.y + height / 2, Math.abs(width / 2), Math.abs(height / 2), 0, 0, 2 * Math.PI, false);
         ctx.stroke();
     }
 
@@ -104,7 +104,7 @@ export class EllipseService extends Tool {
         const width = finalGrid.x;
         const height = finalGrid.y;
 
-        ctx.ellipse(startCoord.x + width / 2, startCoord.y + height / 2, Math.abs(width / 2), Math.abs(height / 2), 0, 0, REVOLUTION, false);
+        ctx.ellipse(startCoord.x + width / 2, startCoord.y + height / 2, Math.abs(width / 2), Math.abs(height / 2), 0, 0, 2 * Math.PI, false);
         ctx.fill();
         ctx.stroke();
     }
@@ -126,32 +126,32 @@ export class EllipseService extends Tool {
             Math.abs(height / 2 - (this.lineThickness || DEFAULT_MIN_THICKNESS)),
             0,
             0,
-            REVOLUTION,
+            2 * Math.PI,
             false,
         );
         ctx.fill();
         ctx.stroke();
-        ctx.ellipse(startCoord.x + width / 2, startCoord.y + height / 2, Math.abs(width / 2), Math.abs(height / 2), 0, 0, REVOLUTION, false);
+        ctx.ellipse(startCoord.x + width / 2, startCoord.y + height / 2, Math.abs(width / 2), Math.abs(height / 2), 0, 0, 2 * Math.PI, false);
         ctx.stroke();
     }
 
     private isMouseInFirstQuadrant(): boolean {
-        // souris dans cadrant en bas a droite (+/+)
+        //  mouse is in first quadrant (+/+)
         return Math.sign(this.mouseDownCoord.x) === sign.Positive && Math.sign(this.mouseDownCoord.y) === sign.Positive;
     }
 
     private isMouseInSecondQuadrant(): boolean {
-        // souris dans cadrant en haut a gauche (-/-)
+        // mouse is in third quadrant (-/-)
         return Math.sign(this.mouseDownCoord.x) === sign.Negative && Math.sign(this.mouseDownCoord.y) === sign.Negative;
     }
 
     private isMouseInThirdQuadrant(): boolean {
-        // souris dans cadrant en haute droite (+/-)
+        // mouse is in fourth quadrant (+/-)
         return Math.sign(this.mouseDownCoord.x) === sign.Negative && Math.sign(this.mouseDownCoord.y) === sign.Positive;
     }
 
     private isMouseInFourthQuadrant(): boolean {
-        // souris dans cadrant en haute droite (-/+)
+        // mouse is in second quadrant (-/+)
         return Math.sign(this.mouseDownCoord.x) === sign.Positive && Math.sign(this.mouseDownCoord.y) === sign.Negative;
     }
 
@@ -163,9 +163,8 @@ export class EllipseService extends Tool {
         return Math.abs(this.mouseDownCoord.y) > Math.abs(this.mouseDownCoord.x);
     }
 
-    drawCircle(grid: Vec2): void {
+    private drawCircle(grid: Vec2): void {
         if (this.isMouseInFirstQuadrant()) {
-            console.log(this.mouseDownCoord);
             grid.x = grid.y = Math.min(this.mouseDownCoord.x, this.mouseDownCoord.y);
         }
 

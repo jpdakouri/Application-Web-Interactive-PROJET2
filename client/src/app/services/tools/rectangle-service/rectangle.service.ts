@@ -53,7 +53,8 @@ export class RectangleService extends Tool {
         if (event.key === KeyboardKeys.Escape) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.clearPath();
-        } else if (event.key === KeyboardKeys.Shift) {
+        }
+        if (event.key === KeyboardKeys.Shift) {
             this.shiftDown = true;
             this.updatePreview();
         }
@@ -132,7 +133,7 @@ export class RectangleService extends Tool {
         return Math.abs(this.mouseDownCoord.y) > Math.abs(this.mouseDownCoord.x);
     }
 
-    drawSquare(grid: Vec2): void {
+    private drawSquare(grid: Vec2): void {
         if (this.isMouseInFirstQuadrant()) {
             grid.x = grid.y = Math.min(this.mouseDownCoord.x, this.mouseDownCoord.y);
         }
