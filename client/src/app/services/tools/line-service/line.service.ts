@@ -118,23 +118,33 @@ export class LineService extends Tool {
         // transform rad in degrees
         angle = (Math.atan(distY / distX) * HALF_CIRCLE) / Math.PI;
         // 45 (135, 225, 315) case
-        if (
-            (angle >= SHIFT_ANGLE_HALF_45 && angle <= SHIFT_ANGLE_45 + SHIFT_ANGLE_HALF_45 / 2) ||
-            (-angle >= SHIFT_ANGLE_HALF_45 && -angle <= SHIFT_ANGLE_45 + SHIFT_ANGLE_HALF_45 / 2)
-        ) {
-            if ((distX > 0 && distY < 0) || (distX <= 0 && distY >= 0)) {
+        if (this.isBetweenAxes(angle)) {
+            if ((distX <= 0 && distY >= 0) || (distX > 0 && distY < 0)) {
+                // second or fourth quadrant
                 // Math.tan requires rad
-                return { x: mousePosition.x, y: lastDot.y - distX * Math.tan(SHIFT_ANGLE_45 / (2 * Math.PI)) };
+                return { x: mousePosition.x, y: lastDot.y - distX * Math.round(Math.tan(Math.PI / (HALF_CIRCLE / SHIFT_ANGLE_45))) };
             } else {
-                return { x: mousePosition.x, y: lastDot.y + distX * Math.tan(SHIFT_ANGLE_45 / (2 * Math.PI)) };
+                // first and third quadrant
+                return { x: mousePosition.x, y: lastDot.y + distX * Math.round(Math.tan(Math.PI / (HALF_CIRCLE / SHIFT_ANGLE_45))) };
             }
         }
         // 90 (270) case
-        if (angle > SHIFT_ANGLE_45 + SHIFT_ANGLE_HALF_45 / 2 || -angle > SHIFT_ANGLE_45 + SHIFT_ANGLE_HALF_45 / 2) {
+        if (this.isNearYAxis(angle)) {
             return { x: lastDot.x, y: mousePosition.y };
         }
         // 0 (180) case
         return { x: mousePosition.x, y: lastDot.y };
+    }
+
+    private isBetweenAxes(angle: number): boolean {
+        return (
+            (angle >= SHIFT_ANGLE_HALF_45 && angle <= SHIFT_ANGLE_45 + SHIFT_ANGLE_HALF_45 / 2) ||
+            (-angle >= SHIFT_ANGLE_HALF_45 && -angle <= SHIFT_ANGLE_45 + SHIFT_ANGLE_HALF_45 / 2)
+        );
+    }
+
+    private isNearYAxis(angle: number): boolean {
+        return angle > SHIFT_ANGLE_45 + SHIFT_ANGLE_HALF_45 / 2 || -angle > SHIFT_ANGLE_45 + SHIFT_ANGLE_HALF_45 / 2;
     }
 
     private clearPath(): void {
