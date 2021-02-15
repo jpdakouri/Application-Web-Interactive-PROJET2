@@ -14,5 +14,7 @@ export class ToolManagerServiceMock {
     getCurrentToolInstance(): Tool {
         return this.currentTool;
     }
-    isCurrentTool(): void {}
+    isCurrentTool(): void {
+        return;
+    }
 }
