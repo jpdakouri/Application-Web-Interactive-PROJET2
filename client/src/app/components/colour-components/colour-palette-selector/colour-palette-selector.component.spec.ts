@@ -34,6 +34,7 @@ describe('ColourPaletteSelectorComponent', () => {
         expect(topLeftPixelColor[1]).toBe(TOP_LEFT_CORNER_RGB);
         expect(topLeftPixelColor[2]).toBe(TOP_LEFT_CORNER_RGB);
     });
+
     it('onMouseDown draws the palette', () => {
         const clickEvent = new MouseEvent('mousedown');
         component.onMouseDown(clickEvent);
@@ -42,6 +43,7 @@ describe('ColourPaletteSelectorComponent', () => {
         expect(topLeftPixelColor[1]).toBe(TOP_LEFT_CORNER_RGB);
         expect(topLeftPixelColor[2]).toBe(TOP_LEFT_CORNER_RGB);
     });
+
     it('onMouseMove draws the palette', () => {
         const moveEvent = new MouseEvent('mousemove');
         component.onMouseMove(moveEvent);
@@ -50,6 +52,7 @@ describe('ColourPaletteSelectorComponent', () => {
         expect(topLeftPixelColor[1]).toBe(TOP_LEFT_CORNER_RGB);
         expect(topLeftPixelColor[2]).toBe(TOP_LEFT_CORNER_RGB);
     });
+
     it('ngOnChanges draws the palette when the hue is changed', () => {
         const redHue = 'rgba(255,0,0,1)';
         component.ngOnChanges({ hue: new SimpleChange(null, redHue, false) });
