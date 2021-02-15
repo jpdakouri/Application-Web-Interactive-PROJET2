@@ -104,36 +104,23 @@ fdescribe('LineService', () => {
 
         service.onMouseUp(mouseEvent);
         expect(desiredAngleSpy).toHaveBeenCalled();
-
-        service['pathData'].push({ x: 2, y: 1 });
-        service.mouseDown = true;
-        service['shiftPressed'] = true;
-
-        service.onMouseUp(mouseEvent);
-        expect(desiredAngleSpy).toHaveBeenCalled();
-
-        service['pathData'].push({ x: 2, y: 0 });
-        service.mouseDown = true;
-        service['shiftPressed'] = true;
-
-        service.onMouseUp(mouseEvent);
-        expect(desiredAngleSpy).toHaveBeenCalled();
     });
 
-    it(' onMouseUp should call desiredAngle if mouse was already down and shift pressed', () => {
+    it(' desiredAngle shoulld return the right value', () => {
+        const desiredAngleSpy = spyOn<any>(service, 'desiredAngle').and.callThrough();
+
         service['pathData'].push({ x: 0, y: 0 });
         service.mouseDown = true;
         service['shiftPressed'] = true;
-        const desiredAngleSpy = spyOn<any>(service, 'desiredAngle').and.callThrough();
 
-        service.onMouseUp({ offsetX: 1, offsetY: 3, button: MouseButton.Right } as MouseEvent);
+        service.onMouseUp({ offsetX: 2, offsetY: -3 } as MouseEvent);
         expect(desiredAngleSpy).toHaveBeenCalled();
 
         service['pathData'].push({ x: 0, y: 0 });
         service.mouseDown = true;
         service['shiftPressed'] = true;
 
-        service.onMouseUp({ offsetX: 2, offsetY: -3, button: MouseButton.Right } as MouseEvent);
+        service.onMouseUp({ offsetX: -10, offsetY: 7 } as MouseEvent);
         expect(desiredAngleSpy).toHaveBeenCalled();
     });
 
