@@ -107,21 +107,11 @@ fdescribe('LineService', () => {
     });
 
     it(' desiredAngle shoulld return the right value', () => {
-        const desiredAngleSpy = spyOn<any>(service, 'desiredAngle').and.callThrough();
+        service['pathData'].push({ x: 0, y: 0 });
+        expect(service['desiredAngle']({ x: 2, y: -3 })).toEqual({ x: 0, y: -3 });
 
         service['pathData'].push({ x: 0, y: 0 });
-        service.mouseDown = true;
-        service['shiftPressed'] = true;
-
-        service.onMouseUp({ offsetX: 2, offsetY: -3 } as MouseEvent);
-        expect(desiredAngleSpy).toHaveBeenCalled();
-
-        service['pathData'].push({ x: 0, y: 0 });
-        service.mouseDown = true;
-        service['shiftPressed'] = true;
-
-        service.onMouseUp({ offsetX: -10, offsetY: 7 } as MouseEvent);
-        expect(desiredAngleSpy).toHaveBeenCalled();
+        expect(service['desiredAngle']({ x: -10, y: 7 })).toEqual({ x: -10, y: 10 });
     });
 
     it('onMouseMove should call previewUpdate if the drawing has started', () => {

@@ -117,16 +117,16 @@ export class LineService extends Tool {
         const distY = mousePosition.y - lastDot.y;
         // transform rad in degrees
         angle = (Math.atan(distY / distX) * HALF_CIRCLE) / Math.PI;
-
         // 45 (135, 225, 315) case
         if (
             (angle >= SHIFT_ANGLE_HALF_45 && angle <= SHIFT_ANGLE_45 + SHIFT_ANGLE_HALF_45 / 2) ||
             (-angle >= SHIFT_ANGLE_HALF_45 && -angle <= SHIFT_ANGLE_45 + SHIFT_ANGLE_HALF_45 / 2)
         ) {
             if ((distX > 0 && distY < 0) || (distX <= 0 && distY >= 0)) {
-                return { x: mousePosition.x, y: lastDot.y - distX * Math.tan(SHIFT_ANGLE_45) };
+                // Math.tan requires rad
+                return { x: mousePosition.x, y: lastDot.y - distX * Math.tan(SHIFT_ANGLE_45 / (2 * Math.PI)) };
             } else {
-                return { x: mousePosition.x, y: lastDot.y + distX * Math.tan(SHIFT_ANGLE_45) };
+                return { x: mousePosition.x, y: lastDot.y + distX * Math.tan(SHIFT_ANGLE_45 / (2 * Math.PI)) };
             }
         }
         // 90 (270) case
