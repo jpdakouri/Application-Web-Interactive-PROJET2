@@ -1,6 +1,6 @@
 import { ColourHistoryService } from '@app/services/colour-history/colour-history.service';
-
 import { CurrentColourService } from './current-colour.service';
+
 describe('CurrentColourService', () => {
     let service: CurrentColourService;
 
@@ -14,6 +14,7 @@ describe('CurrentColourService', () => {
     it('should be created', () => {
         expect(service).toBeTruthy();
     });
+
     it('RGB setters and getters work properly when a different color is trying to be set', () => {
         const newPrimaryColor = '1,1,1';
         const newSecondaryColor = '2,2,2';
@@ -31,6 +32,7 @@ describe('CurrentColourService', () => {
         service.setSecondaryColorRgb(newSecondaryColor);
         expect(colourHistory.pushColour).toHaveBeenCalledTimes(0);
     });
+
     it('RGBA setters and getters work properly', () => {
         const newPrimaryTransparency = '0.5';
         const newSecondaryTransparency = '0.3';
@@ -40,6 +42,7 @@ describe('CurrentColourService', () => {
         expect(service.getSecondaryColorRgba()).toBe('rgba(255,255,255,0.3)');
         expect(colourHistory.pushColour).toHaveBeenCalledTimes(0);
     });
+
     it('swapColors only swaps RGB colors', () => {
         const newPrimaryTransparency = '0.5';
         const newSecondaryTransparency = '0.3';

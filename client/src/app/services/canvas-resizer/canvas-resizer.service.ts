@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Coordinate } from '@app/classes/coordinate';
-import { LOWER_BOUND_HEIGHT, LOWER_BOUND_WIDTH, MINIMUM_HEIGHT, MINIMUM_WIDTH, SIDEBAR_WIDTH } from '@app/services/drawing/drawing-constants';
+import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.service';
+import { LOWER_BOUND_HEIGHT, LOWER_BOUND_WIDTH, MINIMUM_HEIGHT, MINIMUM_WIDTH, SIDEBAR_WIDTH } from '@app/services/services-constants';
 import { Status } from '@app/utils/enums/canvas-resizer-status';
 export * from '@app/utils/enums/canvas-resizer-status';
 
@@ -55,7 +55,7 @@ export class CanvasResizerService {
         this.setStatus(Status.MIDDLE_BOTTOM_RESIZE);
     }
 
-    calculateNewCanvasSize(canvasSize: Coordinate): Coordinate {
+    calculateNewCanvasSize(canvasSize: Vec2): Vec2 {
         const deltaX = this.mouseService.calculateDeltaX();
         const deltaY = this.mouseService.calculateDeltaY();
         let newCoordinate = { x: canvasSize.x, y: canvasSize.y };
@@ -79,18 +79,18 @@ export class CanvasResizerService {
         return newCoordinate;
     }
 
-    calculateCanvasSize(): Coordinate {
-        const workingZone: Coordinate = this.calculateWorkingZoneSize();
+    calculateCanvasSize(): Vec2 {
+        const workingZone: Vec2 = this.calculateWorkingZoneSize();
         const newWidth = workingZone.x / 2;
         const newHeight = workingZone.y / 2;
-        const newCoordinate: Coordinate = { x: newWidth, y: newHeight };
+        const newCoordinate: Vec2 = { x: newWidth, y: newHeight };
 
         if (workingZone.x < LOWER_BOUND_WIDTH) newCoordinate.x = MINIMUM_WIDTH;
         if (workingZone.y < LOWER_BOUND_HEIGHT) newCoordinate.y = MINIMUM_HEIGHT;
         return newCoordinate;
     }
 
-    calculateWorkingZoneSize(): Coordinate {
+    calculateWorkingZoneSize(): Vec2 {
         return {
             x: window.innerWidth - SIDEBAR_WIDTH,
             y: window.innerHeight,

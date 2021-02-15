@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, HostListener, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import { Colours } from '@app/components/components-constants';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
-
 @Component({
     selector: 'app-colour-palette-selector',
     templateUrl: './colour-palette-selector.component.html',
@@ -8,50 +8,47 @@ import { CurrentColourService } from '@app/services/current-colour/current-colou
 })
 export class ColourPaletteSelectorComponent implements AfterViewInit, OnChanges {
     // Code inspiré par https://malcoded.com/posts/angular-color-picker/
+
     @Input() hue: string;
     @ViewChild('paletteCanvas') paletteCanvas: ElementRef<HTMLCanvasElement>;
     private canvasContext: CanvasRenderingContext2D;
     private mousedown: boolean = false;
-    selectedPosition: { x: number; y: number };
+    private selectedPosition: { x: number; y: number };
+
+    constructor(private currentColourService: CurrentColourService) {}
 
     ngAfterViewInit(): void {
         this.draw();
     }
 
-    constructor(private currentColourService: CurrentColourService) {}
-
     private draw(): void {
-        const RGBA_WHITE = 'rgba(255,255,255,1)';
-        const TRANSPARENT_RGBA_WHITE = 'rgba(255,255,255,0)';
-        const RGBA_BLACK = 'rgba(0,0,0,1)';
-        const TRANSPARENT_RGBA_BLACK = 'rgba(0,0,0,0)';
         if (this.canvasContext == undefined && this.paletteCanvas != undefined) {
-            const CONTEXT = this.paletteCanvas.nativeElement.getContext('2d');
-            if (CONTEXT != null) {
-                this.canvasContext = CONTEXT;
+            const context = this.paletteCanvas.nativeElement.getContext('2d');
+            if (context != null) {
+                this.canvasContext = context;
             }
         }
 
         if (this.canvasContext != undefined) {
-            const WIDTH = this.paletteCanvas.nativeElement.width;
-            const HEIGHT = this.paletteCanvas.nativeElement.height;
+            const width = this.paletteCanvas.nativeElement.width;
+            const height = this.paletteCanvas.nativeElement.height;
 
-            this.canvasContext.fillStyle = this.hue || RGBA_WHITE;
-            this.canvasContext.fillRect(0, 0, WIDTH, HEIGHT);
+            this.canvasContext.fillStyle = this.hue || Colours.RGBA_WHITE;
+            this.canvasContext.fillRect(0, 0, width, height);
 
-            const whiteGrad = this.canvasContext.createLinearGradient(0, 0, WIDTH, 0);
-            whiteGrad.addColorStop(0, RGBA_WHITE);
-            whiteGrad.addColorStop(1, TRANSPARENT_RGBA_WHITE);
+            const whiteGrad = this.canvasContext.createLinearGradient(0, 0, width, 0);
+            whiteGrad.addColorStop(0, Colours.RGBA_WHITE);
+            whiteGrad.addColorStop(1, Colours.TRANSPARENT_RGBA_WHITE);
 
             this.canvasContext.fillStyle = whiteGrad;
-            this.canvasContext.fillRect(0, 0, WIDTH, HEIGHT);
+            this.canvasContext.fillRect(0, 0, width, height);
 
-            const blackGrad = this.canvasContext.createLinearGradient(0, 0, 0, HEIGHT);
-            blackGrad.addColorStop(0, TRANSPARENT_RGBA_BLACK);
-            blackGrad.addColorStop(1, RGBA_BLACK);
+            const blackGrad = this.canvasContext.createLinearGradient(0, 0, 0, height);
+            blackGrad.addColorStop(0, Colours.TRANSPARENT_RGBA_BLACK);
+            blackGrad.addColorStop(1, Colours.RGBA_BLACK);
 
             this.canvasContext.fillStyle = blackGrad;
-            this.canvasContext.fillRect(0, 0, WIDTH, HEIGHT);
+            this.canvasContext.fillRect(0, 0, width, height);
 
             this.drawSelector();
         }
@@ -59,21 +56,21 @@ export class ColourPaletteSelectorComponent implements AfterViewInit, OnChanges 
 
     private drawSelector(): void {
         if (this.selectedPosition != undefined) {
-            const SELECTOR_COLOR = 'white';
-            const SELECTOR_RADIUS = 10;
-            const STROKE_WIDTH = 5;
-            this.canvasContext.strokeStyle = SELECTOR_COLOR;
-            this.canvasContext.fillStyle = SELECTOR_COLOR;
+            const selectorColor = 'white';
+            const selectorRadius = 10;
+            const strokeRadius = 5;
+            this.canvasContext.strokeStyle = selectorColor;
+            this.canvasContext.fillStyle = selectorColor;
             this.canvasContext.beginPath();
-            this.canvasContext.arc(this.selectedPosition.x, this.selectedPosition.y, SELECTOR_RADIUS, 0, 2 * Math.PI);
-            this.canvasContext.lineWidth = STROKE_WIDTH;
+            this.canvasContext.arc(this.selectedPosition.x, this.selectedPosition.y, selectorRadius, 0, 2 * Math.PI);
+            this.canvasContext.lineWidth = strokeRadius;
             this.canvasContext.stroke();
         }
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        const HUE_STRING = 'hue';
-        if (changes[HUE_STRING]) {
+        const hueString = 'hue';
+        if (changes[hueString]) {
             this.draw();
         }
     }
@@ -99,9 +96,9 @@ export class ColourPaletteSelectorComponent implements AfterViewInit, OnChanges 
     }
 
     private getRgbAtPosition(x: number, y: number): string {
-        const IMAGE_DATA = this.canvasContext.getImageData(x, y, 1, 1).data;
-        const RGBA_SEPARATOR = ',';
-        return IMAGE_DATA[0] + RGBA_SEPARATOR + IMAGE_DATA[1] + RGBA_SEPARATOR + IMAGE_DATA[2];
+        const imageData = this.canvasContext.getImageData(x, y, 1, 1).data;
+        const rgbaSeperator = ',';
+        return imageData[0] + rgbaSeperator + imageData[1] + rgbaSeperator + imageData[2];
     }
 
     @HostListener('contextmenu', ['$event'])

@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { KeyboardButton, MouseButton } from '@app/utils/enums/list-boutton-pressed';
+import { KeyboardButtons, MouseButtons } from '@app/utils/enums/list-boutton-pressed';
 import { LineService } from './line.service';
 
 // tslint:disable:no-any
@@ -45,7 +45,7 @@ describe('LineService', () => {
             offsetY: 100,
             x: 100,
             y: 100,
-            button: MouseButton.Left,
+            button: MouseButtons.Left,
         } as MouseEvent;
     });
 
@@ -68,7 +68,7 @@ describe('LineService', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
-            button: MouseButton.Right,
+            button: MouseButtons.Right,
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(service.mouseDown).toEqual(false);
@@ -86,7 +86,7 @@ describe('LineService', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
         const keyboardEventFalse = {
-            key: KeyboardButton.InvalidInput,
+            key: KeyboardButtons.InvalidInput,
         } as KeyboardEvent;
 
         service.onMouseUp(mouseEvent);
@@ -101,7 +101,7 @@ describe('LineService', () => {
             offsetY: 40,
             x: 100,
             y: 100,
-            button: MouseButton.Left,
+            button: MouseButtons.Left,
         } as MouseEvent;
         // spyOn<any>(service, 'getPositionFromMouse').and.returnValue({ x: 100, y: 100 });
         service['pathData'].push({ x: 0, y: 0 });
@@ -117,7 +117,7 @@ describe('LineService', () => {
         const mouseStartEvent = {
             offsetX: 0,
             offsetY: 0,
-            button: MouseButton.Left,
+            button: MouseButtons.Left,
         } as MouseEvent;
         service.onMouseUp(mouseStartEvent);
         service.onMouseMove(mouseEvent);
@@ -192,18 +192,18 @@ describe('LineService', () => {
         service['pathData'].push({ x: 0, y: 0 }, service.mouseDownCoord);
 
         service.onKeyDown({
-            key: KeyboardButton.Shift,
+            key: KeyboardButtons.Shift,
         } as KeyboardEvent);
         expect(service['shiftPressed']).toBeTrue();
 
         service.onKeyDown({
-            key: KeyboardButton.Escape,
+            key: KeyboardButtons.Escape,
         } as KeyboardEvent);
         expect(service['started']).toBeFalse();
 
         // TypeError: event.preventDefault is not a function
         service['pathData'].push({ x: 0, y: 0 }, service.mouseDownCoord);
-        const event = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButton.Backspace });
+        const event = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Backspace });
         service.onKeyDown(event);
         expect(event.preventDefault).toHaveBeenCalled();
     });
@@ -214,7 +214,7 @@ describe('LineService', () => {
         service['pathData'].push({ x: 0, y: 0 }, service.mouseDownCoord);
 
         service.onKeyUp({
-            key: KeyboardButton.Shift,
+            key: KeyboardButtons.Shift,
         } as KeyboardEvent);
         expect(service['shiftPressed']).toBeFalse();
     });

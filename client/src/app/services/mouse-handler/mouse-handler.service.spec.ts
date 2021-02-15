@@ -3,14 +3,13 @@
 /////////////////////////////////////
 
 import { TestBed } from '@angular/core/testing';
-
-import { Coordinate } from '@app/classes/coordinate';
+import { Vec2 } from '@app/classes/vec2';
 import { MouseHandlerService } from './mouse-handler.service';
 
 describe('MouseHandlerService', () => {
     let service: MouseHandlerService;
-    let starPosition: Coordinate;
-    let endPosition: Coordinate;
+    let starPosition: Vec2;
+    let endPosition: Vec2;
 
     // We have no dependencies to other classes or Angular Components
     // but we can still let Angular handle the objet creation

@@ -1,8 +1,8 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, OnInit, Output, ViewChild } from '@angular/core';
-import { Coordinate } from '@app/classes/coordinate';
 import { Tool } from '@app/classes/tool';
+import { Vec2 } from '@app/classes/vec2';
+import { DEFAULT_HEIGHT, DEFAULT_WHITE, DEFAULT_WIDTH, SIDEBAR_WIDTH, WORKING_ZONE_VISIBLE_PORTION } from '@app/components/components-constants';
 import { CanvasResizerService } from '@app/services/canvas-resizer/canvas-resizer.service';
-import { DEFAULT_HEIGHT, DEFAULT_WHITE, DEFAULT_WIDTH, SIDEBAR_WIDTH, WORKING_ZONE_VISIBLE_PORTION } from '@app/services/drawing/drawing-constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { MIN_ERASER_THICKNESS } from '@app/services/tools/tools-constants';
@@ -25,7 +25,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
-    private canvasSize: Coordinate = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
+    private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
 
     eraserCursor: EraserCursor = {
         cursor: 'none',
@@ -98,7 +98,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         return this.canvasSize.y;
     }
 
-    getPreviewCanvasSize(): Coordinate {
+    getPreviewCanvasSize(): Vec2 {
         return { x: this.canvasResizerService.canvasPreviewWidth, y: this.canvasResizerService.canvasPreviewHeight };
     }
 

@@ -1,4 +1,4 @@
-export enum MouseButton {
+export enum MouseButtons {
     Left = 0,
     Middle = 1,
     Right = 2,
@@ -6,7 +6,7 @@ export enum MouseButton {
     Forward = 4,
 }
 
-export enum KeyboardButton {
+export enum KeyboardButtons {
     Shift = 'Shift',
     Escape = 'Escape',
     Backspace = 'Backspace',
