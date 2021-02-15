@@ -53,7 +53,8 @@ export class EllipseService extends Tool {
         if (event.key === KeyboardKeys.Escape) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.clearPath();
-        } else if (event.key === KeyboardKeys.Shift) {
+        }
+        if (event.key === KeyboardKeys.Shift) {
             this.shiftDown = true;
             this.updatePreview();
         }
@@ -146,12 +147,12 @@ export class EllipseService extends Tool {
     }
 
     private isMouseInThirdQuadrant(): boolean {
-        // mouse is in fourth quadrant (+/-)
+        // mouse is in fourth quadrant (-/+)
         return Math.sign(this.mouseDownCoord.x) === sign.Negative && Math.sign(this.mouseDownCoord.y) === sign.Positive;
     }
 
     private isMouseInFourthQuadrant(): boolean {
-        // mouse is in second quadrant (-/+)
+        // mouse is in second quadrant (+/-)
         return Math.sign(this.mouseDownCoord.x) === sign.Positive && Math.sign(this.mouseDownCoord.y) === sign.Negative;
     }
 
