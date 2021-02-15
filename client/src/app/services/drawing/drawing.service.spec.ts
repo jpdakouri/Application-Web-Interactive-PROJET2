@@ -89,7 +89,7 @@ describe('DrawingService', () => {
         }, 500);
     });
 
-    it('should create new drawing when canvas is not blank', () => {
+    it('should not create new drawing when canvas is not blank', () => {
         const clearCanvasStub = spyOn(service, 'clearCanvas').and.callThrough();
         const rectangleWidth = 1;
         const rectangleHeight = 1;
@@ -99,12 +99,12 @@ describe('DrawingService', () => {
         service.createNewDrawing();
         const isCanvasBlank = service.isCanvasBlank();
 
-        expect(isCanvasBlank).toBeTrue();
-        expect(window.confirm).toHaveBeenCalledWith("Le canvas n'est pas vide! Voulez-vous garder vos modifications?");
-        expect(clearCanvasStub).toHaveBeenCalledTimes(2);
+        expect(isCanvasBlank).toBeFalse();
+        expect(window.confirm).toHaveBeenCalledWith("Le canvas n'est pas vide! Voulez-vous procéder tout de même?");
+        expect(clearCanvasStub).not.toHaveBeenCalled();
     });
 
-    it('should clear the session storage on create new drawing when canvas is not blank', () => {
+    it('should not clear the session storage on create new drawing when canvas is not blank', () => {
         const sessionStorageClearSpy = spyOn(window.sessionStorage, 'clear').and.callThrough();
         const rectangleWidth = 10;
         const rectangleHeight = 10;
@@ -114,9 +114,9 @@ describe('DrawingService', () => {
         service.createNewDrawing();
         const isCanvasBlank = service.isCanvasBlank();
 
-        expect(isCanvasBlank).toBeTrue();
-        expect(window.confirm).toHaveBeenCalledWith("Le canvas n'est pas vide! Voulez-vous garder vos modifications?");
-        expect(sessionStorageClearSpy).toHaveBeenCalled();
+        expect(isCanvasBlank).toBeFalse();
+        expect(window.confirm).toHaveBeenCalledWith("Le canvas n'est pas vide! Voulez-vous procéder tout de même?");
+        expect(sessionStorageClearSpy).not.toHaveBeenCalled();
     });
 
     it('should do nothing when canvas is blank on create new drawing', () => {
@@ -125,5 +125,20 @@ describe('DrawingService', () => {
         service.createNewDrawing();
         expect(clearCanvasStub).not.toHaveBeenCalled();
         expect(service.isCanvasBlank()).toBeTrue();
+    });
+
+    it('should clear the session storage on create new drawing when canvas is not blank', () => {
+        const sessionStorageClearSpy = spyOn(window.sessionStorage, 'clear').and.callThrough();
+        const rectangleWidth = 10;
+        const rectangleHeight = 10;
+        service.baseCtx.fillRect(0, 0, rectangleWidth, rectangleHeight);
+        service.saveCanvas();
+        spyOn(window, 'confirm').and.returnValue(true);
+        service.createNewDrawing();
+        // const isCanvasBlank = service.isCanvasBlank();
+
+        // expect(isCanvasBlank).toBeFalse();
+        expect(window.confirm).toHaveBeenCalledWith("Le canvas n'est pas vide! Voulez-vous procéder tout de même?");
+        expect(sessionStorageClearSpy).toHaveBeenCalled();
     });
 });

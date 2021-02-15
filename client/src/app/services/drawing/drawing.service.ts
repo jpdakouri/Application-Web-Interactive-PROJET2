@@ -36,7 +36,7 @@ export class DrawingService {
 
     createNewDrawing(): void {
         if (sessionStorage.getItem('canvasBuffer') && !this.isCanvasBlank()) {
-            if (!confirm("Le canvas n'est pas vide! Voulez-vous garder vos modifications?")) {
+            if (confirm("Le canvas n'est pas vide! Voulez-vous procéder tout de même?")) {
                 this.clearCanvas(this.previewCtx);
                 this.clearCanvas(this.baseCtx);
                 sessionStorage.clear();
