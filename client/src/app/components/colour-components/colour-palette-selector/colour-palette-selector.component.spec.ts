@@ -3,7 +3,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { ColourPaletteSelectorComponent } from './colour-palette-selector.component';
 
-
 const RGB_ARRAY_SIZE = 3;
 describe('ColourPaletteSelectorComponent', () => {
     let component: ColourPaletteSelectorComponent;
@@ -23,7 +22,9 @@ describe('ColourPaletteSelectorComponent', () => {
         const context = component.paletteCanvas.nativeElement.getContext('2d');
         if (context != null) canvasContext = context;
         // The gradient is drawn differently by different browsers
-        browserSpecificTopLeftColor = canvasContext.getImageData(0, 0, 1, 1).data[0];
+        const topLeftColor1 = 254;
+        const topLeftColor2 = 255;
+        browserSpecificTopLeftColor = canvasContext.getImageData(0, 0, 1, 1).data[0] === topLeftColor1 ? topLeftColor1 : topLeftColor2;
     });
 
     it('should create', () => {
