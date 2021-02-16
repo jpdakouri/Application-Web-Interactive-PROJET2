@@ -76,33 +76,6 @@ describe('DrawingComponent', () => {
         expect(drawingStub.restoreCanvas).toHaveBeenCalled();
     });
 
-    xit('canvas should have a default WIDTH and HEIGHT that is half of working zone dimensions', () => {
-        // const workingZoneWidth = window.innerWidth - SIDEBAR_WIDTH;
-        // const workingZoneHeight = window.innerHeight;
-        const EXPECTED_CANVAS_WIDTH = 300;
-        const EXPECTED_CANVAS_HEIGHT = 300;
-        // tslint:disable: no-string-literal
-        const canvasHeight = component['canvasSize'].y;
-        const canvasWidth = component['canvasSize'].x;
-        expect(canvasHeight).toEqual(EXPECTED_CANVAS_HEIGHT);
-        expect(canvasWidth).toEqual(EXPECTED_CANVAS_WIDTH);
-    });
-
-    xit('canvas should have a 250px WIDTH and HEIGHT that half of working zone dimensions is smaller than 250px', () => {
-        const EXPECTED_CANVAS_WIDTH = 250;
-        const EXPECTED_CANVAS_HEIGHT = 250;
-        const WORKING_ZONE_HEIGHT = 400;
-        const WORKING_ZONE_WIDTH = 400;
-        spyOnProperty(window, 'innerHeight', 'get').and.returnValue(WORKING_ZONE_HEIGHT);
-        spyOnProperty(window, 'innerWidth', 'get').and.returnValue(WORKING_ZONE_WIDTH + SIDEBAR_WIDTH);
-        component.setCanvasSize();
-        // tslint:disable: no-string-literal
-        const canvasHeight = component['canvasSize'].y;
-        const canvasWidth = component['canvasSize'].x;
-        expect(canvasHeight).toEqual(EXPECTED_CANVAS_HEIGHT);
-        expect(canvasWidth).toEqual(EXPECTED_CANVAS_WIDTH);
-    });
-
     it('should get stubTool', () => {
         const currentTool = component.currentTool;
         expect(currentTool).toEqual(toolStub);
@@ -113,7 +86,7 @@ describe('DrawingComponent', () => {
         const event = {} as MouseEvent;
         // tslint:disable-next-line:no-any
         spyOn<any>(toolStub, 'getPositionFromMouse').and.returnValue({ x: 100, y: 100 });
-        toolStub['lineThickness'] = undefined;
+        toolStub.lineThickness = undefined;
         const mouseEventSpy = spyOn(toolStub, 'onMouseMove');
         component.onMouseMove(event);
         expect(mouseEventSpy).toHaveBeenCalled();
