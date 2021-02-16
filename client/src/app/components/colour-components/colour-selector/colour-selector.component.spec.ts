@@ -15,7 +15,6 @@ describe('ColourSelectorComponent', () => {
     let fixture: ComponentFixture<ColourSelectorComponent>;
 
     beforeEach(async(() => {
-
         TestBed.configureTestingModule({
             declarations: [
                 ColourSelectorComponent,
