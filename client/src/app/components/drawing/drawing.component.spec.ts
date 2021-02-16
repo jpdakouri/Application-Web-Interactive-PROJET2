@@ -113,6 +113,7 @@ describe('DrawingComponent', () => {
         const event = {} as MouseEvent;
         // tslint:disable-next-line:no-any
         spyOn<any>(toolStub, 'getPositionFromMouse').and.returnValue({ x: 100, y: 100 });
+        toolStub['lineThickness'] = undefined;
         const mouseEventSpy = spyOn(toolStub, 'onMouseMove');
         component.onMouseMove(event);
         expect(mouseEventSpy).toHaveBeenCalled();

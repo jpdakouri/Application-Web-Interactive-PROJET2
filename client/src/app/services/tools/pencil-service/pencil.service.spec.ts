@@ -46,6 +46,7 @@ describe('PencilService', () => {
     });
 
     it('should be created', () => {
+        service['lineThickness'] = undefined;
         expect(service).toBeTruthy();
     });
 
@@ -74,6 +75,7 @@ describe('PencilService', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
         service.mouseMoved = true;
+        service['lineThickness'] = undefined;
 
         service.onMouseUp(mouseEvent);
         expect(drawLineSpy).toHaveBeenCalled();
@@ -83,6 +85,7 @@ describe('PencilService', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
         service.mouseMoved = false;
+        service['lineThickness'] = undefined;
 
         service.onMouseUp(mouseEvent);
         expect(drawDotSpy).toHaveBeenCalled();

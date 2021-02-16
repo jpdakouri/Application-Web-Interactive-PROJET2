@@ -85,7 +85,7 @@ describe('EraserService', () => {
     it(' onMouseMove should call erase if mouse was already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
-
+        service['lineThickness'] = undefined;
         service.onMouseMove(mouseEvent);
         expect(eraseSpy).toHaveBeenCalled();
     });

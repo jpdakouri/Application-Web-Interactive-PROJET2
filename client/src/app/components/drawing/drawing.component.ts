@@ -105,9 +105,11 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     @HostListener('mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
         if (this.canvasResizerService.isResizing()) {
+            this.eraserActive = false;
             this.canvasResizerService.onMouseMove(event);
         } else {
             this.currentTool.onMouseMove(event);
+            this.eraserActive = this.currentTool.eraserActive || false;
             this.updateEraserCursor(event);
         }
     }
