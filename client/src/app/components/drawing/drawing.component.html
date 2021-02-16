@@ -30,9 +30,6 @@
         #baseCanvas
         [attr.width]="width"
         [attr.height]="height"
-        (mousedown)="onMouseDown($event)"
-        (mouseup)="onMouseUp($event)"
-        (mousemove)="onMouseMove($event)"
         [style.cursor]="isCurrentTool(toolsNames.Eraser) ? 'none' : 'crosshair'"
     ></canvas>
     <canvas
@@ -40,9 +37,6 @@
         #previewCanvas
         [attr.width]="width"
         [attr.height]="height"
-        (mousedown)="onMouseDown($event)"
-        (mouseup)="onMouseUp($event)"
-        (mousemove)="onMouseMove($event)"
         [style.cursor]="isCurrentTool(toolsNames.Eraser) ? 'none' : 'crosshair'"
     ></canvas>
 
@@ -51,8 +45,5 @@
         #canvasResizerPreview
         *ngIf="canvasResizerService.isResizing()"
         [ngStyle]="{ width: getPreviewCanvasSize().x + 'px', height: getPreviewCanvasSize().y + 'px' }"
-        (mousedown)="onMouseDown($event)"
-        (mouseup)="onMouseUp($event)"
-        (mousemove)="onMouseMove($event)"
     ></div>
 </div>
