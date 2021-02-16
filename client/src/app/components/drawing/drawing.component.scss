@@ -1,19 +1,48 @@
 canvas {
     cursor: crosshair;
-    border: 2px solid #000000;
+    border: 0 solid #000000;
     position: absolute;
     left: 0;
     top: 0;
 }
 
-#canvas{
+#canvas {
     z-index: 0;
 }
 
-#drawCanvas{
+#drawCanvas {
     z-index: 1;
 }
 
-#canvas-container{
+#canvas-container {
     position: relative;
+    min-height: 100%;
+}
+
+#canvasResizerPreview {
+    position: relative;
+    border: 1px dashed;
+    min-width: 250px;
+    min-height: 250px;
+    z-index: 100;
+}
+
+.resizer {
+    width: 5px;
+    height: 5px;
+    position: absolute;
+    z-index: 50;
+    border: 0 solid #000000;
+    background-color: black;
+}
+
+.resizer.middle-right {
+    cursor: ew-resize;
+}
+
+.resizer.bottom-middle {
+    cursor: ns-resize;
+}
+.resizer.bottom-right {
+    cursor: nwse-resize;
 }

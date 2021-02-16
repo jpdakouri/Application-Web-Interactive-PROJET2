@@ -1,4 +1,49 @@
 <div id="canvas-container">
-    <canvas id="canvas" #baseCanvas [attr.width]="width" [attr.height]="height"></canvas>
-    <canvas id="previewLayer" #previewCanvas [attr.width]="width" [attr.height]="height"></canvas>
+    <div
+        class="resizer middle-right"
+        [ngStyle]="{ left: width + 'px', top: height / 2 - 2.5 + 'px' }"
+        (mousedown)="onMiddleRightResizerClick()"
+        matTooltip="W : {{ width }} px"
+        matTooltipPosition="right"
+    ></div>
+
+    <div
+        class="resizer bottom-right"
+        [ngStyle]="{ left: width + 'px', top: height + 'px' }"
+        (mousedown)="onBottomRightResizerClick()"
+        matTooltip="W : {{ width }} px | H : {{ height }} px"
+        matTooltipPosition="below"
+    ></div>
+
+    <div
+        class="resizer bottom-middle"
+        [ngStyle]="{ left: width / 2 - 2.5 + 'px', top: height + 'px' }"
+        (mousedown)="onMiddleBottomResizerClick()"
+        matTooltip="H : {{ height }} px"
+        matTooltipPosition="below"
+    ></div>
+
+    <div *ngIf="eraserActive" [ngStyle]="eraserCursor"></div>
+
+    <canvas
+        id="canvas"
+        #baseCanvas
+        [attr.width]="width"
+        [attr.height]="height"
+        [style.cursor]="isCurrentTool(toolsNames.Eraser) ? 'none' : 'crosshair'"
+    ></canvas>
+    <canvas
+        id="previewLayer"
+        #previewCanvas
+        [attr.width]="width"
+        [attr.height]="height"
+        [style.cursor]="isCurrentTool(toolsNames.Eraser) ? 'none' : 'crosshair'"
+    ></canvas>
+
+    <div
+        id="canvasResizerPreview"
+        #canvasResizerPreview
+        *ngIf="canvasResizerService.isResizing()"
+        [ngStyle]="{ width: getPreviewCanvasSize().x + 'px', height: getPreviewCanvasSize().y + 'px' }"
+    ></div>
 </div>

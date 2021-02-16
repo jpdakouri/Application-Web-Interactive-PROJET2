@@ -1,16 +1,28 @@
 .container {
-    height: 100%;
+    min-height: 100vh;
     display: flex;
 }
 
 .drawing-container {
+    min-height: 100vh;
+
     overflow: auto;
     flex: 1 1 auto;
+    background-color: rgba(179, 179, 179, 0.6);
+}
+
+.sidebar-container {
+    min-height: 100vh;
+    border-right: 1px solid black;
+    width: 465px;
+    display: flex;
+    flex-direction: row;
+}
+
+.bars {
+    min-height: 100vh;
 }
 
 .drawing {
-    display: grid;
-    width: min-content;
     outline: none;
 }
-  

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { IndexService } from '@app/services/index/index.service';
 import { Message } from '@common/communication/message';
 import { BehaviorSubject } from 'rxjs';
@@ -14,7 +15,7 @@ export class MainPageComponent {
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
     isPendingDrawing: boolean = false;
 
-    constructor(private basicService: IndexService) {}
+    constructor(private basicService: IndexService, private drawingService: DrawingService) {}
 
     sendTimeToServer(): void {
         const newTimeMessage: Message = {
@@ -23,10 +24,6 @@ export class MainPageComponent {
         };
         // Important de ne pas oublier "subscribe" ou l'appel ne sera jamais lancé puisque personne l'observe
         this.basicService.basicPost(newTimeMessage).subscribe();
-    }
-
-    alert(): void {
-        alert("Cette fonctionnalité n'est pas encore implémentée cher ami");
     }
 
     getMessagesFromServer(): void {
@@ -39,5 +36,9 @@ export class MainPageComponent {
                 }),
             )
             .subscribe(this.message);
+    }
+
+    onCreateNewDrawing(): void {
+        this.drawingService.createNewDrawing();
     }
 }

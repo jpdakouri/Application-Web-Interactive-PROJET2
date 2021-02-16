@@ -1,0 +1,11 @@
+<div class="color-history">
+    <h2>Historique des couleurs:</h2>
+    <canvas
+        *ngFor="let id of createArray(10)"
+        [style.background]="historyService.getColour(id)"
+        width="20"
+        height="20"
+        (click)="selectPrimaryColor(id)"
+        (contextmenu)="selectSecondaryColor(id)"
+    ></canvas>
+</div>

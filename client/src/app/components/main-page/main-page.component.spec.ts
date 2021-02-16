@@ -1,26 +1,35 @@
 import { HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatIconModule } from '@angular/material/icon';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterTestingModule } from '@angular/router/testing';
 import { IndexService } from '@app/services/index/index.service';
 import { of } from 'rxjs';
 import { MainPageComponent } from './main-page.component';
 
 import SpyObj = jasmine.SpyObj;
+import { DrawingService } from '@app/services/drawing/drawing.service';
 
 describe('MainPageComponent', () => {
     let component: MainPageComponent;
     let fixture: ComponentFixture<MainPageComponent>;
     let indexServiceSpy: SpyObj<IndexService>;
+    let drawingServiceSpy: SpyObj<DrawingService>;
 
     beforeEach(async(() => {
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['createNewDrawing']);
         indexServiceSpy = jasmine.createSpyObj('IndexService', ['basicGet', 'basicPost']);
         indexServiceSpy.basicGet.and.returnValue(of({ title: '', body: '' }));
         indexServiceSpy.basicPost.and.returnValue(of());
 
         TestBed.configureTestingModule({
-            imports: [RouterTestingModule, HttpClientModule],
+            imports: [RouterTestingModule, HttpClientModule, MatGridListModule, MatIconModule, MatToolbarModule],
             declarations: [MainPageComponent],
-            providers: [{ provide: IndexService, useValue: indexServiceSpy }],
+            providers: [
+                { provide: IndexService, useValue: indexServiceSpy },
+                { provide: DrawingService, useValue: drawingServiceSpy },
+            ],
         }).compileComponents();
     }));
 
@@ -46,5 +55,10 @@ describe('MainPageComponent', () => {
     it('should call basicPost when calling sendTimeToServer', () => {
         component.sendTimeToServer();
         expect(indexServiceSpy.basicPost).toHaveBeenCalled();
+    });
+
+    it('should create new drawing when new drawing button is clicked', () => {
+        component.onCreateNewDrawing();
+        expect(drawingServiceSpy.createNewDrawing).toHaveBeenCalled();
     });
 });
