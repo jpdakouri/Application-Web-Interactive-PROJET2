@@ -18,7 +18,6 @@ export class PencilService extends Tool {
         super(drawingService, currentColourService);
         this.currentColourService = currentColourService;
         this.clearPath();
-        // this.radius = this.lineThickness || DEFAULT_MIN_THICKNESS;
     }
 
     onMouseDown(event: MouseEvent): void {
