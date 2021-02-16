@@ -17,9 +17,7 @@ import { EraserCursor } from '@app/utils/interfaces/eraser-cursor';
 })
 export class DrawingComponent implements AfterViewInit, OnInit {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
-    // On utilise ce canvas pour dessiner sans affecter le dessin final
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
-    // On utilise ce canvas pour le rectangle de prévisualisation
     @ViewChild('canvasResizerPreview', { static: false }) canvasResizerPreview: ElementRef<HTMLDivElement>;
     @Output() editorMinWidthEmitter: EventEmitter<number> = new EventEmitter<number>();
 

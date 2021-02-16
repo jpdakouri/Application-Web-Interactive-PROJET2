@@ -60,7 +60,6 @@ export class CurrentColourService {
     }
 
     setSecondaryColorTransparency(transparency: string): void {
-        console.log(transparency);
         this.secondaryColorTransparency = transparency;
     }
 

@@ -36,14 +36,4 @@ export class IndexService {
                 };
             });
     }
-
-    // TODO : ceci est à titre d'exemple. À enlever pour la remise
-    storeMessage(message: Message): void {
-        console.log(message);
-        this.clientMessages.push(message);
-    }
-
-    getAllMessages(): Message[] {
-        return this.clientMessages;
-    }
 }
