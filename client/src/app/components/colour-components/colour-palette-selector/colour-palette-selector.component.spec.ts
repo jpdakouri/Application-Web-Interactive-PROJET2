@@ -4,11 +4,14 @@ import { CurrentColourService } from '@app/services/current-colour/current-colou
 import { ColourPaletteSelectorComponent } from './colour-palette-selector.component';
 
 const RGB_ARRAY_SIZE = 3;
+// The gradient is drawn differently by different browsers
+const topLeftColor1 = 254;
+const topLeftColor2 = 255;
+
 describe('ColourPaletteSelectorComponent', () => {
     let component: ColourPaletteSelectorComponent;
     let fixture: ComponentFixture<ColourPaletteSelectorComponent>;
     let canvasContext: CanvasRenderingContext2D;
-    let browserSpecificTopLeftColor: number;
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [ColourPaletteSelectorComponent],
@@ -21,10 +24,6 @@ describe('ColourPaletteSelectorComponent', () => {
         fixture.detectChanges();
         const context = component.paletteCanvas.nativeElement.getContext('2d');
         if (context != null) canvasContext = context;
-        // The gradient is drawn differently by different browsers
-        const topLeftColor1 = 254;
-        const topLeftColor2 = 255;
-        browserSpecificTopLeftColor = canvasContext.getImageData(0, 0, 1, 1).data[0] === topLeftColor1 ? topLeftColor1 : topLeftColor2;
     });
 
     it('should create', () => {
@@ -35,36 +34,48 @@ describe('ColourPaletteSelectorComponent', () => {
         component.ngAfterViewInit();
         let topLeftPixelColor = canvasContext.getImageData(0, 0, 1, 1).data;
         topLeftPixelColor = topLeftPixelColor.slice(0, RGB_ARRAY_SIZE);
-        expect(topLeftPixelColor[0]).toBe(browserSpecificTopLeftColor);
-        expect(topLeftPixelColor[1]).toBe(browserSpecificTopLeftColor);
-        expect(topLeftPixelColor[2]).toBe(browserSpecificTopLeftColor);
+        const redComponentValid = topLeftPixelColor[0] === topLeftColor1 || topLeftPixelColor[0] === topLeftColor2;
+        const greenComponentValid = topLeftPixelColor[1] === topLeftColor1 || topLeftPixelColor[1] === topLeftColor2;
+        const blueComponentValid = topLeftPixelColor[2] === topLeftColor1 || topLeftPixelColor[2] === topLeftColor2;
+        expect(redComponentValid).toBe(true);
+        expect(greenComponentValid).toBe(true);
+        expect(blueComponentValid).toBe(true);
     });
     it('onMouseDown draws the palette', () => {
         const clickEvent = new MouseEvent('mousedown');
         component.onMouseDown(clickEvent);
         let topLeftPixelColor = canvasContext.getImageData(0, 0, 1, 1).data;
         topLeftPixelColor = topLeftPixelColor.slice(0, RGB_ARRAY_SIZE);
-        expect(topLeftPixelColor[0]).toBe(browserSpecificTopLeftColor);
-        expect(topLeftPixelColor[1]).toBe(browserSpecificTopLeftColor);
-        expect(topLeftPixelColor[2]).toBe(browserSpecificTopLeftColor);
+        const redComponentValid = topLeftPixelColor[0] === topLeftColor1 || topLeftPixelColor[0] === topLeftColor2;
+        const greenComponentValid = topLeftPixelColor[1] === topLeftColor1 || topLeftPixelColor[1] === topLeftColor2;
+        const blueComponentValid = topLeftPixelColor[2] === topLeftColor1 || topLeftPixelColor[2] === topLeftColor2;
+        expect(redComponentValid).toBe(true);
+        expect(greenComponentValid).toBe(true);
+        expect(blueComponentValid).toBe(true);
     });
     it('onMouseMove draws the palette', () => {
         const moveEvent = new MouseEvent('mousemove');
         component.onMouseMove(moveEvent);
         let topLeftPixelColor = canvasContext.getImageData(0, 0, 1, 1).data;
         topLeftPixelColor = topLeftPixelColor.slice(0, RGB_ARRAY_SIZE);
-        expect(topLeftPixelColor[0]).toBe(browserSpecificTopLeftColor);
-        expect(topLeftPixelColor[1]).toBe(browserSpecificTopLeftColor);
-        expect(topLeftPixelColor[2]).toBe(browserSpecificTopLeftColor);
+        const redComponentValid = topLeftPixelColor[0] === topLeftColor1 || topLeftPixelColor[0] === topLeftColor2;
+        const greenComponentValid = topLeftPixelColor[1] === topLeftColor1 || topLeftPixelColor[1] === topLeftColor2;
+        const blueComponentValid = topLeftPixelColor[2] === topLeftColor1 || topLeftPixelColor[2] === topLeftColor2;
+        expect(redComponentValid).toBe(true);
+        expect(greenComponentValid).toBe(true);
+        expect(blueComponentValid).toBe(true);
     });
     it('ngOnChanges draws the palette when the hue is changed', () => {
         const redHue = 'rgba(255,0,0,1)';
         component.ngOnChanges({ hue: new SimpleChange(null, redHue, false) });
         let topLeftPixelColor = canvasContext.getImageData(0, 0, 1, 1).data;
         topLeftPixelColor = topLeftPixelColor.slice(0, RGB_ARRAY_SIZE);
-        expect(topLeftPixelColor[0]).toBe(browserSpecificTopLeftColor);
-        expect(topLeftPixelColor[1]).toBe(browserSpecificTopLeftColor);
-        expect(topLeftPixelColor[2]).toBe(browserSpecificTopLeftColor);
+        const redComponentValid = topLeftPixelColor[0] === topLeftColor1 || topLeftPixelColor[0] === topLeftColor2;
+        const greenComponentValid = topLeftPixelColor[1] === topLeftColor1 || topLeftPixelColor[1] === topLeftColor2;
+        const blueComponentValid = topLeftPixelColor[2] === topLeftColor1 || topLeftPixelColor[2] === topLeftColor2;
+        expect(redComponentValid).toBe(true);
+        expect(greenComponentValid).toBe(true);
+        expect(blueComponentValid).toBe(true);
     });
 
     it('a circular selector is drawn around the selected location', () => {
