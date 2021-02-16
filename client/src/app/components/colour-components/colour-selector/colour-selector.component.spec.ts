@@ -10,19 +10,11 @@ import { CurrentColourComponent } from '@app/components/colour-components/curren
 import { HueSelectorComponent } from '@app/components/colour-components/hue-selector/hue-selector.component';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { ColourSelectorComponent } from './colour-selector.component';
-import SpyObj = jasmine.SpyObj;
 describe('ColourSelectorComponent', () => {
     let component: ColourSelectorComponent;
     let fixture: ComponentFixture<ColourSelectorComponent>;
-    let currentColourServiceSpy: SpyObj<CurrentColourService>;
 
     beforeEach(async(() => {
-        currentColourServiceSpy = jasmine.createSpyObj('CurrentColorService', [
-            'setPrimaryColorTransparency',
-            'setSecondaryColorTransparency',
-            'getPrimaryColorRgb',
-            'getSecondaryColorRgb',
-        ]);
 
         TestBed.configureTestingModule({
             declarations: [
@@ -32,7 +24,6 @@ describe('ColourSelectorComponent', () => {
                 CurrentColourComponent,
                 HueSelectorComponent,
             ],
-            providers: [{ provide: CurrentColourService, useValue: currentColourServiceSpy }],
             imports: [MatIconModule, BrowserAnimationsModule, MatInputModule, MatDividerModule, FormsModule],
         }).compileComponents();
     }));
@@ -79,21 +70,43 @@ describe('ColourSelectorComponent', () => {
     });
 
     it('if the transparencies that the user enters are valid, then the set functions of the currentcolorservice are called', () => {
+        const currentColorService = TestBed.inject(CurrentColourService);
+        spyOn(currentColorService, 'setPrimaryColorTransparency');
+        spyOn(currentColorService, 'setSecondaryColorTransparency');
         component.primaryColourTransparency = '0';
         component.secondaryColourTransparency = '100';
         component.onPrimaryColorTransparencyEntryChange();
         component.onSecondaryColorTransparencyEntryChange();
-        expect(currentColourServiceSpy.setPrimaryColorTransparency).toHaveBeenCalled();
-        expect(currentColourServiceSpy.setSecondaryColorTransparency).toHaveBeenCalled();
+        expect(currentColorService.setPrimaryColorTransparency).toHaveBeenCalled();
+        expect(currentColorService.setSecondaryColorTransparency).toHaveBeenCalled();
     });
     it('if the transparencies that the user enters are invalid, then the set functions of the currentcolorservice are not called', () => {
+        const currentColorService = TestBed.inject(CurrentColourService);
+        spyOn(currentColorService, 'setPrimaryColorTransparency');
+        spyOn(currentColorService, 'setSecondaryColorTransparency');
         component.primaryColourTransparency = '-1';
         component.secondaryColourTransparency = '101';
         component.onPrimaryColorTransparencyEntryChange();
         component.onSecondaryColorTransparencyEntryChange();
         component.secondaryColourTransparency = '1.1';
         component.onSecondaryColorTransparencyEntryChange();
-        expect(currentColourServiceSpy.setPrimaryColorTransparency).toHaveBeenCalledTimes(0);
-        expect(currentColourServiceSpy.setSecondaryColorTransparency).toHaveBeenCalledTimes(0);
+        expect(currentColorService.setPrimaryColorTransparency).toHaveBeenCalledTimes(0);
+        expect(currentColorService.setSecondaryColorTransparency).toHaveBeenCalledTimes(0);
+    });
+    it('setPrimaryColor calls the set method of CurrentColourService and empties the RGB field', () => {
+        component.rgbColor = '00,00,00';
+        const currentColorService = TestBed.inject(CurrentColourService);
+        spyOn(currentColorService, 'setPrimaryColorRgb');
+        component.setPrimaryColor();
+        expect(component.rgbColor).toBe('');
+        expect(currentColorService.setPrimaryColorRgb).toHaveBeenCalledWith('0,0,0');
+    });
+    it('setSecondaryColor calls the set method of CurrentColourService and empties the RGB field', () => {
+        component.rgbColor = 'ff,ff,ff';
+        const currentColorService = TestBed.inject(CurrentColourService);
+        spyOn(currentColorService, 'setSecondaryColorRgb');
+        component.setSecondaryColor();
+        expect(component.rgbColor).toBe('');
+        expect(currentColorService.setSecondaryColorRgb).toHaveBeenCalledWith('255,255,255');
     });
 });

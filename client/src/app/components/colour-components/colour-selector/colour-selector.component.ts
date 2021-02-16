@@ -27,12 +27,14 @@ export class ColourSelectorComponent {
     constructor(private currentColourService: CurrentColourService) {}
 
     setPrimaryColor(): void {
-        this.currentColourService.setPrimaryColorRgb(this.convertHexColorToDec());
+        const convertedColor = this.convertHexColorToDec();
+        this.currentColourService.setPrimaryColorRgb(convertedColor);
         this.rgbColor = '';
     }
 
     setSecondaryColor(): void {
-        this.currentColourService.setSecondaryColorRgb(this.convertHexColorToDec());
+        const convertedColor = this.convertHexColorToDec();
+        this.currentColourService.setSecondaryColorRgb(convertedColor);
         this.rgbColor = '';
     }
 
