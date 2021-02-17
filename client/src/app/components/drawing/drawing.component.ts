@@ -142,6 +142,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     @HostListener('dblclick', ['$event'])
     onDblClick(): void {
         this.currentTool.onDblClick();
+        this.drawingService.saveCanvas();
     }
 
     @HostListener('keydown', ['$event'])
