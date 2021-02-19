@@ -21,6 +21,9 @@ export abstract class Tool {
     showDots?: boolean = false;
     mouseMoved: boolean = false;
     eraserActive?: boolean = false;
+    dropletDiameter?: number;
+    emissionFlow?: number;
+    jetDiameter?: number;
 
     constructor(protected drawingService: DrawingService, protected currentColourService: CurrentColourService) {}
 
