@@ -42,6 +42,9 @@ export class ToolManagerService {
             ShapeStyle: ShapeStyle.Outline,
             DotRadius: 1,
             ShowDots: false,
+            DropletDiameter: 1,
+            EmissionFlow: 1,
+            JetDiameter: 1,
         };
         this.shapeStyleSelection.set('Outline', ShapeStyle.Outline).set('Filled', ShapeStyle.Filled).set('FilledOutline', ShapeStyle.FilledOutline);
         this.toolChangeEmitter.subscribe((toolName: ToolsNames) => {
@@ -87,6 +90,18 @@ export class ToolManagerService {
     }
     getCurrentShapeStyle(): ShapeStyle | undefined {
         return this.currentAttributes.ShapeStyle;
+    }
+
+    getCurrentAerosolEmissionFlow(): number | undefined {
+        return this.currentAttributes.EmissionFlow;
+    }
+
+    getAerosolDropletDiameter(): number | undefined {
+        return this.currentAttributes.DropletDiameter;
+    }
+
+    getCurrentAerosolJetDiameter(): number | undefined {
+        return this.currentAttributes.JetDiameter;
     }
 
     getCurrentToolInstance(): Tool {

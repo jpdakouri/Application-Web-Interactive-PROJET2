@@ -73,4 +73,20 @@ export class ToolAttributeBarComponent {
     isChecked(shapeStyle: ShapeStyle): boolean {
         return this.getCurrentShapeStyle() === shapeStyle;
     }
+
+    showAerosolAttributes(): boolean {
+        return this.toolManagerService.isCurrentTool(ToolsNames.Aerosol);
+    }
+
+    getCurrentAerosolEmissionFlow(): number | undefined {
+        return this.toolManagerService.getCurrentAerosolEmissionFlow();
+    }
+
+    getAerosolDropletDiameter(): number | undefined {
+        return this.toolManagerService.getAerosolDropletDiameter();
+    }
+
+    getCurrentAerosolJetDiameter(): number | undefined {
+        return this.toolManagerService.getCurrentAerosolJetDiameter();
+    }
 }
