@@ -7,7 +7,7 @@ export const MIN_HEX_RGB_VALUE = 1;
 export const MAX_HEX_RGB_VALUE = 2;
 export const INDEX_ELEMENT_NOT_THERE = -1;
 export const RGB_COMPONENTS = 3;
-export const MIN_TRANSPARENCY = 0;
+export const MIN_TRANSPARENCY = 1;
 export const MAX_TRANSPARENCY = 100;
 
 /****************************/
