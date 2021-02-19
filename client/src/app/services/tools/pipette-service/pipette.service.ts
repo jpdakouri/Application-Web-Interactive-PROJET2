@@ -15,16 +15,19 @@ export class PipetteService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        let rgbAtPosition = this.getRgbaAtPosition(event.offsetX, event.offsetY);
-        console.log(this.drawingService.baseCtx.fillStyle);
-        if (rgbAtPosition[ALPHA_INDEX] === '0') rgbAtPosition = DEFAULT_CANVAS_RGB;
+        let rgbAtPosition = this.getRgbAtPosition(event.offsetX, event.offsetY);
+        if (this.getAlphaAtPosition(event.offsetX, event.offsetY) === '0') rgbAtPosition = DEFAULT_CANVAS_RGB;
         if (event.button === MouseButtons.Left) this.currentColourService.setPrimaryColorRgb(rgbAtPosition);
         else this.currentColourService.setSecondaryColorRgb(rgbAtPosition);
     }
 
-    private getRgbaAtPosition(x: number, y: number): string {
+    private getRgbAtPosition(x: number, y: number): string {
         const imageData = this.drawingService.baseCtx.getImageData(x, y, 1, 1).data;
         const rgbaSeperator = ',';
-        return imageData[0] + rgbaSeperator + imageData[1] + rgbaSeperator + imageData[2] + rgbaSeperator + imageData[ALPHA_INDEX];
+        return imageData[0] + rgbaSeperator + imageData[1] + rgbaSeperator + imageData[2];
+    }
+    private getAlphaAtPosition(x: number, y: number): string {
+        const imageData = this.drawingService.baseCtx.getImageData(x, y, 1, 1).data;
+        return imageData[ALPHA_INDEX].toString();
     }
 }
