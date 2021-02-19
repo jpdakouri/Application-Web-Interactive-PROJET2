@@ -17,7 +17,8 @@ export class PipetteService extends Tool {
 
     onMouseDown(event: MouseEvent): void {
         const rgbAtPosition = this.getRgbAtPosition(event.offsetX, event.offsetY);
-        this.currentColourService.setPrimaryColorRgb(rgbAtPosition);
+        if (event.button === MouseButtons.Left) this.currentColourService.setPrimaryColorRgb(rgbAtPosition);
+        else this.currentColourService.setSecondaryColorRgb(rgbAtPosition);
     }
 
     private getRgbAtPosition(x: number, y: number): string {
