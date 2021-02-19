@@ -64,6 +64,7 @@
             [min]="1"
             max="50"
             step="1"
+            (input)="onEmissionFlowChange($event)"
           ></mat-slider>
         </div>
         <mat-divider></mat-divider>
@@ -81,6 +82,7 @@
             [min]="1"
             max="50"
             step="1"
+            (input)="onJetDiameterChange($event)"
           ></mat-slider>
         </div>
         <mat-divider></mat-divider>
@@ -89,15 +91,16 @@
       <div>
         <mat-divider></mat-divider>
         <div class="aerosol-droplet-jet">
-          <h2 class="attribute-title">Diamètre des goutelettes:  {{ this.getAerosolDropletDiameter() }}px</h2>
+          <h2 class="attribute-title">Diamètre des goutelettes:  {{ this.getCurrentAerosolDropletDiameter() }}px</h2>
           <mat-slider
             thumbLabel
-            [value]="this.getAerosolDropletDiameter()"
+            [value]="this.getCurrentAerosolDropletDiameter()"
             #flowSlider
             color="primary"
             [min]="1"
             max="50"
             step="1"
+            (input)="onDropletDiameterChange($event)"
           ></mat-slider>
         </div>
         <mat-divider></mat-divider>

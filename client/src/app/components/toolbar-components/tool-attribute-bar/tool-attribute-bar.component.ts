@@ -82,11 +82,23 @@ export class ToolAttributeBarComponent {
         return this.toolManagerService.getCurrentAerosolEmissionFlow();
     }
 
-    getAerosolDropletDiameter(): number | undefined {
+    getCurrentAerosolDropletDiameter(): number | undefined {
         return this.toolManagerService.getAerosolDropletDiameter();
     }
 
     getCurrentAerosolJetDiameter(): number | undefined {
         return this.toolManagerService.getCurrentAerosolJetDiameter();
+    }
+
+    onEmissionFlowChange(event: MatSliderChange): void {
+        this.toolManagerService.setCurrentAerosolEmissionFlow(event.value || undefined);
+    }
+
+    onDropletDiameterChange(event: MatSliderChange): void {
+        this.toolManagerService.setCurrentAerosolDropletDiameter(event.value || undefined);
+    }
+
+    onJetDiameterChange(event: MatSliderChange): void {
+        this.toolManagerService.setCurrentAerosolJetDiameter(event.value || undefined);
     }
 }
