@@ -56,14 +56,13 @@
             <div class="aerosol-emission-flow">
                 <h2 class="attribute-title">Débit du jet: {{ getCurrentEmissionFlow() }} particules/s</h2>
                 <mat-slider
-                    thumbLabel
                     [value]="getCurrentEmissionFlow()"
+                    #flowSlider
                     color="primary"
                     [min]="1"
                     max="50"
                     step="1"
                     (input)="onEmissionFlowChange($event)"
-                    (change)="onEmissionFlowChange($event)"
                 ></mat-slider>
             </div>
             <mat-divider></mat-divider>
@@ -74,8 +73,8 @@
             <div class="aerosol-jet-diameter">
                 <h2 class="attribute-title">Diamètre du jet: {{ getCurrentJetDiameter() }}px</h2>
                 <mat-slider
-                    thumbLabel
                     [value]="getCurrentJetDiameter()"
+                    #flowSlider
                     color="primary"
                     [min]="1"
                     max="50"
@@ -91,8 +90,8 @@
             <div class="aerosol-droplet-jet">
                 <h2 class="attribute-title">Diamètre des goutelettes: {{ getCurrentDropletDiameter() }}px</h2>
                 <mat-slider
-                    thumbLabel
                     [value]="getCurrentDropletDiameter()"
+                    #flowSlider
                     color="primary"
                     [min]="1"
                     max="50"

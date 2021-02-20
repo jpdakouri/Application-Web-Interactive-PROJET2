@@ -25,3 +25,10 @@ export const DEFAULT_DOT_RADIUS = 5;
 /****ERASER CONSTANTS****/
 /**********************/
 export const MIN_ERASER_THICKNESS = 5;
+
+/**********************/
+/****AEROSOL CONSTANTS****/
+/**********************/
+export const MIN_AEROSOL_EMISSION_FLOW = 1;
+export const MIN_AEROSOL_DROPLET_DIAMETER = 1;
+export const MIN_AEROSOL_JET_DIAMETER = 1;

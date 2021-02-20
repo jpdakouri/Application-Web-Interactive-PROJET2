@@ -1,7 +1,14 @@
 import { Injectable } from '@angular/core';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { DEFAULT_COLOR_BLACK, DEFAULT_DOT_RADIUS, DEFAULT_MIN_THICKNESS } from '@app/services/tools/tools-constants';
+import {
+    DEFAULT_COLOR_BLACK,
+    DEFAULT_DOT_RADIUS,
+    DEFAULT_MIN_THICKNESS,
+    MIN_AEROSOL_DROPLET_DIAMETER,
+    MIN_AEROSOL_EMISSION_FLOW,
+    MIN_AEROSOL_JET_DIAMETER,
+} from '@app/services/tools/tools-constants';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { Vec2 } from './vec2';
 
@@ -21,9 +28,9 @@ export abstract class Tool {
     showDots?: boolean = false;
     mouseMoved: boolean = false;
     eraserActive?: boolean = false;
-    dropletDiameter?: number;
-    emissionFlow?: number;
-    jetDiameter?: number;
+    dropletDiameter?: number = MIN_AEROSOL_DROPLET_DIAMETER;
+    emissionFlow?: number = MIN_AEROSOL_EMISSION_FLOW;
+    jetDiameter?: number = MIN_AEROSOL_JET_DIAMETER;
 
     constructor(protected drawingService: DrawingService, protected currentColourService: CurrentColourService) {}
 
