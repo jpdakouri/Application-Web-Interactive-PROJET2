@@ -54,6 +54,9 @@ export class ToolManagerService {
             this.currentAttributes.LineThickness = currentTool.lineThickness;
             this.currentAttributes.DotRadius = currentTool.dotRadius;
             this.currentAttributes.ShowDots = currentTool.showDots;
+            this.currentAttributes.EmissionFlow = currentTool.emissionFlow;
+            this.currentAttributes.JetDiameter = currentTool.jetDiameter;
+            this.currentAttributes.DropletDiameter = currentTool.dropletDiameter;
         });
     }
 
@@ -92,29 +95,29 @@ export class ToolManagerService {
         return this.currentAttributes.ShapeStyle;
     }
 
-    getCurrentAerosolEmissionFlow(): number | undefined {
+    getCurrentEmissionFlow(): number | undefined {
         return this.currentAttributes.EmissionFlow;
     }
 
-    getAerosolDropletDiameter(): number | undefined {
+    getCurrentDropletDiameter(): number | undefined {
         return this.currentAttributes.DropletDiameter;
     }
 
-    getCurrentAerosolJetDiameter(): number | undefined {
+    getCurrentJetDiameter(): number | undefined {
         return this.currentAttributes.JetDiameter;
     }
 
-    setCurrentAerosolEmissionFlow(emissionFlow?: number): void {
+    setCurrentEmissionFlow(emissionFlow?: number): void {
         this.toolBox[this.currentTool].emissionFlow = emissionFlow;
         this.currentAttributes.EmissionFlow = emissionFlow;
     }
 
-    setCurrentAerosolDropletDiameter(dropletDiameter?: number): void {
+    setCurrentDropletDiameter(dropletDiameter?: number): void {
         this.toolBox[this.currentTool].dropletDiameter = dropletDiameter;
         this.currentAttributes.DropletDiameter = dropletDiameter;
     }
 
-    setCurrentAerosolJetDiameter(jetDiameter?: number): void {
+    setCurrentJetDiameter(jetDiameter?: number): void {
         this.toolBox[this.currentTool].jetDiameter = jetDiameter;
         this.currentAttributes.JetDiameter = jetDiameter;
     }
