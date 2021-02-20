@@ -20,7 +20,8 @@ export class EditorComponent implements AfterViewInit {
             .set(KeyboardButtons.Ellipse, ToolsNames.Ellipse)
             .set(KeyboardButtons.Eraser, ToolsNames.Eraser)
             .set(KeyboardButtons.Ellipse, ToolsNames.Ellipse)
-            .set(KeyboardButtons.Pencil, ToolsNames.Pencil);
+            .set(KeyboardButtons.Pencil, ToolsNames.Pencil)
+            .set(KeyboardButtons.Aerosol, ToolsNames.Aerosol);
     }
     editorMinWidth: number;
     @ViewChild('editor') editor: ElementRef<HTMLCanvasElement>;
