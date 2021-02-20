@@ -78,27 +78,27 @@ export class ToolAttributeBarComponent {
         return this.toolManagerService.isCurrentTool(ToolsNames.Aerosol);
     }
 
-    getCurrentAerosolEmissionFlow(): number | undefined {
-        return this.toolManagerService.getCurrentAerosolEmissionFlow();
+    getCurrentEmissionFlow(): number | undefined {
+        return this.toolManagerService.getCurrentEmissionFlow();
     }
 
-    getCurrentAerosolDropletDiameter(): number | undefined {
-        return this.toolManagerService.getAerosolDropletDiameter();
+    getCurrentDropletDiameter(): number | undefined {
+        return this.toolManagerService.getCurrentDropletDiameter();
     }
 
-    getCurrentAerosolJetDiameter(): number | undefined {
-        return this.toolManagerService.getCurrentAerosolJetDiameter();
+    getCurrentJetDiameter(): number | undefined {
+        return this.toolManagerService.getCurrentJetDiameter();
     }
 
     onEmissionFlowChange(event: MatSliderChange): void {
-        this.toolManagerService.setCurrentAerosolEmissionFlow(event.value || undefined);
+        this.toolManagerService.setCurrentEmissionFlow(event.value || undefined);
     }
 
     onDropletDiameterChange(event: MatSliderChange): void {
-        this.toolManagerService.setCurrentAerosolDropletDiameter(event.value || undefined);
+        this.toolManagerService.setCurrentDropletDiameter(event.value || undefined);
     }
 
     onJetDiameterChange(event: MatSliderChange): void {
-        this.toolManagerService.setCurrentAerosolJetDiameter(event.value || undefined);
+        this.toolManagerService.setCurrentJetDiameter(event.value || undefined);
     }
 }
