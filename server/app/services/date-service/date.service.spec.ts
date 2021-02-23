@@ -1,7 +1,7 @@
-import { TYPES } from '@app/types';
 import { expect } from 'chai';
 import * as sinon from 'sinon';
-import { testingContainer } from '../../test/test-utils';
+import { testingContainer } from '../../../test/test-utils';
+import { TYPES } from '../../types';
 import { DateService } from './date.service';
 
 describe('Date Service', () => {

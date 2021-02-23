@@ -1,8 +1,8 @@
+import { IndexService } from '@app/services/index-service/index.service';
 import { TYPES } from '@app/types';
 import { Message } from '@common/communication/message';
 import { NextFunction, Request, Response, Router } from 'express';
 import { inject, injectable } from 'inversify';
-import { IndexService } from '../services/index.service';
 
 const HTTP_STATUS_CREATED = 201;
 
