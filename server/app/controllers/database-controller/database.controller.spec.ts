@@ -18,7 +18,6 @@ describe('DatabaseController', () => {
         const [container, sandbox] = await testingContainer();
         container.rebind(TYPES.DatabaseService).toConstantValue({
             start: sandbox.stub().resolves(),
-            closeConnection: sandbox.stub().resolves(),
             insertDrawing: sandbox.stub().resolves(insertResult),
         });
         databaseService = container.get(TYPES.DatabaseService);
@@ -30,7 +29,6 @@ describe('DatabaseController', () => {
             .post('/api/database/insert')
             .expect(HTTP_STATUS_CREATED)
             .then((response: any) => {
-                console.log(response);
                 expect(response.body).to.deep.equal(insertResult.insertedId);
             });
     });

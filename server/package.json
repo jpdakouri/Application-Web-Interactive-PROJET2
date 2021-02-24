@@ -43,7 +43,9 @@
         "instrument": true
     },
     "dependencies": {
+        "@types/chai-spies": "^1.0.3",
         "body-parser": "^1.19.0",
+        "chai-spies": "^1.0.0",
         "cookie-parser": "1.4.5",
         "cors": "2.8.5",
         "debug": "^4.1.1",
