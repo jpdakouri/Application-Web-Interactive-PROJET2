@@ -18,6 +18,10 @@ export enum Sign {
 
 export const DEFAULT_COLOUR = RgbSettings.RGB_START + RgbSettings.DEFAULT_SECONDARY_RGB + RgbSettings.RGB_RGBA_END;
 
+// Pipette
+export const ALPHA_INDEX = 3;
+export const DEFAULT_CANVAS_RGB = '255,255,255';
+
 /****************************/
 /***GLOBAL DRAWING CONSTANTS***/
 /****************************/

@@ -17,6 +17,7 @@ export class PencilService extends Tool {
     constructor(drawingService: DrawingService, currentColourService: CurrentColourService) {
         super(drawingService, currentColourService);
         this.currentColourService = currentColourService;
+        this.radius = DEFAULT_MIN_THICKNESS;
         this.clearPath();
     }
 
@@ -81,7 +82,6 @@ export class PencilService extends Tool {
 
     private drawDot(ctx: CanvasRenderingContext2D, point: Vec2): void {
         ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
-        this.radius = ctx.lineWidth;
         ctx.strokeStyle = this.currentColourService.getPrimaryColorRgba();
         ctx.fillStyle = this.currentColourService.getPrimaryColorRgba();
         ctx.lineCap = 'round';
