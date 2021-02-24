@@ -1,6 +1,6 @@
 import { Metadata } from '@common/communication/metadata.ts';
 import { injectable } from 'inversify';
-import { Collection, MongoClient, MongoClientOptions } from 'mongodb';
+import { Collection, InsertOneWriteOpResult, MongoClient, MongoClientOptions } from 'mongodb';
 import 'reflect-metadata';
 
 // CHANGE the URL for your database information
@@ -21,16 +21,21 @@ export class DatabaseService {
     start(): void {
         MongoClient.connect(DATABASE_URI, this.options)
             .then((client: MongoClient) => {
+                console.log('DATABASE CONNECTED');
                 this.client = client;
                 this.collection = client.db(DATABASE_NAME).collection(DATABASE_COLLECTION);
             })
             .catch(() => {
-                console.error('CONNECTION ERROR. EXITING PROCESS');
+                console.error('DATABASE CONNECTION ERROR. EXITING PROCESS');
                 process.exit(1);
             });
     }
 
     closeConnection(): void {
         this.client.close();
+    }
+
+    async insertDrawing(metadata: Metadata): Promise<InsertOneWriteOpResult<Metadata>> {
+        return await this.collection.insertOne(metadata);
     }
 }
