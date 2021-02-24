@@ -1,4 +1,4 @@
-import { Metadata } from '@common/communication/metadata.ts';
+import { Metadata } from '@common/communication/metadata';
 import { injectable } from 'inversify';
 import { Collection, InsertOneWriteOpResult, MongoClient, MongoClientOptions } from 'mongodb';
 import 'reflect-metadata';

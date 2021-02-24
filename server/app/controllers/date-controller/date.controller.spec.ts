@@ -3,7 +3,7 @@ import * as supertest from 'supertest';
 import { Message } from '../../../../common/communication/message';
 import { Stubbed, testingContainer } from '../../../test/test-utils';
 import { Application } from '../../app';
-import { DateService } from '../../services//date-service/date.service';
+import { DateService } from '../../services/date-service/date.service';
 import { TYPES } from '../../types';
 
 // tslint:disable:no-any
