@@ -4,6 +4,7 @@ import { CurrentColourService } from '@app/services/current-colour/current-colou
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ALPHA_INDEX, DEFAULT_CANVAS_RGB } from '@app/services/services-constants';
 import { MouseButtons } from '@app/utils/enums/list-boutton-pressed';
+import { ToolCommand } from '@app/utils/interfaces/tool-command';
 
 @Injectable({
     providedIn: 'root',
@@ -29,5 +30,10 @@ export class PipetteService extends Tool {
     private getAlphaAtPosition(x: number, y: number): string {
         const imageData = this.drawingService.baseCtx.getImageData(x, y, 1, 1).data;
         return imageData[ALPHA_INDEX].toString();
+    }
+
+    executeCommand(command: ToolCommand): void {
+        // Pipette has no command to undo/redo
+        return;
     }
 }
