@@ -142,6 +142,27 @@ describe('ToolManagerService', () => {
         expect(currentTool).not.toEqual(service.toolBox[ToolsNames.Pencil]);
     });
 
+    it("#getCurrentFrequency should return currentAttributes propert's Frequency", () => {
+        const frequency = 10;
+        service.currentAttributes.Frequency = frequency;
+        const expectedFrequency = service.getCurrentFrequency();
+        expect(expectedFrequency).toBe(frequency);
+    });
+
+    it("#getCurrentDropletDiameter should return currentAttributes propert's DropletDiameter", () => {
+        const dropletDiameter = 10;
+        service.currentAttributes.DropletDiameter = dropletDiameter;
+        const expectedFrequency = service.getCurrentDropletDiameter();
+        expect(expectedFrequency).toBe(dropletDiameter);
+    });
+
+    it("#getCurrentJetDiameter should return currentAttributes propert's JetDiameter", () => {
+        const jetDiameter = 10;
+        service.currentAttributes.JetDiameter = jetDiameter;
+        const expectedFrequency = service.getCurrentJetDiameter();
+        expect(expectedFrequency).toBe(jetDiameter);
+    });
+
     it('#isCurrentTool should return true if the paramter is the current tool', () => {
         service.currentTool = ToolsNames.Eraser;
         expect(service.isCurrentTool(ToolsNames.Eraser)).toEqual(true);

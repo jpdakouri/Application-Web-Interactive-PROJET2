@@ -25,7 +25,7 @@ export class ToolManagerServiceMock {
     // tslint:disable:no-empty
 
     // TODO : Temporary for tests
-    getCurrentEmissionFlow(): number {
+    getCurrentFrequency(): number {
         return 1;
     }
 
