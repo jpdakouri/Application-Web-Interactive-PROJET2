@@ -6,6 +6,6 @@ export type CurrentAttributes = {
     DotRadius?: number;
     ShowDots?: boolean;
     DropletDiameter?: number;
-    EmissionFlow?: number;
+    Frequency?: number;
     JetDiameter?: number;
 };

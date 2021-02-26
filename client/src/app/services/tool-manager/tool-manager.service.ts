@@ -43,7 +43,7 @@ export class ToolManagerService {
             DotRadius: 1,
             ShowDots: false,
             DropletDiameter: 1,
-            EmissionFlow: 1,
+            Frequency: 1,
             JetDiameter: 1,
         };
         this.shapeStyleSelection.set('Outline', ShapeStyle.Outline).set('Filled', ShapeStyle.Filled).set('FilledOutline', ShapeStyle.FilledOutline);
@@ -54,7 +54,7 @@ export class ToolManagerService {
             this.currentAttributes.LineThickness = currentTool.lineThickness;
             this.currentAttributes.DotRadius = currentTool.dotRadius;
             this.currentAttributes.ShowDots = currentTool.showDots;
-            this.currentAttributes.EmissionFlow = currentTool.emissionFlow;
+            this.currentAttributes.Frequency = currentTool.frequency;
             this.currentAttributes.JetDiameter = currentTool.jetDiameter;
             this.currentAttributes.DropletDiameter = currentTool.dropletDiameter;
         });
@@ -95,8 +95,8 @@ export class ToolManagerService {
         return this.currentAttributes.ShapeStyle;
     }
 
-    getCurrentEmissionFlow(): number | undefined {
-        return this.currentAttributes.EmissionFlow;
+    getCurrentFrequency(): number | undefined {
+        return this.currentAttributes.Frequency;
     }
 
     getCurrentDropletDiameter(): number | undefined {
@@ -107,9 +107,9 @@ export class ToolManagerService {
         return this.currentAttributes.JetDiameter;
     }
 
-    setCurrentEmissionFlow(emissionFlow?: number): void {
-        this.toolBox[this.currentTool].emissionFlow = emissionFlow;
-        this.currentAttributes.EmissionFlow = emissionFlow;
+    setCurrentFrequency(frequency?: number): void {
+        this.toolBox[this.currentTool].frequency = frequency;
+        this.currentAttributes.Frequency = frequency;
     }
 
     setCurrentDropletDiameter(dropletDiameter?: number): void {

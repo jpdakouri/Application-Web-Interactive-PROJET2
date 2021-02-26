@@ -78,8 +78,8 @@ export class ToolAttributeBarComponent {
         return this.toolManagerService.isCurrentTool(ToolsNames.Aerosol);
     }
 
-    getCurrentEmissionFlow(): number | undefined {
-        return this.toolManagerService.getCurrentEmissionFlow();
+    getCurrentFrequency(): number | undefined {
+        return this.toolManagerService.getCurrentFrequency();
     }
 
     getCurrentDropletDiameter(): number | undefined {
@@ -90,8 +90,8 @@ export class ToolAttributeBarComponent {
         return this.toolManagerService.getCurrentJetDiameter();
     }
 
-    onEmissionFlowChange(event: MatSliderChange): void {
-        this.toolManagerService.setCurrentEmissionFlow(event.value || undefined);
+    onFrequencyChange(event: MatSliderChange): void {
+        this.toolManagerService.setCurrentFrequency(event.value || undefined);
     }
 
     onDropletDiameterChange(event: MatSliderChange): void {
