@@ -90,7 +90,7 @@ export class ToolAttributeBarComponent {
         return this.toolManagerService.getCurrentJetDiameter();
     }
 
-    onEmissionFlowChange(event: MatSliderChange): void {
+    onFrequencyChange(event: MatSliderChange): void {
         this.toolManagerService.setCurrentFrequency(event.value || undefined);
     }
 
