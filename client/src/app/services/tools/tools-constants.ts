@@ -30,13 +30,13 @@ export const MIN_ERASER_THICKNESS = 5;
 /****AEROSOL CONSTANTS****/
 /**********************/
 export const DOTS_PER_SPRAY = 10;
-export const MIN_FREQUENCY = 1;
+export const MIN_FREQUENCY = 10;
 export const MIN_DROPLET_DIAMETER = 1;
 export const MIN_JET_DIAMETER = 1;
 
 export const MAX_FREQUENCY = 2500;
 export const MAX_DROPLET_DIAMETER = 25;
-export const MAX_JET_DIAMETER = 200;
+export const MAX_JET_DIAMETER = 250;
 
 export const DEFAULT_FREQUENCY = 250;
 export const DEFAULT_DROPLET_DIAMETER = 2;
