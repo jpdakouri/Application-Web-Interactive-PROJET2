@@ -3,6 +3,7 @@ import * as spies from 'chai-spies';
 import { describe } from 'mocha';
 import { Db, MongoClient } from 'mongodb';
 import { MongoMemoryServer } from 'mongodb-memory-server';
+import * as sinon from 'sinon';
 import { Metadata } from '../../../../common/communication/metadata';
 import { DatabaseService } from './database.service';
 
@@ -48,13 +49,23 @@ describe('Database service', () => {
         }, 500);
     });
 
+    // it('#start() shoud catch error and log it if connection fails', async () => {
+    //     databaseService.databaseURI = 'errorCatcher';
+    //     const consoleSpy = chai.spy.on(console, 'error');
+    //     databaseService.startDB(databaseService.databaseURI, databaseService.options);
+    //     setTimeout(() => {
+    //         expect(consoleSpy).to.have.been.called.with('DATABASE CONNECTION ERROR');
+    //     }, 500);
+    // });
+
     it('#start() shoud catch error and log it if connection fails', async () => {
-        databaseService.databaseURI = 'errorCatcher';
-        const consoleSpy = chai.spy.on(console, 'error');
+        const clientStub = sinon.stub(MongoClient, 'connect').rejects(new Error());
         databaseService.startDB(mongoUri, databaseService.options);
+        const consoleSpy = chai.spy.on(console, 'error');
         setTimeout(() => {
-            expect(consoleSpy).to.have.been.called.with('DATABASE CONNECTION ERROR. EXITING PROCESS');
+            expect(consoleSpy).to.have.been.called.with('DATABASE CONNECTION ERROR');
         }, 500);
+        clientStub.restore();
     });
 
     it('insertDrawing() should insert a new Drawing in DB', async () => {

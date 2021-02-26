@@ -25,7 +25,7 @@ describe('DatabaseController', () => {
         app = container.get<Application>(TYPES.Application).app;
     });
 
-    it('post request to /insert should respond a HTTP_STATUS_CREATED status code and insertedId', async () => {
+    it('post request to /insert should respond a HTTP_STATUS_CREATED status code and insertedId if document inserted', async () => {
         return supertest(app)
             .post('/api/database/insert')
             .expect(HTTP_STATUS_CREATED)
@@ -34,18 +34,18 @@ describe('DatabaseController', () => {
             });
     });
 
-    it('post request to /insert should respond a HTTP_STATUS_BAD_REQUEST and string message', async () => {
+    it('post request to /insert should respond a HTTP_STATUS_BAD_REQUEST and string message if document not inserted', async () => {
         insertResult.insertedCount = 0;
         databaseService.insertDrawing.resolves(insertResult);
         return supertest(app)
             .post('/api/database/insert')
             .expect(HTTP_STATUS_BAD_REQUEST)
             .then((response: any) => {
-                expect(response.text).to.deep.equal('Document could not be inserted in the database');
+                expect(response.text).to.deep.equal('Document could not be inserted in the database !');
             });
     });
 
-    it('post request to /insert should respond a HTTP_STATUS_BAD_REQUEST and string message', async () => {
+    it('post request to /insert should respond a HTTP_STATUS_ERROR and string message if database error', async () => {
         databaseService.insertDrawing.rejects(new MongoError('Test Error'));
         return supertest(app)
             .post('/api/database/insert')
