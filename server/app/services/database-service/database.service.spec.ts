@@ -15,13 +15,14 @@ describe('Database service', () => {
     let mongoServer: MongoMemoryServer;
     let db: Db;
     let client: MongoClient;
+    let mongoUri: string;
 
     beforeEach(async () => {
         databaseService = new DatabaseService();
 
         // Start a local test server
         mongoServer = new MongoMemoryServer();
-        const mongoUri = await mongoServer.getUri();
+        mongoUri = await mongoServer.getUri();
         client = await MongoClient.connect(mongoUri, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
@@ -37,11 +38,11 @@ describe('Database service', () => {
     });
 
     it('#start shoud connect to database', async () => {
-        databaseService.start();
+        databaseService.startDB(mongoUri, databaseService.options);
         // tslint:disable: no-unused-expression
         setTimeout(() => {
             const clientSpy = chai.spy.on(MongoClient, 'connect');
-            expect(clientSpy).to.have.been.called.with(databaseService.databaseURI, databaseService.options);
+            expect(clientSpy).to.have.been.called.with(mongoUri, databaseService.options);
             expect(databaseService.client.isConnected).to.be.true;
             expect(databaseService.collection.collectionName).to.equal('Drawings');
         }, 500);
@@ -50,7 +51,7 @@ describe('Database service', () => {
     it('#start() shoud catch error and log it if connection fails', async () => {
         databaseService.databaseURI = 'errorCatcher';
         const consoleSpy = chai.spy.on(console, 'error');
-        databaseService.start();
+        databaseService.startDB(mongoUri, databaseService.options);
         setTimeout(() => {
             expect(consoleSpy).to.have.been.called.with('DATABASE CONNECTION ERROR. EXITING PROCESS');
         }, 500);

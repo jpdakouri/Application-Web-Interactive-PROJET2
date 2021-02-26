@@ -10,7 +10,7 @@ const HTTP_STATUS_BAD_REQUEST = 404;
 @injectable()
 export class DatabaseController {
     constructor(@inject(TYPES.DatabaseService) private databaseService: DatabaseService) {
-        this.databaseService.start();
+        this.databaseService.startDB(this.databaseService.databaseURI, this.databaseService.options);
         this.configureRouter();
     }
 

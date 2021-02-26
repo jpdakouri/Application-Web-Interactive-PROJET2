@@ -17,7 +17,7 @@ describe('DatabaseController', () => {
     beforeEach(async () => {
         const [container, sandbox] = await testingContainer();
         container.rebind(TYPES.DatabaseService).toConstantValue({
-            start: sandbox.stub().resolves(),
+            startDB: sandbox.stub().resolves(),
             insertDrawing: sandbox.stub().resolves(insertResult),
         });
         databaseService = container.get(TYPES.DatabaseService);

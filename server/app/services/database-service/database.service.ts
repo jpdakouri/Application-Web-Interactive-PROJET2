@@ -15,8 +15,8 @@ export class DatabaseService {
         useUnifiedTopology: true,
     };
 
-    start(): void {
-        MongoClient.connect(this.databaseURI, this.options)
+    startDB(DB_URI: string, options: MongoClientOptions): void {
+        MongoClient.connect(DB_URI, options)
             .then((client: MongoClient) => {
                 console.log('DATABASE CONNECTED');
                 this.client = client;
