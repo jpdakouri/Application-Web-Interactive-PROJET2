@@ -36,20 +36,20 @@ export class UndoRedoService {
         this.commands.push(command);
     }
 
-    undoCommand(): void {
+    undo(): void {
         if (this.canUndoCommands()) {
             const undoneCommand = this.commands.pop();
             if (undoneCommand !== undefined) this.undoneCommands.push(undoneCommand);
+            this.redrawCanvas();
         }
-        this.redrawCanvas();
     }
 
-    redoCommand(): void {
+    redo(): void {
         if (this.canRedoCommands()) {
             const redoneCommand = this.undoneCommands.pop();
             if (redoneCommand !== undefined) this.commands.push(redoneCommand);
+            this.redrawCanvas();
         }
-        this.redrawCanvas();
     }
 
     canUndoCommands(): boolean {
