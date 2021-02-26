@@ -1,6 +1,6 @@
 import { Tool } from '@app/classes/tool';
+import { Vec2 } from '@app/classes/vec2';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
-import { Vec2 } from '../vec2';
 
 export class PencilCommand implements ToolCommand {
     readonly tool: Tool;
