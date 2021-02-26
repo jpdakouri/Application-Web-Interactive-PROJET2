@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { CanvasOverwriterService } from '@app/services/canvas-overwriter/canvas-overwriter.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ALPHA_INDEX } from '@app/services/services-constants';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
@@ -9,9 +10,9 @@ import { ToolCommand } from '@app/utils/interfaces/tool-command';
 export class UndoRedoService {
     private commands: ToolCommand[];
     private undoneCommands: ToolCommand[];
-    private initialCanvasState: string[][];
+    private initialCanvasColors: string[][];
 
-    constructor(private drawingService: DrawingService) {
+    constructor(private drawingService: DrawingService, private overwriter: CanvasOverwriterService) {
         this.commands = [];
         this.undoneCommands = [];
     }
@@ -19,19 +20,19 @@ export class UndoRedoService {
     private saveInitialState(): void {
         const canvasWidth = this.drawingService.canvas.width;
         const canvasHeight = this.drawingService.canvas.height;
-        this.initialCanvasState = [];
+        this.initialCanvasColors = [];
         for (let i = 0; i < canvasHeight; i++) {
             const currentRow: string[] = [];
             for (let j = 0; j < canvasWidth; j++) {
-                currentRow.push(this.getRgbaAtPosition(i, j));
+                currentRow.push(this.getRgbaAtPosition(j, i));
             }
-            this.initialCanvasState.push(currentRow);
+            this.initialCanvasColors.push(currentRow);
         }
     }
 
-    // To be called BEFORE applying changes to the base canvas!
+    // To be called BEFORE applying changes to the base canvas to save the initial state!
     addCommand(command: ToolCommand): void {
-        if (this.initialCanvasState == undefined) this.saveInitialState();
+        if (this.initialCanvasColors == undefined) this.saveInitialState();
         this.commands.push(command);
     }
 
@@ -59,11 +60,11 @@ export class UndoRedoService {
         return this.undoneCommands.length > 0;
     }
 
-    redrawCanvas(): void {
-        // Resize
-        // Restaurer état initial
-        // tout les commandes
-        return;
+    private redrawCanvas(): void {
+        this.overwriter.overwriteCanvasState(this.initialCanvasColors);
+        this.commands.forEach((command) => {
+            command.tool.executeCommand(command);
+        });
     }
 
     private getRgbaAtPosition(x: number, y: number): string {
