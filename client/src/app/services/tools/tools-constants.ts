@@ -41,3 +41,5 @@ export const MAX_JET_DIAMETER = 200;
 export const DEFAULT_FREQUENCY = 250;
 export const DEFAULT_DROPLET_DIAMETER = 3;
 export const DEFAULT_JET_DIAMETER = 50;
+
+export const MS_PER_S = 1000;

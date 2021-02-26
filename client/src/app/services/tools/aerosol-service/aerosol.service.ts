@@ -11,6 +11,7 @@ import {
     MIN_DROPLET_DIAMETER,
     MIN_FREQUENCY,
     MIN_JET_DIAMETER,
+    MS_PER_S,
 } from '@app/services/tools/tools-constants';
 import { MouseButtons } from '@app/utils/enums/list-boutton-pressed';
 
@@ -22,7 +23,6 @@ export class AerosolService extends Tool {
     private mouseCurrentPosition: Vec2;
     // private isSpraying: boolean
 
-    // tslint:disable:no-magic-numbers
     constructor(drawingService: DrawingService, currentColourService: CurrentColourService) {
         super(drawingService, currentColourService);
         this.frequency = DEFAULT_FREQUENCY;
@@ -37,11 +37,11 @@ export class AerosolService extends Tool {
             // this.drawingService.clearCanvas(this.drawingService.previewCtx);
             window.clearInterval(this.intervalID);
             let frequency = this.frequency || MIN_FREQUENCY;
-            frequency /= 10;
+            frequency /= DOTS_PER_SPRAY;
 
             this.intervalID = window.setInterval(() => {
                 this.spray();
-            }, 1000 / frequency);
+            }, MS_PER_S / frequency);
         }
     }
 
