@@ -3,6 +3,7 @@ import { CurrentColourService } from '@app/services/current-colour/current-colou
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DEFAULT_COLOR_BLACK, DEFAULT_DOT_RADIUS, DEFAULT_MIN_THICKNESS } from '@app/services/tools/tools-constants';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
+import { ToolCommand } from '@app/utils/interfaces/tool-command';
 import { Vec2 } from './vec2';
 
 // Ceci est justifié vu qu'on a des fonctions qui seront gérés par les classes enfant
@@ -47,4 +48,6 @@ export abstract class Tool {
     }
 
     updateAttributesManager(): void {}
+
+    abstract executeCommand(command: ToolCommand): void;
 }
