@@ -6,4 +6,5 @@ export enum ToolsNames {
     Line = 'Line',
     Aerosol = 'Aerosol',
     Pipette = 'Pipette',
+    SelectBox = 'SelectBox',
 }
