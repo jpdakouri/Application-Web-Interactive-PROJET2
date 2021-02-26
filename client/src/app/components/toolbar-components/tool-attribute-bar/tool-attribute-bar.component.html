@@ -49,4 +49,57 @@
         </div>
         <mat-divider></mat-divider>
     </div>
+
+    <div class="aerosol-attributes" *ngIf="showAerosolAttributes()">
+        <div>
+            <mat-divider></mat-divider>
+            <div class="aerosol-emission-flow">
+                <h2 class="attribute-title">Débit du jet: {{ getCurrentFrequency() }} particules/s</h2>
+                <mat-slider
+                    [value]="getCurrentFrequency()"
+                    #flowSlider
+                    color="primary"
+                    [min]="MIN_FREQUENCY"
+                    [max]="MAX_FREQUENCY"
+                    step="1"
+                    (input)="onFrequencyChange($event)"
+                ></mat-slider>
+            </div>
+            <mat-divider></mat-divider>
+        </div>
+
+        <div>
+            <mat-divider></mat-divider>
+            <div class="aerosol-jet-diameter">
+                <h2 class="attribute-title">Diamètre du jet: {{ getCurrentJetDiameter() }}px</h2>
+                <mat-slider
+                    [value]="getCurrentJetDiameter()"
+                    #flowSlider
+                    color="primary"
+                    [min]="MIN_JET_DIAMETER"
+                    [max]="MAX_JET_DIAMETER"
+                    step="1"
+                    (input)="onJetDiameterChange($event)"
+                ></mat-slider>
+            </div>
+            <mat-divider></mat-divider>
+        </div>
+
+        <div>
+            <mat-divider></mat-divider>
+            <div class="aerosol-droplet-jet">
+                <h2 class="attribute-title">Diamètre des goutelettes: {{ getCurrentDropletDiameter() }}px</h2>
+                <mat-slider
+                    [value]="getCurrentDropletDiameter()"
+                    #flowSlider
+                    color="primary"
+                    [min]="MIN_DROPLET_DIAMETER"
+                    [max]="MAX_DROPLET_DIAMETER"
+                    step="1"
+                    (input)="onDropletDiameterChange($event)"
+                ></mat-slider>
+            </div>
+            <mat-divider></mat-divider>
+        </div>
+    </div>
 </div>

@@ -142,10 +142,52 @@ describe('ToolManagerService', () => {
         expect(currentTool).not.toEqual(service.toolBox[ToolsNames.Pencil]);
     });
 
+    it("#getCurrentFrequency should return currentAttributes propert's Frequency", () => {
+        const frequency = 10;
+        service.currentAttributes.Frequency = frequency;
+        const expectedFrequency = service.getCurrentFrequency();
+        expect(expectedFrequency).toBe(frequency);
+    });
+
+    it("#getCurrentDropletDiameter should return currentAttributes propert's DropletDiameter", () => {
+        const dropletDiameter = 10;
+        service.currentAttributes.DropletDiameter = dropletDiameter;
+        const expectedFrequency = service.getCurrentDropletDiameter();
+        expect(expectedFrequency).toBe(dropletDiameter);
+    });
+
+    it("#getCurrentJetDiameter should return currentAttributes propert's JetDiameter", () => {
+        const jetDiameter = 10;
+        service.currentAttributes.JetDiameter = jetDiameter;
+        const expectedFrequency = service.getCurrentJetDiameter();
+        expect(expectedFrequency).toBe(jetDiameter);
+    });
+
     it('#isCurrentTool should return true if the paramter is the current tool', () => {
         service.currentTool = ToolsNames.Eraser;
         expect(service.isCurrentTool(ToolsNames.Eraser)).toEqual(true);
         expect(service.isCurrentTool(ToolsNames.Aerosol)).toEqual(false);
+    });
+
+    it("#setCurrentFrequency should set currentAttributes.Frequency property and currentTool's frequency to correct value ", () => {
+        const frequency = 10;
+        service.setCurrentFrequency(frequency);
+        expect(service.currentAttributes.Frequency).toEqual(frequency);
+        expect(service.toolBox[service.currentTool].frequency).toEqual(frequency);
+    });
+
+    it("#setCurrentJetDiameter should set currentAttributes.JetDiameter property and currentTool's jetDimater to correct value ", () => {
+        const jetDiameter = 10;
+        service.setCurrentJetDiameter(jetDiameter);
+        expect(service.currentAttributes.JetDiameter).toEqual(jetDiameter);
+        expect(service.toolBox[service.currentTool].jetDiameter).toEqual(jetDiameter);
+    });
+
+    it("#setCurrentDropletDiameter should set currentAttributes.DropletDiameter property and currentTool's dropletDiameter to correct value ", () => {
+        const dropletDiameter = 10;
+        service.setCurrentDropletDiameter(dropletDiameter);
+        expect(service.currentAttributes.DropletDiameter).toEqual(dropletDiameter);
+        expect(service.toolBox[service.currentTool].dropletDiameter).toEqual(dropletDiameter);
     });
 
     it('#emitToolChange should make the toolChangeEmitter emit the tool name', () => {
