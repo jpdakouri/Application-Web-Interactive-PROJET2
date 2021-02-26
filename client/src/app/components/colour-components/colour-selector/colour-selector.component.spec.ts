@@ -37,11 +37,12 @@ describe('ColourSelectorComponent', () => {
         expect(component).toBeTruthy();
     });
     it('isValidTransparency returns true for valid transparencies', () => {
-        expect(component.isValidTransparency('0')).toBe(true);
+        expect(component.isValidTransparency('1')).toBe(true);
         expect(component.isValidTransparency('100')).toBe(true);
     });
     it('isValidTransparency returns false for invalid transparencies', () => {
         expect(component.isValidTransparency('-1')).toBe(false);
+        expect(component.isValidTransparency('0')).toBe(false);
         expect(component.isValidTransparency('')).toBe(false);
         expect(component.isValidTransparency('101')).toBe(false);
         expect(component.isValidTransparency('1a')).toBe(false);
@@ -72,7 +73,7 @@ describe('ColourSelectorComponent', () => {
         const currentColorService = TestBed.inject(CurrentColourService);
         spyOn(currentColorService, 'setPrimaryColorTransparency');
         spyOn(currentColorService, 'setSecondaryColorTransparency');
-        component.primaryColourTransparency = '0';
+        component.primaryColourTransparency = '1';
         component.secondaryColourTransparency = '100';
         component.onPrimaryColorTransparencyEntryChange();
         component.onSecondaryColorTransparencyEntryChange();

@@ -121,6 +121,11 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         }
     }
 
+    @HostListener('dragstart', ['$event'])
+    onDrag(event: MouseEvent): void {
+        event.preventDefault();
+    }
+
     @HostListener('mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
         if (this.canvasResizerService.isResizing()) {
@@ -135,7 +140,12 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     @HostListener('mouseleave', ['$event'])
     onMouseLeave(event: MouseEvent): void {
-        this.currentTool.onMouseLeave(event);
+        if (this.canvasResizerService.isResizing()) {
+            this.eraserActive = false;
+            this.canvasResizerService.onMouseMove(event);
+        } else {
+            this.currentTool.onMouseLeave(event);
+        }
         this.eraserActive = this.currentTool.eraserActive || false;
     }
 

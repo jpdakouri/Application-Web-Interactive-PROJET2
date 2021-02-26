@@ -5,4 +5,5 @@ export enum ToolsNames {
     Ellipse = 'Ellipse',
     Line = 'Line',
     Aerosol = 'Aerosol',
+    Pipette = 'Pipette',
 }

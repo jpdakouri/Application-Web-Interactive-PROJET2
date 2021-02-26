@@ -1,10 +1,11 @@
-import { Application } from '@app/app';
-import { IndexService } from '@app/services/index.service';
-import { TYPES } from '@app/types';
-import { Message } from '@common/communication/message';
 import { expect } from 'chai';
+import 'mocha';
 import * as supertest from 'supertest';
-import { Stubbed, testingContainer } from '../../test/test-utils';
+import { Message } from '../../../../common/communication/message';
+import { Stubbed, testingContainer } from '../../../test/test-utils';
+import { Application } from '../../app';
+import { IndexService } from '../../services/index-service/index.service';
+import { TYPES } from '../../types';
 
 // tslint:disable:no-any
 const HTTP_STATUS_OK = 200;
