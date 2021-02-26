@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { InsertOneWriteOpResult } from 'mongodb';
+import { InsertOneWriteOpResult, MongoError } from 'mongodb';
 import * as supertest from 'supertest';
 import { Metadata } from '../../../../common/communication/metadata';
 import { Stubbed, testingContainer } from '../../../test/test-utils';
@@ -9,6 +9,7 @@ import { TYPES } from '../../types';
 
 const HTTP_STATUS_CREATED = 201;
 const HTTP_STATUS_BAD_REQUEST = 404;
+const HTTP_STATUS_ERROR = 500;
 
 describe('DatabaseController', () => {
     let databaseService: Stubbed<DatabaseService>;
@@ -41,6 +42,16 @@ describe('DatabaseController', () => {
             .expect(HTTP_STATUS_BAD_REQUEST)
             .then((response: any) => {
                 expect(response.text).to.deep.equal('Document could not be inserted in the database');
+            });
+    });
+
+    it('post request to /insert should respond a HTTP_STATUS_BAD_REQUEST and string message', async () => {
+        databaseService.insertDrawing.rejects(new MongoError('Test Error'));
+        return supertest(app)
+            .post('/api/database/insert')
+            .expect(HTTP_STATUS_ERROR)
+            .then((response: any) => {
+                expect(response.text).to.deep.equal('Database operation error !');
             });
     });
 });

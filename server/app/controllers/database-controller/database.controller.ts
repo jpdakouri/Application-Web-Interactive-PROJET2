@@ -28,12 +28,12 @@ export class DatabaseController {
                     if (result.insertedCount > 0) {
                         res.status(HTTP_STATUS_CREATED).json(result.insertedId);
                     } else {
-                        res.status(HTTP_STATUS_BAD_REQUEST).send('Document could not be inserted in the database');
+                        res.status(HTTP_STATUS_BAD_REQUEST).send('Document could not be inserted in the database !');
                     }
                     console.log(result);
                 })
                 .catch((err) => {
-                    res.status(HTTP_STATUS_ERROR).send('Database operation error: ' + err);
+                    res.status(HTTP_STATUS_ERROR).send('Database operation error !');
                     console.log(err);
                 });
         });
