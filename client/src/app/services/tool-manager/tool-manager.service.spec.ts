@@ -169,6 +169,27 @@ describe('ToolManagerService', () => {
         expect(service.isCurrentTool(ToolsNames.Aerosol)).toEqual(false);
     });
 
+    it("#setCurrentFrequency should set currentAttributes.Frequency property and currentTool's frequency to correct value ", () => {
+        const frequency = 10;
+        service.setCurrentFrequency(frequency);
+        expect(service.currentAttributes.Frequency).toEqual(frequency);
+        expect(service.toolBox[service.currentTool].frequency).toEqual(frequency);
+    });
+
+    it("#setCurrentJetDiameter should set currentAttributes.JetDiameter property and currentTool's jetDimater to correct value ", () => {
+        const jetDiameter = 10;
+        service.setCurrentJetDiameter(jetDiameter);
+        expect(service.currentAttributes.JetDiameter).toEqual(jetDiameter);
+        expect(service.toolBox[service.currentTool].jetDiameter).toEqual(jetDiameter);
+    });
+
+    it("#setCurrentDropletDiameter should set currentAttributes.DropletDiameter property and currentTool's dropletDiameter to correct value ", () => {
+        const dropletDiameter = 10;
+        service.setCurrentDropletDiameter(dropletDiameter);
+        expect(service.currentAttributes.DropletDiameter).toEqual(dropletDiameter);
+        expect(service.toolBox[service.currentTool].dropletDiameter).toEqual(dropletDiameter);
+    });
+
     it('#emitToolChange should make the toolChangeEmitter emit the tool name', () => {
         const emitterSpy = spyOn(service.toolChangeEmitter, 'emit').and.callThrough();
         service.emitToolChange(ToolsNames.Rectangle);
