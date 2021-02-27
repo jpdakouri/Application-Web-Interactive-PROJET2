@@ -8,7 +8,6 @@ import { MatDialogRef } from '@angular/material/dialog';
 })
 export class ExportDrawingComponent implements OnInit {
     extensions: string[] = ['PNG', 'JPEG'];
-
     filters: string[] = ['Aucun filtre', 'Contraste', 'Flou', 'Inversion', 'Nuance de gris', 'Saturation des couleurs', 'Sepia'];
 
     constructor(public dialogRef: MatDialogRef<ExportDrawingComponent>) {}
@@ -19,5 +18,9 @@ export class ExportDrawingComponent implements OnInit {
 
     onDialogClose(): void {
         this.dialogRef.close(ExportDrawingComponent);
+    }
+
+    onDownload(): void {
+        this.onDialogClose();
     }
 }
