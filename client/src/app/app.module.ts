@@ -16,6 +16,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app/app.component';
 import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
+import { ExportDrawingComponent } from './components/export-drawing/export-drawing.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 
 @NgModule({
@@ -31,6 +32,7 @@ import { MainPageComponent } from './components/main-page/main-page.component';
         CurrentColourComponent,
         HueSelectorComponent,
         ColourPaletteSelectorComponent,
+        ExportDrawingComponent,
     ],
     imports: [BrowserModule, HttpClientModule, AppRoutingModule, BrowserAnimationsModule, AppMaterialModule, MatTooltipModule, FormsModule],
     providers: [],
