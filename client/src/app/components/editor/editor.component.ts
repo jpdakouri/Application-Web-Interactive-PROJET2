@@ -1,4 +1,6 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { ExportDrawingComponent } from '@app/components/export-drawing/export-drawing.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { KeyboardButtons } from '@app/utils/enums/list-boutton-pressed';
@@ -12,7 +14,12 @@ import { ToolsNames } from '@app/utils/enums/tools-names';
 export class EditorComponent implements AfterViewInit {
     private toolFinder: Map<KeyboardButtons, ToolsNames>;
 
-    constructor(private toolManagerService: ToolManagerService, private drawingService: DrawingService) {
+    constructor(
+        private toolManagerService: ToolManagerService,
+        private drawingService: DrawingService,
+        public exportDrawingDialog: MatDialogRef<ExportDrawingComponent>,
+        public dialog: MatDialog,
+    ) {
         this.toolFinder = new Map<KeyboardButtons, ToolsNames>();
         this.toolFinder
             .set(KeyboardButtons.Line, ToolsNames.Line)
@@ -55,5 +62,13 @@ export class EditorComponent implements AfterViewInit {
 
     onCreateNewDrawing(): void {
         this.drawingService.createNewDrawing();
+    }
+
+    openDialog(): void {
+        this.dialog.open(ExportDrawingComponent, {});
+    }
+
+    exportDrawing(): void {
+        this.exportDrawingDialog = this.dialog.open(ExportDrawingComponent, {});
     }
 }

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
     selector: 'app-export-drawing',
@@ -6,7 +7,13 @@ import { Component, OnInit } from '@angular/core';
     styleUrls: ['./export-drawing.component.scss'],
 })
 export class ExportDrawingComponent implements OnInit {
-    constructor() {}
+    constructor(public dialogRef: MatDialogRef<ExportDrawingComponent>) {}
 
     ngOnInit(): void {}
+
+    exportDrawing(): void {}
+
+    onDialogClose(): void {
+        this.dialogRef.close(ExportDrawingComponent);
+    }
 }
