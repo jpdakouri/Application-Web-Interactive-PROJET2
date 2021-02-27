@@ -2,6 +2,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -44,6 +45,7 @@ import { MainPageComponent } from './components/main-page/main-page.component';
         MatTooltipModule,
         FormsModule,
         MatDialogModule,
+        MatSelectModule,
     ],
     providers: [
         {

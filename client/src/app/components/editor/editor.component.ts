@@ -64,9 +64,9 @@ export class EditorComponent implements AfterViewInit {
         this.drawingService.createNewDrawing();
     }
 
-    openDialog(): void {
-        this.dialog.open(ExportDrawingComponent, {});
-    }
+    // openDialog(): void {
+    //     this.dialog.open(ExportDrawingComponent, {});
+    // }
 
     exportDrawing(): void {
         this.exportDrawingDialog = this.dialog.open(ExportDrawingComponent, {});

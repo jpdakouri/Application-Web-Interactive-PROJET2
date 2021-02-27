@@ -1,5 +1,36 @@
-<h1 mat-dialog-title>Dialog with elements</h1>
-<div mat-dialog-content>This dialog showcases the title, close, content and actions elements.</div>
-<div mat-dialog-actions>
-  <button mat-button mat-dialog-close>Close</button>
+<div>
+   <div style="width: 600px; height: 400px; background-color: #7f7f7f"></div>
+
+    <div class="export-options">
+      <mat-form-field hintLabel="Max 10 characters" appearance="fill">
+        <mat-label>Nom du fichier</mat-label>
+        <input matInput #input maxlength="50" placeholder="Ex. dessin1">
+        <mat-hint align="end">{{input.value?.length || 0}}/50</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Extension</mat-label>
+        <mat-select>
+          <mat-option *ngFor="let extension of extensions" value="option">{{ extension }}</mat-option>
+        </mat-select>
+        <mat-hint align="end">Here's the dropdown arrow ^</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Filtre</mat-label>
+        <mat-select>
+          <mat-option *ngFor="let filter of filters" value="option">{{ filter }}</mat-option>
+        </mat-select>
+        <mat-hint align="end">Here's the dropdown arrow ^</mat-hint>
+      </mat-form-field>
+    </div>
+
+  <mat-dialog-actions  mat-dialog-actions>
+    <button mat-button mat-dialog-close mat-flat-button>Annuler</button>
+    <div class="flexExpand"></div>
+
+    <button mat-button mat-dialog-close mat-flat-button color="primary">Télécharger</button>
+    <button mat-button mat-dialog-close disabled mat-flat-button color="primary">Téléverser sur Imgur</button>
+  </mat-dialog-actions>
+
 </div>

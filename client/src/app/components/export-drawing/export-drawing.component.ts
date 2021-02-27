@@ -7,6 +7,10 @@ import { MatDialogRef } from '@angular/material/dialog';
     styleUrls: ['./export-drawing.component.scss'],
 })
 export class ExportDrawingComponent implements OnInit {
+    extensions: string[] = ['PNG', 'JPEG'];
+
+    filters: string[] = ['Aucun filtre', 'Contraste', 'Flou', 'Inversion', 'Nuance de gris', 'Saturation des couleurs', 'Sepia'];
+
     constructor(public dialogRef: MatDialogRef<ExportDrawingComponent>) {}
 
     ngOnInit(): void {}
