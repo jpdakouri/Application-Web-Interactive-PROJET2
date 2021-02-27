@@ -1,6 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -34,8 +35,23 @@ import { MainPageComponent } from './components/main-page/main-page.component';
         ColourPaletteSelectorComponent,
         ExportDrawingComponent,
     ],
-    imports: [BrowserModule, HttpClientModule, AppRoutingModule, BrowserAnimationsModule, AppMaterialModule, MatTooltipModule, FormsModule],
-    providers: [],
+    imports: [
+        BrowserModule,
+        HttpClientModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        AppMaterialModule,
+        MatTooltipModule,
+        FormsModule,
+        MatDialogModule,
+    ],
+    providers: [
+        {
+            provide: MatDialogRef,
+            useValue: {},
+        },
+        ExportDrawingComponent,
+    ],
     bootstrap: [AppComponent],
 })
 export class AppModule {}
