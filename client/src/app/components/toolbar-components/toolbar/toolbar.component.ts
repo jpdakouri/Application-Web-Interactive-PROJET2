@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { EditorComponent } from '@app/components/editor/editor.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { ToolsNames } from '@app/utils/enums/tools-names';
@@ -12,7 +13,7 @@ export class ToolbarComponent {
     toolManagerService: ToolManagerService;
     drawingService: DrawingService;
 
-    constructor(toolManagerService: ToolManagerService, drawingService: DrawingService) {
+    constructor(toolManagerService: ToolManagerService, drawingService: DrawingService, private editorComponent: EditorComponent) {
         this.toolManagerService = toolManagerService;
         this.drawingService = drawingService;
     }
@@ -27,5 +28,9 @@ export class ToolbarComponent {
 
     onCreateNewDrawing(): void {
         this.drawingService.createNewDrawing();
+    }
+
+    onExport(): void {
+        this.editorComponent.exportDrawing();
     }
 }
