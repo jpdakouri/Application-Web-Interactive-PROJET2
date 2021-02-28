@@ -13,16 +13,16 @@
 
       <mat-form-field appearance="fill">
         <mat-label>Extension</mat-label>
-        <mat-select [(value)]="selectedFormat" (selectionChange)="onFormatChange()">
-          <mat-option *ngFor="let format of formats" value="extension">{{ format }}</mat-option>
+        <mat-select [(value)]="selectedFormat" (selectionChange)="onFormatChange(selectedFormat)">
+          <mat-option *ngFor="let format of formats" [value]="format">{{ format }}</mat-option>
         </mat-select>
         <mat-hint align="end">Here's the dropdown arrow ^</mat-hint>
       </mat-form-field>
 
       <mat-form-field appearance="fill">
         <mat-label>Filtre</mat-label>
-        <mat-select [(value)]="selectedFilter" (selectionChange)="onFilterChange()">
-          <mat-option *ngFor="let filter of filters" value="filter">{{ filter }}</mat-option>
+        <mat-select [(value)]="selectedFilter" (selectionChange)="onFilterChange(selectedFilter)">
+          <mat-option *ngFor="let filter of filters" [value]="filter">{{ filter }}</mat-option>
         </mat-select>
         <mat-hint align="end">Here's the dropdown arrow ^</mat-hint>
       </mat-form-field>
