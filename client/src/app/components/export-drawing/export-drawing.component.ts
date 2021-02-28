@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ExportDrawingService } from '@app/services/export-drawing/export-drawing.service';
 import { ImageFilter } from '@app/utils/enums/image-filter.enum';
@@ -17,6 +18,7 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
     selectedFilter: string;
     filters: string[];
     formats: string[];
+    fileName: FormControl = new FormControl('', [Validators.required]);
 
     constructor(private exportDrawingService: ExportDrawingService, public dialogRef: MatDialogRef<ExportDrawingComponent>) {
         this.filters = Object.values(ImageFilter);
@@ -24,6 +26,7 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
         this.selectedFormat = ImageFormat.PNG;
         this.selectedFilter = ImageFilter.None;
         this.initializeImageFiltersNames();
+        this.initializeImageFormatsName();
     }
 
     private initializeImageFiltersNames(): void {
@@ -37,6 +40,12 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
         this.imageFiltersNames.set('Inversion', ImageFilter.Inversion);
         this.imageFiltersNames.set('Saturation des couleurs', ImageFilter.Saturation);
         this.imageFiltersNames.set('Sépia', ImageFilter.Sepia);
+    }
+
+    private initializeImageFormatsName(): void {
+        this.imageFormatsNames = new Map<string, ImageFormat>();
+        this.imageFormatsNames.set('JPEG', ImageFormat.JPEG);
+        this.imageFormatsNames.set('PNG', ImageFormat.PNG);
     }
 
     ngOnInit(): void {
@@ -59,6 +68,13 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
         // this.exportDrawingService.currentFormat.unsubscribe();
         // this.exportDrawingService.currentFilter.unsubscribe();
         // console.log('unsuscribed');
+    }
+
+    getErrorMessage(): string {
+        if (this.fileName.hasError('required')) {
+            return 'Vous devez entrer un nom';
+        }
+        return this.fileName.invalid ? 'Nom invalide' : '';
     }
 
     exportDrawing(): void {}

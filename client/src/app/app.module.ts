@@ -1,6 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -46,6 +46,7 @@ import { MainPageComponent } from './components/main-page/main-page.component';
         FormsModule,
         MatDialogModule,
         MatSelectModule,
+        ReactiveFormsModule,
     ],
     providers: [
         {

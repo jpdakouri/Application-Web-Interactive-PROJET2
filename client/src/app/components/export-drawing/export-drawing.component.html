@@ -7,8 +7,15 @@
   <div class="export-options">
       <mat-form-field hintLabel="Max 50 caractères" appearance="fill">
         <mat-label>Nom du fichier</mat-label>
-        <input matInput #input maxlength="50" placeholder="Ex. dessin1">
+        <input matInput
+               #input
+               maxlength="50"
+               placeholder="Ex. dessin1"
+               [formControl]="fileName"
+               required
+               pattern="[a-zA-Z0-9-_]*">
         <mat-hint align="end">{{input.value?.length || 0}}/50</mat-hint>
+        <mat-error *ngIf="fileName.invalid">{{getErrorMessage()}}</mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="fill">
@@ -33,7 +40,7 @@
 
     <div class="flexExpand"></div>
 
-    <button mat-raised-button color="primary" (click)="onDownload()">
+    <button mat-raised-button color="primary" (click)="onDownload()" [disabled]="fileName.invalid">
       <span class="material-icons">file_download</span>Télécharger
     </button>
 
