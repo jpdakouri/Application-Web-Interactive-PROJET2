@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import { AerosolCommand } from '@app/classes/tool-commands/aerosol-command';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -97,5 +98,10 @@ export class AerosolService extends Tool {
             x: Math.cos(randomAngle) * randomRadius,
             y: Math.sin(randomAngle) * randomRadius,
         };
+    }
+
+    executeCommand(command: AerosolCommand): void {
+        // TODO
+        return;
     }
 }

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import { LineCommand } from '@app/classes/tool-commands/line-command';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -176,5 +177,10 @@ export class LineService extends Tool {
     private verifyLastPoint(dotToVerify: Vec2): boolean {
         const lastDot = this.pathData[this.pathData.length - 1];
         return Math.abs(lastDot.x - dotToVerify.x) <= PIXEL_DISTANCE && Math.abs(lastDot.y - dotToVerify.y) <= PIXEL_DISTANCE;
+    }
+
+    executeCommand(command: LineCommand): void {
+        // TODO
+        return;
     }
 }

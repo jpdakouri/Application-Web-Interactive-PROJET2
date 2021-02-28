@@ -10,6 +10,7 @@ import {
     MIN_JET_DIAMETER,
 } from '@app/services/tools/tools-constants';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
+import { ToolCommand } from '@app/utils/interfaces/tool-command';
 import { Vec2 } from './vec2';
 
 // Ceci est justifié vu qu'on a des fonctions qui seront gérés par les classes enfant
@@ -57,4 +58,6 @@ export abstract class Tool {
     }
 
     updateAttributesManager(): void {}
+
+    abstract executeCommand(command: ToolCommand): void;
 }
