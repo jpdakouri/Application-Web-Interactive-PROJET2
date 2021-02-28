@@ -17,10 +17,11 @@ export class ExportDrawingService {
     constructor() {
         this.currentFilter = new BehaviorSubject<ImageFilter>(ImageFilter.None);
         this.currentFormat = new BehaviorSubject<ImageFormat>(ImageFormat.JPEG);
-        this.initializeImageFiltersMap();
+        this.initializeImageFilters();
+        this.initializeImageFormats();
     }
 
-    private initializeImageFiltersMap(): void {
+    private initializeImageFilters(): void {
         this.imageFilters = new Map<ImageFilter, string>();
         this.imageFilters.set(ImageFilter.None, 'none');
         this.imageFilters.set(ImageFilter.Blur, 'blur(5px)');
@@ -31,6 +32,12 @@ export class ExportDrawingService {
         this.imageFilters.set(ImageFilter.BlackAndWhite, 'grayscale(100%)');
         this.imageFilters.set(ImageFilter.Saturation, 'saturate(200%)');
         this.imageFilters.set(ImageFilter.Sepia, 'sepia(100%)');
+    }
+
+    private initializeImageFormats(): void {
+        this.imageFormats = new Map<ImageFormat, string>();
+        this.imageFormats.set(ImageFormat.JPEG, 'JPEG');
+        this.imageFormats.set(ImageFormat.PNG, 'PNG');
     }
 
     convertCanvasToImage(canvas: HTMLCanvasElement): HTMLImageElement {
