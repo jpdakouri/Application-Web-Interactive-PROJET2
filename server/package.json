@@ -43,13 +43,16 @@
         "instrument": true
     },
     "dependencies": {
+        "@types/chai-spies": "^1.0.3",
         "body-parser": "^1.19.0",
+        "chai-spies": "^1.0.0",
         "cookie-parser": "1.4.5",
         "cors": "2.8.5",
         "debug": "^4.1.1",
         "express": "~4.17.1",
         "inversify": "^5.0.1",
-        "mongodb": "^3.6.0",
+        "mongodb": "^3.6.4",
+        "mongodb-memory-server": "^6.9.3",
         "morgan": "^1.10.0",
         "prettier": "^2.0.5",
         "reflect-metadata": "^0.1.13",
