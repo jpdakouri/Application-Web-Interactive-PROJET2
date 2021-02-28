@@ -11,7 +11,8 @@ import { ImageFormat } from '@app/utils/enums/image-format.enum';
 })
 export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild('previewCanvas', { static: false }) canvas: ElementRef<HTMLCanvasElement>;
-
+    imageFiltersNames: Map<string, ImageFilter>;
+    imageFormatsNames: Map<string, ImageFormat>;
     selectedFormat: string;
     selectedFilter: string;
     filters: string[];
@@ -22,16 +23,43 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
         this.formats = Object.values(ImageFormat);
         this.selectedFormat = ImageFormat.PNG;
         this.selectedFilter = ImageFilter.None;
+        this.initializeImageFiltersNames();
     }
 
-    ngOnInit(): void {}
+    private initializeImageFiltersNames(): void {
+        this.imageFiltersNames = new Map<string, ImageFilter>();
+        this.imageFiltersNames.set('Aucun filtre', ImageFilter.None);
+        this.imageFiltersNames.set('Contraste', ImageFilter.Contrast);
+        this.imageFiltersNames.set('Luminosité', ImageFilter.Brightness);
+        this.imageFiltersNames.set('Flou', ImageFilter.Blur);
+        this.imageFiltersNames.set('Opacité', ImageFilter.Opacity);
+        this.imageFiltersNames.set('Nuance de gris', ImageFilter.BlackAndWhite);
+        this.imageFiltersNames.set('Inversion', ImageFilter.Inversion);
+        this.imageFiltersNames.set('Saturation des couleurs', ImageFilter.Saturation);
+        this.imageFiltersNames.set('Sépia', ImageFilter.Sepia);
+    }
+
+    ngOnInit(): void {
+        this.exportDrawingService.currentFormat.subscribe((format: ImageFormat) => {
+            this.selectedFormat = format.toString();
+        });
+
+        this.exportDrawingService.currentFilter.subscribe((filter: ImageFilter) => {
+            this.selectedFilter = filter.toString();
+        });
+        console.log('suscribed');
+    }
 
     ngAfterViewInit(): void {
         this.exportDrawingService.previewCanvas = this.canvas.nativeElement as HTMLCanvasElement;
         this.exportDrawingService.drawPreviewImage();
     }
 
-    ngOnDestroy(): void {}
+    ngOnDestroy(): void {
+        // this.exportDrawingService.currentFormat.unsubscribe();
+        // this.exportDrawingService.currentFilter.unsubscribe();
+        // console.log('unsuscribed');
+    }
 
     exportDrawing(): void {}
 
@@ -44,7 +72,14 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
         this.onDialogClose();
     }
 
-    onFormatChange(): void {}
+    onFormatChange(selectedFormat: string): void {}
 
-    onFilterChange(): void {}
+    onFilterChange(selectedFilter: string): void {
+        const newFilter = this.imageFiltersNames.get(selectedFilter);
+        if (newFilter !== undefined) {
+            this.exportDrawingService.currentFilter.next(newFilter);
+            this.exportDrawingService.drawPreviewImage();
+            console.log(this.exportDrawingService.currentFilter.value);
+        }
+    }
 }
