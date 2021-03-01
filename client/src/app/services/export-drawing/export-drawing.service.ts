@@ -8,6 +8,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class ExportDrawingService {
     previewCanvas: HTMLCanvasElement;
+    previewImage: HTMLImageElement;
     drawingTitle: string;
     imageFilters: Map<ImageFilter, string>;
     imageFormats: Map<ImageFormat, string>;
@@ -52,13 +53,12 @@ export class ExportDrawingService {
 
         context.clearRect(0, 0, this.previewCanvas.width, this.previewCanvas.height);
 
-        // @ts-ignore
-        context.filter = this.imageFilters.get(this.currentFilter.value);
-        // this.applyFilterToPreviewImage(context, this.currentFilter);
+        context.filter = this.imageFilters.get(this.currentFilter.value) as string;
         const dataURL = sessionStorage.getItem('canvasBuffer');
         const image = new Image();
         if (dataURL) {
             image.src = dataURL;
+            this.previewImage = image;
             image.onload = () => {
                 // get the scale
                 const scale = Math.min(this.previewCanvas.width / image.width, this.previewCanvas.height / image.height);
@@ -74,4 +74,20 @@ export class ExportDrawingService {
     }
 
     exportImage(): void {}
+
+    downloadImage(fileName: string, format: string): void {
+        // let image: string;
+        // image = this.canvas.nativeElement
+        //     .toDataURL(`image/${this.selectedFormat}`)
+        //     .replace(`image/${this.selectedFormat}`, 'image/octet-stream');
+        // image = this.canvas.nativeElement.toDataURL(`image/${this.selectedFormat}`).replace('image/png', 'image/octet-stream');
+
+        const image = new Image();
+        // image.src = this.previewImage.src;
+        image.src = this.previewCanvas.toDataURL(`image/${format}`);
+        const link = document.createElement('a');
+        link.download = fileName;
+        link.href = image.src;
+        link.click();
+    }
 }

@@ -95,22 +95,12 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
         if (newFilter !== undefined) {
             this.exportDrawingService.currentFilter.next(newFilter);
             this.exportDrawingService.drawPreviewImage();
-            console.log(this.exportDrawingService.currentFilter.value);
+            // console.log(this.exportDrawingService.currentFilter.value);
         }
     }
 
     onDownload(): void {
-        // let image: string;
-        // image = this.canvas.nativeElement
-        //     .toDataURL(`image/${this.selectedFormat}`)
-        //     .replace(`image/${this.selectedFormat}`, 'image/octet-stream');
-        // image = this.canvas.nativeElement.toDataURL(`image/${this.selectedFormat}`).replace('image/png', 'image/octet-stream');
-        const image = new Image();
-        image.src = this.canvas.nativeElement.toDataURL(`image/${this.selectedFormat}`);
-        const link = document.createElement('a');
-        link.download = this.fileName.value;
-        link.href = image.src;
-        link.click();
+        this.exportDrawingService.downloadImage(this.fileName.value, this.selectedFormat.toString());
         this.dialogRef.close();
     }
 }
