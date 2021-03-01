@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } fr
 import { FormControl, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ExportDrawingService } from '@app/services/export-drawing/export-drawing.service';
+import { FILE_NAME_REGEX } from '@app/services/services-constants';
 import { ImageFilter } from '@app/utils/enums/image-filter.enum';
 import { ImageFormat } from '@app/utils/enums/image-format.enum';
 
@@ -18,13 +19,14 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
     selectedFilter: string;
     filters: string[];
     formats: string[];
-    fileName: FormControl = new FormControl('', [Validators.required]);
+    fileName: FormControl;
 
     constructor(private exportDrawingService: ExportDrawingService, public dialogRef: MatDialogRef<ExportDrawingComponent>) {
         this.filters = Object.values(ImageFilter);
         this.formats = Object.values(ImageFormat);
         this.selectedFormat = ImageFormat.PNG;
         this.selectedFilter = ImageFilter.None;
+        this.fileName = new FormControl('', [Validators.required, Validators.pattern(FILE_NAME_REGEX)]);
         this.initializeImageFiltersNames();
         this.initializeImageFormatsName();
     }
@@ -65,8 +67,8 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
     }
 
     ngOnDestroy(): void {
-        // this.exportDrawingService.currentFormat.unsubscribe();
-        // this.exportDrawingService.currentFilter.unsubscribe();
+        // this.exportDrawingService.currentFormat.complete();
+        // this.exportDrawingService.currentFilter.complete();
         // console.log('unsuscribed');
     }
 
@@ -77,18 +79,16 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
         return this.fileName.invalid ? 'Nom invalide' : '';
     }
 
-    exportDrawing(): void {}
-
     onDialogClose(): void {
         this.dialogRef.close();
     }
 
-    onDownload(): void {
-        this.exportDrawingService.exportImage();
-        this.onDialogClose();
+    onFormatChange(selectedFormat: string): void {
+        const newFormat = this.imageFormatsNames.get(selectedFormat);
+        if (newFormat !== undefined) {
+            this.exportDrawingService.currentFormat.next(newFormat);
+        }
     }
-
-    onFormatChange(selectedFormat: string): void {}
 
     onFilterChange(selectedFilter: string): void {
         const newFilter = this.imageFiltersNames.get(selectedFilter);
@@ -97,5 +97,20 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
             this.exportDrawingService.drawPreviewImage();
             console.log(this.exportDrawingService.currentFilter.value);
         }
+    }
+
+    onDownload(): void {
+        // let image: string;
+        // image = this.canvas.nativeElement
+        //     .toDataURL(`image/${this.selectedFormat}`)
+        //     .replace(`image/${this.selectedFormat}`, 'image/octet-stream');
+        // image = this.canvas.nativeElement.toDataURL(`image/${this.selectedFormat}`).replace('image/png', 'image/octet-stream');
+        const image = new Image();
+        image.src = this.canvas.nativeElement.toDataURL(`image/${this.selectedFormat}`);
+        const link = document.createElement('a');
+        link.download = this.fileName.value;
+        link.href = image.src;
+        link.click();
+        this.dialogRef.close();
     }
 }
