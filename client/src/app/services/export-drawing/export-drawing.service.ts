@@ -16,7 +16,7 @@ export class ExportDrawingService {
 
     constructor() {
         this.currentFilter = new BehaviorSubject<ImageFilter>(ImageFilter.None);
-        this.currentFormat = new BehaviorSubject<ImageFormat>(ImageFormat.JPEG);
+        this.currentFormat = new BehaviorSubject<ImageFormat>(ImageFormat.PNG);
         this.initializeImageFilters();
         this.initializeImageFormats();
     }
@@ -36,8 +36,8 @@ export class ExportDrawingService {
 
     private initializeImageFormats(): void {
         this.imageFormats = new Map<ImageFormat, string>();
-        this.imageFormats.set(ImageFormat.JPEG, 'JPEG');
         this.imageFormats.set(ImageFormat.PNG, 'PNG');
+        this.imageFormats.set(ImageFormat.JPEG, 'JPEG');
     }
 
     convertCanvasToImage(canvas: HTMLCanvasElement): HTMLImageElement {
@@ -59,20 +59,19 @@ export class ExportDrawingService {
         const image = new Image();
         if (dataURL) {
             image.src = dataURL;
-            // context.scale(0.7, 0.7);
-            // image.style.filter = 'blur(5px)';
             image.onload = () => {
-                context.drawImage(image, 0, 0);
+                // get the scale
+                const scale = Math.min(this.previewCanvas.width / image.width, this.previewCanvas.height / image.height);
+                // const scale = Math.max(this.previewCanvas.width / image.width, this.previewCanvas.height / image.height);
+                // get the top left position of the image
+                const x = this.previewCanvas.width / 2 - (image.width / 2) * scale;
+                const y = this.previewCanvas.height / 2 - (image.height / 2) * scale;
+                context.drawImage(image, x, y, image.width * scale, image.height * scale);
+                // context.drawImage(image, 0, 0, image.width * scale, image.height * scale);
             };
         }
+        this.currentFilter.next(ImageFilter.None);
     }
-
-    // applyFilterToPreviewImage(ctx: CanvasRenderingContext2D, filter: ImageFilter): void {
-    //     if (filter !== undefined) {
-    //         // @ts-ignore
-    //         ctx.filter = this.imageFiltersNames.get(filter);
-    //     }
-    // }
 
     exportImage(): void {}
 }

@@ -44,8 +44,8 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
 
     private initializeImageFormatsName(): void {
         this.imageFormatsNames = new Map<string, ImageFormat>();
-        this.imageFormatsNames.set('JPEG', ImageFormat.JPEG);
         this.imageFormatsNames.set('PNG', ImageFormat.PNG);
+        this.imageFormatsNames.set('JPEG', ImageFormat.JPEG);
     }
 
     ngOnInit(): void {

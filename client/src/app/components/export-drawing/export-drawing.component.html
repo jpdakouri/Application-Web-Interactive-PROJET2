@@ -1,8 +1,5 @@
-<div>
-<!--   <div style="width: 610px; height: 400px; margin: auto">-->
-<!--    <img #previewImage src="">-->
-     <canvas #previewCanvas [attr.width]="600" [attr.height]="400"></canvas>
-<!--   </div>-->
+<div style="margin: auto">
+     <canvas #previewCanvas [attr.width]="620" [attr.height]="450"></canvas>
 
   <div class="export-options">
       <mat-form-field hintLabel="Max 25 caractères" appearance="fill">
@@ -23,7 +20,6 @@
         <mat-select [(value)]="selectedFormat" (selectionChange)="onFormatChange(selectedFormat)">
           <mat-option *ngFor="let format of formats" [value]="format">{{ format }}</mat-option>
         </mat-select>
-        <mat-hint align="end">Here's the dropdown arrow ^</mat-hint>
       </mat-form-field>
 
       <mat-form-field appearance="fill">
@@ -31,7 +27,6 @@
         <mat-select [(value)]="selectedFilter" (selectionChange)="onFilterChange(selectedFilter)">
           <mat-option *ngFor="let filter of filters" [value]="filter">{{ filter }}</mat-option>
         </mat-select>
-        <mat-hint align="end">Here's the dropdown arrow ^</mat-hint>
       </mat-form-field>
     </div>
 
@@ -40,13 +35,14 @@
 
     <div class="flexExpand"></div>
 
+    <button mat-raised-button color="primary" disabled>
+      <span class="material-icons">file_upload</span>Téléverser sur Imgur
+    </button>
+
     <button mat-raised-button color="primary" (click)="onDownload()" [disabled]="fileName.invalid">
       <span class="material-icons">file_download</span>Télécharger
     </button>
 
-    <button mat-raised-button color="primary" disabled>
-      <span class="material-icons">file_upload</span>Téléverser sur Imgur
-    </button>
   </mat-dialog-actions>
 
 </div>
