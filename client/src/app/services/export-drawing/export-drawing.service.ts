@@ -49,6 +49,8 @@ export class ExportDrawingService {
     }
 
     drawPreviewImage(): void {
+        console.log('dans drawImage: ' + this.currentFilter.value);
+
         const context = this.previewCanvas.getContext('2d') as CanvasRenderingContext2D;
 
         context.clearRect(0, 0, this.previewCanvas.width, this.previewCanvas.height);
@@ -70,22 +72,43 @@ export class ExportDrawingService {
                 // context.drawImage(image, 0, 0, image.width * scale, image.height * scale);
             };
         }
-        this.currentFilter.next(ImageFilter.None);
+        // this.currentFilter.next(ImageFilter.None);
     }
 
-    exportImage(): void {}
+    // downloadImage(fileName: string, format: string): void {
+    //     // let image: string;
+    //     // image = this.canvas.nativeElement
+    //     //     .toDataURL(`image/${this.selectedFormat}`)
+    //     //     .replace(`image/${this.selectedFormat}`, 'image/octet-stream');
+    //     // image = this.canvas.nativeElement.toDataURL(`image/${this.selectedFormat}`).replace('image/png', 'image/octet-stream');
+    //
+    //     const image = new Image();
+    //     // image.src = this.previewImage.src;
+    //     image.src = this.previewCanvas.toDataURL(`image/${format}`);
+    //
+    //     const link = document.createElement('a');
+    //     // image.style.filter = 'blur(5px)';
+    //     link.download = fileName;
+    //     link.href = image.src;
+    //     link.click();
+    // }
 
     downloadImage(fileName: string, format: string): void {
-        // let image: string;
-        // image = this.canvas.nativeElement
-        //     .toDataURL(`image/${this.selectedFormat}`)
-        //     .replace(`image/${this.selectedFormat}`, 'image/octet-stream');
-        // image = this.canvas.nativeElement.toDataURL(`image/${this.selectedFormat}`).replace('image/png', 'image/octet-stream');
-
-        const image = new Image();
-        // image.src = this.previewImage.src;
-        image.src = this.previewCanvas.toDataURL(`image/${format}`);
+        const canvas = document.createElement('canvas');
         const link = document.createElement('a');
+        const context = canvas.getContext('2d') as CanvasRenderingContext2D;
+        const image = new Image();
+
+        canvas.width = this.previewImage.width;
+        canvas.height = this.previewImage.height;
+        context.filter = this.imageFilters.get(this.currentFilter.value) as string;
+
+        // console.log(context.filter);
+        console.log('dans downloadImage ' + this.currentFilter.value);
+
+        context.drawImage(this.previewImage, 0, 0);
+        image.src = canvas.toDataURL(`image/${format}`);
+
         link.download = fileName;
         link.href = image.src;
         link.click();

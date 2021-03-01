@@ -31,25 +31,6 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
         this.initializeImageFormatsName();
     }
 
-    private initializeImageFiltersNames(): void {
-        this.imageFiltersNames = new Map<string, ImageFilter>();
-        this.imageFiltersNames.set('Aucun filtre', ImageFilter.None);
-        this.imageFiltersNames.set('Contraste', ImageFilter.Contrast);
-        this.imageFiltersNames.set('Luminosité', ImageFilter.Brightness);
-        this.imageFiltersNames.set('Flou', ImageFilter.Blur);
-        this.imageFiltersNames.set('Opacité', ImageFilter.Opacity);
-        this.imageFiltersNames.set('Nuance de gris', ImageFilter.BlackAndWhite);
-        this.imageFiltersNames.set('Inversion', ImageFilter.Inversion);
-        this.imageFiltersNames.set('Saturation des couleurs', ImageFilter.Saturation);
-        this.imageFiltersNames.set('Sépia', ImageFilter.Sepia);
-    }
-
-    private initializeImageFormatsName(): void {
-        this.imageFormatsNames = new Map<string, ImageFormat>();
-        this.imageFormatsNames.set('PNG', ImageFormat.PNG);
-        this.imageFormatsNames.set('JPEG', ImageFormat.JPEG);
-    }
-
     ngOnInit(): void {
         this.exportDrawingService.currentFormat.subscribe((format: ImageFormat) => {
             this.selectedFormat = format.toString();
@@ -67,9 +48,28 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
     }
 
     ngOnDestroy(): void {
-        // this.exportDrawingService.currentFormat.complete();
-        // this.exportDrawingService.currentFilter.complete();
-        // console.log('unsuscribed');
+        this.exportDrawingService.currentFormat.complete();
+        this.exportDrawingService.currentFilter.complete();
+        console.log('unsuscribed');
+    }
+
+    private initializeImageFiltersNames(): void {
+        this.imageFiltersNames = new Map<string, ImageFilter>();
+        this.imageFiltersNames.set('Aucun filtre', ImageFilter.None);
+        this.imageFiltersNames.set('Contraste', ImageFilter.Contrast);
+        this.imageFiltersNames.set('Luminosité', ImageFilter.Brightness);
+        this.imageFiltersNames.set('Flou', ImageFilter.Blur);
+        this.imageFiltersNames.set('Opacité', ImageFilter.Opacity);
+        this.imageFiltersNames.set('Nuance de gris', ImageFilter.BlackAndWhite);
+        this.imageFiltersNames.set('Inversion', ImageFilter.Inversion);
+        this.imageFiltersNames.set('Saturation des couleurs', ImageFilter.Saturation);
+        this.imageFiltersNames.set('Sépia', ImageFilter.Sepia);
+    }
+
+    private initializeImageFormatsName(): void {
+        this.imageFormatsNames = new Map<string, ImageFormat>();
+        this.imageFormatsNames.set('PNG', ImageFormat.PNG);
+        this.imageFormatsNames.set('JPEG', ImageFormat.JPEG);
     }
 
     getErrorMessage(): string {
@@ -95,12 +95,13 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
         if (newFilter !== undefined) {
             this.exportDrawingService.currentFilter.next(newFilter);
             this.exportDrawingService.drawPreviewImage();
-            // console.log(this.exportDrawingService.currentFilter.value);
         }
     }
 
     onDownload(): void {
         this.exportDrawingService.downloadImage(this.fileName.value, this.selectedFormat.toString());
+        this.exportDrawingService.currentFilter.next(ImageFilter.None);
+
         this.dialogRef.close();
     }
 }
