@@ -59,7 +59,7 @@ export class EditorComponent implements AfterViewInit {
             this.openExportDrawingModal();
         }
 
-        if (!event.shiftKey) {
+        if (!event.shiftKey && !event.ctrlKey) {
             const toolKeyDown = this.toolFinder.get(event.key as KeyboardButtons) as ToolsNames;
             if (!(toolKeyDown == undefined)) {
                 this.toolManagerService.setCurrentTool(toolKeyDown);
