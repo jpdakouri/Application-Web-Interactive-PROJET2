@@ -72,7 +72,6 @@ export class ExportDrawingService {
                 // context.drawImage(image, 0, 0, image.width * scale, image.height * scale);
             };
         }
-        // this.currentFilter.next(ImageFilter.None);
     }
 
     // downloadImage(fileName: string, format: string): void {

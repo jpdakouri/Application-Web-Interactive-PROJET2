@@ -45,10 +45,15 @@ export class EditorComponent implements AfterViewInit {
     setEditorMinWidth(): void {
         this.editor.nativeElement.style.minWidth = this.editorMinWidth + 'px';
     }
+
     @HostListener('keyup', ['$event'])
     onKeyUp(event: KeyboardEvent): void {
         if (event.ctrlKey && event.key === KeyboardButtons.NewDrawing) {
             this.onCreateNewDrawing();
+        }
+
+        if (event.ctrlKey && event.key === KeyboardButtons.Export) {
+            this.exportDrawing();
         }
 
         if (!event.shiftKey) {
@@ -63,10 +68,6 @@ export class EditorComponent implements AfterViewInit {
     onCreateNewDrawing(): void {
         this.drawingService.createNewDrawing();
     }
-
-    // openDialog(): void {
-    //     this.dialog.open(ExportDrawingComponent, {});
-    // }
 
     exportDrawing(): void {
         this.exportDrawingDialog = this.dialog.open(ExportDrawingComponent, {});

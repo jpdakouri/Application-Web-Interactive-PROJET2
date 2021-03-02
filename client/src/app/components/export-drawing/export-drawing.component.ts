@@ -48,6 +48,7 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
     }
 
     ngOnDestroy(): void {
+        this.exportDrawingService.currentFilter.next(ImageFilter.None);
         this.exportDrawingService.currentFormat.complete();
         this.exportDrawingService.currentFilter.complete();
         console.log('unsuscribed');
@@ -76,7 +77,7 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
         if (this.fileName.hasError('required')) {
             return 'Vous devez entrer un nom';
         }
-        return this.fileName.invalid ? 'Nom invalide' : '';
+        return this.fileName.invalid ? 'Nom de fichier invalide' : '';
     }
 
     onDialogClose(): void {
@@ -100,8 +101,7 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
 
     onDownload(): void {
         this.exportDrawingService.downloadImage(this.fileName.value, this.selectedFormat.toString());
-        this.exportDrawingService.currentFilter.next(ImageFilter.None);
-
+        console.log('dans onDownload() : ' + this.exportDrawingService.currentFilter.value);
         this.dialogRef.close();
     }
 }
