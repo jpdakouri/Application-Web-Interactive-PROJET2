@@ -42,7 +42,6 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
         this.exportDrawingService.currentFilter.subscribe((filter: ImageFilter) => {
             this.selectedFilter = filter.toString();
         });
-        console.log('suscribed');
     }
 
     ngAfterViewInit(): void {
@@ -56,7 +55,6 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
         this.exportDrawingService.currentFilter.next(ImageFilter.None);
         this.exportDrawingService.currentFormat.complete();
         this.exportDrawingService.currentFilter.complete();
-        console.log('unsuscribed');
     }
 
     private initializeImageFiltersNames(): void {
@@ -106,7 +104,6 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
 
     onDownload(): void {
         this.exportDrawingService.downloadImage(this.fileName.value, this.selectedFormat.toString());
-        console.log('dans onDownload() : ' + this.exportDrawingService.currentFilter.value);
         this.dialogRef.close();
     }
 }
