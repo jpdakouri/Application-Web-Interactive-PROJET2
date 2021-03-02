@@ -13,12 +13,13 @@ import { ImageFormat } from '@app/utils/enums/image-format.enum';
 })
 export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild('previewCanvas', { static: false }) canvas: ElementRef<HTMLCanvasElement>;
+
     imageFiltersNames: Map<string, ImageFilter>;
     imageFormatsNames: Map<string, ImageFormat>;
-    selectedFormat: string;
-    selectedFilter: string;
     filters: string[];
     formats: string[];
+    selectedFormat: string;
+    selectedFilter: string;
     fileName: FormControl;
 
     constructor(private exportDrawingService: ExportDrawingService, public dialogRef: MatDialogRef<ExportDrawingComponent>) {

@@ -1,5 +1,4 @@
-import { Component } from '@angular/core';
-import { EditorComponent } from '@app/components/editor/editor.component';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { ToolsNames } from '@app/utils/enums/tools-names';
@@ -9,13 +8,16 @@ import { ToolsNames } from '@app/utils/enums/tools-names';
     styleUrls: ['./toolbar.component.scss'],
 })
 export class ToolbarComponent {
+    @Output() exportButtonClicked: EventEmitter<boolean>;
+
     toolsNames: typeof ToolsNames = ToolsNames;
     toolManagerService: ToolManagerService;
     drawingService: DrawingService;
 
-    constructor(toolManagerService: ToolManagerService, drawingService: DrawingService, private editorComponent: EditorComponent) {
+    constructor(toolManagerService: ToolManagerService, drawingService: DrawingService) {
         this.toolManagerService = toolManagerService;
         this.drawingService = drawingService;
+        this.exportButtonClicked = new EventEmitter<boolean>();
     }
 
     setCurrentTool(toolName: ToolsNames): void {
@@ -31,6 +33,6 @@ export class ToolbarComponent {
     }
 
     onExport(): void {
-        this.editorComponent.exportDrawing();
+        this.exportButtonClicked.emit(true);
     }
 }
