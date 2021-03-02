@@ -54,7 +54,7 @@ export class SelectionRectangleEllipseService extends Tool {
 
     drawPerimeter(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.strokeStyle = this.currentColourService.getSecondaryColorRgba();
-
+        ctx.setLineDash([5, 10]);
         const startCoord = { ...this.firstGrid };
         const width = Math.abs(finalGrid.x);
         const height = Math.abs(finalGrid.y);
