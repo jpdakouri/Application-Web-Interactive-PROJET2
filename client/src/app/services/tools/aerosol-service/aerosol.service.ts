@@ -18,6 +18,8 @@ import { MouseButtons } from '@app/utils/enums/list-boutton-pressed';
 @Injectable({
     providedIn: 'root',
 })
+// TODO : set method use only here as private
+// TODO : remove #console.log
 export class AerosolService extends Tool {
     private intervalID: number;
     private mouseCurrentPosition: Vec2;

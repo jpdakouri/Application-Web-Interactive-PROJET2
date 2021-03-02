@@ -7,8 +7,6 @@ import { BehaviorSubject } from 'rxjs';
     providedIn: 'root',
 })
 export class ExportDrawingService {
-    // previewImage: HTMLImageElement;
-    drawingTitle: string;
     imageFilters: Map<ImageFilter, string>;
     imageFormats: Map<ImageFormat, string>;
     currentFilter: BehaviorSubject<ImageFilter>;
@@ -74,7 +72,6 @@ export class ExportDrawingService {
     }
 
     // TODO : Extract dataUrl in a method
-    // TODO : Refactor the method to allow filter in parameter
     downloadImage(fileName: string, format: string): void {
         const context = this.downloadProcessingCanvas.getContext('2d') as CanvasRenderingContext2D;
         context.filter = this.imageFilters.get(this.currentFilter.value) as string;
