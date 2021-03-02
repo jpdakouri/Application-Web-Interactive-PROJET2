@@ -14,7 +14,7 @@ import { ImageFormat } from '@app/utils/enums/image-format.enum';
 export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild('previewCanvas', { static: false }) canvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('tempCanvas', { static: false }) tempCanvas: ElementRef<HTMLCanvasElement>;
-    @ViewChild('link', { static: false }) link: HTMLAnchorElement;
+    @ViewChild('link', { static: false }) link: ElementRef<HTMLAnchorElement>;
 
     imageFiltersNames: Map<string, ImageFilter>;
     imageFormatsNames: Map<string, ImageFormat>;

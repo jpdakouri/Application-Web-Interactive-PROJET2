@@ -74,19 +74,19 @@ export class ExportDrawingService {
     // TODO : Extract dataUrl in a method
     downloadImage(fileName: string, format: string): void {
         const context = this.downloadProcessingCanvas.getContext('2d') as CanvasRenderingContext2D;
-        context.filter = this.imageFilters.get(this.currentFilter.value) as string;
 
         const dataURL = this.originalCanvas.toDataURL(`image/${format}`);
 
         const image = new Image();
         if (dataURL) {
+            context.filter = this.imageFilters.get(this.currentFilter.value) as string;
             image.src = dataURL;
             image.onload = () => {
                 this.downloadProcessingCanvas.width = this.originalCanvas.width;
                 this.downloadProcessingCanvas.height = this.originalCanvas.height;
                 context.drawImage(image, 0, 0);
             };
-            // set image source to original image with current filter
+            // set image source to original image with current filter applied on
             image.src = this.downloadProcessingCanvas.toDataURL(`image/${format}`);
 
             this.link.download = fileName;
