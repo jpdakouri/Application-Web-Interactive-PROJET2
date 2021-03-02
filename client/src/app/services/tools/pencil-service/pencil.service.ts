@@ -138,6 +138,7 @@ export class PencilService extends Tool {
     }
 
     private setContextParameters(ctx: CanvasRenderingContext2D, lineWidth: number, strokeStyle: string, fillStyle: string): void {
+        ctx.beginPath();
         ctx.lineWidth = lineWidth;
         ctx.strokeStyle = strokeStyle;
         ctx.fillStyle = fillStyle;
