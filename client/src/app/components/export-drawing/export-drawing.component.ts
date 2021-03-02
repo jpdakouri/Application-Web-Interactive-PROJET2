@@ -13,6 +13,8 @@ import { ImageFormat } from '@app/utils/enums/image-format.enum';
 })
 export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild('previewCanvas', { static: false }) canvas: ElementRef<HTMLCanvasElement>;
+    @ViewChild('tempCanvas', { static: false }) tempCanvas: ElementRef<HTMLCanvasElement>;
+    @ViewChild('link', { static: false }) link: HTMLAnchorElement;
 
     imageFiltersNames: Map<string, ImageFilter>;
     imageFormatsNames: Map<string, ImageFormat>;
@@ -45,6 +47,8 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
 
     ngAfterViewInit(): void {
         this.exportDrawingService.previewCanvas = this.canvas.nativeElement as HTMLCanvasElement;
+        this.exportDrawingService.downloadProcessingCanvas = this.canvas.nativeElement as HTMLCanvasElement;
+        this.exportDrawingService.link = document.createElement('a');
         this.exportDrawingService.drawPreviewImage();
     }
 

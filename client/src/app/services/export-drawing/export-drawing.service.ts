@@ -8,6 +8,8 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class ExportDrawingService {
     previewCanvas: HTMLCanvasElement;
+    downloadProcessingCanvas: HTMLCanvasElement;
+    link: HTMLAnchorElement;
     previewImage: HTMLImageElement;
     drawingTitle: string;
     imageFilters: Map<ImageFilter, string>;
@@ -74,42 +76,21 @@ export class ExportDrawingService {
         }
     }
 
-    // downloadImage(fileName: string, format: string): void {
-    //     // let image: string;
-    //     // image = this.canvas.nativeElement
-    //     //     .toDataURL(`image/${this.selectedFormat}`)
-    //     //     .replace(`image/${this.selectedFormat}`, 'image/octet-stream');
-    //     // image = this.canvas.nativeElement.toDataURL(`image/${this.selectedFormat}`).replace('image/png', 'image/octet-stream');
-    //
-    //     const image = new Image();
-    //     // image.src = this.previewImage.src;
-    //     image.src = this.previewCanvas.toDataURL(`image/${format}`);
-    //
-    //     const link = document.createElement('a');
-    //     // image.style.filter = 'blur(5px)';
-    //     link.download = fileName;
-    //     link.href = image.src;
-    //     link.click();
-    // }
-
     downloadImage(fileName: string, format: string): void {
-        const canvas = document.createElement('canvas');
-        const link = document.createElement('a');
-        const context = canvas.getContext('2d') as CanvasRenderingContext2D;
+        const context = this.downloadProcessingCanvas.getContext('2d') as CanvasRenderingContext2D;
         const image = new Image();
 
-        canvas.width = this.previewImage.width;
-        canvas.height = this.previewImage.height;
+        this.downloadProcessingCanvas.width = this.previewImage.width;
+        this.downloadProcessingCanvas.height = this.previewImage.height;
         context.filter = this.imageFilters.get(this.currentFilter.value) as string;
 
-        // console.log(context.filter);
         console.log('dans downloadImage ' + this.currentFilter.value);
 
         context.drawImage(this.previewImage, 0, 0);
-        image.src = canvas.toDataURL(`image/${format}`);
+        image.src = this.downloadProcessingCanvas.toDataURL(`image/${format}`);
 
-        link.download = fileName;
-        link.href = image.src;
-        link.click();
+        this.link.download = fileName;
+        this.link.href = image.src;
+        this.link.click();
     }
 }
