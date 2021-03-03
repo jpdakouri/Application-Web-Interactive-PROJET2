@@ -19,7 +19,7 @@ export class DatabaseController {
     private configureRouter(): void {
         this.router = Router();
 
-        this.router.post('/insert', (req: Request, res: Response, next: NextFunction) => {
+        this.router.post('/', (req: Request, res: Response, next: NextFunction) => {
             const metadata = req.body;
             const newDrawing = new Metadata(metadata._id, metadata.title, metadata.tags);
             this.databaseService

@@ -54,7 +54,7 @@ export class Application {
         this.app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerJSDoc(this.swaggerOptions)));
         this.app.use('/api/index', this.indexController.router);
         this.app.use('/api/date', this.dateController.router);
-        this.app.use('/api/database', this.databaseController.router);
+        this.app.use('/api/drawings', this.databaseController.router);
         this.errorHandling();
     }
 
