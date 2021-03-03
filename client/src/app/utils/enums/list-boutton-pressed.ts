@@ -17,4 +17,8 @@ export enum KeyboardButtons {
     Eraser = 'e',
     InvalidInput = 'h',
     NewDrawing = '0',
+    Up = 'ArrowUp',
+    Down = 'ArrowDown',
+    Left = 'ArrowLeft',
+    Right = 'ArrowRight',
 }
