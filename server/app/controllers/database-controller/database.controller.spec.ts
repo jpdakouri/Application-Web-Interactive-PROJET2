@@ -15,7 +15,7 @@ const HTTP_STATUS_ERROR = 500;
 describe('DatabaseController', () => {
     let databaseService: Stubbed<DatabaseService>;
     let app: Express.Application;
-    const insertResult = { insertedCount: 1, insertedId: 1234 } as InsertOneWriteOpResult<Metadata>;
+    const insertResult = { insertedCount: 1, insertedId: '1234' } as InsertOneWriteOpResult<Metadata>;
     beforeEach(async () => {
         const [container, sandbox] = await testingContainer();
         container.rebind(TYPES.DatabaseService).toConstantValue({

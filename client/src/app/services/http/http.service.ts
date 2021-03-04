@@ -23,11 +23,11 @@ export class HttpService {
     deleteDrawing(drawingID: number): Observable<void> {
         return this.http.delete<void>(this.BASE_URL + `/api/drawings/${drawingID}`);
     }
-    insertDrawing(newDrawing: DrawingData): Observable<DrawingData[]> {
-        return this.http.post<DrawingData[]>(this.BASE_URL + '/api/drawings', newDrawing);
+    insertDrawing(newDrawing: DrawingData): Observable<DrawingData> {
+        return this.http.post<DrawingData>(this.BASE_URL + '/api/drawings', newDrawing);
     }
 
-    updatedDrawing(updatedDrawing: DrawingData): Observable<void> {
+    updateDrawing(updatedDrawing: DrawingData): Observable<void> {
         return this.http.put<void>(this.BASE_URL + `/api/drawings/${updatedDrawing._id}`, updatedDrawing);
     }
 }
