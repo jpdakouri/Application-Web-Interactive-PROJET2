@@ -15,11 +15,12 @@ import { KeyboardButtons, MouseButtons } from '@app/utils/enums/list-boutton-pre
 })
 export class SelectionRectangleEllipseService extends Tool {
     private firstGrid: Vec2;
+    private currentCoord: Vec2;
     private imageData: ImageData;
     private shiftDown: boolean;
+
     rectangleService: RectangleService;
     currentColourService: CurrentColourService;
-    private currentCoord: Vec2;
 
     constructor(drawingService: DrawingService, currentColourService: CurrentColourService) {
         super(drawingService, currentColourService);
@@ -28,15 +29,15 @@ export class SelectionRectangleEllipseService extends Tool {
 
     onMouseDown(event: MouseEvent): void {
         this.clearPath();
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.mouseDown = event.button === MouseButtons.Left;
         if (this.mouseDown) {
             this.currentCoord = this.firstGrid = this.getPositionFromMouse(event);
-            // this.updatePreview();
+            this.updatePreview();
         }
     }
 
     onMouseMove(event: MouseEvent): void {
-        // this.rectangleService.onMouseMove(event);
         if (this.mouseDown) {
             this.mouseDownCoord.x = this.getPositionFromMouse(event).x - this.firstGrid.x;
             this.mouseDownCoord.y = this.getPositionFromMouse(event).y - this.firstGrid.y;
@@ -46,6 +47,11 @@ export class SelectionRectangleEllipseService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            if (this.shiftDown) {
+                this.drawSquare(this.mouseDownCoord);
+                this.selectBox(this.drawingService.previewCtx, this.mouseDownCoord);
+            }
             this.selectBox(this.drawingService.previewCtx, this.mouseDownCoord);
             this.clearPath();
         }
@@ -75,13 +81,24 @@ export class SelectionRectangleEllipseService extends Tool {
                 this.updatePreview();
                 break;
             }
+            case KeyboardButtons.Escape: {
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                this.clearPath();
+            }
         }
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawingService.previewCtx.putImageData(this.imageData, this.currentCoord.x, this.currentCoord.y);
     }
 
+    onKeyUp(event: KeyboardEvent): void {
+        if (this.shiftDown && event.key === KeyboardButtons.Shift) {
+            this.shiftDown = false;
+            this.updatePreview();
+        }
+    }
+
     drawRectanglePerimeter(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
-        ctx.strokeStyle = 'black';
+        ctx.strokeStyle = 'blue';
         ctx.setLineDash([5, 15]);
 
         const startCoord = { ...this.firstGrid };
@@ -96,21 +113,6 @@ export class SelectionRectangleEllipseService extends Tool {
         }
         ctx.strokeRect(startCoord.x, startCoord.y, width, height);
     }
-
-    private selectBox(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
-        this.imageData = this.drawingService.baseCtx.getImageData(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
-        ctx.putImageData(this.imageData, this.firstGrid.x, this.firstGrid.y);
-        this.drawingService.baseCtx.fillStyle = 'white';
-        this.drawingService.baseCtx.fillRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
-    }
-
-    // Je vais ask un chargé, c'est de la sauce finalement
-    // private selectEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
-    //     this.imageData = this.drawingService.baseCtx.getImageData(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
-    //     for (let i = 0; i < this.imageData.data.length; i++) {
-    //         this.imageData.data[(50 + i) * (this.imageData.width * 4) + 200 * 4 - 1] = 0;
-    //     }
-    // }
 
     private isMouseInFirstQuadrant(): boolean {
         //  mouse is in first quadrant (+/+)
@@ -158,15 +160,25 @@ export class SelectionRectangleEllipseService extends Tool {
         }
     }
 
+    private selectBox(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+        this.imageData = this.drawingService.baseCtx.getImageData(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+        ctx.putImageData(this.imageData, this.firstGrid.x, this.firstGrid.y);
+
+        this.drawingService.baseCtx.fillStyle = 'white';
+        this.drawingService.baseCtx.fillRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+
+        ctx.setLineDash([5, 15]);
+        ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+    }
+
     private updatePreview(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         const currentCoord = { ...this.mouseDownCoord };
         this.drawingService.previewCtx.beginPath();
-        this.drawRectanglePerimeter(this.drawingService.previewCtx, currentCoord);
-        // this.selectBox(this.drawingService.previewCtx, currentCoord);
         if (this.shiftDown) {
             this.drawSquare(currentCoord);
         }
+        this.drawRectanglePerimeter(this.drawingService.previewCtx, currentCoord);
         this.drawingService.previewCtx.closePath();
     }
 
