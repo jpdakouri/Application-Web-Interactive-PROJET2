@@ -13,7 +13,7 @@ import { KeyboardButtons, MouseButtons } from '@app/utils/enums/list-boutton-pre
 @Injectable({
     providedIn: 'root',
 })
-export class SelectionRectangleEllipseService extends Tool {
+export class SelectionRectangleService extends Tool {
     private firstGrid: Vec2;
     private currentCoord: Vec2;
     private imageData: ImageData;
