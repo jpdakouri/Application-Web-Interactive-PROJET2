@@ -1,6 +1,6 @@
 import { Metadata } from '@common/communication/metadata';
 import { injectable } from 'inversify';
-import { Collection, InsertOneWriteOpResult, MongoClient, MongoClientOptions } from 'mongodb';
+import { Collection, FindAndModifyWriteOpResultObject, InsertOneWriteOpResult, MongoClient, MongoClientOptions } from 'mongodb';
 import 'reflect-metadata';
 @injectable()
 export class DatabaseService {
@@ -27,7 +27,24 @@ export class DatabaseService {
             });
     }
 
+    // TODO UPDATE DRAWING
+    // TODO TESTS
+
     async insertDrawing(metadata: Metadata): Promise<InsertOneWriteOpResult<Metadata>> {
         return await this.collection.insertOne(metadata);
+    }
+
+    async getDrawingsByTags(tags: string[]): Promise<Metadata[]> {
+        if (tags.length > 0) {
+            return this.collection.find({}).toArray();
+        } else {
+            return this.collection.find({ tags: { $in: [tags] } }).toArray();
+        }
+    }
+    async getAllDrawings(): Promise<Metadata[]> {
+        return this.collection.find({}).toArray();
+    }
+    async deleteDrawing(id: string): Promise<FindAndModifyWriteOpResultObject<Metadata>> {
+        return await this.collection.findOneAndDelete({ id: +id });
     }
 }
