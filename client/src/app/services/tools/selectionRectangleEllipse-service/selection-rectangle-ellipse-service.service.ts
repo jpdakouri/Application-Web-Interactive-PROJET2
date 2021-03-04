@@ -50,11 +50,26 @@ export class SelectionRectangleEllipseService extends Tool {
     }
 
     onKeyDown(event: KeyboardEvent): void {
-        if (event.key === KeyboardButtons.Up) {
-            this.currentCoord.y -= 3;
-            // this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawingService.previewCtx.putImageData(this.imageData, this.currentCoord.x, this.currentCoord.y);
+        switch (event.key) {
+            case KeyboardButtons.Up: {
+                this.currentCoord.y -= 3;
+                break;
+            }
+            case KeyboardButtons.Down: {
+                this.currentCoord.y += 3;
+                break;
+            }
+            case KeyboardButtons.Right: {
+                this.currentCoord.x += 3;
+                break;
+            }
+            case KeyboardButtons.Left: {
+                this.currentCoord.x -= 3;
+                break;
+            }
         }
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawingService.previewCtx.putImageData(this.imageData, this.currentCoord.x, this.currentCoord.y);
     }
 
     drawRectanglePerimeter(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
