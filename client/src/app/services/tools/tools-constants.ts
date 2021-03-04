@@ -25,3 +25,8 @@ export const DEFAULT_DOT_RADIUS = 5;
 /****ERASER CONSTANTS****/
 /**********************/
 export const MIN_ERASER_THICKNESS = 5;
+
+/***********************/
+/***SELECTOR CONSTANTS**/
+/***********************/
+export const PIXELS_ARROW_STEPS = 3;

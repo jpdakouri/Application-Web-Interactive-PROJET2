@@ -3,8 +3,11 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { Sign } from '@app/services/services-constants';
 import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
+import { PIXELS_ARROW_STEPS } from '@app/services/tools/tools-constants';
 import { KeyboardButtons, MouseButtons } from '@app/utils/enums/list-boutton-pressed';
+
 // import { ShapeStyle } from '@app/utils/enums/shape-style';
 
 @Injectable({
@@ -13,7 +16,7 @@ import { KeyboardButtons, MouseButtons } from '@app/utils/enums/list-boutton-pre
 export class SelectionRectangleEllipseService extends Tool {
     private firstGrid: Vec2;
     private imageData: ImageData;
-    // private shiftDown: boolean;
+    private shiftDown: boolean;
     rectangleService: RectangleService;
     currentColourService: CurrentColourService;
     private currentCoord: Vec2;
@@ -52,19 +55,24 @@ export class SelectionRectangleEllipseService extends Tool {
     onKeyDown(event: KeyboardEvent): void {
         switch (event.key) {
             case KeyboardButtons.Up: {
-                this.currentCoord.y -= 3;
+                this.currentCoord.y -= PIXELS_ARROW_STEPS;
                 break;
             }
             case KeyboardButtons.Down: {
-                this.currentCoord.y += 3;
+                this.currentCoord.y += PIXELS_ARROW_STEPS;
                 break;
             }
             case KeyboardButtons.Right: {
-                this.currentCoord.x += 3;
+                this.currentCoord.x += PIXELS_ARROW_STEPS;
                 break;
             }
             case KeyboardButtons.Left: {
-                this.currentCoord.x -= 3;
+                this.currentCoord.x -= PIXELS_ARROW_STEPS;
+                break;
+            }
+            case KeyboardButtons.Shift: {
+                this.shiftDown = true;
+                this.updatePreview();
                 break;
             }
         }
@@ -96,8 +104,58 @@ export class SelectionRectangleEllipseService extends Tool {
         this.drawingService.baseCtx.fillRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
     }
 
-    private selectEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
-        this.imageData = this.drawingService.baseCtx.getImageData(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+    // Je vais ask un chargé, c'est de la sauce finalement
+    // private selectEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+    //     this.imageData = this.drawingService.baseCtx.getImageData(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+    //     for (let i = 0; i < this.imageData.data.length; i++) {
+    //         this.imageData.data[(50 + i) * (this.imageData.width * 4) + 200 * 4 - 1] = 0;
+    //     }
+    // }
+
+    private isMouseInFirstQuadrant(): boolean {
+        //  mouse is in first quadrant (+/+)
+        return Math.sign(this.mouseDownCoord.x) === Sign.Positive && Math.sign(this.mouseDownCoord.y) === Sign.Positive;
+    }
+
+    private isMouseInSecondQuadrant(): boolean {
+        // mouse is in third quadrant (-/-)
+        return Math.sign(this.mouseDownCoord.x) === Sign.Negative && Math.sign(this.mouseDownCoord.y) === Sign.Negative;
+    }
+
+    private isMouseInThirdQuadrant(): boolean {
+        // mouse is in fourth quadrant (-/+)
+        return Math.sign(this.mouseDownCoord.x) === Sign.Negative && Math.sign(this.mouseDownCoord.y) === Sign.Positive;
+    }
+
+    private isMouseInFourthQuadrant(): boolean {
+        // mouse is in second quadrant (+/-)
+        return Math.sign(this.mouseDownCoord.x) === Sign.Positive && Math.sign(this.mouseDownCoord.y) === Sign.Negative;
+    }
+
+    private isXGreaterThanY(): boolean {
+        return Math.abs(this.mouseDownCoord.x) > Math.abs(this.mouseDownCoord.y);
+    }
+
+    private isYGreaterThanX(): boolean {
+        return Math.abs(this.mouseDownCoord.y) > Math.abs(this.mouseDownCoord.x);
+    }
+
+    private drawSquare(grid: Vec2): void {
+        if (this.isMouseInFirstQuadrant()) {
+            grid.x = grid.y = Math.min(this.mouseDownCoord.x, this.mouseDownCoord.y);
+        }
+
+        if (this.isMouseInSecondQuadrant()) {
+            grid.x = grid.y = Math.max(this.mouseDownCoord.x, this.mouseDownCoord.y);
+        }
+
+        if (this.isMouseInThirdQuadrant()) {
+            this.isXGreaterThanY() ? (grid.x = -grid.y) : (grid.y = -grid.x);
+        }
+
+        if (this.isMouseInFourthQuadrant()) {
+            this.isYGreaterThanX() ? (grid.y = -grid.x) : (grid.x = -grid.y);
+        }
     }
 
     private updatePreview(): void {
@@ -106,9 +164,9 @@ export class SelectionRectangleEllipseService extends Tool {
         this.drawingService.previewCtx.beginPath();
         this.drawRectanglePerimeter(this.drawingService.previewCtx, currentCoord);
         // this.selectBox(this.drawingService.previewCtx, currentCoord);
-        // if (this.shiftDown) {
-        //     this.drawSquare(currentCoord);
-        // }
+        if (this.shiftDown) {
+            this.drawSquare(currentCoord);
+        }
         this.drawingService.previewCtx.closePath();
     }
 
