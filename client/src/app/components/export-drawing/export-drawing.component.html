@@ -1,10 +1,8 @@
 <div style="margin: auto">
-    <canvas #previewCanvas style="height: 100%" hidden></canvas>
-    <canvas #downloadProcessingCanvas hidden></canvas>
-    <a #link #download hidden></a>
-<!--  <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/392/redwood-ukulele-top.jpg" [ngStyle]="{'filter':tempFilter}" width="620">-->
-  <img #previewImage [src]="imageSource" [ngStyle]="{'filter':tempFilter}" width="620" height="450">
-  <!--  pattern="[a-zA-Z0-9-_]*"-->
+  <canvas #previewCanvas [attr.width]="620" [attr.height]="450"></canvas>
+  <canvas #downloadProcessingCanvas hidden></canvas>
+  <a #link #download hidden></a>
+<!--  pattern="[a-zA-Z0-9-_]*"-->
   <div class="export-options">
       <mat-form-field hintLabel="Max 25 caractères" appearance="fill">
         <mat-label>Nom du fichier</mat-label>
@@ -32,15 +30,6 @@
         </mat-select>
       </mat-form-field>
     </div>
-
-
-<!--  <mat-card class="example-result-card" *ngIf="selectedFilter != 'Aucun filtre'">-->
-<!--    <mat-card-content>-->
-<!--      <h4>Pourcentage du filtre</h4>-->
-<!--&lt;!&ndash;     <mat-slider style="width: 620px; margin-top: 8px;" thumbLabel="true" (valueChange)="onFilterPercentageChange($event)" color="primary" max="1000"> </mat-slider>&ndash;&gt;-->
-<!--      <mat-slider style="width: 590px;" thumbLabel="true" (valueChange)="onFilterPercentageChange($event)" color="primary" max="100"> </mat-slider>-->
-<!--    </mat-card-content>-->
-<!--  </mat-card>-->
 
   <mat-dialog-actions  mat-dialog-actions>
     <button mat-raised-button mat-dialog-close mat-flat-button>Annuler</button>
