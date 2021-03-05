@@ -43,13 +43,6 @@ export class ExportDrawingService {
         this.imageFormats.set(ImageFormat.JPEG, 'JPEG');
     }
 
-    private convertCanvasToImage(canvas: HTMLCanvasElement): HTMLImageElement {
-        const image = new Image();
-        image.src = canvas.toDataURL('image/png');
-        console.log(image.src);
-        return image;
-    }
-
     drawPreviewImage(): void {
         const previewContext = this.previewCanvas.getContext('2d') as CanvasRenderingContext2D;
         const dataURL = this.originalCanvas.toDataURL(ImageFormat.PNG);
@@ -92,20 +85,10 @@ export class ExportDrawingService {
         }
     }
 
-    // downloadImage(fileName: string, format: string): void {
-    //     // const context = this.downloadProcessingCanvas.getContext('2d') as CanvasRenderingContext2D;
-    //     const context = this.downloadProcessingCanvas.getContext('2d') as CanvasRenderingContext2D;
-    //     const image = new Image();
-    //
-    //     this.downloadProcessingCanvas.width = this.previewImage.width;
-    //     this.downloadProcessingCanvas.height = this.previewImage.height;
-    //     context.filter = this.imageFilters.get(this.currentFilter.value) as string;
-    //
-    //     context.drawImage(this.previewImage, 0, 0);
-    //     image.src = this.downloadProcessingCanvas.toDataURL(`image/${format}`);
-    //
-    //     this.link.download = fileName;
-    //     this.link.href = image.src;
-    //     this.link.click();
-    // }
+    private convertCanvasToImage(canvas: HTMLCanvasElement): HTMLImageElement {
+        const image = new Image();
+        image.src = canvas.toDataURL('image/png');
+        console.log(image.src);
+        return image;
+    }
 }
