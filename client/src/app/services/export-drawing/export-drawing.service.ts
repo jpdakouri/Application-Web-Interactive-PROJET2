@@ -15,6 +15,8 @@ export class ExportDrawingService {
     originalCanvas: HTMLCanvasElement;
     downloadProcessingCanvas: HTMLCanvasElement;
     link: HTMLAnchorElement;
+    previewImageSrc: string;
+    image: HTMLImageElement;
 
     constructor() {
         this.currentFilter = new BehaviorSubject<ImageFilter>(ImageFilter.None);
@@ -43,57 +45,83 @@ export class ExportDrawingService {
         this.imageFormats.set(ImageFormat.JPEG, 'JPEG');
     }
 
-    convertCanvasToImage(canvas: HTMLCanvasElement): HTMLImageElement {
+    convertCanvasToImage(canvas: HTMLCanvasElement, format: string): HTMLImageElement {
         const image = new Image();
         image.src = canvas.toDataURL('image/png');
         console.log(image.src);
         return image;
     }
 
+    // drawPreviewImage(): void {
+    //     const previewContext = this.previewCanvas.getContext('2d') as CanvasRenderingContext2D;
+    //     const dataURL = this.originalCanvas.toDataURL(ImageFormat.PNG);
+    //
+    //     previewContext.clearRect(0, 0, this.previewCanvas.width, this.previewCanvas.height);
+    //     previewContext.filter = this.imageFilters.get(this.currentFilter.value) as string;
+    //
+    //     const image = new Image();
+    //     if (dataURL) {
+    //         image.src = dataURL;
+    //         this.imageSource = dataURL;
+    //         image.onload = () => {
+    //             // get the scale
+    //             const scale = Math.min(this.previewCanvas.width / image.width, this.previewCanvas.height / image.height);
+    //             // get the top left position of the image
+    //             const x = this.previewCanvas.width / 2 - (image.width / 2) * scale;
+    //             const y = this.previewCanvas.height / 2 - (image.height / 2) * scale;
+    //             previewContext.drawImage(image, x, y, image.width * scale, image.height * scale);
+    //         };
+    //     }
+    // }
+
     drawPreviewImage(): void {
-        const previewContext = this.previewCanvas.getContext('2d') as CanvasRenderingContext2D;
-        const dataURL = this.originalCanvas.toDataURL(ImageFormat.PNG);
+        // const dataURL = this.originalCanvas.toDataURL(ImageFormat.PNG);
+        // if (dataURL) {
+        // this.previewImage.src = dataURL;
+        // }
+    }
 
-        previewContext.clearRect(0, 0, this.previewCanvas.width, this.previewCanvas.height);
-        previewContext.filter = this.imageFilters.get(this.currentFilter.value) as string;
+    downloadImage(fileName: string, format: string): void {
+        // const dataURL = this.originalCanvas.toDataURL(`image/${format}`);
 
-        const image = new Image();
-        if (dataURL) {
-            image.src = dataURL;
-            image.onload = () => {
-                // get the scale
-                const scale = Math.min(this.previewCanvas.width / image.width, this.previewCanvas.height / image.height);
-                // get the top left position of the image
-                const x = this.previewCanvas.width / 2 - (image.width / 2) * scale;
-                const y = this.previewCanvas.height / 2 - (image.height / 2) * scale;
-                previewContext.drawImage(image, x, y, image.width * scale, image.height * scale);
-            };
+        // const dataURL = this.previewImageSrc;
+        // const dataURL = this.image.src;
+        // const image = document.getElementById('previewImage') as HTMLImageElement;
+        // console.log(this.image.src);
+        if (this.image) {
+            console.log(this.image.style.filter);
+            // this.previewImage.src = dataURL;
+
+            this.link.download = fileName;
+            // console.log('fgfg');
+            this.link.href = this.image.src;
+            this.link.click();
         }
     }
 
     // TODO : Extract dataUrl in a method
-    downloadImage(fileName: string, format: string): void {
-        const context = this.downloadProcessingCanvas.getContext('2d') as CanvasRenderingContext2D;
-
-        const dataURL = this.originalCanvas.toDataURL(`image/${format}`);
-
-        const image = new Image();
-        if (dataURL) {
-            context.filter = this.imageFilters.get(this.currentFilter.value) as string;
-            image.src = dataURL;
-            image.onload = () => {
-                this.downloadProcessingCanvas.width = this.originalCanvas.width;
-                this.downloadProcessingCanvas.height = this.originalCanvas.height;
-                context.drawImage(image, 0, 0);
-            };
-            // set image source to original image with current filter applied on
-            image.src = this.downloadProcessingCanvas.toDataURL(`image/${format}`);
-
-            this.link.download = fileName;
-            this.link.href = image.src;
-            this.link.click();
-        }
-    }
+    // downloadImage(fileName: string, format: string): void {
+    //     const context = this.downloadProcessingCanvas.getContext('2d') as CanvasRenderingContext2D;
+    //
+    //     const dataURL = this.originalCanvas.toDataURL(`image/${format}`);
+    //
+    //     const image = new Image();
+    //     if (dataURL) {
+    //         context.filter = this.imageFilters.get(this.currentFilter.value) as string;
+    //         image.src = dataURL;
+    //         image.onload = () => {
+    //             this.downloadProcessingCanvas.width = this.originalCanvas.width;
+    //             this.downloadProcessingCanvas.height = this.originalCanvas.height;
+    //             context.drawImage(image, 0, 0);
+    //         };
+    //         // set image source to original image with current filter applied on
+    //         image.src = this.downloadProcessingCanvas.toDataURL(`image/${format}`);
+    //
+    //         this.link.download = fileName;
+    //         this.link.href = image.src;
+    //         this.link.click();
+    //     }
+    // }
 
     // downloadImage(fileName: string, format: string): void {
     //     // const context = this.downloadProcessingCanvas.getContext('2d') as CanvasRenderingContext2D;

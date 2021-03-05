@@ -15,6 +15,7 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
     @ViewChild('previewCanvas', { static: false }) canvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('tempCanvas', { static: false }) tempCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('link', { static: false }) link: ElementRef<HTMLAnchorElement>;
+    @ViewChild('previewImage', { static: false }) previewImage: ElementRef<HTMLImageElement>;
 
     imageFiltersNames: Map<string, ImageFilter>;
     imageFormatsNames: Map<string, ImageFormat>;
@@ -23,12 +24,16 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
     selectedFormat: string;
     selectedFilter: string;
     fileName: FormControl;
+    imageSource: string;
+    tempFilter: string;
 
     constructor(private exportDrawingService: ExportDrawingService, public dialogRef: MatDialogRef<ExportDrawingComponent>) {
         this.filters = Object.values(ImageFilter);
         this.formats = Object.values(ImageFormat);
         this.selectedFormat = ImageFormat.PNG;
         this.selectedFilter = ImageFilter.None;
+        this.imageSource = '';
+        // this.tempFilter = ImageFilter.None;
         this.fileName = new FormControl('', [Validators.required, Validators.pattern(FILE_NAME_REGEX)]);
         this.initializeImageFiltersNames();
         this.initializeImageFormatsName();
@@ -48,7 +53,13 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
         this.exportDrawingService.previewCanvas = this.canvas.nativeElement as HTMLCanvasElement;
         this.exportDrawingService.downloadProcessingCanvas = this.canvas.nativeElement as HTMLCanvasElement;
         this.exportDrawingService.link = document.createElement('a');
-        this.exportDrawingService.drawPreviewImage();
+
+        window.setTimeout(() => {
+            this.imageSource = this.exportDrawingService.originalCanvas.toDataURL(ImageFormat.PNG);
+            this.exportDrawingService.previewImageSrc = this.imageSource;
+            this.exportDrawingService.image = this.previewImage.nativeElement as HTMLImageElement;
+            // this.exportDrawingService.image = this.previewImage.nativeElement;
+        });
     }
 
     ngOnDestroy(): void {
@@ -96,9 +107,16 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
 
     onFilterChange(selectedFilter: string): void {
         const newFilter = this.imageFiltersNames.get(selectedFilter);
+        // console.log(this.exportDrawingService.image.style.filter);
+        const tempImage = this.previewImage.nativeElement as HTMLImageElement;
+        tempImage.style.filter = 'sepia(100%)';
+        // console.log(tempImage.src);
+        this.exportDrawingService.image = tempImage;
         if (newFilter !== undefined) {
             this.exportDrawingService.currentFilter.next(newFilter);
-            this.exportDrawingService.drawPreviewImage();
+            this.tempFilter = this.exportDrawingService.imageFilters.get(this.exportDrawingService.currentFilter.value) as string;
+            // this.exportDrawingService.previewImageSrc = this.imageSource;
+            // console.log(this.tempFilter);
         }
     }
 
