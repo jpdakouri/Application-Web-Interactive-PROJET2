@@ -20,11 +20,11 @@ export class HttpService {
     // getDrawingsByTags(): Observable<Metadata[]> {
     //     return this.http.get<Metadata[]>(this.BASE_URL + '/api/drawings');
     // }
-    deleteDrawing(drawingID: number): Observable<void> {
-        return this.http.delete<void>(this.BASE_URL + `/api/drawings/${drawingID}`);
+    deleteDrawing(drawingID: string): Observable<string> {
+        return this.http.delete<string>(this.BASE_URL + `/api/drawings/${drawingID}`);
     }
-    insertDrawing(newDrawing: DrawingData): Observable<DrawingData> {
-        return this.http.post<DrawingData>(this.BASE_URL + '/api/drawings', newDrawing);
+    insertDrawing(newDrawing: DrawingData): Observable<string> {
+        return this.http.post<string>(this.BASE_URL + '/api/drawings', newDrawing);
     }
 
     updateDrawing(updatedDrawing: DrawingData): Observable<void> {

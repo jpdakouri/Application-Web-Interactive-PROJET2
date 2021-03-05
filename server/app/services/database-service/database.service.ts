@@ -1,6 +1,14 @@
 import { Metadata } from '@common/communication/metadata';
 import { injectable } from 'inversify';
-import { Collection, FindAndModifyWriteOpResultObject, InsertOneWriteOpResult, MongoClient, MongoClientOptions, UpdateWriteOpResult } from 'mongodb';
+import {
+    Collection,
+    FindAndModifyWriteOpResultObject,
+    InsertOneWriteOpResult,
+    MongoClient,
+    MongoClientOptions,
+    ObjectId,
+    UpdateWriteOpResult,
+} from 'mongodb';
 import 'reflect-metadata';
 @injectable()
 export class DatabaseService {
@@ -46,7 +54,7 @@ export class DatabaseService {
     }
 
     async deleteDrawing(id: string): Promise<FindAndModifyWriteOpResultObject<Metadata>> {
-        return await this.collection.findOneAndDelete({ _id: id });
+        return await this.collection.findOneAndDelete({ _id: new ObjectId(id) });
     }
 
     async updateDrawing(drawing: Metadata): Promise<UpdateWriteOpResult> {

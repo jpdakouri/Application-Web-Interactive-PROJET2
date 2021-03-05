@@ -1,10 +1,12 @@
+import { ObjectID } from 'mongodb';
+
 export class Metadata {
-    constructor(_id: string, title: string, tags: string[]) {
+    constructor(_id: ObjectID | undefined, title: string, tags: string[]) {
         this._id = _id;
         this.title = title;
         this.tags = tags;
     }
-    _id: string;
+    _id: ObjectID | undefined;
     title: string;
     tags: string[];
 }
