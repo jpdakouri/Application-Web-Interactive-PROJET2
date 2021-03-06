@@ -26,15 +26,16 @@ export class ExportDrawingService {
 
     private initializeImageFilters(): void {
         this.imageFilters = new Map<ImageFilter, string>();
-        this.imageFilters.set(ImageFilter.None, 'none');
-        this.imageFilters.set(ImageFilter.Blur, 'blur(5px)');
-        this.imageFilters.set(ImageFilter.Brightness, 'brightness(80%)');
-        this.imageFilters.set(ImageFilter.Contrast, 'contrast(200%)');
-        this.imageFilters.set(ImageFilter.Opacity, 'opacity(50%)');
-        this.imageFilters.set(ImageFilter.Inversion, 'invert(100%)');
-        this.imageFilters.set(ImageFilter.BlackAndWhite, 'grayscale(100%)');
-        this.imageFilters.set(ImageFilter.Saturation, 'saturate(200%)');
-        this.imageFilters.set(ImageFilter.Sepia, 'sepia(100%)');
+        this.imageFilters
+            .set(ImageFilter.None, 'none')
+            .set(ImageFilter.Blur, 'blur(5px)')
+            .set(ImageFilter.Brightness, 'brightness(80%)')
+            .set(ImageFilter.Contrast, 'contrast(200%)')
+            .set(ImageFilter.Opacity, 'opacity(50%)')
+            .set(ImageFilter.Inversion, 'invert(100%)')
+            .set(ImageFilter.BlackAndWhite, 'grayscale(100%)')
+            .set(ImageFilter.Saturation, 'saturate(200%)')
+            .set(ImageFilter.Sepia, 'sepia(100%)');
     }
 
     // drawPreviewImage v2
