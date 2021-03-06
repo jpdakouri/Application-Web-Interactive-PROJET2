@@ -45,59 +45,105 @@ export class ExportDrawingService {
         this.imageFormats.set(ImageFormat.JPEG, 'JPEG');
     }
 
+    // drawPreviewImage(): void {
+    //     const previewContext = this.previewCanvas.getContext('2d') as CanvasRenderingContext2D;
+    //     const dataURL = this.originalCanvas.toDataURL(ImageFormat.PNG);
+    //
+    //     previewContext.clearRect(0, 0, this.previewCanvas.width, this.previewCanvas.height);
+    //     // previewContext.filter = this.imageFilters.get(this.currentFilter.value) as string;
+    //     previewContext.filter = this.imageFilters.get(this.currentFilter.value) as string;
+    //     console.log(previewContext.filter);
+    //
+    //     const image = new Image();
+    //     if (dataURL) {
+    //         image.src = dataURL;
+    //         image.onload = () => {
+    //             // get the scale
+    //             const scale = Math.min(this.previewCanvas.width / image.width, this.previewCanvas.height / image.height);
+    //             // get the top left position of the image
+    //             const x = this.previewCanvas.width / 2 - (image.width / 2) * scale;
+    //             const y = this.previewCanvas.height / 2 - (image.height / 2) * scale;
+    //             previewContext.drawImage(image, x, y, image.width * scale, image.height * scale);
+    //         };
+    //     }
+    // }
+
+    // drawPreviewImage v2
     drawPreviewImage(): void {
         const previewContext = this.previewCanvas.getContext('2d') as CanvasRenderingContext2D;
-        const dataURL = this.originalCanvas.toDataURL(ImageFormat.PNG);
+        const image = this.convertCanvasToImage(this.originalCanvas, ImageFormat.PNG);
 
         previewContext.clearRect(0, 0, this.previewCanvas.width, this.previewCanvas.height);
-        // previewContext.filter = this.imageFilters.get(this.currentFilter.value) as string;
         previewContext.filter = this.imageFilters.get(this.currentFilter.value) as string;
         console.log(previewContext.filter);
 
+        image.onload = () => {
+            // get the scale
+            const scale = Math.min(this.previewCanvas.width / image.width, this.previewCanvas.height / image.height);
+            // get the top left position of the image
+            const x = this.previewCanvas.width / 2 - (image.width / 2) * scale;
+            const y = this.previewCanvas.height / 2 - (image.height / 2) * scale;
+            previewContext.drawImage(image, x, y, image.width * scale, image.height * scale);
+        };
+    }
+
+    private convertCanvasToImage(canvas: HTMLCanvasElement, format: string): HTMLImageElement {
         const image = new Image();
+        const dataURL = canvas.toDataURL(`image/${format}`);
         if (dataURL) {
             image.src = dataURL;
             image.onload = () => {
-                // get the scale
-                const scale = Math.min(this.previewCanvas.width / image.width, this.previewCanvas.height / image.height);
-                // get the top left position of the image
-                const x = this.previewCanvas.width / 2 - (image.width / 2) * scale;
-                const y = this.previewCanvas.height / 2 - (image.height / 2) * scale;
-                previewContext.drawImage(image, x, y, image.width * scale, image.height * scale);
+                image.width = canvas.width;
+                image.height = canvas.height;
             };
         }
+        // console.log(image.src);
+        return image;
     }
 
     // TODO : Extract dataUrl in a method
-    downloadImage(fileName: string, format: string): void {
-        // const link = document.createElement('a');
-        const context = this.downloadProcessingCanvas.getContext('2d') as CanvasRenderingContext2D;
-        // context.clearRect(0, 0, this.originalCanvas.width, this.originalCanvas.height);
-
-        const image = new Image();
-        const dataURL = this.originalCanvas.toDataURL(`image/${format}`);
-        if (dataURL) {
-            image.src = dataURL;
-            image.onload = () => {
-                // this.downloadProcessingCanvas.width = this.originalCanvas.width;
-                // this.downloadProcessingCanvas.height = this.originalCanvas.height;
-                context.filter = this.imageFilters.get(this.currentFilter.value) as string;
-                console.log(context.filter);
-                context.drawImage(image, 0, 0);
-            };
-            // set image source to original image with current filter applied on
-            image.src = this.downloadProcessingCanvas.toDataURL(`image/${format}`);
-
-            this.link.download = fileName;
-            this.link.href = image.src;
-            this.link.click();
-        }
-    }
-
-    // private convertCanvasToImage(previewCanvas: HTMLCanvasElement): HTMLImageElement {
+    // downloadImage(fileName: string, format: string): void {
+    //     // const link = document.createElement('a');
+    //     const context = this.downloadProcessingCanvas.getContext('2d') as CanvasRenderingContext2D;
+    //     // context.clearRect(0, 0, this.originalCanvas.width, this.originalCanvas.height);
+    //
     //     const image = new Image();
-    //     image.src = previewCanvas.toDataURL('image/png');
-    //     console.log(image.src);
-    //     return image;
+    //     const dataURL = this.originalCanvas.toDataURL(`image/${format}`);
+    //     if (dataURL) {
+    //         image.src = dataURL;
+    //         image.onload = () => {
+    //             // this.downloadProcessingCanvas.width = this.originalCanvas.width;
+    //             // this.downloadProcessingCanvas.height = this.originalCanvas.height;
+    //             context.filter = this.imageFilters.get(this.currentFilter.value) as string;
+    //             console.log(context.filter);
+    //             context.drawImage(image, 0, 0);
+    //         };
+    //         // set image source to original image with current filter applied on
+    //         image.src = this.downloadProcessingCanvas.toDataURL(`image/${format}`);
+    //
+    //         this.link.download = fileName;
+    //         this.link.href = image.src;
+    //         this.link.click();
+    //     }
     // }
+
+    // downloadImage v2
+    downloadImage(fileName: string, format: string): void {
+        const context = this.downloadProcessingCanvas.getContext('2d') as CanvasRenderingContext2D;
+
+        let image = this.convertCanvasToImage(this.originalCanvas, format);
+        image.onload = () => {
+            // this.downloadProcessingCanvas.width = this.originalCanvas.width;
+            // this.downloadProcessingCanvas.height = this.originalCanvas.height;
+            context.filter = this.imageFilters.get(this.currentFilter.value) as string;
+            console.log(context.filter);
+            context.drawImage(image, 0, 0);
+        };
+        // set image source to original image with current filter applied on
+        image = this.convertCanvasToImage(this.downloadProcessingCanvas, format);
+
+        this.link.download = fileName;
+        this.link.href = image.src;
+        this.link.click();
+    }
 }
