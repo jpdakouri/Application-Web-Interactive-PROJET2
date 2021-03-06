@@ -8,7 +8,6 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class ExportDrawingService {
     imageFilters: Map<string, string>;
-    imageFormats: Map<string, string>;
     currentFilter: BehaviorSubject<string>;
     currentFormat: BehaviorSubject<string>;
     previewCanvas: HTMLCanvasElement;
@@ -23,7 +22,6 @@ export class ExportDrawingService {
         this.link = document.createElement('a');
         // this.downloadProcessingCanvas = this.originalCanvas;
         this.initializeImageFilters();
-        this.initializeImageFormats();
     }
 
     private initializeImageFilters(): void {
@@ -37,12 +35,6 @@ export class ExportDrawingService {
         this.imageFilters.set(ImageFilter.BlackAndWhite, 'grayscale(100%)');
         this.imageFilters.set(ImageFilter.Saturation, 'saturate(200%)');
         this.imageFilters.set(ImageFilter.Sepia, 'sepia(100%)');
-    }
-
-    private initializeImageFormats(): void {
-        this.imageFormats = new Map<ImageFormat, string>();
-        this.imageFormats.set(ImageFormat.PNG, 'PNG');
-        this.imageFormats.set(ImageFormat.JPEG, 'JPEG');
     }
 
     // drawPreviewImage v2
