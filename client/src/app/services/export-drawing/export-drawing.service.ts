@@ -7,19 +7,21 @@ import { BehaviorSubject } from 'rxjs';
     providedIn: 'root',
 })
 export class ExportDrawingService {
-    imageFilters: Map<ImageFilter, string>;
-    imageFormats: Map<ImageFormat, string>;
-    currentFilter: BehaviorSubject<ImageFilter>;
-    currentFormat: BehaviorSubject<ImageFormat>;
+    imageFilters: Map<string, string>;
+    imageFormats: Map<string, string>;
+    currentFilter: BehaviorSubject<string>;
+    currentFormat: BehaviorSubject<string>;
     previewCanvas: HTMLCanvasElement;
     originalCanvas: HTMLCanvasElement;
     downloadProcessingCanvas: HTMLCanvasElement;
     link: HTMLAnchorElement;
 
     constructor() {
-        this.currentFilter = new BehaviorSubject<ImageFilter>(ImageFilter.None);
-        this.currentFormat = new BehaviorSubject<ImageFormat>(ImageFormat.PNG);
-        this.originalCanvas = document.getElementById('canvas') as HTMLCanvasElement;
+        this.currentFilter = new BehaviorSubject<string>(ImageFilter.None);
+        this.currentFormat = new BehaviorSubject<string>(ImageFormat.PNG);
+        // this.originalCanvas = document.getElementById('canvas') as HTMLCanvasElement;
+        this.link = document.createElement('a');
+        // this.downloadProcessingCanvas = this.originalCanvas;
         this.initializeImageFilters();
         this.initializeImageFormats();
     }
@@ -48,7 +50,9 @@ export class ExportDrawingService {
         const dataURL = this.originalCanvas.toDataURL(ImageFormat.PNG);
 
         previewContext.clearRect(0, 0, this.previewCanvas.width, this.previewCanvas.height);
+        // previewContext.filter = this.imageFilters.get(this.currentFilter.value) as string;
         previewContext.filter = this.imageFilters.get(this.currentFilter.value) as string;
+        console.log(previewContext.filter);
 
         const image = new Image();
         if (dataURL) {
@@ -66,14 +70,19 @@ export class ExportDrawingService {
 
     // TODO : Extract dataUrl in a method
     downloadImage(fileName: string, format: string): void {
+        // const link = document.createElement('a');
         const context = this.downloadProcessingCanvas.getContext('2d') as CanvasRenderingContext2D;
-        const image = this.convertCanvasToImage(this.originalCanvas);
+        // context.clearRect(0, 0, this.originalCanvas.width, this.originalCanvas.height);
 
-        if (image) {
-            context.filter = this.imageFilters.get(this.currentFilter.value) as string;
+        const image = new Image();
+        const dataURL = this.originalCanvas.toDataURL(`image/${format}`);
+        if (dataURL) {
+            image.src = dataURL;
             image.onload = () => {
-                this.downloadProcessingCanvas.width = this.originalCanvas.width;
-                this.downloadProcessingCanvas.height = this.originalCanvas.height;
+                // this.downloadProcessingCanvas.width = this.originalCanvas.width;
+                // this.downloadProcessingCanvas.height = this.originalCanvas.height;
+                context.filter = this.imageFilters.get(this.currentFilter.value) as string;
+                console.log(context.filter);
                 context.drawImage(image, 0, 0);
             };
             // set image source to original image with current filter applied on
@@ -85,10 +94,10 @@ export class ExportDrawingService {
         }
     }
 
-    private convertCanvasToImage(canvas: HTMLCanvasElement): HTMLImageElement {
-        const image = new Image();
-        image.src = canvas.toDataURL('image/png');
-        console.log(image.src);
-        return image;
-    }
+    // private convertCanvasToImage(previewCanvas: HTMLCanvasElement): HTMLImageElement {
+    //     const image = new Image();
+    //     image.src = previewCanvas.toDataURL('image/png');
+    //     console.log(image.src);
+    //     return image;
+    // }
 }

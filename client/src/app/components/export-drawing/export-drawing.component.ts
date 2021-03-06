@@ -12,12 +12,10 @@ import { ImageFormat } from '@app/utils/enums/image-format.enum';
     styleUrls: ['./export-drawing.component.scss'],
 })
 export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit {
-    @ViewChild('previewCanvas', { static: false }) canvas: ElementRef<HTMLCanvasElement>;
-    @ViewChild('tempCanvas', { static: false }) tempCanvas: ElementRef<HTMLCanvasElement>;
+    @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
+    // @ViewChild('downloadProcessingCanvas', { static: false }) downloadProcessingCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('link', { static: false }) link: ElementRef<HTMLAnchorElement>;
 
-    imageFiltersNames: Map<string, ImageFilter>;
-    imageFormatsNames: Map<string, ImageFormat>;
     filters: string[];
     formats: string[];
     selectedFormat: string;
@@ -30,24 +28,25 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
         this.selectedFormat = ImageFormat.PNG;
         this.selectedFilter = ImageFilter.None;
         this.fileName = new FormControl('', [Validators.required, Validators.pattern(FILE_NAME_REGEX)]);
-        this.initializeImageFiltersNames();
-        this.initializeImageFormatsName();
     }
 
     ngOnInit(): void {
-        this.exportDrawingService.currentFormat.subscribe((format: ImageFormat) => {
-            this.selectedFormat = format.toString();
+        this.exportDrawingService.currentFormat.subscribe((format: string) => {
+            this.selectedFormat = format;
         });
 
-        this.exportDrawingService.currentFilter.subscribe((filter: ImageFilter) => {
-            this.selectedFilter = filter.toString();
+        this.exportDrawingService.currentFilter.subscribe((filter: string) => {
+            this.selectedFilter = filter;
         });
     }
 
     ngAfterViewInit(): void {
-        this.exportDrawingService.previewCanvas = this.canvas.nativeElement as HTMLCanvasElement;
-        this.exportDrawingService.downloadProcessingCanvas = this.canvas.nativeElement as HTMLCanvasElement;
-        this.exportDrawingService.link = document.createElement('a');
+        this.exportDrawingService.previewCanvas = this.previewCanvas.nativeElement as HTMLCanvasElement;
+        this.exportDrawingService.originalCanvas = document.getElementById('canvas') as HTMLCanvasElement;
+        // this.exportDrawingService.downloadProcessingCanvas.style.width = this.exportDrawingService.originalCanvas.width.toString() + 'px';
+        // this.exportDrawingService.downloadProcessingCanvas.style.height = this.exportDrawingService.originalCanvas.height.toString() + 'px';
+        this.exportDrawingService.downloadProcessingCanvas = this.previewCanvas.nativeElement as HTMLCanvasElement;
+
         this.exportDrawingService.drawPreviewImage();
     }
 
@@ -55,25 +54,6 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
         this.exportDrawingService.currentFilter.next(ImageFilter.None);
         this.exportDrawingService.currentFormat.complete();
         this.exportDrawingService.currentFilter.complete();
-    }
-
-    private initializeImageFiltersNames(): void {
-        this.imageFiltersNames = new Map<string, ImageFilter>();
-        this.imageFiltersNames.set('Aucun filtre', ImageFilter.None);
-        this.imageFiltersNames.set('Contraste', ImageFilter.Contrast);
-        this.imageFiltersNames.set('Luminosité', ImageFilter.Brightness);
-        this.imageFiltersNames.set('Flou', ImageFilter.Blur);
-        this.imageFiltersNames.set('Opacité', ImageFilter.Opacity);
-        this.imageFiltersNames.set('Nuance de gris', ImageFilter.BlackAndWhite);
-        this.imageFiltersNames.set('Inversion', ImageFilter.Inversion);
-        this.imageFiltersNames.set('Saturation des couleurs', ImageFilter.Saturation);
-        this.imageFiltersNames.set('Sépia', ImageFilter.Sepia);
-    }
-
-    private initializeImageFormatsName(): void {
-        this.imageFormatsNames = new Map<string, ImageFormat>();
-        this.imageFormatsNames.set('PNG', ImageFormat.PNG);
-        this.imageFormatsNames.set('JPEG', ImageFormat.JPEG);
     }
 
     getErrorMessage(): string {
@@ -88,16 +68,14 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
     }
 
     onFormatChange(selectedFormat: string): void {
-        const newFormat = this.imageFormatsNames.get(selectedFormat);
-        if (newFormat !== undefined) {
-            this.exportDrawingService.currentFormat.next(newFormat);
+        if (selectedFormat !== null) {
+            this.exportDrawingService.currentFormat.next(selectedFormat);
         }
     }
 
     onFilterChange(selectedFilter: string): void {
-        const newFilter = this.imageFiltersNames.get(selectedFilter);
-        if (newFilter !== undefined) {
-            this.exportDrawingService.currentFilter.next(newFilter);
+        if (selectedFilter !== null) {
+            this.exportDrawingService.currentFilter.next(selectedFilter);
             this.exportDrawingService.drawPreviewImage();
         }
     }
