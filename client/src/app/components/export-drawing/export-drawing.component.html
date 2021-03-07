@@ -1,7 +1,10 @@
 <div style="margin: auto">
+  <div>
   <img  #previewImage
+        class="responsive"
         [src]="imageSource"
         [ngStyle]="{'filter':selectedFilterValue, 'width':'625px', 'height':'450px'}">
+  </div>
 <!--  <a #link #download hidden></a>-->
 <!--  pattern="[a-zA-Z0-9-_]*"-->
   <div class="export-options">

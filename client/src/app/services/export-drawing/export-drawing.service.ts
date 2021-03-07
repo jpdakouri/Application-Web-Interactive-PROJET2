@@ -61,7 +61,6 @@ export class ExportDrawingService {
 
     // downloadImage v2
     downloadImage(fileName: string, format: string): void {
-        let temp = '';
         const image = new Image();
         image.src = this.imageSource;
         const canvas = document.createElement('canvas');
@@ -72,11 +71,10 @@ export class ExportDrawingService {
         context.filter = this.imageFilters.get(this.currentFilter.value) as string;
         context.drawImage(image, 0, 0);
         image.src = canvas.toDataURL(`image/${format}`);
-        temp = image.src;
         // };
         console.log(context.filter);
         this.link.download = fileName;
-        this.link.href = temp;
+        this.link.href = image.src;
         this.link.click();
     }
 
