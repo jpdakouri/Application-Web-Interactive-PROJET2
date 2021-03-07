@@ -1,6 +1,7 @@
 <div style="margin: auto">
-  <canvas #previewCanvas [attr.width]="620" [attr.height]="450"></canvas>
-  <canvas #downloadProcessingCanvas hidden></canvas>
+  <img  #previewImage
+        [src]="imageSource"
+        [ngStyle]="{'filter':selectedFilterValue, 'width':'625px', 'height':'450px'}">
 <!--  <a #link #download hidden></a>-->
 <!--  pattern="[a-zA-Z0-9-_]*"-->
   <div class="export-options">
