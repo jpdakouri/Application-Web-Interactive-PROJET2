@@ -5,56 +5,48 @@ import { Metadata } from '@common/communication/metadata';
 import { NextFunction, Request, Response, Router } from 'express';
 import { inject, injectable } from 'inversify';
 import { ObjectId } from 'mongodb';
+import { ImageDataService } from './image-data/image-data.service';
 
 const HTTP_STATUS_CREATED = 201;
 const HTTP_STATUS_OK = 200;
 const HTTP_STATUS_ERROR = 500;
 const HTTP_STATUS_BAD_REQUEST = 400;
 const HTTP_STATUS_NOT_FOUND = 404;
-const HTTP_STATUS_NO_CONTENT = 204;
+// const HTTP_STATUS_NO_CONTENT = 204;
 @injectable()
 export class DatabaseController {
     router: Router;
-    drawingData: DrawingData[] = new Array();
 
-    constructor(@inject(TYPES.DatabaseService) private databaseService: DatabaseService) {
+    constructor(
+        @inject(TYPES.DatabaseService) private databaseService: DatabaseService,
+        @inject(TYPES.ImageDataService) private imageDataService: ImageDataService,
+    ) {
         this.databaseService.startDB(this.databaseService.databaseURI, this.databaseService.options);
         this.configureRouter();
-    }
-
-    updateDrawing(drawingData: DrawingData): void {
-        const index = this.drawingData.findIndex((item: DrawingData) => (item._id = drawingData._id));
-        this.drawingData[index].imageData = drawingData.imageData;
-        this.drawingData[index].title = drawingData.title;
-        this.drawingData[index].tags = drawingData.tags;
     }
 
     private configureRouter(): void {
         this.router = Router();
 
-        // TODO PUT REQUEST
+        // TODO
         // TESTS
 
         this.router.post('/', (req: Request, res: Response, next: NextFunction) => {
-            const drawingData = req.body;
-            // console.log(req.body);
-            const newMetadata = new Metadata(new ObjectId(drawingData._id), drawingData.title, drawingData.tags);
+            const drawingData = req.body as DrawingData;
+            const newMetadata = new Metadata(undefined, drawingData.title, drawingData.tags);
             this.databaseService
                 .insertDrawing(newMetadata)
                 .then((result) => {
                     if (result.insertedCount > 0) {
+                        const data = new DrawingData(result.insertedId as string, drawingData.title, drawingData.tags, drawingData.imageData);
+                        this.imageDataService.insertDrawing(data);
                         res.status(HTTP_STATUS_CREATED).json(result.insertedId);
-                        this.drawingData.push(
-                            new DrawingData(new ObjectId(result.insertedId), drawingData.title, drawingData.tags, drawingData.imageData),
-                        );
-                        console.log('id: ' + this.drawingData[this.drawingData.length - 1]._id);
                     } else {
                         res.status(HTTP_STATUS_BAD_REQUEST).send('Document could not be inserted in the database !');
                     }
                 })
                 .catch((err) => {
                     res.status(HTTP_STATUS_ERROR).send('Database operation error !');
-                    console.log(err);
                 });
         });
 
@@ -63,8 +55,7 @@ export class DatabaseController {
                 .getAllDrawings()
                 .then((result) => {
                     if (result.length > 0) {
-                        const response = this.drawingData.filter((metadata) => result.find((data) => data._id?.equals(new ObjectId(metadata._id))));
-                        console.log(response);
+                        const response = this.imageDataService.filterArray(result);
                         res.status(HTTP_STATUS_OK).json(response);
                     } else {
                         res.status(HTTP_STATUS_NOT_FOUND).send('No drawings found !');
@@ -72,7 +63,6 @@ export class DatabaseController {
                 })
                 .catch((err) => {
                     res.status(HTTP_STATUS_ERROR).send('Database operation error !');
-                    console.log(err);
                 });
         });
 
@@ -83,15 +73,14 @@ export class DatabaseController {
                     .deleteDrawing(req.params.id)
                     .then((result) => {
                         if (result.ok && result.value) {
+                            this.imageDataService.removeID(req.params.id as string);
                             res.status(HTTP_STATUS_OK).json('Drawing deleted !');
-                            this.drawingData = this.drawingData.filter((drawingData) => !drawingData._id?.equals(new ObjectId(req.params.id)));
                         } else {
                             res.status(HTTP_STATUS_NOT_FOUND).send('No drawing found !');
                         }
                     })
                     .catch((err) => {
                         res.status(HTTP_STATUS_ERROR).send('Database operation error !');
-                        console.log(err);
                     });
             } else {
                 res.status(HTTP_STATUS_BAD_REQUEST).send('Invalid ID!');
@@ -99,22 +88,26 @@ export class DatabaseController {
         });
 
         this.router.put('/:id', (req: Request, res: Response, next: NextFunction) => {
-            const drawingData = req.body;
-            this.databaseService
-                .updateDrawing(drawingData)
-                .then((updateResult) => {
-                    if (updateResult.result.ok === 1) {
-                        res.status(HTTP_STATUS_NO_CONTENT).json('Drawing updated !');
-                        this.updateDrawing(drawingData);
-                    } else {
-                        res.status(HTTP_STATUS_NOT_FOUND).send('Drawing failed to be updated !');
-                    }
-                    console.log(updateResult);
-                })
-                .catch((err) => {
-                    res.status(HTTP_STATUS_ERROR).send('Database operation error !');
-                    console.log(err);
-                });
+            const isValid = ObjectId.isValid(req.params.id);
+            if (isValid) {
+                const drawingData = req.body as DrawingData;
+                const updatedMetadata = new Metadata(drawingData.id, drawingData.title, drawingData.tags);
+                this.databaseService
+                    .updateDrawing(updatedMetadata)
+                    .then((updateResult) => {
+                        if (updateResult.ok && updateResult.value) {
+                            this.imageDataService.updateDrawing(drawingData);
+                            res.status(HTTP_STATUS_OK).json('Drawing updated !');
+                        } else {
+                            res.status(HTTP_STATUS_NOT_FOUND).send('Drawing not found !');
+                        }
+                    })
+                    .catch((err) => {
+                        res.status(HTTP_STATUS_ERROR).send('Database operation error !');
+                    });
+            } else {
+                res.status(HTTP_STATUS_BAD_REQUEST).send('Invalid ID!');
+            }
         });
     }
 }

@@ -13,7 +13,6 @@ export class HttpService {
 
     // TODO HTTP ERROR HANDLING
     // TODO GET DRAWINGS BY TAGS
-    // TEST
     getAllDrawings(): Observable<DrawingData[]> {
         return this.http.get<DrawingData[]>(this.BASE_URL + '/api/drawings');
     }
@@ -27,7 +26,7 @@ export class HttpService {
         return this.http.post<string>(this.BASE_URL + '/api/drawings', newDrawing);
     }
 
-    updateDrawing(updatedDrawing: DrawingData): Observable<void> {
-        return this.http.put<void>(this.BASE_URL + `/api/drawings/${updatedDrawing._id}`, updatedDrawing);
+    updateDrawing(updatedDrawing: DrawingData): Observable<string> {
+        return this.http.put<string>(this.BASE_URL + `/api/drawings/${updatedDrawing._id}`, updatedDrawing);
     }
 }

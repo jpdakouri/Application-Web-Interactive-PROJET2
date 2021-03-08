@@ -1,7 +1,7 @@
 import * as chai from 'chai';
 import * as spies from 'chai-spies';
 import { describe } from 'mocha';
-import { Db, MongoClient } from 'mongodb';
+import { Db, MongoClient, ObjectId } from 'mongodb';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import * as sinon from 'sinon';
 import { Metadata } from '../../../../common/communication/metadata';
@@ -49,15 +49,6 @@ describe('Database service', () => {
         }, 500);
     });
 
-    // it('#start() shoud catch error and log it if connection fails', async () => {
-    //     databaseService.databaseURI = 'errorCatcher';
-    //     const consoleSpy = chai.spy.on(console, 'error');
-    //     databaseService.startDB(databaseService.databaseURI, databaseService.options);
-    //     setTimeout(() => {
-    //         expect(consoleSpy).to.have.been.called.with('DATABASE CONNECTION ERROR');
-    //     }, 500);
-    // });
-
     it('#start() shoud catch error and log it if connection fails', async () => {
         const clientStub = sinon.stub(MongoClient, 'connect').rejects(new Error());
         databaseService.startDB(mongoUri, databaseService.options);
@@ -69,7 +60,7 @@ describe('Database service', () => {
     });
 
     it('insertDrawing() should insert a new Drawing in DB', async () => {
-        const newDrawing: Metadata = { _id: 1234, title: 'test', tags: ['tag1', 'tag2'] };
+        const newDrawing: Metadata = { _id: ObjectId.generate().toString(), title: 'test', tags: ['tag1', 'tag2'] };
         await databaseService.insertDrawing(newDrawing);
         const drawings = await databaseService.collection.find({}).toArray();
         expect(drawings.length).to.equal(1);
