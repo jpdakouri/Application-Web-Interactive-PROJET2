@@ -11,14 +11,12 @@ export class ExportDrawingService {
     currentFilter: BehaviorSubject<string>;
     currentFormat: BehaviorSubject<string>;
     link: HTMLAnchorElement;
-
     imageSource: string;
     image: ElementRef<HTMLImageElement>;
 
     constructor() {
         this.currentFilter = new BehaviorSubject<string>(ImageFilter.None);
         this.currentFormat = new BehaviorSubject<string>(ImageFormat.PNG);
-        this.link = document.createElement('a');
         this.imageSource = '';
         this.initializeImageFilters();
     }
@@ -35,6 +33,25 @@ export class ExportDrawingService {
             .set(ImageFilter.BlackAndWhite, 'grayscale(100%)')
             .set(ImageFilter.Saturation, 'saturate(200%)')
             .set(ImageFilter.Sepia, 'sepia(100%)');
+    }
+
+    // downloadImage v4 fonctionnelle
+    downloadImage(fileName: string, format: string): void {
+        const image = new Image();
+        image.src = this.imageSource;
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d') as CanvasRenderingContext2D;
+        canvas.width = image.width;
+        canvas.height = image.height;
+        // image.onload = () => {
+        context.filter = this.imageFilters.get(this.currentFilter.value) as string;
+        context.drawImage(image, 0, 0);
+        image.src = canvas.toDataURL(`image/${format}`);
+        // };
+        console.log(context.filter);
+        this.link.download = fileName;
+        this.link.href = image.src;
+        this.link.click();
     }
 
     // // downloadImage v2 - fonctionnelle partiellement
@@ -58,25 +75,6 @@ export class ExportDrawingService {
     //         this.link.click();
     //     };
     // }
-
-    // downloadImage v2
-    downloadImage(fileName: string, format: string): void {
-        const image = new Image();
-        image.src = this.imageSource;
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d') as CanvasRenderingContext2D;
-        canvas.width = image.width;
-        canvas.height = image.height;
-        // image.onload = () => {
-        context.filter = this.imageFilters.get(this.currentFilter.value) as string;
-        context.drawImage(image, 0, 0);
-        image.src = canvas.toDataURL(`image/${format}`);
-        // };
-        console.log(context.filter);
-        this.link.download = fileName;
-        this.link.href = image.src;
-        this.link.click();
-    }
 
     // downloadImage v3
     // downloadImage(fileName: string, format: string): void {

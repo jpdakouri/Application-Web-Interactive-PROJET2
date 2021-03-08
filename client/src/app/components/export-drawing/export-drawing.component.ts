@@ -48,6 +48,7 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
 
     ngAfterViewInit(): void {
         this.originalCanvas = document.getElementById('canvas') as HTMLCanvasElement;
+        this.exportDrawingService.link = this.link.nativeElement as HTMLAnchorElement;
         setTimeout(() => {
             this.imageSource = this.originalCanvas.toDataURL('image/png');
         });

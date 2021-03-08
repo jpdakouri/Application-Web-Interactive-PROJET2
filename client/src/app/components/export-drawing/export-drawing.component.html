@@ -1,11 +1,13 @@
 <div style="margin: auto">
-  <div>
-  <img  #previewImage
-        class="responsive"
+  <div class="square">
+  <img  #previewImage class="responsive"
         [src]="imageSource"
-        [ngStyle]="{'filter':selectedFilterValue, 'width':'625px', 'height':'450px'}">
+        [ngStyle]="{'filter':selectedFilterValue}"
+  >
+<!--    [ngStyle]="{'filter':selectedFilterValue, 'width':'625px', 'height':'auto'}">-->
+<!--    [ngStyle]="{'filter':selectedFilterValue, 'width':'625px', 'height':'450px'}">-->
   </div>
-<!--  <a #link #download hidden></a>-->
+  <a #link hidden></a>
 <!--  pattern="[a-zA-Z0-9-_]*"-->
   <div class="export-options">
       <mat-form-field hintLabel="Max 25 caractères" appearance="fill">

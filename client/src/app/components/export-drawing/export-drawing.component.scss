@@ -6,3 +6,10 @@
 .flexExpand {
   flex: 1 1 auto;
 }
+
+.responsive {
+  height: auto;
+  width: auto;
+  max-width: 620px;
+  max-height: 450px;
+}
