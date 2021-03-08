@@ -14,17 +14,16 @@ import { ImageFormat } from '@app/utils/enums/image-format.enum';
 export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild('link', { static: false }) link: ElementRef<HTMLAnchorElement>;
     @ViewChild('previewImage', { static: false }) previewImage: ElementRef<HTMLImageElement>;
+    @ViewChild('downloadProcessingCanvas', { static: false }) downloadProcessingCanvas: ElementRef<HTMLCanvasElement>;
 
     filters: string[];
     formats: string[];
     selectedFormat: string;
     selectedFilter: string;
     fileName: FormControl;
-
     imageSource: string;
     originalCanvas: HTMLCanvasElement;
     selectedFilterValue: string;
-    image: string;
 
     constructor(private exportDrawingService: ExportDrawingService, public dialogRef: MatDialogRef<ExportDrawingComponent>) {
         this.filters = Object.values(ImageFilter);
@@ -48,9 +47,10 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
 
     ngAfterViewInit(): void {
         this.originalCanvas = document.getElementById('canvas') as HTMLCanvasElement;
+        this.exportDrawingService.canvas = this.downloadProcessingCanvas.nativeElement as HTMLCanvasElement;
         this.exportDrawingService.link = this.link.nativeElement as HTMLAnchorElement;
         setTimeout(() => {
-            this.imageSource = this.originalCanvas.toDataURL('image/png');
+            this.imageSource = this.originalCanvas.toDataURL('image/png') as string;
         });
     }
 

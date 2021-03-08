@@ -1,12 +1,12 @@
 <div style="margin: auto">
-  <div class="square">
-  <img  #previewImage class="responsive"
-        [src]="imageSource"
-        [ngStyle]="{'filter':selectedFilterValue}"
+  <img #previewImage
+       [ngStyle]="{filter: selectedFilterValue}"
+       [src]="imageSource"
+       title="vignette de prévisualisation de l'image à exporter"
+       class="preview-image"
+       alt="Impossible d'afficher l'aperçu"
   >
-<!--    [ngStyle]="{'filter':selectedFilterValue, 'width':'625px', 'height':'auto'}">-->
-<!--    [ngStyle]="{'filter':selectedFilterValue, 'width':'625px', 'height':'450px'}">-->
-  </div>
+  <canvas #downloadProcessingCanvas hidden></canvas>
   <a #link hidden></a>
 <!--  pattern="[a-zA-Z0-9-_]*"-->
   <div class="export-options">

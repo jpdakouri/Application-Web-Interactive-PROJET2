@@ -13,6 +13,7 @@ export class ExportDrawingService {
     link: HTMLAnchorElement;
     imageSource: string;
     image: ElementRef<HTMLImageElement>;
+    canvas: HTMLCanvasElement;
 
     constructor() {
         this.currentFilter = new BehaviorSubject<string>(ImageFilter.None);
@@ -39,14 +40,14 @@ export class ExportDrawingService {
     downloadImage(fileName: string, format: string): void {
         const image = new Image();
         image.src = this.imageSource;
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d') as CanvasRenderingContext2D;
-        canvas.width = image.width;
-        canvas.height = image.height;
+        // const canvas = document.createElement('canvas');
+        const context = this.canvas.getContext('2d') as CanvasRenderingContext2D;
+        this.canvas.width = image.width;
+        this.canvas.height = image.height;
         // image.onload = () => {
         context.filter = this.imageFilters.get(this.currentFilter.value) as string;
         context.drawImage(image, 0, 0);
-        image.src = canvas.toDataURL(`image/${format}`);
+        image.src = this.canvas.toDataURL(`image/${format}`);
         // };
         console.log(context.filter);
         this.link.download = fileName;
