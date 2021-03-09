@@ -1,5 +1,5 @@
+import { Metadata } from '@app/classes/metadata';
 import { DrawingData } from '@common/communication/drawing-data';
-import { Metadata } from '@common/communication/metadata';
 import { injectable } from 'inversify';
 
 @injectable()

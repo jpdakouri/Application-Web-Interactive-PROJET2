@@ -1,4 +1,4 @@
-import { Metadata } from '@common/communication/metadata';
+import { Metadata } from '@app/classes/metadata';
 import { injectable } from 'inversify';
 import { Collection, FindAndModifyWriteOpResultObject, InsertOneWriteOpResult, MongoClient, MongoClientOptions, ObjectId } from 'mongodb';
 import 'reflect-metadata';

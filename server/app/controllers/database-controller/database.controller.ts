@@ -1,7 +1,7 @@
+import { Metadata } from '@app/classes/metadata';
 import { DatabaseService } from '@app/services/database-service/database.service';
 import { TYPES } from '@app/types';
 import { DrawingData } from '@common/communication/drawing-data';
-import { Metadata } from '@common/communication/metadata';
 import { NextFunction, Request, Response, Router } from 'express';
 import { inject, injectable } from 'inversify';
 import { ObjectId } from 'mongodb';

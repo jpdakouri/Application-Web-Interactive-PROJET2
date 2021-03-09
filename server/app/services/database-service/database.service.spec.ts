@@ -4,7 +4,7 @@ import { describe } from 'mocha';
 import { Db, MongoClient, ObjectId } from 'mongodb';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import * as sinon from 'sinon';
-import { Metadata } from '../../../../common/communication/metadata';
+import { Metadata } from '../../classes/metadata';
 import { DatabaseService } from './database.service';
 
 chai.use(spies);

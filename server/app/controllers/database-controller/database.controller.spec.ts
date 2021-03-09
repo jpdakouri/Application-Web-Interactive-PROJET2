@@ -3,9 +3,9 @@ import * as spies from 'chai-spies';
 import { FindAndModifyWriteOpResultObject, InsertOneWriteOpResult, MongoError, ObjectId } from 'mongodb';
 import * as supertest from 'supertest';
 import { DrawingData } from '../../../../common/communication/drawing-data';
-import { Metadata } from '../../../../common/communication/metadata';
 import { Stubbed, testingContainer } from '../../../test/test-utils';
 import { Application } from '../../app';
+import { Metadata } from '../../classes/metadata';
 import { DatabaseService } from '../../services/database-service/database.service';
 import { TYPES } from '../../types';
 import { ImageDataService } from './image-data/image-data.service';
@@ -56,7 +56,7 @@ describe('DatabaseController', () => {
         const id = new ObjectId().toString();
         const insertResult = ({ insertedCount: 1, insertedId: id } as unknown) as InsertOneWriteOpResult<Metadata>;
         databaseService.insertDrawing.resolves(insertResult);
-        let imageData = ({ data: [], height: 0, width: 0 } as unknown) as ImageData;
+        const imageData = ({ data: [], height: 0, width: 0 } as unknown) as ImageData;
         const drawingData = new DrawingData(id, 'titleStub', ['tagStub1', 'tagStub2'], imageData);
         const spy = chai.spy.on(imageDataService, 'insertDrawing');
         return supertest(app)
@@ -92,7 +92,7 @@ describe('DatabaseController', () => {
     it('GET request to /drawings should respond a HTTP_STATUS_OK and an array containing DrawingData', async () => {
         const filterArrayResults: DrawingData[] = [];
         const getResults = new Array(10);
-        let imageData = ({ data: [], height: 0, width: 0 } as unknown) as ImageData;
+        const imageData = ({ data: [], height: 0, width: 0 } as unknown) as ImageData;
         for (let i = 0; i < 5; i++) {
             const drawing = new DrawingData(new ObjectId().toString(), `titleStub${i}`, [`tagStub1${i}`, `tagStub2${i}`], imageData);
             filterArrayResults.push(drawing);
@@ -109,7 +109,7 @@ describe('DatabaseController', () => {
 
     it('GET request to /drawings should call #filterArray from ImageDataService with correct parameter', async () => {
         const getResults: DrawingData[] = [];
-        let imageData = ({ data: [], height: 0, width: 0 } as unknown) as ImageData;
+        const imageData = ({ data: [], height: 0, width: 0 } as unknown) as ImageData;
         for (let i = 0; i < 5; i++) {
             getResults.push(new DrawingData(new ObjectId().toString(), `titleStub${i}`, [`tagStub1${i}`, `tagStub2${i}`], imageData));
         }
@@ -205,7 +205,7 @@ describe('DatabaseController', () => {
     });
     it('PUT request to /drawings should respond a HTTP_STATUS_OK and correct message if drawing is updated', async () => {
         const id = new ObjectId().toString();
-        let imageData = ({ data: [], height: 0, width: 0 } as unknown) as ImageData;
+        const imageData = ({ data: [], height: 0, width: 0 } as unknown) as ImageData;
         const drawingData = new DrawingData(id, 'titleStub', ['tagStub1', 'tagStub2'], imageData);
         const metadata = new Metadata(id, drawingData.title, drawingData.tags);
         const updateResult = ({ ok: 1, value: metadata } as unknown) as FindAndModifyWriteOpResultObject<Metadata>;
@@ -225,7 +225,7 @@ describe('DatabaseController', () => {
         const id = new ObjectId().toString();
         const updateResult = ({ ok: 0, value: null } as unknown) as FindAndModifyWriteOpResultObject<Metadata>;
         databaseService.updateDrawing.resolves(updateResult);
-        let imageData = ({ data: [], height: 0, width: 0 } as unknown) as ImageData;
+        const imageData = ({ data: [], height: 0, width: 0 } as unknown) as ImageData;
         const drawingData = new DrawingData(id, 'titleStub', ['tagStub1', 'tagStub2'], imageData);
         return supertest(app)
             .put(`/api/drawings/${id}`)
@@ -238,7 +238,7 @@ describe('DatabaseController', () => {
 
     it('PUT request to /drawings should respond a HTTP_STATUS_ERROR and correct message if server or database error', async () => {
         const id = new ObjectId().toString();
-        let imageData = ({ data: [], height: 0, width: 0 } as unknown) as ImageData;
+        const imageData = ({ data: [], height: 0, width: 0 } as unknown) as ImageData;
         const drawingData = new DrawingData(id, 'titleStub', ['tagStub1', 'tagStub2'], imageData);
         databaseService.updateDrawing.rejects();
         return supertest(app)
@@ -252,7 +252,7 @@ describe('DatabaseController', () => {
 
     it('PUT request to /drawings should respond a HTTP_STATUS_BAD_REQUEST and correct message if invalid ID', async () => {
         const id = 'invalidID';
-        let imageData = ({ data: [], height: 0, width: 0 } as unknown) as ImageData;
+        const imageData = ({ data: [], height: 0, width: 0 } as unknown) as ImageData;
         const drawingData = new DrawingData(id, 'titleStub', ['tagStub1', 'tagStub2'], imageData);
         return supertest(app)
             .put(`/api/drawings/${id}`)
@@ -265,7 +265,7 @@ describe('DatabaseController', () => {
 
     it('PUT request to /drawings should call #updateDrawing from imageDataService with correct parameter', async () => {
         const id = new ObjectId().toString();
-        let imageData = ({ data: [], height: 0, width: 0 } as unknown) as ImageData;
+        const imageData = ({ data: [], height: 0, width: 0 } as unknown) as ImageData;
         const drawingData = new DrawingData(id, 'titleStub', ['tagStub1', 'tagStub2'], imageData);
         const metadata = new Metadata(id, drawingData.title, drawingData.tags);
         const updateResult = ({ ok: 1, value: metadata } as unknown) as FindAndModifyWriteOpResultObject<Metadata>;

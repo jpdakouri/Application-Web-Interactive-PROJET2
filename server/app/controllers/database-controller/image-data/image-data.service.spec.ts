@@ -2,13 +2,13 @@ import * as chai from 'chai';
 import * as spies from 'chai-spies';
 import { describe } from 'mocha';
 import { DrawingData } from '../../../../../common/communication/drawing-data';
-import { Metadata } from '../../../../../common/communication/metadata';
+import { Metadata } from '../../../classes/metadata';
 import { ImageDataService } from './image-data.service';
 chai.use(spies);
 const expect = chai.expect;
 
 describe('ImageDataService', () => {
-    let service: ImageDataService = new ImageDataService();
+    const service: ImageDataService = new ImageDataService();
 
     beforeEach(() => {
         service.drawingData = [];
