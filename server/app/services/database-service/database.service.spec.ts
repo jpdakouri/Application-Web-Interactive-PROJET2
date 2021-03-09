@@ -11,7 +11,7 @@ chai.use(spies);
 
 const expect = chai.expect;
 
-describe('Database service', () => {
+describe('DatabaseService', () => {
     let databaseService: DatabaseService;
     let mongoServer: MongoMemoryServer;
     let db: Db;
@@ -34,66 +34,52 @@ describe('Database service', () => {
         databaseService.collection = db.collection('test');
     });
 
-    afterEach(async () => {
+    afterEach(() => {
         client.close();
     });
 
     it('#start shoud connect to database', async () => {
-        databaseService.startDB(mongoUri, databaseService.options);
-        // tslint:disable: no-unused-expression
-        setTimeout(() => {
-            const clientSpy = chai.spy.on(MongoClient, 'connect');
-            expect(clientSpy).to.have.been.called.with(mongoUri, databaseService.options);
-            expect(databaseService.client.isConnected).to.be.true;
-            expect(databaseService.collection.collectionName).to.equal('Drawings');
-        }, 500);
+        const clientSpy = chai.spy.on(MongoClient, 'connect');
+        await databaseService.startDB(mongoUri, databaseService.options);
+        expect(clientSpy).to.have.been.called.with(mongoUri, databaseService.options);
+        // tslint:disable-next-line: no-unused-expression
+        expect(databaseService.client.isConnected()).to.be.true;
+        expect(databaseService.collection.collectionName).to.equal('Drawings');
+        databaseService.client.close();
     });
 
     it('#start() shoud catch error and log it if connection fails', async () => {
         const clientStub = sinon.stub(MongoClient, 'connect').rejects(new Error());
-        databaseService.startDB(mongoUri, databaseService.options);
         const consoleSpy = chai.spy.on(console, 'error');
-        setTimeout(() => {
-            expect(consoleSpy).to.have.been.called.with('DATABASE CONNECTION ERROR');
-        }, 500);
+        await databaseService.startDB(mongoUri, databaseService.options);
+        expect(consoleSpy).to.have.been.called.with('DATABASE CONNECTION ERROR');
         clientStub.restore();
     });
 
     it('insertDrawing() should insert a new Drawing in DB', async () => {
         const newDrawing: Metadata = { _id: new ObjectId().toString(), title: 'test', tags: ['tag1', 'tag2'] };
-        await databaseService.insertDrawing(newDrawing).then(async () => {
-            const drawings = await databaseService.collection.find({}).toArray();
-            expect(drawings.length).to.equal(1);
-            expect(drawings[0]).to.deep.equals(newDrawing);
-        });
+        await databaseService.insertDrawing(newDrawing);
+        const drawings = await databaseService.collection.find({}).toArray();
+        expect(drawings.length).to.equal(1);
+        expect(drawings[0]).to.deep.equals(newDrawing);
     });
-    it('deleteDrawing() should delete the drawing in DB', async () => {
-        const id1 = new ObjectId().toString();
-        const id2 = new ObjectId().toString();
-        const newDrawing1: Metadata = { _id: id1, title: 'test1', tags: ['tag1.1', 'tag1.2'] };
-        const newDrawing2: Metadata = { _id: id2, title: 'test2', tags: ['tag2.1', 'tag2.2'] };
-        await databaseService.insertDrawing(newDrawing1);
-        await databaseService.insertDrawing(newDrawing2);
-        databaseService.deleteDrawing(id2).then(async () => {
-            const drawings = await databaseService.collection.find({}).toArray();
-            expect(drawings.length).to.equal(1);
-            expect(drawings[0]).to.deep.equals(newDrawing1);
-        });
+
+    it('deleteDrawing() should be called with correct parameter', async () => {
+        const spy = chai.spy.on(databaseService.collection, 'findOneAndDelete');
+        const id = new ObjectId().toString();
+        const toDelete = { _id: new ObjectId(id) };
+        await databaseService.deleteDrawing(id);
+        expect(spy).to.have.been.called.with(toDelete);
     });
 
     it('updateDrawing() should update the drawing in DB', async () => {
-        const id1 = new ObjectId().toString();
-        const id2 = new ObjectId().toString();
-        const newDrawing1: Metadata = { _id: id1, title: 'test1', tags: ['tag1.1', 'tag1.2'] };
-        const newDrawing2: Metadata = { _id: id2, title: 'test2', tags: ['tag2.1', 'tag2.2'] };
-        const updatedDrawing2: Metadata = { _id: id2, title: 'updatedTest2', tags: ['updatedTag2.1', 'updatedTag2.2'] };
-        await databaseService.insertDrawing(newDrawing1);
-        await databaseService.insertDrawing(newDrawing2);
-        databaseService.updateDrawing(updatedDrawing2).then(async () => {
-            const drawings = await databaseService.collection.find({ _id: id2 }).toArray();
-            expect(drawings.length).to.equal(1);
-            expect(drawings[0]).to.deep.equals(updatedDrawing2);
-        });
+        const spy = chai.spy.on(databaseService.collection, 'findOneAndUpdate');
+        const id = new ObjectId().toString();
+        const updatedDrawing: Metadata = { _id: id, title: 'test1', tags: ['tag1.1', 'tag1.2'] };
+        const newValues = { $set: { title: updatedDrawing.title, tags: updatedDrawing.tags } };
+        const toUpdate = { _id: new ObjectId(id) };
+        await databaseService.updateDrawing(updatedDrawing);
+        expect(spy).to.have.been.called.with(toUpdate, newValues);
     });
 
     it('getAllDrawing() should return all the drawings in DB', async () => {
