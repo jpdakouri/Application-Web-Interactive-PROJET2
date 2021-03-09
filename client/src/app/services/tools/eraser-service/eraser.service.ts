@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import { EraserCommand } from '@app/classes/tool-commands/eraser-command';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -70,5 +71,10 @@ export class EraserService extends Tool {
 
     private clearPath(): void {
         this.pathData = [];
+    }
+
+    executeCommand(command: EraserCommand): void {
+        // TODO
+        return;
     }
 }

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
+import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 @Component({
     selector: 'app-toolbar',
@@ -9,14 +10,8 @@ import { ToolsNames } from '@app/utils/enums/tools-names';
 })
 export class ToolbarComponent {
     toolsNames: typeof ToolsNames = ToolsNames;
-    toolManagerService: ToolManagerService;
-    drawingService: DrawingService;
-    ids: string[] = [];
 
-    constructor(toolManagerService: ToolManagerService, drawingService: DrawingService) {
-        this.toolManagerService = toolManagerService;
-        this.drawingService = drawingService;
-    }
+    constructor(public toolManagerService: ToolManagerService, public drawingService: DrawingService, public undoRedo: UndoRedoService) {}
 
     setCurrentTool(toolName: ToolsNames): void {
         this.toolManagerService.emitToolChange(toolName);
