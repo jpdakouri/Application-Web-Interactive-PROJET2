@@ -1,13 +1,11 @@
-import { ObjectId } from 'mongodb';
-
 export class DrawingData {
-    constructor(_id: ObjectId | undefined, title: string, tags: string[], imageData: ImageData) {
-        this._id = _id;
+    constructor(id: string | undefined, title: string, tags: string[], imageData: ImageData) {
+        this.id = id;
         this.title = title;
         this.tags = tags;
         this.imageData = imageData;
     }
-    _id: ObjectId | undefined;
+    id: string | undefined;
     title: string;
     tags: string[];
     imageData: ImageData;

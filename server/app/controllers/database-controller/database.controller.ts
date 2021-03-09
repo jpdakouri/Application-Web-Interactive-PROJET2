@@ -76,14 +76,14 @@ export class DatabaseController {
                             this.imageDataService.removeID(req.params.id as string);
                             res.status(HTTP_STATUS_OK).json('Drawing deleted !');
                         } else {
-                            res.status(HTTP_STATUS_NOT_FOUND).send('No drawing found !');
+                            res.status(HTTP_STATUS_NOT_FOUND).send('Drawing not found !');
                         }
                     })
                     .catch((err) => {
                         res.status(HTTP_STATUS_ERROR).send('Database operation error !');
                     });
             } else {
-                res.status(HTTP_STATUS_BAD_REQUEST).send('Invalid ID!');
+                res.status(HTTP_STATUS_BAD_REQUEST).send('Invalid ID !');
             }
         });
 
@@ -106,7 +106,7 @@ export class DatabaseController {
                         res.status(HTTP_STATUS_ERROR).send('Database operation error !');
                     });
             } else {
-                res.status(HTTP_STATUS_BAD_REQUEST).send('Invalid ID!');
+                res.status(HTTP_STATUS_BAD_REQUEST).send('Invalid ID !');
             }
         });
     }

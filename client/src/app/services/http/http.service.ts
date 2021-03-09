@@ -27,6 +27,6 @@ export class HttpService {
     }
 
     updateDrawing(updatedDrawing: DrawingData): Observable<string> {
-        return this.http.put<string>(this.BASE_URL + `/api/drawings/${updatedDrawing._id}`, updatedDrawing);
+        return this.http.put<string>(this.BASE_URL + `/api/drawings/${updatedDrawing.id}`, updatedDrawing);
     }
 }

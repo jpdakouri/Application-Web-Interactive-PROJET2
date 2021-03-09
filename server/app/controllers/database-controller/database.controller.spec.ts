@@ -29,11 +29,13 @@ describe('DatabaseController', () => {
             insertDrawing: sandbox.stub().resolves(),
             getAllDrawings: sandbox.stub().resolves(),
             deleteDrawing: sandbox.stub().resolves(),
+            updateDrawing: sandbox.stub().resolves(),
         });
         container.rebind(TYPES.ImageDataService).toConstantValue({
             insertDrawing: sandbox.stub().resolves(),
             filterArray: sandbox.stub().resolves(),
             removeID: sandbox.stub().resolves(),
+            updateDrawing: sandbox.stub().resolves(),
         });
         imageDataService = container.get(TYPES.ImageDataService);
         databaseService = container.get(TYPES.DatabaseService);
@@ -155,15 +157,126 @@ describe('DatabaseController', () => {
             });
     });
 
-    // it('DELETE request to /drawings should respond a HTTP_STATUS_OK and correct message', async () => {
-    //     const id = new ObjectId().toString();
-    //     const result = { ok: 1, value: new Metadata(id, 'titleStub', ['tagStub1', 'tagStub2']) };
-    //     databaseService.getAllDrawings.resolves(result);
-    //     return supertest(app)
-    //         .get(`/api/drawings/${id}`)
-    //         .expect(HTTP_STATUS_OK)
-    //         .then((response: any) => {
-    //             expect(response.text).to.equal('Drawing deleted !');
-    //         });
-    // });
+    it('DELETE request to /drawings should respond a HTTP_STATUS_NOT_FOUND and correct message', async () => {
+        const id = new ObjectId().toString();
+        const deleteResult = ({ ok: 0, value: null } as unknown) as FindAndModifyWriteOpResultObject<Metadata>;
+        databaseService.deleteDrawing.resolves(deleteResult);
+        return supertest(app)
+            .delete(`/api/drawings/${id}`)
+            .expect(HTTP_STATUS_NOT_FOUND)
+            .then((response: any) => {
+                expect(response.text).to.equal('Drawing not found !');
+            });
+    });
+
+    it('DELETE request to /drawings should respond a HTTP_STATUS_NOT_ERROR and correct message if server or database error', async () => {
+        const id = new ObjectId().toString();
+        databaseService.deleteDrawing.rejects();
+        return supertest(app)
+            .delete(`/api/drawings/${id}`)
+            .expect(HTTP_STATUS_ERROR)
+            .then((response: any) => {
+                expect(response.text).to.equal('Database operation error !');
+            });
+    });
+
+    it('DELETE request to /drawings should respond a HTTP_STATUS_BAD_REQUEST and correct message if invalid ID', async () => {
+        const id = 'invalidID';
+        return supertest(app)
+            .delete(`/api/drawings/${id}`)
+            .expect(HTTP_STATUS_BAD_REQUEST)
+            .then((response: any) => {
+                expect(response.text).to.equal('Invalid ID !');
+            });
+    });
+
+    it('DELETE request to /drawings should call #removeID from imageDataService with correct parameter', async () => {
+        const id = new ObjectId().toString();
+        const metadata = new Metadata(id, 'stubTitle', ['stubTag1', 'stubTag2']);
+        const deleteResult = ({ ok: 1, value: metadata } as unknown) as FindAndModifyWriteOpResultObject<Metadata>;
+        databaseService.deleteDrawing.resolves(deleteResult);
+        const spy = chai.spy.on(imageDataService, 'removeID');
+        return supertest(app)
+            .delete(`/api/drawings/${id}`)
+            .expect(HTTP_STATUS_OK)
+            .then((response: any) => {
+                expect(spy).to.have.been.called.with(id);
+            });
+    });
+    it('PUT request to /drawings should respond a HTTP_STATUS_OK and correct message if drawing is updated', async () => {
+        const id = new ObjectId().toString();
+        let imageData = ({ data: [], height: 0, width: 0 } as unknown) as ImageData;
+        const drawingData = new DrawingData(id, 'titleStub', ['tagStub1', 'tagStub2'], imageData);
+        const metadata = new Metadata(id, drawingData.title, drawingData.tags);
+        const updateResult = ({ ok: 1, value: metadata } as unknown) as FindAndModifyWriteOpResultObject<Metadata>;
+        databaseService.updateDrawing.resolves(updateResult);
+        const spy = chai.spy.on(databaseService, 'updateDrawing');
+        return supertest(app)
+            .put(`/api/drawings/${id}`)
+            .send(drawingData)
+            .expect(HTTP_STATUS_OK)
+            .then((response: any) => {
+                expect(response.text).to.equal('"Drawing updated !"');
+                expect(spy).to.have.been.called.with(metadata);
+            });
+    });
+
+    it('PUT request to /drawings should respond a HTTP_STATUS_NOT_FOUND and correct message if drawing not found', async () => {
+        const id = new ObjectId().toString();
+        const updateResult = ({ ok: 0, value: null } as unknown) as FindAndModifyWriteOpResultObject<Metadata>;
+        databaseService.updateDrawing.resolves(updateResult);
+        let imageData = ({ data: [], height: 0, width: 0 } as unknown) as ImageData;
+        const drawingData = new DrawingData(id, 'titleStub', ['tagStub1', 'tagStub2'], imageData);
+        return supertest(app)
+            .put(`/api/drawings/${id}`)
+            .send(drawingData)
+            .expect(HTTP_STATUS_NOT_FOUND)
+            .then((response: any) => {
+                expect(response.text).to.equal('Drawing not found !');
+            });
+    });
+
+    it('PUT request to /drawings should respond a HTTP_STATUS_ERROR and correct message if server or database error', async () => {
+        const id = new ObjectId().toString();
+        let imageData = ({ data: [], height: 0, width: 0 } as unknown) as ImageData;
+        const drawingData = new DrawingData(id, 'titleStub', ['tagStub1', 'tagStub2'], imageData);
+        databaseService.updateDrawing.rejects();
+        return supertest(app)
+            .put(`/api/drawings/${id}`)
+            .send(drawingData)
+            .expect(HTTP_STATUS_ERROR)
+            .then((response: any) => {
+                expect(response.text).to.equal('Database operation error !');
+            });
+    });
+
+    it('PUT request to /drawings should respond a HTTP_STATUS_BAD_REQUEST and correct message if invalid ID', async () => {
+        const id = 'invalidID';
+        let imageData = ({ data: [], height: 0, width: 0 } as unknown) as ImageData;
+        const drawingData = new DrawingData(id, 'titleStub', ['tagStub1', 'tagStub2'], imageData);
+        return supertest(app)
+            .put(`/api/drawings/${id}`)
+            .send(drawingData)
+            .expect(HTTP_STATUS_BAD_REQUEST)
+            .then((response: any) => {
+                expect(response.text).to.equal('Invalid ID !');
+            });
+    });
+
+    it('PUT request to /drawings should call #updateDrawing from imageDataService with correct parameter', async () => {
+        const id = new ObjectId().toString();
+        let imageData = ({ data: [], height: 0, width: 0 } as unknown) as ImageData;
+        const drawingData = new DrawingData(id, 'titleStub', ['tagStub1', 'tagStub2'], imageData);
+        const metadata = new Metadata(id, drawingData.title, drawingData.tags);
+        const updateResult = ({ ok: 1, value: metadata } as unknown) as FindAndModifyWriteOpResultObject<Metadata>;
+        databaseService.updateDrawing.resolves(updateResult);
+        const spy = chai.spy.on(imageDataService, 'updateDrawing');
+        return supertest(app)
+            .put(`/api/drawings/${id}`)
+            .send(drawingData)
+            .expect(HTTP_STATUS_OK)
+            .then((response: any) => {
+                expect(spy).to.have.been.called.with(drawingData);
+            });
+    });
 });

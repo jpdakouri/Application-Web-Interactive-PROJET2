@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { DrawingData } from '@common/communication/drawing-data';
 import { HttpService } from './http.service';
 
-fdescribe('HttpService', () => {
+describe('HttpService', () => {
     let service: HttpService;
     let httpMock: HttpTestingController;
     let baseUrl: string;
@@ -36,7 +36,7 @@ fdescribe('HttpService', () => {
         expect(req.request.method).toBe('GET');
         const data: DrawingData[] = [];
         for (let i = 0; i < 5; i++) {
-            data.push(new DrawingData(undefined, `testTitle${i}`, [`testTag${i}`, `testTag${i + 1}`], new ImageData(100, 100)));
+            data.push(new DrawingData(`testID${i}`, `testTitle${i}`, [`testTag${i}`, `testTag${i + 1}`], new ImageData(100, 100)));
         }
         req.flush(data);
     });
@@ -61,11 +61,11 @@ fdescribe('HttpService', () => {
     });
 
     it('#updateDrawing should send correct request', () => {
-        const drawingStub = new DrawingData(undefined, 'testTitle', ['testTag1', 'testTag2'], new ImageData(100, 100));
+        const drawingStub = new DrawingData('testID', 'testTitle', ['testTag1', 'testTag2'], new ImageData(100, 100));
         service.updateDrawing(drawingStub).subscribe((result) => {
             expect(result).toEqual('Drawing was updated !');
         });
-        const req = httpMock.expectOne(baseUrl + '/api/drawings/undefined');
+        const req = httpMock.expectOne(baseUrl + '/api/drawings/testID');
         expect(req.request.method).toBe('PUT');
         const response = 'Drawing was updated !';
         req.flush(response);
