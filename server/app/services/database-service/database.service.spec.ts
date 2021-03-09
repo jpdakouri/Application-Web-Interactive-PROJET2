@@ -61,12 +61,12 @@ describe('Database service', () => {
 
     it('insertDrawing() should insert a new Drawing in DB', async () => {
         const newDrawing: Metadata = { _id: new ObjectId().toString(), title: 'test', tags: ['tag1', 'tag2'] };
-        await databaseService.insertDrawing(newDrawing);
-        const drawings = await databaseService.collection.find({}).toArray();
-        expect(drawings.length).to.equal(1);
-        expect(drawings[0]).to.deep.equals(newDrawing);
+        await databaseService.insertDrawing(newDrawing).then(async () => {
+            const drawings = await databaseService.collection.find({}).toArray();
+            expect(drawings.length).to.equal(1);
+            expect(drawings[0]).to.deep.equals(newDrawing);
+        });
     });
-
     it('deleteDrawing() should delete the drawing in DB', async () => {
         const id1 = new ObjectId().toString();
         const id2 = new ObjectId().toString();
