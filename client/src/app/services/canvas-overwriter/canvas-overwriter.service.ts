@@ -9,8 +9,9 @@ export class CanvasOverwriterService {
 
     overwriteCanvasState(pixels: string[][]): void {
         // TODO: resize le canvas
-        for (let i = 0; i < pixels.length; i++) {
-            for (let j = 0; j < pixels[0].length; j++) {
+        console.log(pixels);
+        for (let i = 0; i < Math.floor(pixels.length - 1); i++) {
+            for (let j = 0; j < Math.floor(pixels[0].length); j++) {
                 this.drawingService.baseCtx.fillStyle = pixels[j][i];
                 this.drawingService.baseCtx.rect(j, i, 1, 1);
             }
