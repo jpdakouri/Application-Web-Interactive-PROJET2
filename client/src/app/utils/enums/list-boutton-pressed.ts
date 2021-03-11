@@ -18,4 +18,5 @@ export enum KeyboardButtons {
     Aerosol = 'a',
     InvalidInput = 'h',
     NewDrawing = '0',
+    Export = 'e',
 }
