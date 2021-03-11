@@ -24,6 +24,7 @@ export class PencilService extends Tool {
         this.radius = DEFAULT_MIN_THICKNESS;
         this.clearPath();
         this.undoRedo = undoRedo;
+        this.commandPathData = [];
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -94,7 +95,7 @@ export class PencilService extends Tool {
             this.pathData.push(mousePosition);
             this.commandPathData.push(this.pathData);
             this.drawLine(
-                this.drawingService.baseCtx,
+                this.drawingService.previewCtx,
                 this.pathData,
                 this.lineThickness || DEFAULT_MIN_THICKNESS,
                 this.currentColourService.getPrimaryColorRgba(),
