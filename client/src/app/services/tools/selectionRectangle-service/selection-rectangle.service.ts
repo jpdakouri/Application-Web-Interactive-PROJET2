@@ -10,6 +10,9 @@ import { KeyboardButtons, MouseButtons } from '@app/utils/enums/list-boutton-pre
 
 // import { ShapeStyle } from '@app/utils/enums/shape-style';
 
+// constante temporaire simplement pour facilier le merge
+const numberFive = 5;
+const numberFifteen = 15;
 @Injectable({
     providedIn: 'root',
 })
@@ -99,7 +102,7 @@ export class SelectionRectangleService extends Tool {
 
     drawRectanglePerimeter(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.strokeStyle = 'blue';
-        ctx.setLineDash([5, 15]);
+        ctx.setLineDash([numberFive, numberFifteen]);
 
         const startCoord = { ...this.firstGrid };
         const width = Math.abs(finalGrid.x);
@@ -167,7 +170,7 @@ export class SelectionRectangleService extends Tool {
         this.drawingService.baseCtx.fillStyle = 'white';
         this.drawingService.baseCtx.fillRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
 
-        ctx.setLineDash([5, 15]);
+        ctx.setLineDash([numberFive, numberFifteen]);
         ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
     }
 

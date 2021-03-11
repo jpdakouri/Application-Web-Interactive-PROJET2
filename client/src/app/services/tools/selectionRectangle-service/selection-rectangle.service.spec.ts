@@ -5,7 +5,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MouseButtons } from '@app/utils/enums/list-boutton-pressed';
 import { SelectionRectangleService } from './selection-rectangle.service';
 
-fdescribe('SelectionRectangleService', () => {
+describe('SelectionRectangleService', () => {
     let service: SelectionRectangleService;
     let mouseEvent: MouseEvent;
     let canvasTestHelper: CanvasTestHelper;
@@ -26,6 +26,7 @@ fdescribe('SelectionRectangleService', () => {
 
         service = TestBed.inject(SelectionRectangleService);
 
+        // tslint:disable-next-line:no-any
         spyOn<any>(service, 'getPositionFromMouse').and.returnValue({ x: 100, y: 100 });
 
         // Configuration du spy du service
