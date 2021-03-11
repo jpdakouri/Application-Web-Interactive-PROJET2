@@ -21,6 +21,8 @@ export const DEFAULT_COLOUR = RgbSettings.RGB_START + RgbSettings.DEFAULT_SECOND
 // Pipette
 export const ALPHA_INDEX = 3;
 export const DEFAULT_CANVAS_RGB = '255,255,255';
+export const DEFAULT_CANVAS_RGBA = 'rgba(' + DEFAULT_CANVAS_RGB + ',1)';
+export const EMPTY_SQUARE_RGBA = 'rgba(0,0,0,0)';
 
 /****************************/
 /***GLOBAL DRAWING CONSTANTS***/
