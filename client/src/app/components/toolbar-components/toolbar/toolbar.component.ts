@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
+import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 @Component({
     selector: 'app-toolbar',
@@ -14,7 +15,7 @@ export class ToolbarComponent {
     toolManagerService: ToolManagerService;
     drawingService: DrawingService;
 
-    constructor(toolManagerService: ToolManagerService, drawingService: DrawingService) {
+    constructor(toolManagerService: ToolManagerService, drawingService: DrawingService, public undoRedo: UndoRedoService) {
         this.toolManagerService = toolManagerService;
         this.drawingService = drawingService;
         this.exportButtonClicked = new EventEmitter<boolean>();
