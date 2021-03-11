@@ -6,6 +6,7 @@ import { CanvasResizerService } from '@app/services/canvas-resizer/canvas-resize
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { MIN_ERASER_THICKNESS } from '@app/services/tools/tools-constants';
+import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { Status } from '@app/utils/enums/canvas-resizer-status';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 import { EraserCursor } from '@app/utils/interfaces/eraser-cursor';
@@ -44,7 +45,12 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     canvasResizerService: CanvasResizerService;
     toolsNames: typeof ToolsNames = ToolsNames;
 
-    constructor(private drawingService: DrawingService, toolManagerService: ToolManagerService, canvasResizerService: CanvasResizerService) {
+    constructor(
+        private drawingService: DrawingService,
+        toolManagerService: ToolManagerService,
+        canvasResizerService: CanvasResizerService,
+        private undoRedo: UndoRedoService,
+    ) {
         this.toolManagerService = toolManagerService;
         this.canvasResizerService = canvasResizerService;
     }
@@ -65,6 +71,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.canvasResizerService.canvasPreviewWidth = this.canvasSize.x;
         this.canvasResizerService.canvasPreviewHeight = this.canvasSize.y;
         this.drawingService.restoreCanvas();
+        this.undoRedo.saveInitialState();
     }
 
     subscribeToToolChange(): void {
