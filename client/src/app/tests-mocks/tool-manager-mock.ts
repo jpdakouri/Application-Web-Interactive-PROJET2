@@ -24,6 +24,19 @@ export class ToolManagerServiceMock {
     }
     // tslint:disable:no-empty
 
+    // TODO : Temporary for tests
+    getCurrentFrequency(): number {
+        return 1;
+    }
+
+    getCurrentDropletDiameter(): number {
+        return 1;
+    }
+
+    getCurrentJetDiameter(): number {
+        return 1;
+    }
+
     emitToolChange(): void {}
 
     setCurrentTool(): void {}

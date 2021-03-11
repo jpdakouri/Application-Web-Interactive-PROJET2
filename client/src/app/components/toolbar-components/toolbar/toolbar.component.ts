@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
+import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 @Component({
     selector: 'app-toolbar',
@@ -8,13 +9,16 @@ import { ToolsNames } from '@app/utils/enums/tools-names';
     styleUrls: ['./toolbar.component.scss'],
 })
 export class ToolbarComponent {
+    @Output() exportButtonClicked: EventEmitter<boolean>;
+
     toolsNames: typeof ToolsNames = ToolsNames;
     toolManagerService: ToolManagerService;
     drawingService: DrawingService;
 
-    constructor(toolManagerService: ToolManagerService, drawingService: DrawingService) {
+    constructor(toolManagerService: ToolManagerService, drawingService: DrawingService, public undoRedo: UndoRedoService) {
         this.toolManagerService = toolManagerService;
         this.drawingService = drawingService;
+        this.exportButtonClicked = new EventEmitter<boolean>();
     }
 
     setCurrentTool(toolName: ToolsNames): void {
@@ -27,5 +31,9 @@ export class ToolbarComponent {
 
     onCreateNewDrawing(): void {
         this.drawingService.createNewDrawing();
+    }
+
+    onExport(): void {
+        this.exportButtonClicked.emit(true);
     }
 }

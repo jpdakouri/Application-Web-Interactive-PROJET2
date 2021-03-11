@@ -39,3 +39,8 @@ export const SIDEBAR_WIDTH = 465;
 export const WORKING_ZONE_VISIBLE_PORTION = 100;
 
 export const DEFAULT_WHITE = '#fff';
+
+/****************************/
+/***IMAGE EXPORT CONSTANTS***/
+/****************************/
+export const FILE_NAME_REGEX = /^[a-zA-Z0-9-_]*$/;

@@ -7,6 +7,7 @@ import { Sign } from '@app/services/services-constants';
 import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
 import { PIXELS_ARROW_STEPS } from '@app/services/tools/tools-constants';
 import { KeyboardButtons, MouseButtons } from '@app/utils/enums/list-boutton-pressed';
+import { ToolCommand } from '@app/utils/interfaces/tool-command';
 
 // import { ShapeStyle } from '@app/utils/enums/shape-style';
 
@@ -50,7 +51,7 @@ export class SelectionRectangleService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            // this.drawingService.clearCanvas(this.drawingService.previewCtx);
             if (this.shiftDown) {
                 this.drawSquare(this.mouseDownCoord);
                 this.selectBox(this.drawingService.previewCtx, this.mouseDownCoord);
@@ -187,5 +188,9 @@ export class SelectionRectangleService extends Tool {
 
     private clearPath(): void {
         this.firstGrid = this.mouseDownCoord = { x: 0, y: 0 };
+    }
+
+    executeCommand(command: ToolCommand): void {
+        throw new Error('Method not implemented.');
     }
 }

@@ -15,10 +15,12 @@ export enum KeyboardButtons {
     Pencil = 'c',
     Ellipse = '2',
     Eraser = 'e',
+    Aerosol = 'a',
     InvalidInput = 'h',
     NewDrawing = '0',
     Up = 'ArrowUp',
     Down = 'ArrowDown',
     Left = 'ArrowLeft',
     Right = 'ArrowRight',
+    Export = 'e',
 }
