@@ -47,7 +47,7 @@ describe('UndoRedoService', () => {
         drawing.canvas = canvasTestHelper.canvas;
         drawing.baseCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         service.saveInitialState();
-        const expectedColor = 'rgba(0,0,0,0)';
+        const expectedColor = 'rgba(255,255,255,1)';
         let goodColorCount = 0;
         // tslint:disable-next-line: no-string-literal
         const initialState = service['initialCanvasColors'];

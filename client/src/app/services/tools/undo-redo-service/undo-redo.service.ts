@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanvasOverwriterService } from '@app/services/canvas-overwriter/canvas-overwriter.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { ALPHA_INDEX, RgbSettings } from '@app/services/services-constants';
+import { ALPHA_INDEX, DEFAULT_CANVAS_RGBA, EMPTY_SQUARE_RGBA, RgbSettings } from '@app/services/services-constants';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
 
 @Injectable({
@@ -24,7 +24,8 @@ export class UndoRedoService {
         for (let i = 0; i < canvasHeight; i++) {
             const currentRow: string[] = [];
             for (let j = 0; j < canvasWidth; j++) {
-                currentRow.push(this.getRgbaAtPosition(j, i));
+                if (this.getRgbaAtPosition(j, i) === EMPTY_SQUARE_RGBA) currentRow.push(DEFAULT_CANVAS_RGBA);
+                else currentRow.push(this.getRgbaAtPosition(j, i));
             }
             this.initialCanvasColors.push(currentRow);
         }
