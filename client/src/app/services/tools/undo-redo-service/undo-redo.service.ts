@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanvasOverwriterService } from '@app/services/canvas-overwriter/canvas-overwriter.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { ALPHA_INDEX } from '@app/services/services-constants';
+import { ALPHA_INDEX, RgbSettings } from '@app/services/services-constants';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
 
 @Injectable({
@@ -17,7 +17,7 @@ export class UndoRedoService {
         this.undoneCommands = [];
     }
 
-    private saveInitialState(): void {
+    saveInitialState(): void {
         const canvasWidth = this.drawingService.canvas.width;
         const canvasHeight = this.drawingService.canvas.height;
         this.initialCanvasColors = [];
@@ -30,9 +30,7 @@ export class UndoRedoService {
         }
     }
 
-    // To be called BEFORE applying changes to the base canvas to save the initial state!
     addCommand(command: ToolCommand): void {
-        if (this.initialCanvasColors == undefined) this.saveInitialState();
         this.commands.push(command);
     }
 
@@ -70,6 +68,16 @@ export class UndoRedoService {
     private getRgbaAtPosition(x: number, y: number): string {
         const imageData = this.drawingService.baseCtx.getImageData(x, y, 1, 1).data;
         const rgbaSeperator = ',';
-        return imageData[0] + rgbaSeperator + imageData[1] + rgbaSeperator + imageData[2] + rgbaSeperator + imageData[ALPHA_INDEX];
+        return (
+            RgbSettings.RGBA_START +
+            imageData[0] +
+            rgbaSeperator +
+            imageData[1] +
+            rgbaSeperator +
+            imageData[2] +
+            rgbaSeperator +
+            imageData[ALPHA_INDEX] +
+            RgbSettings.RGB_RGBA_END
+        );
     }
 }
