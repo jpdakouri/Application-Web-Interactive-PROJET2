@@ -1,10 +1,11 @@
-import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ExportDrawingComponent } from '@app/components/export-drawing/export-drawing.component';
+import { SaveDrawingComponent } from '@app/components/save-drawing/save-drawing.component';
 import { ToolbarComponent } from '@app/components/toolbar-components/toolbar/toolbar.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
-import { KeyboardButtons } from '@app/utils/enums/list-boutton-pressed';
+import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 
 @Component({
@@ -24,6 +25,7 @@ export class EditorComponent implements AfterViewInit {
         private toolManagerService: ToolManagerService,
         private drawingService: DrawingService,
         public exportDrawingDialog: MatDialogRef<ExportDrawingComponent>,
+        public saveDrawingDialog: MatDialogRef<SaveDrawingComponent>,
         public dialog: MatDialog,
     ) {
         this.toolFinder = new Map<KeyboardButtons, ToolsNames>();
@@ -49,14 +51,18 @@ export class EditorComponent implements AfterViewInit {
         this.editor.nativeElement.style.minWidth = this.editorMinWidth + 'px';
     }
 
-    @HostListener('keyup', ['$event'])
-    onKeyUp(event: KeyboardEvent): void {
-        if (event.ctrlKey && event.key === KeyboardButtons.NewDrawing) {
-            this.onCreateNewDrawing();
-        }
-
-        if (event.ctrlKey && event.key === KeyboardButtons.Export) {
-            this.openExportDrawingModal();
+    // @HostListener('window:keydown', ['$event'])
+    onKeyDown(event: KeyboardEvent): void {
+        if (event.ctrlKey) {
+            if (event.key === KeyboardButtons.NewDrawing) this.onCreateNewDrawing();
+            if (event.key === KeyboardButtons.Export) {
+                event.preventDefault();
+                this.openExportDrawingModal();
+            }
+            if (event.key === KeyboardButtons.Save) {
+                event.preventDefault();
+                this.openSaveDrawingModal();
+            }
         }
 
         if (!event.shiftKey && !event.ctrlKey) {
@@ -70,6 +76,10 @@ export class EditorComponent implements AfterViewInit {
 
     onCreateNewDrawing(): void {
         this.drawingService.createNewDrawing();
+    }
+
+    openSaveDrawingModal(): void {
+        this.saveDrawingDialog = this.dialog.open(SaveDrawingComponent, {});
     }
 
     onExportDrawing(): void {

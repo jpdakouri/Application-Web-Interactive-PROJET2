@@ -34,20 +34,23 @@ export class DatabaseController {
         this.router.post('/', (req: Request, res: Response, next: NextFunction) => {
             const drawingData = req.body as DrawingData;
             const newMetadata = new Metadata(undefined, drawingData.title, drawingData.tags);
-            this.databaseService
-                .insertDrawing(newMetadata)
-                .then((result) => {
-                    if (result.insertedCount > 0) {
-                        const data = new DrawingData(result.insertedId as string, drawingData.title, drawingData.tags, drawingData.imageData);
-                        this.imageDataService.insertDrawing(data);
-                        res.status(HTTP_STATUS_CREATED).json(result.insertedId);
-                    } else {
-                        res.status(HTTP_STATUS_BAD_REQUEST).send('Document could not be inserted in the database !');
-                    }
-                })
-                .catch((err) => {
-                    res.status(HTTP_STATUS_ERROR).send('Database operation error !');
-                });
+            if (!this.imageDataService.insertCheckUp(drawingData)) res.status(HTTP_STATUS_BAD_REQUEST).send('Message du serveur: Nom Invalide !');
+            else
+                this.databaseService
+                    .insertDrawing(newMetadata)
+                    .then((result) => {
+                        if (result.insertedCount > 0) {
+                            const data = new DrawingData(result.insertedId as string, drawingData.title, drawingData.tags, drawingData.imageData);
+                            this.imageDataService.insertDrawing(data);
+                            res.status(HTTP_STATUS_CREATED).json(result.insertedId);
+                        } else {
+                            res.status(HTTP_STATUS_BAD_REQUEST).send("Le document n'a pas pu etre inséséré dans la base de données !");
+                        }
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        res.status(HTTP_STATUS_ERROR).send("Erreur d'opération dans le serveur!");
+                    });
         });
 
         this.router.get('/', (req: Request, res: Response, next: NextFunction) => {
@@ -58,11 +61,11 @@ export class DatabaseController {
                         const response = this.imageDataService.filterArray(result);
                         res.status(HTTP_STATUS_OK).json(response);
                     } else {
-                        res.status(HTTP_STATUS_NOT_FOUND).send('No drawings found !');
+                        res.status(HTTP_STATUS_NOT_FOUND).send('Pas de dessin trouvé!');
                     }
                 })
                 .catch((err) => {
-                    res.status(HTTP_STATUS_ERROR).send('Database operation error !');
+                    res.status(HTTP_STATUS_ERROR).send("Erreur d'opération dans le serveur!");
                 });
         });
 

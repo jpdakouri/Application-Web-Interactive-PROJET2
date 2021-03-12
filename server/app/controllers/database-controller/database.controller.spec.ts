@@ -45,6 +45,7 @@ describe('DatabaseController', () => {
     it('POST request to /drawings should respond a HTTP_STATUS_CREATED status code and insertedId if document inserted', async () => {
         const insertResult = ({ insertedCount: 1, insertedId: '1234' } as unknown) as InsertOneWriteOpResult<Metadata>;
         databaseService.insertDrawing.resolves(insertResult);
+        chai.spy.on(imageDataService, 'insertCheckUp', () => true);
         return supertest(app)
             .post('/api/drawings')
             .expect(HTTP_STATUS_CREATED)
@@ -59,6 +60,7 @@ describe('DatabaseController', () => {
         const imageData = ({ data: [], height: 0, width: 0 } as unknown) as ImageData;
         const drawingData = new DrawingData(id, 'titleStub', ['tagStub1', 'tagStub2'], imageData);
         const spy = chai.spy.on(imageDataService, 'insertDrawing');
+        chai.spy.on(imageDataService, 'insertCheckUp', () => true);
         return supertest(app)
             .post('/api/drawings')
             .send(drawingData)
@@ -71,21 +73,23 @@ describe('DatabaseController', () => {
     it('POST request to /drawings should respond a HTTP_STATUS_BAD_REQUEST and string message if document not inserted', async () => {
         const insertResult = ({ insertedCount: 0, insertedId: '1234' } as unknown) as InsertOneWriteOpResult<Metadata>;
         databaseService.insertDrawing.resolves(insertResult);
+        chai.spy.on(imageDataService, 'insertCheckUp', () => true);
         return supertest(app)
             .post('/api/drawings')
             .expect(HTTP_STATUS_BAD_REQUEST)
             .then((response: any) => {
-                expect(response.text).to.equal('Document could not be inserted in the database !');
+                expect(response.text).to.equal("Le document n'a pas pu etre inséséré dans la base de données !");
             });
     });
 
     it('POST request to /drawings should respond a HTTP_STATUS_ERROR and string message if database error', async () => {
         databaseService.insertDrawing.rejects(new MongoError('Test Error'));
+        chai.spy.on(imageDataService, 'insertCheckUp', () => true);
         return supertest(app)
             .post('/api/drawings')
             .expect(HTTP_STATUS_ERROR)
             .then((response: any) => {
-                expect(response.text).to.equal('Database operation error !');
+                expect(response.text).to.equal("Erreur d'opération dans le serveur!");
             });
     });
 
@@ -123,24 +127,24 @@ describe('DatabaseController', () => {
             });
     });
 
-    it('GET request to /drawings should should respond a HTTP_STATUS_NOT_FOUND and string message if no drawings are found', async () => {
+    it('GET request to /drawings should respond a HTTP_STATUS_NOT_FOUND and string message if no drawings are found', async () => {
         const getResults: DrawingData[] = [];
         databaseService.getAllDrawings.resolves(getResults);
         return supertest(app)
             .get('/api/drawings')
             .expect(HTTP_STATUS_NOT_FOUND)
             .then((response: any) => {
-                expect(response.text).to.equal('No drawings found !');
+                expect(response.text).to.equal('Pas de dessin trouvé!');
             });
     });
 
-    it('GET request to /drawings should should respond a HTTP_STATUS_ERROR and string message if database error', async () => {
+    it('GET request to /drawings should respond a HTTP_STATUS_ERROR and string message if database error', async () => {
         databaseService.getAllDrawings.rejects();
         return supertest(app)
             .get('/api/drawings')
             .expect(HTTP_STATUS_ERROR)
             .then((response: any) => {
-                expect(response.text).to.equal('Database operation error !');
+                expect(response.text).to.equal("Erreur d'opération dans le serveur!");
             });
     });
 

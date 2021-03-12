@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ColourHistoryService } from '@app/services/colour-history/colour-history.service';
-import { RgbSettings } from '@app/services/services-constants';
+import { RgbSettings } from '@app/utils/enums/rgb-settings';
 
 @Injectable({
     providedIn: 'root',

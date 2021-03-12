@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 // import { CanvasOverwriterService } from '@app/services/canvas-overwriter/canvas-overwriter.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { ALPHA_INDEX, DEFAULT_CANVAS_RGBA, EMPTY_SQUARE_RGBA, RgbSettings } from '@app/services/services-constants';
+import { ALPHA_INDEX, DEFAULT_CANVAS_RGBA, EMPTY_SQUARE_RGBA } from '@app/services/services-constants';
+import { RgbSettings } from '@app/utils/enums/rgb-settings';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
 
 @Injectable({
