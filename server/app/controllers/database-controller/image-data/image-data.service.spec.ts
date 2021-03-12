@@ -78,4 +78,11 @@ describe('ImageDataService', () => {
         expect(service.drawingData.length).to.equal(9);
         expect(service.drawingData.findIndex((item: DrawingData) => item.id === '5')).to.equal(-1);
     });
+
+    it('#insertCheckUp should return true if name input is valide', () => {
+        const valideName = { title: 'aaa111' } as DrawingData;
+        const inValideName = { title: 'aaa 111' } as DrawingData;
+        expect(service.insertCheckUp(valideName)).to.equal(true);
+        expect(service.insertCheckUp(inValideName)).to.equal(false);
+    });
 });

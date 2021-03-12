@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { BASE_URL } from '@app/services/services-constants';
 import { Message } from '@common/communication/message';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -8,7 +9,7 @@ import { catchError } from 'rxjs/operators';
     providedIn: 'root',
 })
 export class IndexService {
-    private readonly BASE_URL: string = 'http://localhost:3000/api/index';
+    private readonly BASE_URL: string = BASE_URL + 'api/index';
 
     constructor(private http: HttpClient) {}
 

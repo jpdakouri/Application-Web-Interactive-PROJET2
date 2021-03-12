@@ -4,7 +4,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
-import { MouseButtons } from '@app/utils/enums/list-boutton-pressed';
+import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
 
 // import { ShapeStyle } from '@app/utils/enums/shape-style';

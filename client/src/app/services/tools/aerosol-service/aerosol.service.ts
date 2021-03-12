@@ -14,7 +14,7 @@ import {
     MIN_JET_DIAMETER,
     MS_PER_S,
 } from '@app/services/tools/tools-constants';
-import { MouseButtons } from '@app/utils/enums/list-boutton-pressed';
+import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 
 @Injectable({
     providedIn: 'root',
@@ -38,6 +38,7 @@ export class AerosolService extends Tool {
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButtons.Left;
         this.isSpraying = true;
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
         if (this.mouseDown && this.isSpraying) {
             this.printSpray();
         }

@@ -3,10 +3,11 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { Sign } from '@app/services/services-constants';
 import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
 import { PIXELS_ARROW_STEPS } from '@app/services/tools/tools-constants';
-import { KeyboardButtons, MouseButtons } from '@app/utils/enums/list-boutton-pressed';
+import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
+import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
+import { Sign } from '@app/utils/enums/rgb-settings';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
 
 // import { ShapeStyle } from '@app/utils/enums/shape-style';

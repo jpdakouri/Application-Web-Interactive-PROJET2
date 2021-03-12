@@ -1,7 +1,9 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
@@ -20,6 +22,8 @@ import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { ExportDrawingComponent } from './components/export-drawing/export-drawing.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
+import { SaveDrawingComponent } from './components/save-drawing/save-drawing.component';
+import { ServerErrorMessageComponent } from './components/server-error-message/server-error-message.component';
 
 @NgModule({
     declarations: [
@@ -35,6 +39,8 @@ import { MainPageComponent } from './components/main-page/main-page.component';
         HueSelectorComponent,
         ColourPaletteSelectorComponent,
         ExportDrawingComponent,
+        SaveDrawingComponent,
+        ServerErrorMessageComponent,
     ],
     imports: [
         BrowserModule,
@@ -44,7 +50,10 @@ import { MainPageComponent } from './components/main-page/main-page.component';
         AppMaterialModule,
         MatTooltipModule,
         FormsModule,
+        HttpClientModule,
         MatDialogModule,
+        MatFormFieldModule,
+        MatCheckboxModule,
         MatSelectModule,
         ReactiveFormsModule,
     ],
