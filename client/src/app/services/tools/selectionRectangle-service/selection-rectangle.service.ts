@@ -51,7 +51,7 @@ export class SelectionRectangleService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
-            // this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
             if (this.shiftDown) {
                 this.drawSquare(this.mouseDownCoord);
                 this.selectBox(this.drawingService.previewCtx, this.mouseDownCoord);
@@ -101,7 +101,7 @@ export class SelectionRectangleService extends Tool {
         }
     }
 
-    drawRectanglePerimeter(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+    private drawRectanglePerimeter(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.strokeStyle = 'blue';
         ctx.setLineDash([numberFive, numberFifteen]);
 
