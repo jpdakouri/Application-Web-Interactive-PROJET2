@@ -92,7 +92,7 @@ export class SelectionEllipseService extends Tool {
         const height = finalGrid.y;
 
         ctx.ellipse(startCoord.x + width / 2, startCoord.y + height / 2, Math.abs(width / 2), Math.abs(height / 2), 0, 0, 2 * Math.PI, false);
-        // ctx.stroke();
+        ctx.stroke();
         ctx.clip();
 
         this.imageData = this.drawingService.baseCtx.getImageData(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
