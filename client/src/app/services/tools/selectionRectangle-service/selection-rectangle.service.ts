@@ -18,7 +18,9 @@ const numberFifteen = 15;
 })
 export class SelectionRectangleService extends Tool {
     private firstGrid: Vec2;
-    private currentCoord: Vec2;
+    private topLeftCorner: Vec2;
+    private begin: Vec2;
+    private end: Vec2;
     private imageData: ImageData;
     private shiftDown: boolean;
 
@@ -28,6 +30,7 @@ export class SelectionRectangleService extends Tool {
     constructor(drawingService: DrawingService, currentColourService: CurrentColourService) {
         super(drawingService, currentColourService);
         this.currentColourService = currentColourService;
+        this.topLeftCorner = { x: 0, y: 0 };
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -35,7 +38,8 @@ export class SelectionRectangleService extends Tool {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.mouseDown = event.button === MouseButtons.Left;
         if (this.mouseDown) {
-            this.currentCoord = this.firstGrid = this.getPositionFromMouse(event);
+            this.begin = this.getPositionFromMouse(event);
+            this.firstGrid = this.getPositionFromMouse(event);
             this.updatePreview();
         }
     }
@@ -50,6 +54,8 @@ export class SelectionRectangleService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
+            this.end = this.getPositionFromMouse(event);
+            this.updateTopLeftCorner();
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             if (this.shiftDown) {
                 this.drawSquare(this.mouseDownCoord);
@@ -64,19 +70,19 @@ export class SelectionRectangleService extends Tool {
     onKeyDown(event: KeyboardEvent): void {
         switch (event.key) {
             case KeyboardButtons.Up: {
-                this.currentCoord.y -= PIXELS_ARROW_STEPS;
+                this.topLeftCorner.y -= PIXELS_ARROW_STEPS;
                 break;
             }
             case KeyboardButtons.Down: {
-                this.currentCoord.y += PIXELS_ARROW_STEPS;
+                this.topLeftCorner.y += PIXELS_ARROW_STEPS;
                 break;
             }
             case KeyboardButtons.Right: {
-                this.currentCoord.x += PIXELS_ARROW_STEPS;
+                this.topLeftCorner.x += PIXELS_ARROW_STEPS;
                 break;
             }
             case KeyboardButtons.Left: {
-                this.currentCoord.x -= PIXELS_ARROW_STEPS;
+                this.topLeftCorner.x -= PIXELS_ARROW_STEPS;
                 break;
             }
             case KeyboardButtons.Shift: {
@@ -90,7 +96,7 @@ export class SelectionRectangleService extends Tool {
             }
         }
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.drawingService.previewCtx.putImageData(this.imageData, this.currentCoord.x, this.currentCoord.y);
+        this.drawingService.previewCtx.putImageData(this.imageData, this.topLeftCorner.x, this.topLeftCorner.y);
     }
 
     onKeyUp(event: KeyboardEvent): void {
@@ -163,9 +169,24 @@ export class SelectionRectangleService extends Tool {
         }
     }
 
+    private updateTopLeftCorner(): void {
+        if (this.begin.x > this.end.x) {
+            this.topLeftCorner.x = this.end.x;
+        }
+        if (this.begin.x < this.end.x) {
+            this.topLeftCorner.x = this.begin.x;
+        }
+        if (this.begin.y > this.end.y) {
+            this.topLeftCorner.y = this.end.y;
+        }
+        if (this.begin.y < this.end.y) {
+            this.topLeftCorner.y = this.begin.y;
+        }
+    }
+
     private selectBox(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         this.imageData = this.drawingService.baseCtx.getImageData(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
-        ctx.putImageData(this.imageData, this.firstGrid.x, this.firstGrid.y);
+        ctx.putImageData(this.imageData, this.topLeftCorner.x, this.topLeftCorner.y);
 
         this.drawingService.baseCtx.fillStyle = 'white';
         this.drawingService.baseCtx.fillRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
