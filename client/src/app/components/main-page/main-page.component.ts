@@ -13,6 +13,7 @@ import { map } from 'rxjs/operators';
 export class MainPageComponent {
     readonly title: string = 'LOG2990';
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
+    canOpen: boolean = false;
     isPendingDrawing: boolean = false;
 
     constructor(private basicService: IndexService, private drawingService: DrawingService) {}
@@ -40,5 +41,9 @@ export class MainPageComponent {
 
     onCreateNewDrawing(): void {
         this.drawingService.createNewDrawing();
+    }
+
+    openCarousel(): void {
+        this.canOpen = true;
     }
 }
