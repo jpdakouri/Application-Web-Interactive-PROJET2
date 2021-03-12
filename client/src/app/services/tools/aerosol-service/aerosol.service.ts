@@ -14,7 +14,7 @@ import {
     MIN_JET_DIAMETER,
     MS_PER_S,
 } from '@app/services/tools/tools-constants';
-import { MouseButtons } from '@app/utils/enums/list-boutton-pressed';
+import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 
 @Injectable({
     providedIn: 'root',

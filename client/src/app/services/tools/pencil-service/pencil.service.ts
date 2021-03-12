@@ -6,7 +6,7 @@ import { CurrentColourService } from '@app/services/current-colour/current-colou
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DEFAULT_MIN_THICKNESS } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
-import { MouseButtons } from '@app/utils/enums/list-boutton-pressed';
+import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 
 @Injectable({
     providedIn: 'root',

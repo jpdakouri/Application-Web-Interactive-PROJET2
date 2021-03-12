@@ -5,7 +5,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MIN_ERASER_THICKNESS } from '@app/services/tools/tools-constants';
-import { MouseButtons } from '@app/utils/enums/list-boutton-pressed';
+import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 
 @Injectable({
     providedIn: 'root',

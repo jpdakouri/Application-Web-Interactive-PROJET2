@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { DEFAULT_COLOUR } from '@app/services/services-constants';
+import { DEFAULT_COLOUR } from '@app/utils/enums/rgb-settings.ts';
 import { ColourHistoryService, HISTORY_LENGTH } from './colour-history.service';
 
 describe('ColourHistoryService', () => {

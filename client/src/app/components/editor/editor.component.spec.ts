@@ -1,3 +1,4 @@
+import { HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -22,7 +23,7 @@ import { ToolbarComponent } from '@app/components/toolbar-components/toolbar/too
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { ToolManagerServiceMock } from '@app/tests-mocks/tool-manager-mock';
-import { KeyboardButtons } from '@app/utils/enums/list-boutton-pressed';
+import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { EditorComponent } from './editor.component';
 
 describe('EditorComponent', () => {
@@ -30,8 +31,6 @@ describe('EditorComponent', () => {
     let fixture: ComponentFixture<EditorComponent>;
     let toolManagerServiceMock: ToolManagerServiceMock;
     let drawingServiceSpy: jasmine.SpyObj<DrawingService>;
-
-    // tslint:disable-next-line:prefer-const
 
     beforeEach(async(() => {
         drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['createNewDrawing', 'restoreCanvas']);
@@ -60,6 +59,7 @@ describe('EditorComponent', () => {
                 MatIconModule,
                 FormsModule,
                 MatTooltipModule,
+                HttpClientModule,
                 MatDialogModule,
             ],
             providers: [
@@ -103,30 +103,30 @@ describe('EditorComponent', () => {
         expect(editorMinWidth).toEqual(EDITOR_MIN_WIDTH_FAKE_VALUE);
     });
 
-    it(' #onKeyUp should call set the right tool if input is valid', () => {
+    it(' #onKeyDown should call set the right tool if input is valid', () => {
         const goodInput = { key: KeyboardButtons.Rectangle } as KeyboardEvent;
-        component.onKeyUp(goodInput);
+        component.onKeyDown(goodInput);
         expect(toolManagerServiceMock.emitToolChange).toHaveBeenCalled();
     });
 
-    it(' onKeyUp should not call emitToolChange if shift is pressed or the key is inalid ', () => {
-        component.onKeyUp({ shiftKey: true } as KeyboardEvent);
+    it(' onKeyDown should not call emitToolChange if shift is pressed or the key is inalid ', () => {
+        component.onKeyDown({ shiftKey: true } as KeyboardEvent);
         expect(toolManagerServiceMock.emitToolChange).not.toHaveBeenCalled();
 
         const badInput = { key: KeyboardButtons.InvalidInput } as KeyboardEvent;
-        component.onKeyUp(badInput);
+        component.onKeyDown(badInput);
         expect(toolManagerServiceMock.emitToolChange).not.toHaveBeenCalled();
     });
 
-    it(' #onKeyUp should call create new drawing if input is valid ', () => {
+    it(' #onKeyDown should call create new drawing if input is valid ', () => {
         const goodInput = { key: KeyboardButtons.NewDrawing, ctrlKey: true } as KeyboardEvent;
-        component.onKeyUp(goodInput);
+        component.onKeyDown(goodInput);
         expect(drawingServiceSpy.createNewDrawing).toHaveBeenCalled();
     });
 
-    it(' #onKeyUp should not call create new drawing if input is invalid ', () => {
+    it(' #onKeyDown should not call create new drawing if input is invalid ', () => {
         const goodInput = { key: KeyboardButtons.NewDrawing, ctrlKey: false } as KeyboardEvent;
-        component.onKeyUp(goodInput);
+        component.onKeyDown(goodInput);
         expect(drawingServiceSpy.createNewDrawing).not.toHaveBeenCalled();
     });
 

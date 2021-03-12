@@ -3,7 +3,7 @@ import { Tool } from '@app/classes/tool';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ALPHA_INDEX, DEFAULT_CANVAS_RGB } from '@app/services/services-constants';
-import { MouseButtons } from '@app/utils/enums/list-boutton-pressed';
+import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
 
 @Injectable({

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DEFAULT_COLOUR } from '@app/services/services-constants';
+import { DEFAULT_COLOUR } from '@app/utils/enums/rgb-settings';
 export const HISTORY_LENGTH = 10;
 @Injectable({
     providedIn: 'root',
