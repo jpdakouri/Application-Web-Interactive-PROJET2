@@ -6,11 +6,13 @@ import { ToolCommand } from '@app/utils/interfaces/tool-command';
 export class AerosolCommand implements ToolCommand {
     readonly tool: Tool;
     readonly primaryColor: string;
-    readonly changedPixels: Vec2[];
+    readonly particleLocations: Vec2[];
+    readonly particleSize: number;
 
-    constructor(tool: AerosolService, primaryColor: string, changedPixels: Vec2[]) {
+    constructor(tool: AerosolService, primaryColor: string, particleLocations: Vec2[], particleSize: number) {
         this.tool = tool;
         this.primaryColor = primaryColor;
-        this.changedPixels = changedPixels;
+        this.particleLocations = particleLocations;
+        this.particleSize = particleSize;
     }
 }
