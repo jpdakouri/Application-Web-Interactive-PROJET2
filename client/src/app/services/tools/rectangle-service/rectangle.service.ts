@@ -5,6 +5,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DEFAULT_MIN_THICKNESS } from '@app/services/tools/tools-constants';
+import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { Sign } from '@app/utils/enums/rgb-settings';
@@ -17,10 +18,12 @@ export class RectangleService extends Tool {
     private firstGrid: Vec2;
     private shiftDown: boolean;
     currentColourService: CurrentColourService;
+    private undoRedo: UndoRedoService;
 
-    constructor(drawingService: DrawingService, currentColourService: CurrentColourService) {
+    constructor(drawingService: DrawingService, currentColourService: CurrentColourService, undoRedo: UndoRedoService) {
         super(drawingService, currentColourService);
         this.currentColourService = currentColourService;
+        this.undoRedo = undoRedo;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -42,12 +45,39 @@ export class RectangleService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
-            this.drawRectangle(this.drawingService.previewCtx, this.mouseDownCoord);
+            this.drawRectangle(
+                this.drawingService.previewCtx,
+                this.firstGrid,
+                this.mouseDownCoord,
+                this.currentColourService.getPrimaryColorRgba(),
+                this.currentColourService.getSecondaryColorRgba(),
+                this.lineThickness || DEFAULT_MIN_THICKNESS,
+                this.shapeStyle,
+            );
             if (this.shiftDown) {
                 this.drawSquare(this.mouseDownCoord);
             }
-            this.drawRectangle(this.drawingService.baseCtx, this.mouseDownCoord);
+            this.drawRectangle(
+                this.drawingService.baseCtx,
+                this.firstGrid,
+                this.mouseDownCoord,
+                this.currentColourService.getPrimaryColorRgba(),
+                this.currentColourService.getSecondaryColorRgba(),
+                this.lineThickness || DEFAULT_MIN_THICKNESS,
+                this.shapeStyle,
+            );
+            const command = new ShapeCommand(
+                this,
+                this.currentColourService.getPrimaryColorRgba(),
+                this.currentColourService.getSecondaryColorRgba(),
+                this.lineThickness || DEFAULT_MIN_THICKNESS,
+                this.firstGrid,
+                this.mouseDownCoord,
+                this.shapeStyle,
+            );
+            this.undoRedo.addCommand(command);
             this.clearPath();
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
         this.mouseDown = false;
     }
@@ -86,26 +116,33 @@ export class RectangleService extends Tool {
         ctx.strokeRect(startCoord.x, startCoord.y, width, height);
     }
 
-    drawOutline(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+    drawOutline(ctx: CanvasRenderingContext2D, firstGrid: Vec2, finalGrid: Vec2, thickness: number, secondaryColor: string): void {
         ctx.beginPath();
-        ctx.strokeStyle = this.currentColourService.getSecondaryColorRgba();
-        ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
-        ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+        ctx.strokeStyle = secondaryColor;
+        ctx.lineWidth = thickness;
+        ctx.strokeRect(firstGrid.x, firstGrid.y, finalGrid.x, finalGrid.y);
     }
 
-    drawFilled(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+    drawFilled(ctx: CanvasRenderingContext2D, firstGrid: Vec2, finalGrid: Vec2, primaryColor: string): void {
         ctx.beginPath();
-        ctx.fillStyle = this.currentColourService.getPrimaryColorRgba();
-        ctx.fillRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+        ctx.fillStyle = primaryColor;
+        ctx.fillRect(firstGrid.x, firstGrid.y, finalGrid.x, finalGrid.y);
     }
 
-    drawFilledOutline(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+    drawFilledOutline(
+        ctx: CanvasRenderingContext2D,
+        firstGrid: Vec2,
+        finalGrid: Vec2,
+        thickness: number,
+        primaryColor: string,
+        secondaryColor: string,
+    ): void {
         ctx.beginPath();
-        ctx.fillStyle = this.currentColourService.getPrimaryColorRgba();
-        ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
-        ctx.strokeStyle = this.currentColourService.getSecondaryColorRgba();
-        ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
-        ctx.fillRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+        ctx.fillStyle = primaryColor;
+        ctx.lineWidth = thickness;
+        ctx.strokeStyle = secondaryColor;
+        ctx.strokeRect(firstGrid.x, firstGrid.y, finalGrid.x, finalGrid.y);
+        ctx.fillRect(firstGrid.x, firstGrid.y, finalGrid.x, finalGrid.y);
     }
 
     private isMouseInFirstQuadrant(): boolean {
@@ -154,22 +191,30 @@ export class RectangleService extends Tool {
         }
     }
 
-    private drawRectangle(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
-        switch (this.shapeStyle) {
+    private drawRectangle(
+        ctx: CanvasRenderingContext2D,
+        firstGrid: Vec2,
+        finalGrid: Vec2,
+        primaryColor: string,
+        secondaryColor: string,
+        strokeThickness: number,
+        shapeStyle?: ShapeStyle,
+    ): void {
+        switch (shapeStyle) {
             case ShapeStyle.Outline:
-                this.drawOutline(ctx, finalGrid);
+                this.drawOutline(ctx, firstGrid, finalGrid, strokeThickness, secondaryColor);
                 break;
 
             case ShapeStyle.Filled:
-                this.drawFilled(ctx, finalGrid);
+                this.drawFilled(ctx, firstGrid, finalGrid, primaryColor);
                 break;
 
             case ShapeStyle.FilledOutline:
-                this.drawFilledOutline(ctx, finalGrid);
+                this.drawFilledOutline(ctx, firstGrid, finalGrid, strokeThickness, primaryColor, secondaryColor);
                 break;
 
             default:
-                this.drawOutline(ctx, finalGrid);
+                this.drawOutline(ctx, finalGrid, finalGrid, strokeThickness, secondaryColor);
                 break;
         }
     }
@@ -182,7 +227,15 @@ export class RectangleService extends Tool {
         if (this.shiftDown) {
             this.drawSquare(currentCoord);
         }
-        this.drawRectangle(this.drawingService.previewCtx, currentCoord);
+        this.drawRectangle(
+            this.drawingService.previewCtx,
+            this.firstGrid,
+            currentCoord,
+            this.currentColourService.getPrimaryColorRgba(),
+            this.currentColourService.getSecondaryColorRgba(),
+            this.lineThickness || DEFAULT_MIN_THICKNESS,
+            this.shapeStyle,
+        );
         this.drawingService.previewCtx.closePath();
     }
 
@@ -191,7 +244,14 @@ export class RectangleService extends Tool {
     }
 
     executeCommand(command: ShapeCommand): void {
-        // TODO
-        return;
+        this.drawRectangle(
+            this.drawingService.baseCtx,
+            command.initialPosition,
+            command.finalPosition,
+            command.primaryColor,
+            command.secondaryColor,
+            command.strokeThickness,
+            command.shapeStyle,
+        );
     }
 }
