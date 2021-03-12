@@ -58,7 +58,7 @@
                     </svg>
                 </button>
             </div>
-            
+
             <div class="pipette-button-container">
                 <button
                     aria-label='Pipette "i"'
@@ -75,7 +75,7 @@
                 <button
                     aria-label='Selection rectangle "i"'
                     title='Selection rectangle "i"'
-                    [color]="isSelected(this.toolsNames.SelectBox) ? 'accent' : 'primary'"  
+                    [color]="isSelected(this.toolsNames.SelectBox) ? 'accent' : 'primary'"
                     (click)="setCurrentTool(this.toolsNames.SelectBox)"
                     mat-fab
                 >
@@ -183,7 +183,7 @@
             </div>
 
             <div class="export-container">
-                <button color="primary" mat-fab aria-label="Sauvegarder" title="Sauvegarder" (click)="saveDrawing()">
+                <button color="primary" mat-fab aria-label="Exporter" title="Exporter" (click)="onExport()">
                     <mat-icon>file_upload</mat-icon>
                 </button>
             </div>
