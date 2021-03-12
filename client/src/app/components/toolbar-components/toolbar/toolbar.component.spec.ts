@@ -49,8 +49,8 @@ describe('ToolbarComponent', () => {
         component.isSelected(ToolsNames.Pencil);
         expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(0)).toEqual([ToolsNames.Pencil]);
         expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(2)).toEqual([ToolsNames.Eraser]);
-        expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(4)).toEqual([ToolsNames.Rectangle]);
-        expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(6)).toEqual([ToolsNames.Line]);
+        expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(4)).toEqual([ToolsNames.SelectEllipse]);
+        expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(6)).toEqual([ToolsNames.Ellipse]);
     });
 
     it('should create new drawing when new drawing button is clicked', () => {
