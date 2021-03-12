@@ -11,7 +11,7 @@ export class ShapeCommand {
     readonly strokeThickness: number;
     readonly initialPosition: Vec2;
     readonly finalPosition: Vec2;
-    readonly shapeStyle: ShapeStyle;
+    readonly shapeStyle?: ShapeStyle;
 
     constructor(
         tool: EllipseService | RectangleService,
@@ -20,7 +20,7 @@ export class ShapeCommand {
         strokeThickness: number,
         initialPosition: Vec2,
         finalPosition: Vec2,
-        shapeStyle: ShapeStyle,
+        shapeStyle?: ShapeStyle,
     ) {
         this.tool = tool;
         this.primaryColor = primaryColor;
