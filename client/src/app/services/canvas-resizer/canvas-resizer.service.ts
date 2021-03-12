@@ -4,7 +4,6 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.service';
 import { LOWER_BOUND_HEIGHT, LOWER_BOUND_WIDTH, MINIMUM_HEIGHT, MINIMUM_WIDTH, SIDEBAR_WIDTH } from '@app/services/services-constants';
 import { Status } from '@app/utils/enums/canvas-resizer-status';
-import { ToolCommand } from '@app/utils/interfaces/tool-command';
 export * from '@app/utils/enums/canvas-resizer-status';
 
 @Injectable({
@@ -116,10 +115,5 @@ export class CanvasResizerService {
 
         if (this.canvasPreviewWidth < MINIMUM_WIDTH) this.canvasPreviewWidth = MINIMUM_WIDTH;
         if (this.canvasPreviewHeight < MINIMUM_HEIGHT) this.canvasPreviewHeight = MINIMUM_HEIGHT;
-    }
-
-    executeCommand(command: ToolCommand): void {
-        // TODO
-        return;
     }
 }

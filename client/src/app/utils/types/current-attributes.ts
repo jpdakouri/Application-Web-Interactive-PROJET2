@@ -5,7 +5,4 @@ export type CurrentAttributes = {
     ShapeStyle?: ShapeStyle;
     DotRadius?: number;
     ShowDots?: boolean;
-    DropletDiameter?: number;
-    Frequency?: number;
-    JetDiameter?: number;
 };

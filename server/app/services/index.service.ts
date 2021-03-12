@@ -2,7 +2,7 @@ import { TYPES } from '@app/types';
 import { Message } from '@common/communication/message';
 import { inject, injectable } from 'inversify';
 import 'reflect-metadata';
-import { DateService } from '../date-service/date.service';
+import { DateService } from './date.service';
 
 @injectable()
 export class IndexService {

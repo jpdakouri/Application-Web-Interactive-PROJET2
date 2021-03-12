@@ -1,8 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatSelectModule } from '@angular/material/select';
+import { FormsModule } from '@angular/forms';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -18,7 +16,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app/app.component';
 import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
-import { ExportDrawingComponent } from './components/export-drawing/export-drawing.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 
 @NgModule({
@@ -34,27 +31,9 @@ import { MainPageComponent } from './components/main-page/main-page.component';
         CurrentColourComponent,
         HueSelectorComponent,
         ColourPaletteSelectorComponent,
-        ExportDrawingComponent,
     ],
-    imports: [
-        BrowserModule,
-        HttpClientModule,
-        AppRoutingModule,
-        BrowserAnimationsModule,
-        AppMaterialModule,
-        MatTooltipModule,
-        FormsModule,
-        MatDialogModule,
-        MatSelectModule,
-        ReactiveFormsModule,
-    ],
-    providers: [
-        {
-            provide: MatDialogRef,
-            useValue: {},
-        },
-        ExportDrawingComponent,
-    ],
+    imports: [BrowserModule, HttpClientModule, AppRoutingModule, BrowserAnimationsModule, AppMaterialModule, MatTooltipModule, FormsModule],
+    providers: [],
     bootstrap: [AppComponent],
 })
 export class AppModule {}

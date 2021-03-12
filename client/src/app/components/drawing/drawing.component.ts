@@ -149,11 +149,6 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.eraserActive = this.currentTool.eraserActive || false;
     }
 
-    @HostListener('mouseenter', ['$event'])
-    onMouseEnter(event: MouseEvent): void {
-        this.currentTool.onMouseEnter(event);
-    }
-
     @HostListener('dblclick', ['$event'])
     onDblClick(): void {
         this.currentTool.onDblClick();

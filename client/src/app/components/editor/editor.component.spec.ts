@@ -3,7 +3,6 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -16,7 +15,6 @@ import { ColourSelectorComponent } from '@app/components/colour-components/colou
 import { CurrentColourComponent } from '@app/components/colour-components/current-color/current-colour.component';
 import { HueSelectorComponent } from '@app/components/colour-components/hue-selector/hue-selector.component';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
-import { ExportDrawingComponent } from '@app/components/export-drawing/export-drawing.component';
 import { ToolAttributeBarComponent } from '@app/components/toolbar-components/tool-attribute-bar/tool-attribute-bar.component';
 import { ToolbarComponent } from '@app/components/toolbar-components/toolbar/toolbar.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -47,7 +45,6 @@ describe('EditorComponent', () => {
                 ColourHistoryComponent,
                 CurrentColourComponent,
                 HueSelectorComponent,
-                ExportDrawingComponent,
             ],
             imports: [
                 MatCheckboxModule,
@@ -60,12 +57,10 @@ describe('EditorComponent', () => {
                 MatIconModule,
                 FormsModule,
                 MatTooltipModule,
-                MatDialogModule,
             ],
             providers: [
                 { provide: ToolManagerService, useValue: toolManagerServiceMock },
                 { provide: DrawingService, useValue: drawingServiceSpy },
-                { provide: MatDialogRef, useValue: {} },
             ],
         }).compileComponents();
     }));

@@ -35,9 +35,6 @@ describe('ToolAttributeBarComponent', () => {
             'setCurrentDotRadius',
             'isCurrentTool',
             'setCurrentTool',
-            'setCurrentFrequency',
-            'setCurrentDropletDiameter',
-            'setCurrentJetDiameter',
         ]);
         TestBed.configureTestingModule({
             declarations: [
@@ -80,7 +77,7 @@ describe('ToolAttributeBarComponent', () => {
         expect(toolManagerServiceSpy.setCurrentLineThickness).toHaveBeenCalledWith(FAKE_THICKNESS_VALUE);
     });
 
-    it(`#onThicknessChange should call toolManagerService's #setCurrentLineThickness with undefined paramater
+    it(`#onThicknessChange should call toolManagerService's #setCurrentLineThickness with undefined paramater 
         if MatSliderChange's value is null`, () => {
         const matSliderChange: MatSliderChange = new MatSliderChange();
         matSliderChange.value = null;
@@ -139,51 +136,6 @@ describe('ToolAttributeBarComponent', () => {
         matSliderChange.value = null;
         component.onDotRadiusChange(matSliderChange);
         expect(toolManagerServiceSpy.setCurrentDotRadius).toHaveBeenCalledWith(undefined);
-    });
-
-    it("#onFrequencyChange should call toolManagerService's #setCurrentFrequency with correct parameter ", () => {
-        const frequency = 10;
-        const matSliderChange: MatSliderChange = new MatSliderChange();
-        matSliderChange.value = frequency;
-        component.onFrequencyChange(matSliderChange);
-        expect(toolManagerServiceSpy.setCurrentFrequency).toHaveBeenCalledWith(frequency);
-    });
-
-    it("#onFrequencyChange should call toolManagerService's #setCurrentFrequency undefined parameter if MatSliderChange's value is null ", () => {
-        const matSliderChange: MatSliderChange = new MatSliderChange();
-        matSliderChange.value = null;
-        component.onFrequencyChange(matSliderChange);
-        expect(toolManagerServiceSpy.setCurrentFrequency).toHaveBeenCalledWith(undefined);
-    });
-
-    it("#onDropletDiameterChange should call toolManagerService's #setCurrentDropletDiameter with correct parameter ", () => {
-        const dropletDiamter = 10;
-        const matSliderChange: MatSliderChange = new MatSliderChange();
-        matSliderChange.value = dropletDiamter;
-        component.onDropletDiameterChange(matSliderChange);
-        expect(toolManagerServiceSpy.setCurrentDropletDiameter).toHaveBeenCalledWith(dropletDiamter);
-    });
-
-    it("#onJetDiameterChange should call toolManagerService's #setCurrentJetDiameter with correct parameter ", () => {
-        const jetDiameter = 10;
-        const matSliderChange: MatSliderChange = new MatSliderChange();
-        matSliderChange.value = jetDiameter;
-        component.onJetDiameterChange(matSliderChange);
-        expect(toolManagerServiceSpy.setCurrentJetDiameter).toHaveBeenCalledWith(jetDiameter);
-    });
-
-    it("#onDropletDiameterChange should call toolManagerService's #setCurrentDropletDiameter with correct parameter ", () => {
-        const matSliderChange: MatSliderChange = new MatSliderChange();
-        matSliderChange.value = null;
-        component.onDropletDiameterChange(matSliderChange);
-        expect(toolManagerServiceSpy.setCurrentDropletDiameter).toHaveBeenCalledWith(undefined);
-    });
-
-    it("#onJetDiameterChange should call toolManagerService's #setCurrentJetDiameter with correct parameter ", () => {
-        const matSliderChange: MatSliderChange = new MatSliderChange();
-        matSliderChange.value = null;
-        component.onJetDiameterChange(matSliderChange);
-        expect(toolManagerServiceSpy.setCurrentJetDiameter).toHaveBeenCalledWith(undefined);
     });
 
     it("#showLineThickness should return true only if toolManagerService's #isCurrentTool returns true", () => {

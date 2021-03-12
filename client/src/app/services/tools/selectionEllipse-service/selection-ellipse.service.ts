@@ -5,7 +5,6 @@ import { CurrentColourService } from '@app/services/current-colour/current-colou
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
 import { MouseButtons } from '@app/utils/enums/list-boutton-pressed';
-import { ToolCommand } from '@app/utils/interfaces/tool-command';
 
 // import { ShapeStyle } from '@app/utils/enums/shape-style';
 
@@ -101,8 +100,5 @@ export class SelectionEllipseService extends Tool {
 
     private clearPath(): void {
         this.firstGrid = this.mouseDownCoord = { x: 0, y: 0 };
-    }
-    executeCommand(command: ToolCommand): void {
-        throw new Error('Method not implemented.');
     }
 }

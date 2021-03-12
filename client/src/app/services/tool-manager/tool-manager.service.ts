@@ -51,9 +51,6 @@ export class ToolManagerService {
             ShapeStyle: ShapeStyle.Outline,
             DotRadius: 1,
             ShowDots: false,
-            DropletDiameter: 1,
-            Frequency: 1,
-            JetDiameter: 1,
         };
         this.shapeStyleSelection.set('Outline', ShapeStyle.Outline).set('Filled', ShapeStyle.Filled).set('FilledOutline', ShapeStyle.FilledOutline);
         this.toolChangeEmitter.subscribe((toolName: ToolsNames) => {
@@ -63,9 +60,6 @@ export class ToolManagerService {
             this.currentAttributes.LineThickness = currentTool.lineThickness;
             this.currentAttributes.DotRadius = currentTool.dotRadius;
             this.currentAttributes.ShowDots = currentTool.showDots;
-            this.currentAttributes.Frequency = currentTool.frequency;
-            this.currentAttributes.JetDiameter = currentTool.jetDiameter;
-            this.currentAttributes.DropletDiameter = currentTool.dropletDiameter;
         });
     }
 
@@ -102,33 +96,6 @@ export class ToolManagerService {
     }
     getCurrentShapeStyle(): ShapeStyle | undefined {
         return this.currentAttributes.ShapeStyle;
-    }
-
-    getCurrentFrequency(): number | undefined {
-        return this.currentAttributes.Frequency;
-    }
-
-    getCurrentDropletDiameter(): number | undefined {
-        return this.currentAttributes.DropletDiameter;
-    }
-
-    getCurrentJetDiameter(): number | undefined {
-        return this.currentAttributes.JetDiameter;
-    }
-
-    setCurrentFrequency(frequency?: number): void {
-        this.toolBox[this.currentTool].frequency = frequency;
-        this.currentAttributes.Frequency = frequency;
-    }
-
-    setCurrentDropletDiameter(dropletDiameter?: number): void {
-        this.toolBox[this.currentTool].dropletDiameter = dropletDiameter;
-        this.currentAttributes.DropletDiameter = dropletDiameter;
-    }
-
-    setCurrentJetDiameter(jetDiameter?: number): void {
-        this.toolBox[this.currentTool].jetDiameter = jetDiameter;
-        this.currentAttributes.JetDiameter = jetDiameter;
     }
 
     getCurrentToolInstance(): Tool {
