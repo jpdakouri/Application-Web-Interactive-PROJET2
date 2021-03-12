@@ -35,6 +35,7 @@ export class AerosolService extends Tool {
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButtons.Left;
         this.isSpraying = true;
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
         if (this.mouseDown && this.isSpraying) {
             this.printSpray();
         }
