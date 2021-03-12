@@ -58,9 +58,7 @@
                     </svg>
                 </button>
             </div>
-            <button (click)="setCurrentTool(this.toolsNames.SelectBox)">SelectBox</button>
-            <button (click)="setCurrentTool(this.toolsNames.SelectEllipse)">SelectEllipse</button>
-
+            
             <div class="pipette-button-container">
                 <button
                     aria-label='Pipette "i"'
@@ -70,6 +68,31 @@
                     mat-fab
                 >
                     <mat-icon>colorize</mat-icon>
+                </button>
+            </div>
+
+            <div class="select-box-button-container">
+                <button
+                    aria-label='Selection rectangle "i"'
+                    title='Selection rectangle "i"'
+                    [color]="isSelected(this.toolsNames.SelectBox) ? 'accent' : 'primary'"  
+                    (click)="setCurrentTool(this.toolsNames.SelectBox)"
+                    mat-fab
+                >
+                    <mat-icon>crop</mat-icon>
+                </button>
+            </div>
+
+            <div class="select-ellipse-button-container">
+                <button
+                    aria-label='Selection ellipse "i"'
+                    title='Selection ellipse "i"'
+                    [color]="isSelected(this.toolsNames.SelectEllipse) ? 'accent' : 'primary'"
+                    (click)="setCurrentTool(this.toolsNames.SelectEllipse)"
+                    mat-fab
+                    disabled
+                >
+                    <mat-icon>all_out</mat-icon>
                 </button>
             </div>
         </div>
@@ -160,12 +183,11 @@
             </div>
 
             <div class="export-container">
-                <button color="primary" mat-fab aria-label="Exporter" title="Exporter" (click)="onExport()">
+                <button color="primary" mat-fab aria-label="Sauvegarder" title="Sauvegarder" (click)="saveDrawing()">
                     <mat-icon>file_upload</mat-icon>
                 </button>
             </div>
         </div>
-
         <mat-divider></mat-divider>
 
         <div class="undo-redo-container">
