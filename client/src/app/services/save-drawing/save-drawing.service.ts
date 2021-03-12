@@ -49,6 +49,27 @@ export class SaveDrawingService {
         return this.httpService.insertDrawing(drawingToSend).pipe(catchError(this.handleError<void>('basicPost')));
     }
 
+    drawPreviewImage(): void {
+        const previewContext = this.previewCanvas.getContext('2d') as CanvasRenderingContext2D;
+        let dataURL = '';
+        if (this.originalCanvas) dataURL = this.originalCanvas.toDataURL(ImageFormat.PNG);
+
+        previewContext.clearRect(0, 0, this.previewCanvas.width, this.previewCanvas.height);
+
+        const image = new Image();
+        if (dataURL) {
+            image.src = dataURL;
+            image.onload = () => {
+                // get the scale
+                const scale = Math.min(this.previewCanvas.width / image.width, this.previewCanvas.height / image.height);
+                // get the top left position of the image
+                const x = this.previewCanvas.width / 2 - (image.width / 2) * scale;
+                const y = this.previewCanvas.height / 2 - (image.height / 2) * scale;
+                previewContext.drawImage(image, x, y, image.width * scale, image.height * scale);
+            };
+        }
+    }
+
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
         return (error: HttpErrorResponse): Observable<T> => {
             if (error.status === 0) this.openDialog('Serveur Indisponible');

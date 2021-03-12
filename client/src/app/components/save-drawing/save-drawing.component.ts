@@ -32,22 +32,17 @@ export class SaveDrawingComponent implements OnInit, OnDestroy, AfterViewInit {
         this.formats = Object.values(ImageFormat);
         this.labels = Object.values(ImageLabels);
         this.selectedFormat = ImageFormat.PNG;
-        this.imageSource = '';
     }
 
     ngOnInit(): void {
-        this.saveDrawingService.currentFormat.subscribe((format: string) => {
+        this.saveDrawingService.currentFormat.subscribe((format: ImageFormat) => {
             this.selectedFormat = format.toString();
         });
     }
 
     ngAfterViewInit(): void {
-        this.originalCanvas = document.getElementById('canvas') as HTMLCanvasElement;
-        setTimeout(() => {
-            if (this.originalCanvas) {
-                this.imageSource = this.originalCanvas.toDataURL('image/png') as string;
-            }
-        });
+        this.saveDrawingService.previewCanvas = this.canvas.nativeElement as HTMLCanvasElement;
+        this.saveDrawingService.drawPreviewImage();
     }
 
     ngOnDestroy(): void {
