@@ -46,7 +46,15 @@ export class EllipseService extends Tool {
             if (this.shiftDown) {
                 this.drawCircle(this.mouseDownCoord);
             }
-            this.drawEllipse(this.drawingService.baseCtx, this.mouseDownCoord);
+            this.drawEllipse(
+                this.drawingService.baseCtx,
+                this.firstGrid,
+                this.mouseDownCoord,
+                this.currentColourService.getPrimaryColorRgba(),
+                this.currentColourService.getSecondaryColorRgba(),
+                this.lineThickness || DEFAULT_MIN_THICKNESS,
+                this.shapeStyle,
+            );
             this.clearPath();
         }
         this.mouseDown = false;
@@ -86,12 +94,12 @@ export class EllipseService extends Tool {
         ctx.strokeRect(startCoord.x, startCoord.y, width, height);
     }
 
-    drawOutline(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+    drawOutline(ctx: CanvasRenderingContext2D, firstGrid: Vec2, finalGrid: Vec2, secondaryColor: string, strokeThickness: number): void {
         ctx.beginPath();
-        ctx.strokeStyle = this.currentColourService.getSecondaryColorRgba();
-        ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
+        ctx.strokeStyle = secondaryColor;
+        ctx.lineWidth = strokeThickness;
 
-        const startCoord = { ...this.firstGrid };
+        const startCoord = { ...firstGrid };
         const width = finalGrid.x;
         const height = finalGrid.y;
 
@@ -99,10 +107,10 @@ export class EllipseService extends Tool {
         ctx.stroke();
     }
 
-    drawFilled(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+    drawFilled(ctx: CanvasRenderingContext2D, firstGrid: Vec2, finalGrid: Vec2, primaryColor: string, strokethickness: number): void {
         ctx.beginPath();
-        ctx.fillStyle = this.currentColourService.getPrimaryColorRgba();
-        ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
+        ctx.fillStyle = primaryColor;
+        ctx.lineWidth = strokethickness;
 
         const startCoord = { ...this.firstGrid };
         const width = finalGrid.x;
@@ -113,7 +121,14 @@ export class EllipseService extends Tool {
         ctx.stroke();
     }
 
-    drawFilledOutline(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+    drawFilledOutline(
+        ctx: CanvasRenderingContext2D,
+        firstGrid: Vec2,
+        finalGrid: Vec2,
+        primaryColor: string,
+        secondaryColor: string,
+        strokeThickness: number,
+    ): void {
         ctx.beginPath();
         ctx.fillStyle = this.currentColourService.getPrimaryColorRgba();
         ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
@@ -185,22 +200,30 @@ export class EllipseService extends Tool {
         }
     }
 
-    private drawEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+    private drawEllipse(
+        ctx: CanvasRenderingContext2D,
+        firstGrid: Vec2,
+        finalGrid: Vec2,
+        primaryColor: string,
+        secondaryColor: string,
+        strokeThickness: number,
+        shapeStyle?: ShapeStyle,
+    ): void {
         switch (this.shapeStyle) {
             case ShapeStyle.Outline:
-                this.drawOutline(ctx, finalGrid);
+                this.drawOutline(ctx, firstGrid, finalGrid, secondaryColor, strokeThickness);
                 break;
 
             case ShapeStyle.Filled:
-                this.drawFilled(ctx, finalGrid);
+                this.drawFilled(ctx, firstGrid, finalGrid, primaryColor, strokeThickness);
                 break;
 
             case ShapeStyle.FilledOutline:
-                this.drawFilledOutline(ctx, finalGrid);
+                this.drawFilledOutline(ctx, firstGrid, finalGrid, primaryColor, secondaryColor, strokeThickness);
                 break;
 
             default:
-                this.drawOutline(ctx, finalGrid);
+                this.drawOutline(ctx, firstGrid, finalGrid, secondaryColor, strokeThickness);
                 break;
         }
     }
@@ -213,7 +236,15 @@ export class EllipseService extends Tool {
         if (this.shiftDown) {
             this.drawCircle(currentCoord);
         }
-        this.drawEllipse(this.drawingService.previewCtx, currentCoord);
+        this.drawEllipse(
+            this.drawingService.baseCtx,
+            this.firstGrid,
+            this.mouseDownCoord,
+            this.currentColourService.getPrimaryColorRgba(),
+            this.currentColourService.getSecondaryColorRgba(),
+            this.lineThickness || DEFAULT_MIN_THICKNESS,
+            this.shapeStyle,
+        );
         this.drawingService.previewCtx.closePath();
     }
 
@@ -222,7 +253,15 @@ export class EllipseService extends Tool {
     }
 
     executeCommand(command: ShapeCommand): void {
-        // TODO
+        this.drawEllipse(
+            this.drawingService.baseCtx,
+            command.initialPosition,
+            command.finalPosition,
+            command.primaryColor,
+            command.secondaryColor,
+            command.strokeThickness,
+            command.shapeStyle,
+        );
         return;
     }
 }
