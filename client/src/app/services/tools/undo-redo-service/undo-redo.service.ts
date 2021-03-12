@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanvasOverwriterService } from '@app/services/canvas-overwriter/canvas-overwriter.service';
+// import { CanvasOverwriterService } from '@app/services/canvas-overwriter/canvas-overwriter.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ALPHA_INDEX, DEFAULT_CANVAS_RGBA, EMPTY_SQUARE_RGBA, RgbSettings } from '@app/services/services-constants';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
@@ -12,7 +12,8 @@ export class UndoRedoService {
     private undoneCommands: ToolCommand[];
     private initialCanvasColors: string[][];
 
-    constructor(private drawingService: DrawingService, private overwriter: CanvasOverwriterService) {
+    constructor(private drawingService: DrawingService) {
+        // , private overwriter: CanvasOverwriterService) {
         this.commands = [];
         this.undoneCommands = [];
     }
@@ -60,7 +61,8 @@ export class UndoRedoService {
     }
 
     private redrawCanvas(): void {
-        this.overwriter.overwriteCanvasState(this.initialCanvasColors);
+        this.drawingService.clearCanvas(this.drawingService.baseCtx);
+        // this.overwriter.overwriteCanvasState(this.initialCanvasColors);
         this.commands.forEach((command) => {
             command.tool.executeCommand(command);
         });
