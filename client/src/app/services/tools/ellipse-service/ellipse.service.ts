@@ -125,7 +125,7 @@ export class EllipseService extends Tool {
         ctx.fillStyle = primaryColor;
         ctx.lineWidth = strokethickness;
 
-        const startCoord = { ...this.firstGrid };
+        const startCoord = { ...firstGrid };
         const width = finalGrid.x;
         const height = finalGrid.y;
 
@@ -143,19 +143,19 @@ export class EllipseService extends Tool {
         strokeThickness: number,
     ): void {
         ctx.beginPath();
-        ctx.fillStyle = this.currentColourService.getPrimaryColorRgba();
-        ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
-        ctx.strokeStyle = this.currentColourService.getSecondaryColorRgba();
+        ctx.fillStyle = primaryColor;
+        ctx.lineWidth = strokeThickness;
+        ctx.strokeStyle = secondaryColor;
 
-        const startCoord = { ...this.firstGrid };
+        const startCoord = { ...firstGrid };
         const width = finalGrid.x;
         const height = finalGrid.y;
 
         ctx.ellipse(
             startCoord.x + width / 2,
             startCoord.y + height / 2,
-            Math.abs(width / 2 - (this.lineThickness || DEFAULT_MIN_THICKNESS)),
-            Math.abs(height / 2 - (this.lineThickness || DEFAULT_MIN_THICKNESS)),
+            Math.abs(width / 2 - strokeThickness),
+            Math.abs(height / 2 - strokeThickness),
             0,
             0,
             2 * Math.PI,
@@ -222,7 +222,7 @@ export class EllipseService extends Tool {
         strokeThickness: number,
         shapeStyle?: ShapeStyle,
     ): void {
-        switch (this.shapeStyle) {
+        switch (shapeStyle) {
             case ShapeStyle.Outline:
                 this.drawOutline(ctx, firstGrid, finalGrid, secondaryColor, strokeThickness);
                 break;
@@ -250,7 +250,7 @@ export class EllipseService extends Tool {
             this.drawCircle(currentCoord);
         }
         this.drawEllipse(
-            this.drawingService.baseCtx,
+            this.drawingService.previewCtx,
             this.firstGrid,
             this.mouseDownCoord,
             this.currentColourService.getPrimaryColorRgba(),
