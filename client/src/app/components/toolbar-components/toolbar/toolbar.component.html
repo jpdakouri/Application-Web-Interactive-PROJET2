@@ -58,13 +58,24 @@
                     </svg>
                 </button>
             </div>
-            <button (click)="setCurrentTool(this.toolsNames.Pipette)">Pipette</button>
+            
+            <div class="pipette-button-container">
+                <button
+                    aria-label='Pipette "i"'
+                    title='Pipette "i"'
+                    [color]="isSelected(this.toolsNames.Pipette) ? 'accent' : 'primary'"
+                    (click)="setCurrentTool(this.toolsNames.Pipette)"
+                    mat-fab
+                >
+                    <mat-icon>colorize</mat-icon>
+                </button>
+            </div>
 
             <div class="select-box-button-container">
                 <button
                     aria-label='Selection rectangle "i"'
                     title='Selection rectangle "i"'
-                    [color]="isSelected(this.toolsNames.SelectBox) ? 'accent' : 'primary'"
+                    [color]="isSelected(this.toolsNames.SelectBox) ? 'accent' : 'primary'"  
                     (click)="setCurrentTool(this.toolsNames.SelectBox)"
                     mat-fab
                 >
@@ -172,8 +183,23 @@
             </div>
 
             <div class="export-container">
-                <button color="primary" mat-fab aria-label="Exporter" title="Exporter">
+                <button color="primary" mat-fab aria-label="Sauvegarder" title="Sauvegarder" (click)="saveDrawing()">
                     <mat-icon>file_upload</mat-icon>
+                </button>
+            </div>
+        </div>
+        <mat-divider></mat-divider>
+
+        <div class="undo-redo-container">
+            <div class="undo-container">
+                <button color="primary" mat-fab aria-label="Annuler" title="Annuler" (click)="this.undoRedo.undo()">
+                    <mat-icon>undo</mat-icon>
+                </button>
+            </div>
+
+            <div class="redo-container">
+                <button color="primary" mat-fab aria-label="Refaire" title="Refaire" (click)="this.undoRedo.redo()">
+                    <mat-icon>redo</mat-icon>
                 </button>
             </div>
         </div>
