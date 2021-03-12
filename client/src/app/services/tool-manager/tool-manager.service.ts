@@ -7,6 +7,8 @@ import { LineService } from '@app/services/tools/line-service/line.service';
 import { PencilService } from '@app/services/tools/pencil-service/pencil.service';
 import { PipetteService } from '@app/services/tools/pipette-service/pipette.service';
 import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
+import { SelectionEllipseService } from '@app/services/tools/selectionEllipse-service/selection-ellipse.service';
+import { SelectionRectangleService } from '@app/services/tools/selectionRectangle-service/selection-rectangle.service';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 import { CurrentAttributes } from '@app/utils/types/current-attributes';
@@ -30,6 +32,8 @@ export class ToolManagerService {
         eraserService: EraserService,
         aerosolService: AerosolService,
         pipetteService: PipetteService,
+        selectBoxService: SelectionRectangleService,
+        selectEllipseService: SelectionEllipseService,
     ) {
         this.toolBox = {
             Pencil: pencilService,
@@ -39,6 +43,8 @@ export class ToolManagerService {
             Eraser: eraserService,
             Aerosol: aerosolService,
             Pipette: pipetteService,
+            SelectBox: selectBoxService,
+            SelectEllipse: selectEllipseService,
         };
         this.currentAttributes = {
             LineThickness: 1,

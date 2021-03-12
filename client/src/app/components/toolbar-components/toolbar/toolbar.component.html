@@ -58,19 +58,20 @@
                     </svg>
                 </button>
             </div>
+            <button (click)="setCurrentTool(this.toolsNames.SelectBox)">SelectBox</button>
+            <button (click)="setCurrentTool(this.toolsNames.SelectEllipse)">SelectEllipse</button>
 
-          <div class="pipette-button-container">
-            <button
-              aria-label='Pipette "i"'
-              title='Pipette "i"'
-              [color]="isSelected(this.toolsNames.Pipette) ? 'accent' : 'primary'"
-              (click)="setCurrentTool(this.toolsNames.Pipette)"
-              mat-fab
-              >
-                <mat-icon>colorize</mat-icon>
-            </button>
-          </div>
-
+            <div class="pipette-button-container">
+                <button
+                    aria-label='Pipette "i"'
+                    title='Pipette "i"'
+                    [color]="isSelected(this.toolsNames.Pipette) ? 'accent' : 'primary'"
+                    (click)="setCurrentTool(this.toolsNames.Pipette)"
+                    mat-fab
+                >
+                    <mat-icon>colorize</mat-icon>
+                </button>
+            </div>
         </div>
         <mat-divider></mat-divider>
         <div class="shaping-tools">
@@ -165,20 +166,20 @@
             </div>
         </div>
 
-      <mat-divider></mat-divider>
+        <mat-divider></mat-divider>
 
-      <div class="undo-redo-container">
-        <div class="undo-container">
-            <button color="primary" mat-fab aria-label="Annuler" title="Annuler" (click)="this.undoRedo.undo()">
-              <mat-icon>undo</mat-icon>
-            </button>
-        </div>
+        <div class="undo-redo-container">
+            <div class="undo-container">
+                <button color="primary" mat-fab aria-label="Annuler" title="Annuler" (click)="this.undoRedo.undo()">
+                    <mat-icon>undo</mat-icon>
+                </button>
+            </div>
 
-        <div class="redo-container">
-            <button color="primary" mat-fab aria-label="Refaire" title="Refaire" (click)="this.undoRedo.redo()">
-                <mat-icon>redo</mat-icon>
-              </button>
+            <div class="redo-container">
+                <button color="primary" mat-fab aria-label="Refaire" title="Refaire" (click)="this.undoRedo.redo()">
+                    <mat-icon>redo</mat-icon>
+                </button>
+            </div>
         </div>
-      </div>
     </div>
 </div>

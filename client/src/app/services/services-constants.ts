@@ -23,7 +23,7 @@ export const ALPHA_INDEX = 3;
 export const DEFAULT_CANVAS_RGB = '255,255,255';
 
 /****************************/
-/***GLOBAL DRAWING CONSTANTS***/
+/***GLOBAL DRAWING CONSTANTS*/
 /****************************/
 export const DEFAULT_WIDTH = 1000;
 export const DEFAULT_HEIGHT = 800;
