@@ -5,6 +5,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DEFAULT_MIN_THICKNESS } from '@app/services/tools/tools-constants';
+import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { Sign } from '@app/utils/enums/rgb-settings';
@@ -16,11 +17,13 @@ import { ShapeStyle } from '@app/utils/enums/shape-style';
 export class EllipseService extends Tool {
     private firstGrid: Vec2;
     private shiftDown: boolean;
+    private undoRedo: UndoRedoService;
     currentColourService: CurrentColourService;
 
-    constructor(drawingService: DrawingService, currentColourService: CurrentColourService) {
+    constructor(drawingService: DrawingService, currentColourService: CurrentColourService, undoRedo: UndoRedoService) {
         super(drawingService, currentColourService);
         this.currentColourService = currentColourService;
+        this.undoRedo = undoRedo;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -55,6 +58,16 @@ export class EllipseService extends Tool {
                 this.lineThickness || DEFAULT_MIN_THICKNESS,
                 this.shapeStyle,
             );
+            const command = new ShapeCommand(
+                this,
+                this.currentColourService.getPrimaryColorRgba(),
+                this.currentColourService.getSecondaryColorRgba(),
+                this.lineThickness || DEFAULT_MIN_THICKNESS,
+                this.firstGrid,
+                this.mouseDownCoord,
+                this.shapeStyle,
+            );
+            this.undoRedo.addCommand(command);
             this.clearPath();
         }
         this.mouseDown = false;
