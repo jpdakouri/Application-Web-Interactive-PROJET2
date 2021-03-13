@@ -23,6 +23,7 @@ export class SelectionRectangleService extends Tool {
     private end: Vec2;
     private imageData: ImageData;
     private shiftDown: boolean;
+    private selectionActive: boolean;
 
     rectangleService: RectangleService;
     currentColourService: CurrentColourService;
@@ -31,21 +32,35 @@ export class SelectionRectangleService extends Tool {
         super(drawingService, currentColourService);
         this.currentColourService = currentColourService;
         this.topLeftCorner = { x: 0, y: 0 };
+        this.selectionActive = false;
     }
 
     onMouseDown(event: MouseEvent): void {
         this.clearPath();
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.mouseDown = event.button === MouseButtons.Left;
+        this.firstGrid = this.getPositionFromMouse(event);
+        this.mouseMoved = false;
         if (this.mouseDown) {
-            this.begin = this.getPositionFromMouse(event);
-            this.firstGrid = this.getPositionFromMouse(event);
-            this.updatePreview();
+            if (!this.selectionActive) {
+                this.begin = this.getPositionFromMouse(event);
+                this.updatePreview();
+                this.selectionActive = true;
+            } else {
+                if (this.isClickIn(this.firstGrid)) {
+                    console.log('click dedans');
+                } else {
+                    this.selectionActive = false;
+                    this.drawingService.baseCtx.putImageData(this.imageData, this.topLeftCorner.x, this.topLeftCorner.y);
+                    console.log('click dehors');
+                }
+            }
         }
     }
 
     onMouseMove(event: MouseEvent): void {
-        if (this.mouseDown) {
+        if (this.mouseDown && this.selectionActive) {
+            this.mouseMoved = true;
             this.mouseDownCoord.x = this.getPositionFromMouse(event).x - this.firstGrid.x;
             this.mouseDownCoord.y = this.getPositionFromMouse(event).y - this.firstGrid.y;
             this.updatePreview();
@@ -70,19 +85,27 @@ export class SelectionRectangleService extends Tool {
     onKeyDown(event: KeyboardEvent): void {
         switch (event.key) {
             case KeyboardButtons.Up: {
-                this.topLeftCorner.y -= PIXELS_ARROW_STEPS;
+                if (this.selectionActive) {
+                    this.topLeftCorner.y -= PIXELS_ARROW_STEPS;
+                }
                 break;
             }
             case KeyboardButtons.Down: {
-                this.topLeftCorner.y += PIXELS_ARROW_STEPS;
+                if (this.selectionActive) {
+                    this.topLeftCorner.y += PIXELS_ARROW_STEPS;
+                }
                 break;
             }
             case KeyboardButtons.Right: {
-                this.topLeftCorner.x += PIXELS_ARROW_STEPS;
+                if (this.selectionActive) {
+                    this.topLeftCorner.x += PIXELS_ARROW_STEPS;
+                }
                 break;
             }
             case KeyboardButtons.Left: {
-                this.topLeftCorner.x -= PIXELS_ARROW_STEPS;
+                if (this.selectionActive) {
+                    this.topLeftCorner.x -= PIXELS_ARROW_STEPS;
+                }
                 break;
             }
             case KeyboardButtons.Shift: {
@@ -204,6 +227,16 @@ export class SelectionRectangleService extends Tool {
         }
         this.drawRectanglePerimeter(this.drawingService.previewCtx, currentCoord);
         this.drawingService.previewCtx.closePath();
+    }
+
+    private isClickIn(firstGrid: Vec2): boolean {
+        if (firstGrid.x < this.topLeftCorner.x || firstGrid.x > this.topLeftCorner.x + this.imageData.width) {
+            return false;
+        }
+        if (firstGrid.y < this.topLeftCorner.y || firstGrid.y > this.topLeftCorner.y + this.imageData.height) {
+            return false;
+        }
+        return true;
     }
 
     private clearPath(): void {
