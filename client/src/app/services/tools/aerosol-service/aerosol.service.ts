@@ -14,6 +14,7 @@ import {
     MIN_JET_DIAMETER,
     MS_PER_S,
 } from '@app/services/tools/tools-constants';
+import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 
 @Injectable({
@@ -25,14 +26,18 @@ export class AerosolService extends Tool {
     private intervalID: number;
     private mouseCurrentPosition: Vec2;
     private isSpraying: boolean;
+    private commandSprayLocations: Vec2[];
+    private undoRedo: UndoRedoService;
 
-    constructor(drawingService: DrawingService, currentColourService: CurrentColourService) {
+    constructor(drawingService: DrawingService, currentColourService: CurrentColourService, undoRedo: UndoRedoService) {
         super(drawingService, currentColourService);
         this.frequency = DEFAULT_FREQUENCY;
         this.dropletDiameter = DEFAULT_DROPLET_DIAMETER;
         this.jetDiameter = DEFAULT_JET_DIAMETER;
         this.isSpraying = false;
         this.mouseCurrentPosition = { x: 0, y: 0 };
+        this.commandSprayLocations = [];
+        this.undoRedo = undoRedo;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -40,6 +45,7 @@ export class AerosolService extends Tool {
         this.isSpraying = true;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         if (this.mouseDown && this.isSpraying) {
+            this.commandSprayLocations = [];
             this.printSpray();
         }
     }
@@ -51,6 +57,13 @@ export class AerosolService extends Tool {
             window.clearInterval(this.intervalID);
             this.mouseDown = false;
         }
+        const command = new AerosolCommand(
+            this,
+            this.currentColourService.getPrimaryColorRgba(),
+            this.commandSprayLocations,
+            this.dropletDiameter || MIN_DROPLET_DIAMETER,
+        );
+        this.undoRedo.addCommand(command);
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -88,10 +101,16 @@ export class AerosolService extends Tool {
             const offset = this.getRandomOffsetInRadius((this.jetDiameter || MIN_JET_DIAMETER) / 2);
             const radius = this.dropletDiameter || MIN_DROPLET_DIAMETER;
             const currentPosition = this.mouseCurrentPosition;
-            this.drawingService.baseCtx.strokeStyle = this.currentColourService.getPrimaryColorRgba();
-            this.drawingService.baseCtx.fillStyle = this.currentColourService.getPrimaryColorRgba();
-            this.drawingService.baseCtx.fillRect(currentPosition.x + offset.x, currentPosition.y + offset.y, radius, radius);
+            const particlePosition = { x: currentPosition.x + offset.x, y: currentPosition.y + offset.y };
+            this.commandSprayLocations.push(particlePosition);
+            this.drawSprayParticle(this.drawingService.baseCtx, particlePosition, this.currentColourService.getPrimaryColorRgba(), radius);
         }
+    }
+
+    private drawSprayParticle(ctx: CanvasRenderingContext2D, position: Vec2, color: string, size: number): void {
+        ctx.strokeStyle = color;
+        ctx.fillStyle = color;
+        ctx.fillRect(position.x, position.y, size, size);
     }
 
     getRandomOffsetInRadius(radius: number): Vec2 {
@@ -104,7 +123,8 @@ export class AerosolService extends Tool {
     }
 
     executeCommand(command: AerosolCommand): void {
-        // TODO
-        return;
+        command.particleLocations.forEach((location) => {
+            this.drawSprayParticle(this.drawingService.baseCtx, location, command.primaryColor, command.particleSize);
+        });
     }
 }
