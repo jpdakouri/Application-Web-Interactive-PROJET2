@@ -172,7 +172,11 @@
             </div>
 
             <div class="save-container">
-                <button color="primary" mat-fab aria-label="Sauvegarder" title="Sauvegarder" (click)="saveDrawing()">
+                <button color="primary"
+                        mat-fab
+                        aria-label="Sauvegarder"
+                        title="Sauvegarder"
+                        (click)="saveDrawing()">
                     <mat-icon>save</mat-icon>
                 </button>
             </div>
@@ -184,7 +188,10 @@
             </div>
 
             <div class="export-container">
-                <button color="primary" mat-fab aria-label="Exporter" title="Exporter" (click)="onExport()">
+                <button color="primary"
+                        mat-fab aria-label="Exporter"
+                        title="Exporter"
+                        (click)="onExport()">
                     <mat-icon>file_upload</mat-icon>
                 </button>
             </div>
@@ -193,13 +200,22 @@
 
         <div class="undo-redo-container">
             <div class="undo-container">
-                <button color="primary" mat-fab aria-label="Annuler" title="Annuler" (click)="this.undoRedo.undo()" [disabled]="!undoRedo.canUndoCommands()">
+                <button color="primary"
+                        mat-fab aria-label="Annuler"
+                        title="Annuler"
+                        (click)="this.undoRedo.undo()"
+                        [disabled]="!undoRedo.canUndoCommands()">
                     <mat-icon>undo</mat-icon>
                 </button>
             </div>
 
             <div class="redo-container">
-                <button color="primary" mat-fab aria-label="Refaire" title="Refaire" (click)="this.undoRedo.redo()" [disabled]="!undoRedo.canRedoCommands()">
+                <button color="primary"
+                        mat-fab
+                        aria-label="Refaire"
+                        title="Refaire"
+                        (click)="this.undoRedo.redo()"
+                        [disabled]="!undoRedo.canRedoCommands()">
                     <mat-icon>redo</mat-icon>
                 </button>
             </div>
