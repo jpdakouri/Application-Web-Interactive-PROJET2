@@ -171,19 +171,19 @@
             </div>
 
             <div class="save-container">
-                <button color="primary" mat-fab aria-label="Sauvegarder" title="Sauvegarder" (click)="saveDrawing()">
+                <button color="primary" mat-fab aria-label="Sauvegarder (Ctrl + s)" title="Sauvegarder (Ctrl + s)" (click)="saveDrawing()">
                     <mat-icon>save</mat-icon>
                 </button>
             </div>
 
             <div class="view-carousel-container">
-                <button color="primary" mat-fab aria-label="Carroussel" title="Carroussel">
+                <button color="primary" routerLink="/carousel" mat-fab aria-label="Carroussel (Ctrl + g)" title="Carroussel (Ctrl + g)">
                     <mat-icon>view_carousel</mat-icon>
                 </button>
             </div>
 
             <div class="export-container">
-                <button color="primary" mat-fab aria-label="Exporter" title="Exporter" (click)="onExport()">
+                <button color="primary" mat-fab aria-label="Exporter (Ctrl + e)" title="Exporter (Ctrl + e)" (click)="onExport()">
                     <mat-icon>file_upload</mat-icon>
                 </button>
             </div>
