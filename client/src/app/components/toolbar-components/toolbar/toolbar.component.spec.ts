@@ -16,7 +16,7 @@ describe('ToolbarComponent', () => {
     let drawingServiceSpy: SpyObj<DrawingService>;
 
     beforeEach(async(() => {
-        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['createNewDrawing']);
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['createNewDrawing', 'isCanvasBlank']);
         toolManagerServiceSpy = jasmine.createSpyObj('ToolManagerService', ['setCurrentTool', 'emitToolChange', 'isCurrentTool']);
 
         TestBed.configureTestingModule({

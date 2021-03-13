@@ -165,6 +165,7 @@
                     mat-fab
                     aria-label='Nouveau dessin "Ctrl + 0"'
                     title='Nouveau dessin "Ctrl + 0"'
+                    [disabled]="drawingService.isCanvasBlank()"
                 >
                     <mat-icon>add</mat-icon>
                 </button>
@@ -192,13 +193,13 @@
 
         <div class="undo-redo-container">
             <div class="undo-container">
-                <button color="primary" mat-fab aria-label="Annuler" title="Annuler" (click)="this.undoRedo.undo()">
+                <button color="primary" mat-fab aria-label="Annuler" title="Annuler" (click)="this.undoRedo.undo()" [disabled]="!undoRedo.canUndoCommands()">
                     <mat-icon>undo</mat-icon>
                 </button>
             </div>
 
             <div class="redo-container">
-                <button color="primary" mat-fab aria-label="Refaire" title="Refaire" (click)="this.undoRedo.redo()">
+                <button color="primary" mat-fab aria-label="Refaire" title="Refaire" (click)="this.undoRedo.redo()" [disabled]="!undoRedo.canRedoCommands()">
                     <mat-icon>redo</mat-icon>
                 </button>
             </div>
