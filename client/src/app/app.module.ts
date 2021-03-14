@@ -18,13 +18,13 @@ import { ToolbarComponent } from '@app/components/toolbar-components/toolbar/too
 import { AppMaterialModule } from './app-material/app-material.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app/app.component';
+import { CarouselComponent } from './components/carousel/carousel.component';
 import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { ExportDrawingComponent } from './components/export-drawing/export-drawing.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { SaveDrawingComponent } from './components/save-drawing/save-drawing.component';
 import { ServerErrorMessageComponent } from './components/server-error-message/server-error-message.component';
-import { CarouselComponent } from './components/carousel/carousel.component';
 
 @NgModule({
     declarations: [

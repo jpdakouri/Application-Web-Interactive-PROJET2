@@ -1,0 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+
+.toolbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    position: relative;
+    z-index: 2;
+}
+.pacifico {
+    font-family: 'Pacifico', cursive;
+    font-size: 30px;
+}

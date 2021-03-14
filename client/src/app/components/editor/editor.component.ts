@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { CarouselComponent } from '@app/components/carousel/carousel.component';
 import { ExportDrawingComponent } from '@app/components/export-drawing/export-drawing.component';
 import { SaveDrawingComponent } from '@app/components/save-drawing/save-drawing.component';
 import { ToolbarComponent } from '@app/components/toolbar-components/toolbar/toolbar.component';
@@ -27,6 +28,7 @@ export class EditorComponent implements AfterViewInit {
         public exportDrawingDialog: MatDialogRef<ExportDrawingComponent>,
         public saveDrawingDialog: MatDialogRef<SaveDrawingComponent>,
         public dialog: MatDialog,
+        public carouselDialog: MatDialogRef<CarouselComponent>,
     ) {
         this.toolFinder = new Map<KeyboardButtons, ToolsNames>();
         this.toolFinder
@@ -88,5 +90,9 @@ export class EditorComponent implements AfterViewInit {
 
     openExportDrawingModal(): void {
         this.exportDrawingDialog = this.dialog.open(ExportDrawingComponent, {});
+    }
+
+    openCarouselModal(): void {
+        this.carouselDialog = this.dialog.open(CarouselComponent, {});
     }
 }
