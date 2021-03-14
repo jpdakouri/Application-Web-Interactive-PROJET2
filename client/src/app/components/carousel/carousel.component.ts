@@ -13,6 +13,6 @@ export class CarouselComponent implements OnInit {
 
     createArray(): number[] {
         // tslint:disable-next-line:no-magic-numbers
-        return new Array(10);
+        return new Array(3);
     }
 }

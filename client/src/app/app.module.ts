@@ -1,6 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -52,6 +53,7 @@ import { ServerErrorMessageComponent } from './components/server-error-message/s
         AppMaterialModule,
         MatTooltipModule,
         FormsModule,
+        MatCardModule,
         HttpClientModule,
         MatDialogModule,
         MatFormFieldModule,

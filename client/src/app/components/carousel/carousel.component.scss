@@ -1,13 +1,45 @@
 @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
 
+.container {
+    width: 75vw;
+    height: 90vh;
+}
+
 .toolbar {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     position: relative;
     z-index: 2;
+    text-align: center;
+    border-radius: 5px 5px 0px 0px;
 }
 .pacifico {
     font-family: 'Pacifico', cursive;
     font-size: 30px;
+    width: 33%;
+}
+.matContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    position: relative;
+    width: 75vw;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.main {
+    max-width: 45%;
+}
+.sides {
+    width: 25%;
+}
+
+.main img {
+    height: 60vh;
+}
+
+.sides img {
+    height: 60vh;
 }
