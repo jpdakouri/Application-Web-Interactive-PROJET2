@@ -77,7 +77,8 @@ export class SelectionEllipseService extends Tool {
                 this.drawSquare(this.mouseDownCoord);
                 this.selectEllipse(this.drawingService.previewCtx, this.mouseDownCoord);
             }
-            this.selectEllipse(this.drawingService.previewCtx, this.mouseDownCoord);
+            this.selectEllipse(this.drawingService.baseCtx, this.mouseDownCoord);
+            this.drawingService.previewCtx.stroke();
             this.clearPath();
         }
         this.mouseDown = false;
@@ -128,23 +129,6 @@ export class SelectionEllipseService extends Tool {
             this.shiftDown = false;
             this.updatePreview();
         }
-    }
-
-    private drawRectanglePerimeter(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
-        ctx.strokeStyle = 'blue';
-        ctx.setLineDash([numberFive, numberFifteen]);
-
-        const startCoord = { ...this.firstGrid };
-        const width = Math.abs(finalGrid.x);
-        const height = Math.abs(finalGrid.y);
-
-        if (finalGrid.x < 0) {
-            startCoord.x += finalGrid.x;
-        }
-        if (finalGrid.y < 0) {
-            startCoord.y += finalGrid.y;
-        }
-        ctx.strokeRect(startCoord.x, startCoord.y, width, height);
     }
 
     private isMouseInFirstQuadrant(): boolean {
@@ -208,33 +192,67 @@ export class SelectionEllipseService extends Tool {
         }
     }
 
-    private clippedRegion(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+    private drawPreviewSelection(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+        ctx.strokeStyle = 'blue';
+        ctx.setLineDash([numberFive, numberFifteen]);
+
         const startCoord = { ...this.firstGrid };
-        const width = finalGrid.x;
-        const height = finalGrid.y;
+        const width = Math.abs(finalGrid.x);
+        const height = Math.abs(finalGrid.y);
+
+        if (finalGrid.x < 0) {
+            startCoord.x += finalGrid.x;
+        }
+        if (finalGrid.y < 0) {
+            startCoord.y += finalGrid.y;
+        }
+        ctx.strokeRect(startCoord.x, startCoord.y, width, height);
+        this.drawEllipse(ctx, finalGrid);
+        ctx.stroke();
+    }
+
+    private drawEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = this.lineThickness = 1;
+
+        const startCoord = { ...this.firstGrid };
+        const width = Math.abs(finalGrid.x);
+        const height = Math.abs(finalGrid.y);
 
         ctx.ellipse(startCoord.x + width / 2, startCoord.y + height / 2, Math.abs(width / 2), Math.abs(height / 2), 0, 0, 2 * Math.PI, false);
-        // ctx.stroke();
-        ctx.clip();
+    }
+
+    private clipArea(finalGrid: Vec2): void {
+        this.drawingService.previewCtx.beginPath();
+        this.drawEllipse(this.drawingService.previewCtx, finalGrid);
+        this.drawingService.previewCtx.closePath();
+        this.drawingService.baseCtx.clip();
     }
 
     private selectEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
-        ctx.beginPath();
-        ctx.strokeStyle = 'black';
-        ctx.lineWidth = this.lineThickness = 1;
+        // this.clipArea(finalGrid);
+        // ctx.strokeStyle = 'red';
+        // ctx.rect(150, 150, 500, 500);
+        // this.drawingService.baseCtx.clip();
+        this.clipArea(finalGrid);
         this.imageData = this.drawingService.baseCtx.getImageData(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
-        this.clippedRegion(ctx, finalGrid);
-        ctx.putImageData(this.imageData, this.firstGrid.x, this.firstGrid.y);
+        this.clipArea(finalGrid);
+        this.drawingService.previewCtx.putImageData(this.imageData, this.firstGrid.x, this.firstGrid.y);
+        this.clipArea(finalGrid);
+
+        // Remplir de blanc
+        this.drawingService.baseCtx.fillStyle = 'white';
+        this.drawingService.baseCtx.fillRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
     }
 
     private updatePreview(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         const currentCoord = { ...this.mouseDownCoord };
         this.drawingService.previewCtx.beginPath();
+        this.drawPreviewSelection(this.drawingService.previewCtx, currentCoord);
         if (this.shiftDown) {
             this.drawSquare(currentCoord);
         }
-        this.drawRectanglePerimeter(this.drawingService.previewCtx, currentCoord);
         this.drawingService.previewCtx.closePath();
     }
 
