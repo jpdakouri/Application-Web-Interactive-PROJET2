@@ -22,6 +22,7 @@
                     <mat-icon matChipRemove>cancel</mat-icon>
                 </mat-chip>
                 <input
+                    matInput
                     placeholder="Étiquette(s)"
                     maxlength="25"
                     #tagValue
@@ -42,7 +43,7 @@
 
         <div class="flexExpand"></div>
 
-        <button mat-raised-button color="primary" (click)="loadToServer()" [disabled]="waitingForServer || fileName.invalid">
+        <button mat-raised-button color="primary" (click)="addDrawing()" [disabled]="waitingForServer || fileName.invalid">
             <span class="material-icons">save</span>Sauvegarder
         </button>
     </mat-dialog-actions>

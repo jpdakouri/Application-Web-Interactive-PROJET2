@@ -29,6 +29,7 @@ export class SaveDrawingComponent implements OnInit, OnDestroy, AfterViewInit {
     imageSource: string;
     readonly separatorKeysCodes: number[] = [ENTER];
     waitingForServer: boolean = false;
+    currentIndex: number = 0;
 
     constructor(private saveDrawingService: SaveDrawingService, public dialogRef: MatDialogRef<SaveDrawingComponent>) {
         this.fileName = new FormControl('', [Validators.required, Validators.pattern(FILE_NAME_REGEX)]);
@@ -74,10 +75,22 @@ export class SaveDrawingComponent implements OnInit, OnDestroy, AfterViewInit {
         this.saveDrawingService.labelsChecked = this.tags;
     }
 
-    loadToServer(): void {
+    updateDrawing(): void {
+        this.saveDrawingService.updateDrawing();
+    }
+
+    deleteDrawing(): void {
+        this.saveDrawingService.deleteDrawing();
+    }
+
+    getAllDrawings(): void {
+        this.saveDrawingService.getAllDrawings();
+    }
+
+    addDrawing(): void {
         this.updateService();
         this.waitingForServer = true;
-        this.saveDrawingService.addDrawing().subscribe();
+        this.saveDrawingService.addDrawing();
         this.dialogRef.close();
     }
 
