@@ -16,11 +16,11 @@ describe('SaveDrawingService', () => {
         TestBed.configureTestingModule({
             providers: [{ provide: MatDialogRef, useValue: {} }],
             imports: [
+                MatDialogModule,
                 HttpClientTestingModule,
                 BrowserAnimationsModule,
                 MatOptionModule,
                 MatSelectModule,
-                MatDialogModule,
                 MatInputModule,
                 MatFormFieldModule,
                 ReactiveFormsModule,

@@ -24,6 +24,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { ToolManagerServiceMock } from '@app/tests-mocks/tool-manager-mock';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
+import { CarouselComponent } from '../carousel-components/carousel/carousel.component';
 import { EditorComponent } from './editor.component';
 
 describe('EditorComponent', () => {
@@ -66,6 +67,7 @@ describe('EditorComponent', () => {
                 { provide: ToolManagerService, useValue: toolManagerServiceMock },
                 { provide: DrawingService, useValue: drawingServiceSpy },
                 { provide: MatDialogRef, useValue: {} },
+                { provide: CarouselComponent, useValue: {} },
             ],
         }).compileComponents();
     }));

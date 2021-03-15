@@ -9,7 +9,7 @@
         </span>
     </mat-toolbar>
 
-    <div class="matContainer">
+    <div class="matContainer" *ngIf="ifExists()">
         <app-drawing-card class="sides" [positionCaracteristics]="sideCard"></app-drawing-card>
         <app-drawing-card class="main" [positionCaracteristics]="mainCard"></app-drawing-card>
         <app-drawing-card class="sides" [positionCaracteristics]="sideCard"></app-drawing-card>

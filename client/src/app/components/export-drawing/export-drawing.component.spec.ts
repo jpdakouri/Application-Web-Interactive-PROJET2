@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 // import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
@@ -14,7 +13,6 @@ import { ExportDrawingComponent } from './export-drawing.component';
 describe('ExportDrawingComponent', () => {
     let component: ExportDrawingComponent;
     let fixture: ComponentFixture<ExportDrawingComponent>;
-    // let canvasTestHelper: CanvasTestHelper;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
