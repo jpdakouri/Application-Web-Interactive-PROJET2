@@ -118,6 +118,10 @@ describe('DrawingComponent', () => {
         expect(mouseEventSpy).toHaveBeenCalled();
     });
 
+    it('onContextMenu always returns false to prevent the Chrome menu from appearing', () => {
+        expect(component.onContextMenu()).toBeFalse();
+    });
+
     it('should resize the canvas on mouseUp when status is resizing', () => {
         canvasResizerStub.setStatus(Status.BOTTOM_RIGHT_RESIZE);
         const event = {} as MouseEvent;

@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -50,6 +51,7 @@ import { ServerErrorMessageComponent } from './components/server-error-message/s
     ],
     imports: [
         BrowserModule,
+        MatChipsModule,
         HttpClientModule,
         MatExpansionModule,
         AppRoutingModule,

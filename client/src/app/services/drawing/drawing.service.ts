@@ -29,6 +29,7 @@ export class DrawingService {
     }
 
     isCanvasBlank(): boolean {
+        if (this.baseCtx == undefined) return true;
         const pixelBuffer = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height).data;
         const hasSomeColoredPixels = pixelBuffer.some((channel: number) => channel !== 0);
         return !hasSomeColoredPixels;
