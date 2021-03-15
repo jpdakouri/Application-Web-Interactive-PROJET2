@@ -1,11 +1,14 @@
 <div class="container">
     <mat-toolbar [style.height.px]="60" class="toolbar" color="primary">
-        <span class="pacifico"></span>
+        <span></span>
         <span class="pacifico">Carrousel de Dessins</span>
-        <span class="pacifico" style="text-align: right">
-            <span [style.marginRight.px]="10">To Come</span>
+        <span style="text-align: right; font-size: 15px">
+            <mat-form-field>
+                <input matInput placeholder="Recherche Par Étiquettes" />
+            </mat-form-field>
         </span>
     </mat-toolbar>
+
     <div class="matContainer">
         <app-drawing-card class="sides" [positionCaracteristics]="sideCard"></app-drawing-card>
         <app-drawing-card class="main" [positionCaracteristics]="mainCard"></app-drawing-card>

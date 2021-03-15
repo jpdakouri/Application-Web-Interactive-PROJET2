@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -50,6 +51,7 @@ import { ServerErrorMessageComponent } from './components/server-error-message/s
     imports: [
         BrowserModule,
         HttpClientModule,
+        MatExpansionModule,
         AppRoutingModule,
         BrowserAnimationsModule,
         AppMaterialModule,

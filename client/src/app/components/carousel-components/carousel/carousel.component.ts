@@ -9,7 +9,7 @@ import { CardStyle } from '@app/utils/interfaces/card-style';
 export class CarouselComponent implements OnInit {
     sideCard: CardStyle;
     mainCard: CardStyle;
-    // tslint:disable:no-empty
+
     constructor() {
         this.sideCard = {
             maxWidth: MAX_WIDTH_SIDE_CARD,

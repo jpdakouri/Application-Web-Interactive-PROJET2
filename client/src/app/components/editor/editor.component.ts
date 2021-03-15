@@ -1,9 +1,9 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { CarouselComponent } from '@app/components/carousel-components/carousel/carousel.component';
 import { ExportDrawingComponent } from '@app/components/export-drawing/export-drawing.component';
 import { SaveDrawingComponent } from '@app/components/save-drawing/save-drawing.component';
 import { ToolbarComponent } from '@app/components/toolbar-components/toolbar/toolbar.component';
+import { CarouselService } from '@app/services/carousel/carousel.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
@@ -25,10 +25,10 @@ export class EditorComponent implements AfterViewInit {
     constructor(
         private toolManagerService: ToolManagerService,
         private drawingService: DrawingService,
+        private carouselService: CarouselService,
         public exportDrawingDialog: MatDialogRef<ExportDrawingComponent>,
         public saveDrawingDialog: MatDialogRef<SaveDrawingComponent>,
         public dialog: MatDialog,
-        public carouselDialog: MatDialogRef<CarouselComponent>,
     ) {
         this.toolFinder = new Map<KeyboardButtons, ToolsNames>();
         this.toolFinder
@@ -93,6 +93,6 @@ export class EditorComponent implements AfterViewInit {
     }
 
     openCarouselModal(): void {
-        this.carouselDialog = this.dialog.open(CarouselComponent, {});
+        this.carouselService.openDialog();
     }
 }

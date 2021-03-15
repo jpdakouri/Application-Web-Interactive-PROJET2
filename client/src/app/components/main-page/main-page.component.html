@@ -15,8 +15,7 @@
     <mat-grid-tile id="canvas" routerLink="/editor" [colspan]="1" [rowspan]="2" (click)="onCreateNewDrawing()">
         <mat-grid-tile-header class="tile-header">Créer un nouveau dessin</mat-grid-tile-header>
     </mat-grid-tile>
-    <mat-grid-tile id="sketchbook" routerLink="/editor/carousel" [colspan]="1" [rowspan]="1" (click)="openCarousel()">
+    <mat-grid-tile id="sketchbook" routerLink="/editor" [colspan]="1" [rowspan]="1" (click)="openCarousel()">
         <mat-grid-tile-header class="tile-header">Carrousel de dessins</mat-grid-tile-header>
-        <app-carousel *ngIf="canOpen"></app-carousel>
     </mat-grid-tile>
 </mat-grid-list>
