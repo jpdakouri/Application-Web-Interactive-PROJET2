@@ -14,14 +14,15 @@ export class HttpService {
 
     private readonly BASE_URL: string = 'http://localhost:3000';
 
-    // TODO HTTP ERROR HANDLING
-    // TODO GET DRAWINGS BY TAGS
     getAllDrawings(): Observable<DrawingData[]> {
         return this.http.get<DrawingData[]>(this.BASE_URL + '/api/drawings').pipe(catchError(this.handleError<DrawingData[]>('Get')));
     }
+
+    // For later !
     // getDrawingsByTags(): Observable<Metadata[]> {
     //     return this.http.get<Metadata[]>(this.BASE_URL + '/api/drawings');
     // }
+
     deleteDrawing(drawingID: string): Observable<string> {
         return this.http.delete<string>(this.BASE_URL + `/api/drawings/${drawingID}`).pipe(catchError(this.handleError<string>('Deleted')));
     }

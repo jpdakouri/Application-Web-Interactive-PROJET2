@@ -45,15 +45,6 @@ export class SaveDrawingService {
 
         return dataURL;
     }
-    // private getImageDataFromCanva(): ImageData {
-    //     const emptyImageData = new ImageData(this.canvas.width, this.canvas.height);
-    //     const imageData = this.canvas
-    //         .getContext('2d', {
-    //             alpha: true,
-    //         })
-    //         ?.getImageData(0, 0, this.canvas.width, this.canvas.height);
-    //     return imageData ? imageData : emptyImageData;
-    // }
 
     addDrawing(): void {
         const labels = this.toStringArray(this.labelsChecked);
@@ -66,7 +57,6 @@ export class SaveDrawingService {
             this.originalCanvas.height,
         );
 
-        // tslint:disable: deprecation
         this.httpService.insertDrawing(drawingToSend).subscribe({
             next: (result) => {
                 console.log("La requête POST s'est bien déroulée !");

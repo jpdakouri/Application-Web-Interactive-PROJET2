@@ -39,7 +39,6 @@ export class SaveDrawingComponent implements OnInit, OnDestroy, AfterViewInit {
         this.tags = [];
     }
     ngOnInit(): void {
-        // tslint:disable-next-line: deprecation
         this.saveDrawingService.currentFormat.subscribe((format: ImageFormat) => {
             this.selectedFormat = format.toString();
         });
