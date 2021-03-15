@@ -229,15 +229,14 @@ export class SelectionEllipseService extends Tool {
         this.drawingService.baseCtx.clip();
     }
 
-    private selectEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2): Promise<ImageBitmap> {
+    private selectEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         this.clipArea(finalGrid);
 
         this.imageData = this.drawingService.baseCtx.getImageData(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
-
+        this.drawingService.previewCtx.putImageData(this.imageData, this.firstGrid.x, this.firstGrid.y);
         // const imageBuffer = new Uint8ClampedArray(this.imageData.data.buffer);
         // const imageBitData = createImageBitmap(this.imageData);
-        // this.drawingService.previewCtx.putImageData(this.imageData, this.firstGrid.x, this.firstGrid.y);
-        this.clipArea(finalGrid);
+        // this.clipArea(finalGrid);
 
         // imageBitData.then(this.drawingService.previewCtx.drawImage(imageBitData, this.firstGrid.x, this.firstGrid.y);
 
