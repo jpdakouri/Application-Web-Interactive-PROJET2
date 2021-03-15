@@ -58,6 +58,7 @@ export class SaveDrawingComponent implements AfterViewInit {
     }
 
     updateService(): void {
+        this.saveDrawingService.originalCanvas = this.originalCanvas;
         this.saveDrawingService.image = this.previewImage;
         this.saveDrawingService.fileName = this.fileName.value;
         this.saveDrawingService.labelsChecked = this.tags;
