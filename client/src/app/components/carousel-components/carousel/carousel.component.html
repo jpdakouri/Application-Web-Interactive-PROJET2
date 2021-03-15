@@ -14,26 +14,26 @@
             class="sides"
             *ngIf="this.drawingArray.length > 1"
             [positionCaracteristics]="sideCard"
-            [infoDrawing]="drawingArray[1]"
+            [infoDrawing]="drawingArray[left]"
         ></app-drawing-card>
         <app-drawing-card
             class="main"
             *ngIf="this.drawingArray.length > 0"
             [positionCaracteristics]="mainCard"
-            [infoDrawing]="drawingArray[0]"
+            [infoDrawing]="drawingArray[middle]"
         ></app-drawing-card>
         <app-drawing-card
             class="sides"
             *ngIf="this.drawingArray.length > 1"
             [positionCaracteristics]="sideCard"
-            [infoDrawing]="drawingArray[2]"
+            [infoDrawing]="drawingArray[right]"
         ></app-drawing-card>
     </div>
     <div class="arrowContainer" *ngIf="this.drawingArray.length > 0">
-        <button mat-button class="leftArrow" color="primary" [disabled]="this.drawingArray.length < 2">
+        <button mat-button class="leftArrow" color="primary" (click)="shiftLeft()" [disabled]="this.drawingArray.length < 2">
             <mat-icon>arrow_left</mat-icon>
         </button>
-        <button mat-button class="rightArrow" color="primary" [disabled]="this.drawingArray.length < 2">
+        <button mat-button class="rightArrow" color="primary" (click)="shiftRight()" [disabled]="this.drawingArray.length < 2">
             <mat-icon>arrow_right</mat-icon>
         </button>
     </div>

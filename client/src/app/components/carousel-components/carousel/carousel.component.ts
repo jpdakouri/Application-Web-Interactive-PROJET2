@@ -11,6 +11,10 @@ import { DrawingData } from '@common/communication/drawing-data';
 export class CarouselComponent implements OnInit {
     sideCard: CardStyle;
     mainCard: CardStyle;
+    middle: number = 0;
+    left: number = 1;
+    right: number = 2;
+
     drawingArray: DrawingData[] = [
         {
             id: undefined,
@@ -47,5 +51,18 @@ export class CarouselComponent implements OnInit {
 
     onDialogClose(): void {
         this.dialogRef.close();
+    }
+
+    shiftLeft(): void {
+        // requeste ici
+        const test = this.drawingArray.slice(0, 1) as DrawingData[];
+        this.drawingArray = this.drawingArray.slice(1, 3);
+        this.drawingArray.push(test[0]);
+    }
+
+    shiftRight(): void {
+        // requeste ici
+        const test = this.drawingArray.slice(2, 3) as DrawingData[];
+        this.drawingArray.splice(0, 0, test[0]);
     }
 }
