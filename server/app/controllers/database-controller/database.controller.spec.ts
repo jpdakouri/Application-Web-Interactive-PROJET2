@@ -32,10 +32,11 @@ describe('DatabaseController', () => {
             updateDrawing: sandbox.stub().resolves(),
         });
         container.rebind(TYPES.ImageDataService).toConstantValue({
-            insertDrawing: sandbox.stub().resolves(),
             filterArray: sandbox.stub().resolves(),
             removeID: sandbox.stub().resolves(),
             updateDrawing: sandbox.stub().resolves(),
+            writeDrawingToDisk: sandbox.stub().resolves(),
+            getImagesFromDisk: sandbox.stub().resolves(),
         });
         imageDataService = container.get(TYPES.ImageDataService);
         databaseService = container.get(TYPES.DatabaseService);
@@ -54,13 +55,13 @@ describe('DatabaseController', () => {
                 expect(response.body).to.equal(insertResult.insertedId);
             });
     });
-    it('POST request to /drawings should call #insertDrawing from ImageDataService with correct parameters', async () => {
+    it('POST request to /drawings should call #writeDrawingToDisk from ImageDataService with correct parameter', async () => {
         const id = new ObjectId().toString();
         const insertResult = ({ insertedCount: 1, insertedId: id } as unknown) as InsertOneWriteOpResult<Metadata>;
         databaseService.insertDrawing.resolves(insertResult);
-        const imageData = ({ data: [], height: 0, width: 0 } as unknown) as ImageData;
-        const drawingData = new DrawingData(id, 'titleStub', ['tagStub1', 'tagStub2'], imageData);
-        const spy = chai.spy.on(imageDataService, 'insertDrawing');
+        const dataURL = 'dataURLStub';
+        const drawingData = new DrawingData(id, 'titleStub', ['tagStub1', 'tagStub2'], dataURL, 100, 100);
+        const spy = chai.spy.on(imageDataService, 'writeDrawingToDisk');
         chai.spy.on(imageDataService, 'insertNameCheckUp', () => true);
         chai.spy.on(imageDataService, 'insertTagsCheckUp', () => true);
         return supertest(app)
@@ -81,7 +82,7 @@ describe('DatabaseController', () => {
             .post('/api/drawings')
             .expect(HTTP_STATUS_BAD_REQUEST)
             .then((response: any) => {
-                expect(response.text).to.equal("Le document n'a pas pu etre inséséré dans la base de données !");
+                expect(response.text).to.equal("Le document n'a pas pu être inséré dans la base de données !");
             });
     });
 
@@ -124,12 +125,12 @@ describe('DatabaseController', () => {
     it('GET request to /drawings should respond a HTTP_STATUS_OK and an array containing DrawingData', async () => {
         const filterArrayResults: DrawingData[] = [];
         const getResults = new Array(10);
-        const imageData = ({ data: [], height: 0, width: 0 } as unknown) as ImageData;
+        const dataURL = 'dataURLStub';
         for (let i = 0; i < 5; i++) {
-            const drawing = new DrawingData(new ObjectId().toString(), `titleStub${i}`, [`tagStub1${i}`, `tagStub2${i}`], imageData);
+            const drawing = new DrawingData(new ObjectId().toString(), `titleStub${i}`, [`tagStub1${i}`, `tagStub2${i}`], dataURL, 100, 100);
             filterArrayResults.push(drawing);
         }
-        imageDataService.filterArray.returns(filterArrayResults);
+        imageDataService.getImagesFromDisk.returns(filterArrayResults);
         databaseService.getAllDrawings.resolves(getResults);
         return supertest(app)
             .get('/api/drawings')
@@ -139,14 +140,14 @@ describe('DatabaseController', () => {
             });
     });
 
-    it('GET request to /drawings should call #filterArray from ImageDataService with correct parameter', async () => {
+    it('GET request to /drawings should call #getImagesFromDisk from ImageDataService with correct parameter', async () => {
         const getResults: DrawingData[] = [];
-        const imageData = ({ data: [], height: 0, width: 0 } as unknown) as ImageData;
+        const dataURL = 'dataURLStub';
         for (let i = 0; i < 5; i++) {
-            getResults.push(new DrawingData(new ObjectId().toString(), `titleStub${i}`, [`tagStub1${i}`, `tagStub2${i}`], imageData));
+            getResults.push(new DrawingData(new ObjectId().toString(), `titleStub${i}`, [`tagStub1${i}`, `tagStub2${i}`], dataURL, 100, 100));
         }
         databaseService.getAllDrawings.resolves(getResults);
-        const spy = chai.spy.on(imageDataService, 'filterArray');
+        const spy = chai.spy.on(imageDataService, 'getImagesFromDisk');
         return supertest(app)
             .get('/api/drawings')
             .expect(HTTP_STATUS_OK)
@@ -162,7 +163,7 @@ describe('DatabaseController', () => {
             .get('/api/drawings')
             .expect(HTTP_STATUS_NOT_FOUND)
             .then((response: any) => {
-                expect(response.text).to.equal('Pas de dessin trouvé!');
+                expect(response.text).to.equal('Aucun dessin trouvé !');
             });
     });
 
@@ -172,20 +173,20 @@ describe('DatabaseController', () => {
             .get('/api/drawings')
             .expect(HTTP_STATUS_ERROR)
             .then((response: any) => {
-                expect(response.text).to.equal("Erreur d'opération dans le serveur!");
+                expect(response.text).to.equal("Erreur d'opération dans le serveur !");
             });
     });
 
     it('DELETE request to /drawings should respond a HTTP_STATUS_OK and correct message', async () => {
         const id = new ObjectId().toString();
-        const metadata = new Metadata(id, 'stubTitle', ['stubTag1', 'stubTag2']);
+        const metadata = new Metadata(id, 'stubTitle', ['stubTag1', 'stubTag2'], 100, 100);
         const deleteResult = ({ ok: 1, value: metadata } as unknown) as FindAndModifyWriteOpResultObject<Metadata>;
         databaseService.deleteDrawing.resolves(deleteResult);
         return supertest(app)
             .delete(`/api/drawings/${id}`)
             .expect(HTTP_STATUS_OK)
             .then((response: any) => {
-                expect(response.text).to.equal('"Drawing deleted !"');
+                expect(response.text).to.equal('"Dessin supprimé !"');
             });
     });
 
@@ -197,7 +198,7 @@ describe('DatabaseController', () => {
             .delete(`/api/drawings/${id}`)
             .expect(HTTP_STATUS_NOT_FOUND)
             .then((response: any) => {
-                expect(response.text).to.equal('Drawing not found !');
+                expect(response.text).to.equal('Aucun dessin trouvé !');
             });
     });
 
@@ -208,7 +209,7 @@ describe('DatabaseController', () => {
             .delete(`/api/drawings/${id}`)
             .expect(HTTP_STATUS_ERROR)
             .then((response: any) => {
-                expect(response.text).to.equal('Database operation error !');
+                expect(response.text).to.equal("Erreur d'opération dans le serveur !");
             });
     });
 
@@ -218,13 +219,13 @@ describe('DatabaseController', () => {
             .delete(`/api/drawings/${id}`)
             .expect(HTTP_STATUS_BAD_REQUEST)
             .then((response: any) => {
-                expect(response.text).to.equal('Invalid ID !');
+                expect(response.text).to.equal('ID invalide !');
             });
     });
 
     it('DELETE request to /drawings should call #removeID from imageDataService with correct parameter', async () => {
         const id = new ObjectId().toString();
-        const metadata = new Metadata(id, 'stubTitle', ['stubTag1', 'stubTag2']);
+        const metadata = new Metadata(id, 'stubTitle', ['stubTag1', 'stubTag2'], 100, 100);
         const deleteResult = ({ ok: 1, value: metadata } as unknown) as FindAndModifyWriteOpResultObject<Metadata>;
         databaseService.deleteDrawing.resolves(deleteResult);
         const spy = chai.spy.on(imageDataService, 'removeID');
@@ -237,9 +238,9 @@ describe('DatabaseController', () => {
     });
     it('PUT request to /drawings should respond a HTTP_STATUS_OK and correct message if drawing is updated', async () => {
         const id = new ObjectId().toString();
-        const imageData = ({ data: [], height: 0, width: 0 } as unknown) as ImageData;
-        const drawingData = new DrawingData(id, 'titleStub', ['tagStub1', 'tagStub2'], imageData);
-        const metadata = new Metadata(id, drawingData.title, drawingData.tags);
+        const dataURL = 'dataURLStub';
+        const drawingData = new DrawingData(id, 'titleStub', ['tagStub1', 'tagStub2'], dataURL, 100, 100);
+        const metadata = new Metadata(id, drawingData.title, drawingData.tags, 100, 100);
         const updateResult = ({ ok: 1, value: metadata } as unknown) as FindAndModifyWriteOpResultObject<Metadata>;
         databaseService.updateDrawing.resolves(updateResult);
         const spy = chai.spy.on(databaseService, 'updateDrawing');
@@ -248,7 +249,7 @@ describe('DatabaseController', () => {
             .send(drawingData)
             .expect(HTTP_STATUS_OK)
             .then((response: any) => {
-                expect(response.text).to.equal('"Drawing updated !"');
+                expect(response.text).to.equal('"Dessin mis à jour !"');
                 expect(spy).to.have.been.called.with(metadata);
             });
     });
@@ -257,49 +258,49 @@ describe('DatabaseController', () => {
         const id = new ObjectId().toString();
         const updateResult = ({ ok: 0, value: null } as unknown) as FindAndModifyWriteOpResultObject<Metadata>;
         databaseService.updateDrawing.resolves(updateResult);
-        const imageData = ({ data: [], height: 0, width: 0 } as unknown) as ImageData;
-        const drawingData = new DrawingData(id, 'titleStub', ['tagStub1', 'tagStub2'], imageData);
+        const dataURL = 'dataURLStub';
+        const drawingData = new DrawingData(id, 'titleStub', ['tagStub1', 'tagStub2'], dataURL, 100, 100);
         return supertest(app)
             .put(`/api/drawings/${id}`)
             .send(drawingData)
             .expect(HTTP_STATUS_NOT_FOUND)
             .then((response: any) => {
-                expect(response.text).to.equal('Drawing not found !');
+                expect(response.text).to.equal('Aucun dessin trouvé !');
             });
     });
 
     it('PUT request to /drawings should respond a HTTP_STATUS_ERROR and correct message if server or database error', async () => {
         const id = new ObjectId().toString();
-        const imageData = ({ data: [], height: 0, width: 0 } as unknown) as ImageData;
-        const drawingData = new DrawingData(id, 'titleStub', ['tagStub1', 'tagStub2'], imageData);
+        const dataURL = 'dataURLStub';
+        const drawingData = new DrawingData(id, 'titleStub', ['tagStub1', 'tagStub2'], dataURL, 100, 100);
         databaseService.updateDrawing.rejects();
         return supertest(app)
             .put(`/api/drawings/${id}`)
             .send(drawingData)
             .expect(HTTP_STATUS_ERROR)
             .then((response: any) => {
-                expect(response.text).to.equal('Database operation error !');
+                expect(response.text).to.equal("Erreur d'opération dans le serveur !");
             });
     });
 
     it('PUT request to /drawings should respond a HTTP_STATUS_BAD_REQUEST and correct message if invalid ID', async () => {
         const id = 'invalidID';
-        const imageData = ({ data: [], height: 0, width: 0 } as unknown) as ImageData;
-        const drawingData = new DrawingData(id, 'titleStub', ['tagStub1', 'tagStub2'], imageData);
+        const dataURL = 'dataURLStub';
+        const drawingData = new DrawingData(id, 'titleStub', ['tagStub1', 'tagStub2'], dataURL, 100, 100);
         return supertest(app)
             .put(`/api/drawings/${id}`)
             .send(drawingData)
             .expect(HTTP_STATUS_BAD_REQUEST)
             .then((response: any) => {
-                expect(response.text).to.equal('Invalid ID !');
+                expect(response.text).to.equal('ID invalide !');
             });
     });
 
     it('PUT request to /drawings should call #updateDrawing from imageDataService with correct parameter', async () => {
         const id = new ObjectId().toString();
-        const imageData = ({ data: [], height: 0, width: 0 } as unknown) as ImageData;
-        const drawingData = new DrawingData(id, 'titleStub', ['tagStub1', 'tagStub2'], imageData);
-        const metadata = new Metadata(id, drawingData.title, drawingData.tags);
+        const dataURL = 'dataURLStub';
+        const drawingData = new DrawingData(id, 'titleStub', ['tagStub1', 'tagStub2'], dataURL, 100, 100);
+        const metadata = new Metadata(id, drawingData.title, drawingData.tags, 100, 100);
         const updateResult = ({ ok: 1, value: metadata } as unknown) as FindAndModifyWriteOpResultObject<Metadata>;
         databaseService.updateDrawing.resolves(updateResult);
         const spy = chai.spy.on(imageDataService, 'updateDrawing');

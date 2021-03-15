@@ -57,7 +57,7 @@ describe('DatabaseService', () => {
     });
 
     it('insertDrawing() should insert a new Drawing in DB', async () => {
-        const newDrawing: Metadata = { _id: new ObjectId().toString(), title: 'test', tags: ['tag1', 'tag2'] };
+        const newDrawing: Metadata = { _id: new ObjectId().toString(), title: 'test', tags: ['tag1', 'tag2'], width: 100, height: 100 };
         await databaseService.insertDrawing(newDrawing);
         const drawings = await databaseService.collection.find({}).toArray();
         expect(drawings.length).to.equal(1);
@@ -75,7 +75,7 @@ describe('DatabaseService', () => {
     it('updateDrawing() should update the drawing in DB', async () => {
         const spy = chai.spy.on(databaseService.collection, 'findOneAndUpdate');
         const id = new ObjectId().toString();
-        const updatedDrawing: Metadata = { _id: id, title: 'test1', tags: ['tag1.1', 'tag1.2'] };
+        const updatedDrawing: Metadata = { _id: id, title: 'test1', tags: ['tag1.1', 'tag1.2'], width: 100, height: 100 };
         const newValues = { $set: { title: updatedDrawing.title, tags: updatedDrawing.tags } };
         const toUpdate = { _id: new ObjectId(id) };
         await databaseService.updateDrawing(updatedDrawing);
@@ -83,9 +83,9 @@ describe('DatabaseService', () => {
     });
 
     it('getAllDrawing() should return all the drawings in DB', async () => {
-        const newDrawing1: Metadata = { _id: undefined, title: 'test1', tags: ['tag1.1', 'tag1.2'] };
-        const newDrawing2: Metadata = { _id: undefined, title: 'test2', tags: ['tag2.1', 'tag2.2'] };
-        const newDrawing3: Metadata = { _id: undefined, title: 'test3', tags: ['tag3.1', 'tag3.2'] };
+        const newDrawing1: Metadata = { _id: undefined, title: 'test1', tags: ['tag1.1', 'tag1.2'], width: 100, height: 100 };
+        const newDrawing2: Metadata = { _id: undefined, title: 'test2', tags: ['tag2.1', 'tag2.2'], width: 100, height: 100 };
+        const newDrawing3: Metadata = { _id: undefined, title: 'test3', tags: ['tag3.1', 'tag3.2'], width: 100, height: 100 };
         const newDrawings: Metadata[] = [];
         newDrawings.push(newDrawing1);
         newDrawings.push(newDrawing2);
