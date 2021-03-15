@@ -20,8 +20,6 @@ import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 @Injectable({
     providedIn: 'root',
 })
-// TODO : set method use only here as private
-// TODO : remove #console.log
 export class AerosolService extends Tool {
     private intervalID: number;
     private mouseCurrentPosition: Vec2;
@@ -46,12 +44,11 @@ export class AerosolService extends Tool {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         if (this.mouseDown && this.isSpraying) {
             this.commandSprayLocations = [];
-            this.printSpray();
+            this.spray();
         }
     }
 
     onMouseUp(event: MouseEvent): void {
-        console.log('mouse up');
         this.isSpraying = false;
         if (this.mouseDown) {
             window.clearInterval(this.intervalID);
@@ -71,32 +68,25 @@ export class AerosolService extends Tool {
     }
 
     onMouseLeave(event: MouseEvent): void {
-        console.log('mouse leave');
         window.clearInterval(this.intervalID);
         this.isSpraying = false;
     }
 
     onMouseEnter(event: MouseEvent): void {
-        console.log('mouse enter');
         if (this.mouseDown) {
             this.isSpraying = true;
-            this.printSpray();
+            this.spray();
         }
     }
 
-    async printSpray(): Promise<void> {
+    private async spray(): Promise<void> {
         window.clearInterval(this.intervalID);
         this.intervalID = window.setInterval(() => {
-            this.spray();
+            this.generateSprayParticles();
         }, (MS_PER_S * DOTS_PER_SPRAY) / (this.frequency || MIN_FREQUENCY));
     }
 
-    spray(): void {
-        this.generateSprayParticles();
-    }
-
-    generateSprayParticles(): void {
-        console.count('spray');
+    private generateSprayParticles(): void {
         for (let i = 0; i < DOTS_PER_SPRAY; i++) {
             const offset = this.getRandomOffsetInRadius((this.jetDiameter || MIN_JET_DIAMETER) / 2);
             const radius = this.dropletDiameter || MIN_DROPLET_DIAMETER;
@@ -107,19 +97,19 @@ export class AerosolService extends Tool {
         }
     }
 
-    private drawSprayParticle(ctx: CanvasRenderingContext2D, position: Vec2, color: string, size: number): void {
-        ctx.strokeStyle = color;
-        ctx.fillStyle = color;
-        ctx.fillRect(position.x, position.y, size, size);
-    }
-
-    getRandomOffsetInRadius(radius: number): Vec2 {
+    private getRandomOffsetInRadius(radius: number): Vec2 {
         const randomAngle = Math.random() * (2 * Math.PI);
         const randomRadius = Math.random() * radius;
         return {
             x: Math.cos(randomAngle) * randomRadius,
             y: Math.sin(randomAngle) * randomRadius,
         };
+    }
+
+    private drawSprayParticle(ctx: CanvasRenderingContext2D, position: Vec2, color: string, radius: number): void {
+        ctx.strokeStyle = color;
+        ctx.fillStyle = color;
+        ctx.fillRect(position.x, position.y, radius, radius);
     }
 
     executeCommand(command: AerosolCommand): void {
