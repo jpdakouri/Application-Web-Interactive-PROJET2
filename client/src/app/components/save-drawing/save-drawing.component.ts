@@ -49,6 +49,10 @@ export class SaveDrawingComponent implements OnInit, OnDestroy, AfterViewInit {
         this.saveDrawingService.currentFormat.complete();
     }
 
+    onDialogClose(): void {
+        this.dialogRef.close();
+    }
+
     getErrorMessage(): string {
         if (this.fileName.hasError('required')) {
             return 'Vous devez entrer un nom';

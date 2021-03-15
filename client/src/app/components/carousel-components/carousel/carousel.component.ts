@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
 import { MAX_HEIGHT_MAIN_CARD, MAX_HEIGHT_SIDE_CARD, MAX_WIDTH_MAIN_CARD, MAX_WIDTH_SIDE_CARD } from '@app/components/components-constants';
 import { CardStyle } from '@app/utils/interfaces/card-style';
 import { DrawingData } from '@common/communication/drawing-data';
@@ -28,7 +29,7 @@ export class CarouselComponent implements OnInit {
         },
     ] as DrawingData[];
 
-    constructor() {
+    constructor(public dialogRef: MatDialogRef<CarouselComponent>) {
         this.sideCard = {
             maxWidth: MAX_WIDTH_SIDE_CARD,
             maxHeight: MAX_HEIGHT_SIDE_CARD,
@@ -41,9 +42,14 @@ export class CarouselComponent implements OnInit {
             position: 'main',
         };
     }
+
+    ngOnInit(): void {}
+
+    onDialogClose(): void {
+        this.dialogRef.close();
+    }
+
     moreThanOne(): boolean {
         return this.drawingArray.length > 1;
     }
-
-    ngOnInit(): void {}
 }

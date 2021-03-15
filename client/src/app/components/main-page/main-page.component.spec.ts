@@ -5,10 +5,10 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterTestingModule } from '@angular/router/testing';
+import { CarouselComponent } from '@app/components/carousel-components/carousel/carousel.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { IndexService } from '@app/services/index/index.service';
 import { of } from 'rxjs';
-import { CarouselComponent } from '../carousel-components/carousel/carousel.component';
 import { MainPageComponent } from './main-page.component';
 
 import SpyObj = jasmine.SpyObj;

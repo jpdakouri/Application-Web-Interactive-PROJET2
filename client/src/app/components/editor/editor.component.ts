@@ -1,7 +1,5 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { ExportDrawingComponent } from '@app/components/export-drawing/export-drawing.component';
-import { SaveDrawingComponent } from '@app/components/save-drawing/save-drawing.component';
+import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ToolbarComponent } from '@app/components/toolbar-components/toolbar/toolbar.component';
 import { DialogControllerService } from '@app/services/dialog-controller/dialog-controller.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -26,8 +24,6 @@ export class EditorComponent implements AfterViewInit {
         private toolManagerService: ToolManagerService,
         private drawingService: DrawingService,
         private dialogControllerService: DialogControllerService,
-        public exportDrawingDialog: MatDialogRef<ExportDrawingComponent>,
-        public saveDrawingDialog: MatDialogRef<SaveDrawingComponent>,
         public dialog: MatDialog,
     ) {
         this.toolFinder = new Map<KeyboardButtons, ToolsNames>();
@@ -53,25 +49,28 @@ export class EditorComponent implements AfterViewInit {
         this.editor.nativeElement.style.minWidth = this.editorMinWidth + 'px';
     }
 
-    // @HostListener('window:keydown', ['$event'])
+    @HostListener('window:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
-        if (event.ctrlKey) {
-            if (event.key === KeyboardButtons.NewDrawing) this.onCreateNewDrawing();
-            if (event.key === KeyboardButtons.Export) {
-                event.preventDefault();
-                this.openExportDrawingModal();
+        if (this.dialogControllerService.noDialogOpened) {
+            if (event.ctrlKey) {
+                if (event.key === KeyboardButtons.NewDrawing) this.onCreateNewDrawing();
+                if (event.key === KeyboardButtons.Carousel) this.openCarouselModal();
+                if (event.key === KeyboardButtons.Export) {
+                    event.preventDefault();
+                    this.openExportDrawingModal();
+                }
+                if (event.key === KeyboardButtons.Save) {
+                    event.preventDefault();
+                    this.openSaveDrawingModal();
+                }
             }
-            if (event.key === KeyboardButtons.Save) {
-                event.preventDefault();
-                this.openSaveDrawingModal();
-            }
-        }
 
-        if (!event.shiftKey && !event.ctrlKey) {
-            const toolKeyDown = this.toolFinder.get(event.key as KeyboardButtons) as ToolsNames;
-            if (!(toolKeyDown == undefined)) {
-                this.toolManagerService.setCurrentTool(toolKeyDown);
-                this.toolManagerService.emitToolChange(toolKeyDown);
+            if (!event.shiftKey && !event.ctrlKey) {
+                const toolKeyDown = this.toolFinder.get(event.key as KeyboardButtons) as ToolsNames;
+                if (!(toolKeyDown == undefined)) {
+                    this.toolManagerService.setCurrentTool(toolKeyDown);
+                    this.toolManagerService.emitToolChange(toolKeyDown);
+                }
             }
         }
     }
