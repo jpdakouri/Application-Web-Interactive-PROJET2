@@ -37,7 +37,6 @@ export class SelectionRectangleService extends Tool {
 
     onMouseDown(event: MouseEvent): void {
         this.clearPath();
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.mouseDown = event.button === MouseButtons.Left;
         this.firstGrid = this.getPositionFromMouse(event);
         this.mouseMoved = false;
@@ -73,10 +72,10 @@ export class SelectionRectangleService extends Tool {
             this.updateTopLeftCorner();
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             if (this.shiftDown) {
-                this.drawSquare(this.mouseDownCoord);
-                this.selectBox(this.drawingService.previewCtx, this.mouseDownCoord);
+                this.makeSquare(this.mouseDownCoord);
+                this.selectionRectangle(this.drawingService.previewCtx, this.mouseDownCoord);
             }
-            this.selectBox(this.drawingService.previewCtx, this.mouseDownCoord);
+            this.selectionRectangle(this.drawingService.previewCtx, this.mouseDownCoord);
             this.clearPath();
         }
         this.mouseDown = false;
@@ -174,7 +173,7 @@ export class SelectionRectangleService extends Tool {
         return Math.abs(this.mouseDownCoord.y) > Math.abs(this.mouseDownCoord.x);
     }
 
-    private drawSquare(grid: Vec2): void {
+    private makeSquare(grid: Vec2): void {
         if (this.isMouseInFirstQuadrant()) {
             grid.x = grid.y = Math.min(this.mouseDownCoord.x, this.mouseDownCoord.y);
         }
@@ -207,13 +206,16 @@ export class SelectionRectangleService extends Tool {
         }
     }
 
-    private selectBox(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+    private selectionRectangle(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+        // Prendre la region de pixel
         this.imageData = this.drawingService.baseCtx.getImageData(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
         ctx.putImageData(this.imageData, this.topLeftCorner.x, this.topLeftCorner.y);
 
+        // Mettre le backround white
         this.drawingService.baseCtx.fillStyle = 'white';
         this.drawingService.baseCtx.fillRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
 
+        // Print rectangle de selection
         ctx.setLineDash([numberFive, numberFifteen]);
         ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
     }
@@ -223,7 +225,8 @@ export class SelectionRectangleService extends Tool {
         const currentCoord = { ...this.mouseDownCoord };
         this.drawingService.previewCtx.beginPath();
         if (this.shiftDown) {
-            this.drawSquare(currentCoord);
+            this.makeSquare(currentCoord);
+            this.drawRectanglePerimeter(this.drawingService.previewCtx, currentCoord);
         }
         this.drawRectanglePerimeter(this.drawingService.previewCtx, currentCoord);
         this.drawingService.previewCtx.closePath();

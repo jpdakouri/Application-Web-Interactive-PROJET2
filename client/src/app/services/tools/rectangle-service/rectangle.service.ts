@@ -42,7 +42,7 @@ export class RectangleService extends Tool {
         if (this.mouseDown) {
             this.drawRectangle(this.drawingService.previewCtx, this.mouseDownCoord);
             if (this.shiftDown) {
-                this.drawSquare(this.mouseDownCoord);
+                this.makeSquare(this.mouseDownCoord);
             }
             this.drawRectangle(this.drawingService.baseCtx, this.mouseDownCoord);
             this.clearPath();
@@ -134,7 +134,7 @@ export class RectangleService extends Tool {
         return Math.abs(this.mouseDownCoord.y) > Math.abs(this.mouseDownCoord.x);
     }
 
-    private drawSquare(grid: Vec2): void {
+    private makeSquare(grid: Vec2): void {
         if (this.isMouseInFirstQuadrant()) {
             grid.x = grid.y = Math.min(this.mouseDownCoord.x, this.mouseDownCoord.y);
         }
@@ -178,7 +178,7 @@ export class RectangleService extends Tool {
         this.drawingService.previewCtx.beginPath();
         this.drawPerimeter(this.drawingService.previewCtx, currentCoord);
         if (this.shiftDown) {
-            this.drawSquare(currentCoord);
+            this.makeSquare(currentCoord);
         }
         this.drawRectangle(this.drawingService.previewCtx, currentCoord);
         this.drawingService.previewCtx.closePath();

@@ -13,7 +13,6 @@ import { KeyboardButtons, MouseButtons } from '@app/utils/enums/list-boutton-pre
 // constante temporaire simplement pour facilier le merge
 
 const numberFive = 5;
-const numberFifteen = 15;
 @Injectable({
     providedIn: 'root',
 })
@@ -193,8 +192,9 @@ export class SelectionEllipseService extends Tool {
     }
 
     private drawPreviewSelection(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
-        ctx.strokeStyle = 'blue';
-        ctx.setLineDash([numberFive, numberFifteen]);
+        ctx.strokeStyle = 'black';
+        ctx.setLineDash([4, 3]);
+        ctx.lineWidth = this.lineThickness = 0.5;
 
         const startCoord = { ...this.firstGrid };
         const width = Math.abs(finalGrid.x);
@@ -212,8 +212,8 @@ export class SelectionEllipseService extends Tool {
     }
 
     private drawEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
-        ctx.strokeStyle = 'black';
-        ctx.lineWidth = this.lineThickness = 1;
+        ctx.strokeStyle = '#00a2ff';
+        ctx.lineWidth = this.lineThickness = 0.5;
 
         const startCoord = { ...this.firstGrid };
         const width = Math.abs(finalGrid.x);
@@ -223,22 +223,23 @@ export class SelectionEllipseService extends Tool {
     }
 
     private clipArea(finalGrid: Vec2): void {
-        this.drawingService.previewCtx.beginPath();
-        this.drawEllipse(this.drawingService.previewCtx, finalGrid);
-        this.drawingService.previewCtx.closePath();
+        this.drawingService.baseCtx.beginPath();
+        this.drawEllipse(this.drawingService.baseCtx, finalGrid);
+        this.drawingService.baseCtx.closePath();
         this.drawingService.baseCtx.clip();
     }
 
-    private selectEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
-        // this.clipArea(finalGrid);
-        // ctx.strokeStyle = 'red';
-        // ctx.rect(150, 150, 500, 500);
-        // this.drawingService.baseCtx.clip();
+    private selectEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2): Promise<ImageBitmap> {
         this.clipArea(finalGrid);
+
         this.imageData = this.drawingService.baseCtx.getImageData(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+
+        // const imageBuffer = new Uint8ClampedArray(this.imageData.data.buffer);
+        // const imageBitData = createImageBitmap(this.imageData);
+        // this.drawingService.previewCtx.putImageData(this.imageData, this.firstGrid.x, this.firstGrid.y);
         this.clipArea(finalGrid);
-        this.drawingService.previewCtx.putImageData(this.imageData, this.firstGrid.x, this.firstGrid.y);
-        this.clipArea(finalGrid);
+
+        // imageBitData.then(this.drawingService.previewCtx.drawImage(imageBitData, this.firstGrid.x, this.firstGrid.y);
 
         // Remplir de blanc
         this.drawingService.baseCtx.fillStyle = 'white';
