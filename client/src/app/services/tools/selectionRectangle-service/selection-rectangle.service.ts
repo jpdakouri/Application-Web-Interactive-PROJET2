@@ -21,9 +21,12 @@ export class SelectionRectangleService extends Tool {
     private topLeftCorner: Vec2;
     private begin: Vec2;
     private end: Vec2;
+    private initial: Vec2;
+    private topLeftCornerInit: Vec2;
     private imageData: ImageData;
     private shiftDown: boolean;
     private selectionActive: boolean;
+    private dragActive: boolean;
 
     rectangleService: RectangleService;
     currentColourService: CurrentColourService;
@@ -48,6 +51,8 @@ export class SelectionRectangleService extends Tool {
             } else {
                 if (this.isClickIn(this.firstGrid)) {
                     console.log('click dedans');
+                    this.initial = this.topLeftCornerInit = this.getPositionFromMouse(event);
+                    this.dragActive = true;
                 } else {
                     this.selectionActive = false;
                     this.drawingService.baseCtx.putImageData(this.imageData, this.topLeftCorner.x, this.topLeftCorner.y);
@@ -58,16 +63,18 @@ export class SelectionRectangleService extends Tool {
     }
 
     onMouseMove(event: MouseEvent): void {
-        if (this.mouseDown && this.selectionActive) {
+        if (this.mouseDown && this.selectionActive && !this.dragActive) {
             this.mouseMoved = true;
             this.mouseDownCoord.x = this.getPositionFromMouse(event).x - this.firstGrid.x;
             this.mouseDownCoord.y = this.getPositionFromMouse(event).y - this.firstGrid.y;
             this.updatePreview();
+        } else if (this.mouseDown && this.selectionActive && this.dragActive) {
+            this.updateDragPosition(event);
         }
     }
 
     onMouseUp(event: MouseEvent): void {
-        if (this.mouseDown) {
+        if (this.mouseDown && this.selectionActive && !this.dragActive) {
             this.end = this.getPositionFromMouse(event);
             this.updateTopLeftCorner();
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -79,6 +86,7 @@ export class SelectionRectangleService extends Tool {
             this.clearPath();
         }
         this.mouseDown = false;
+        this.dragActive = false;
     }
 
     onKeyDown(event: KeyboardEvent): void {
@@ -204,6 +212,15 @@ export class SelectionRectangleService extends Tool {
         if (this.begin.y < this.end.y) {
             this.topLeftCorner.y = this.begin.y;
         }
+    }
+
+    private updateDragPosition(event: MouseEvent): void {
+        const currentCoord = this.getPositionFromMouse(event);
+        this.topLeftCorner.x = this.topLeftCornerInit.x + currentCoord.x - this.initial.x - this.imageData.width / 2;
+        this.topLeftCorner.y = this.topLeftCornerInit.y + currentCoord.y - this.initial.y - this.imageData.height / 2;
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawingService.previewCtx.putImageData(this.imageData, this.topLeftCorner.x, this.topLeftCorner.y);
+        console.log(this.topLeftCorner, this.initial, currentCoord);
     }
 
     private selectionRectangle(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
