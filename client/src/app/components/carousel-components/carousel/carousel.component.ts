@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MAX_HEIGHT_MAIN_CARD, MAX_HEIGHT_SIDE_CARD, MAX_WIDTH_MAIN_CARD, MAX_WIDTH_SIDE_CARD } from '@app/components/components-constants';
+import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { CardStyle } from '@app/utils/interfaces/card-style';
 import { DrawingData } from '@common/communication/drawing-data';
 @Component({
@@ -48,6 +49,12 @@ export class CarouselComponent implements OnInit {
     }
 
     ngOnInit(): void {}
+
+    @HostListener('window:keydown', ['$event'])
+    onKeyDown(event: KeyboardEvent): void {
+        if (event.key === KeyboardButtons.Left) this.shiftLeft();
+        else if (event.key === KeyboardButtons.Right) this.shiftRight();
+    }
 
     onDialogClose(): void {
         this.dialogRef.close();
