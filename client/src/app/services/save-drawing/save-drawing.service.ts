@@ -1,30 +1,22 @@
-import { Injectable } from '@angular/core';
+import { ElementRef, Injectable } from '@angular/core';
 import { HttpService } from '@app/services/http/http.service';
-import { ImageFormat } from '@app/utils/enums/image-format.enum';
 import { Tag } from '@app/utils/interfaces/tag';
 import { DrawingData } from '@common/communication/drawing-data';
-import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
 })
 export class SaveDrawingService {
-    currentFormat: BehaviorSubject<string>;
-    previewCanvas: HTMLCanvasElement;
+    previewCanvas: ElementRef<HTMLImageElement>;
     originalCanvas: HTMLCanvasElement;
     id: number;
-
-    canvas: HTMLCanvasElement;
+    image: ElementRef<HTMLImageElement>;
     fileName: string;
-    selectedFormat: string;
-    formats: string[];
 
     drawing: DrawingData;
     labelsChecked: Tag[];
 
-    constructor(private httpService: HttpService) {
-        this.currentFormat = new BehaviorSubject<string>(ImageFormat.PNG);
-    }
+    constructor(private httpService: HttpService) {}
 
     getDataURLFromCanvas(): string {
         const context = this.originalCanvas.getContext('2d');
@@ -120,6 +112,7 @@ export class SaveDrawingService {
             },
         });
     }
+
     toStringArray(labels: Tag[]): string[] {
         const tempArray = new Array<string>();
         let i: number;
@@ -127,37 +120,16 @@ export class SaveDrawingService {
         return tempArray;
     }
 
-    drawPreviewImage(): void {
-        const previewContext = this.previewCanvas.getContext('2d') as CanvasRenderingContext2D;
-        let dataURL = '';
-        if (this.originalCanvas) dataURL = this.originalCanvas.toDataURL(ImageFormat.PNG);
-
-        previewContext.clearRect(0, 0, this.previewCanvas.width, this.previewCanvas.height);
-
-        const image = new Image();
-        if (dataURL) {
-            image.src = dataURL;
-            image.onload = () => {
-                // get the scale
-                const scale = Math.min(this.previewCanvas.width / image.width, this.previewCanvas.height / image.height);
-                // get the top left position of the image
-                const x = this.previewCanvas.width / 2 - (image.width / 2) * scale;
-                const y = this.previewCanvas.height / 2 - (image.height / 2) * scale;
-                previewContext.drawImage(image, x, y, image.width * scale, image.height * scale);
-            };
-        }
-    }
-
-    private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
-        return (error: HttpErrorResponse): Observable<T> => {
-            if (error.status === 0) this.openErrorDialog('Serveur Indisponible');
-            else this.openErrorDialog(error.error);
-            console.log(error);
-            return of(result as T);
-        };
-    }
-    // tslint:disable-next-line:no-any
-    openErrorDialog(message: any): void {
-        this.dialog.open(ServerErrorMessageComponent, { data: message });
-    }
+    // private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
+    //     return (error: HttpErrorResponse): Observable<T> => {
+    //         if (error.status === 0) this.openErrorDialog('Serveur Indisponible');
+    //         else this.openErrorDialog(error.error);
+    //         console.log(error);
+    //         return of(result as T);
+    //     };
+    // }
+    // // tslint:disable-next-line:no-any
+    // openErrorDialog(message: any): void {
+    //     this.dialog.open(ServerErrorMessageComponent, { data: message });
+    // }
 }
