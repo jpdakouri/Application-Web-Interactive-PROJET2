@@ -1,5 +1,6 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { MatDialogModule } from '@angular/material/dialog';
 import { DrawingData } from '@common/communication/drawing-data';
 import { HttpService } from './http.service';
 
@@ -9,7 +10,7 @@ describe('HttpService', () => {
     let baseUrl: string;
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [HttpClientTestingModule],
+            imports: [HttpClientTestingModule, MatDialogModule],
         });
         service = TestBed.inject(HttpService);
         httpMock = TestBed.inject(HttpTestingController);
@@ -36,7 +37,7 @@ describe('HttpService', () => {
         expect(req.request.method).toBe('GET');
         const data: DrawingData[] = [];
         for (let i = 0; i < 5; i++) {
-            data.push(new DrawingData(`testID${i}`, `testTitle${i}`, [`testTag${i}`, `testTag${i + 1}`], new ImageData(100, 100)));
+            data.push(new DrawingData(`testID${i}`, `testTitle${i}`, [`testTag${i}`, `testTag${i + 1}`], 'dataURL', 100, 100));
         }
         req.flush(data);
     });
@@ -50,7 +51,7 @@ describe('HttpService', () => {
         req.flush(response);
     });
     it('#insertDrawing should send correct request', () => {
-        const drawingStub = new DrawingData(undefined, 'testTitle', ['testTag1', 'testTag2'], new ImageData(100, 100));
+        const drawingStub = new DrawingData(undefined, 'testTitle', ['testTag1', 'testTag2'], 'dataURL', 100, 100);
         service.insertDrawing(drawingStub).subscribe((result) => {
             expect(result).toEqual('this is the mongo generated ID');
         });
@@ -61,7 +62,7 @@ describe('HttpService', () => {
     });
 
     it('#updateDrawing should send correct request', () => {
-        const drawingStub = new DrawingData('testID', 'testTitle', ['testTag1', 'testTag2'], new ImageData(100, 100));
+        const drawingStub = new DrawingData('testID', 'testTitle', ['testTag1', 'testTag2'], 'dataURL', 100, 100);
         service.updateDrawing(drawingStub).subscribe((result) => {
             expect(result).toEqual('Drawing was updated !');
         });

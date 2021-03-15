@@ -22,6 +22,7 @@
                     <mat-icon matChipRemove>cancel</mat-icon>
                 </mat-chip>
                 <input
+                    matInput
                     placeholder="Étiquette(s)"
                     maxlength="25"
                     #tagValue
@@ -44,12 +45,6 @@
 
         <button mat-raised-button color="primary" (click)="addDrawing()" [disabled]="waitingForServer || fileName.invalid">
             <span class="material-icons">save</span>Sauvegarder
-        </button>
-        <button mat-raised-button color="primary" (click)="deleteDrawing()" [disabled]="waitingForServer || fileName.invalid">
-            <span class="material-icons">delete</span>delete
-        </button>
-        <button mat-raised-button color="primary" (click)="updateDrawing()" [disabled]="waitingForServer || fileName.invalid">
-            <span class="material-icons">update</span>update
         </button>
     </mat-dialog-actions>
 </div>
