@@ -11,19 +11,19 @@
 
     <div class="matContainer">
         <app-drawing-card
-            class="sides"
+            class="sides cards"
             *ngIf="this.drawingArray.length > 1"
             [positionCaracteristics]="sideCard"
             [infoDrawing]="drawingArray[left]"
         ></app-drawing-card>
         <app-drawing-card
-            class="main"
+            class="main cards"
             *ngIf="this.drawingArray.length > 0"
             [positionCaracteristics]="mainCard"
             [infoDrawing]="drawingArray[middle]"
         ></app-drawing-card>
         <app-drawing-card
-            class="sides"
+            class="sides cards"
             *ngIf="this.drawingArray.length > 1"
             [positionCaracteristics]="sideCard"
             [infoDrawing]="drawingArray[right]"
