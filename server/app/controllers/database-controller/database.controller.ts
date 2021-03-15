@@ -34,7 +34,9 @@ export class DatabaseController {
         this.router.post('/', (req: Request, res: Response, next: NextFunction) => {
             const drawingData = req.body as DrawingData;
             const newMetadata = new Metadata(undefined, drawingData.title, drawingData.tags);
-            if (!this.imageDataService.insertCheckUp(drawingData)) res.status(HTTP_STATUS_BAD_REQUEST).send('Message du serveur: Nom Invalide !');
+            if (!this.imageDataService.insertNameCheckUp(drawingData)) res.status(HTTP_STATUS_BAD_REQUEST).send('Message du serveur: Nom Invalide !');
+            if (!this.imageDataService.insertTagsCheckUp(drawingData))
+                res.status(HTTP_STATUS_BAD_REQUEST).send('Message du serveur: Étiquette Invalide!');
             else
                 this.databaseService
                     .insertDrawing(newMetadata)

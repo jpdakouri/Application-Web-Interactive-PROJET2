@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ServerErrorMessageComponent } from '@app/components/server-error-message/server-error-message.component';
 import { HttpService } from '@app/services/http/http.service';
 import { ImageFormat } from '@app/utils/enums/image-format.enum';
+import { Tag } from '@app/utils/interfaces/tag';
 import { DrawingData } from '@common/communication/drawing-data';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -21,7 +22,7 @@ export class SaveDrawingService {
     fileName: string;
     selectedFormat: string;
     formats: string[];
-    labelsChecked: string[];
+    labelsChecked: Tag[];
 
     constructor(private httpService: HttpService, public dialog: MatDialog) {
         this.originalCanvas = document.getElementById('canvas') as HTMLCanvasElement;
@@ -39,14 +40,16 @@ export class SaveDrawingService {
     }
 
     addDrawing(): Observable<unknown> {
-        const drawingToSend = new DrawingData(
-            undefined,
-            this.fileName,
-            this.labelsChecked != undefined ? this.labelsChecked : ['none'],
-            this.getImageDataFromCanva(),
-        );
+        const labels = this.toStringArray(this.labelsChecked);
+        const drawingToSend = new DrawingData(undefined, this.fileName, labels != undefined ? labels : ['none'], this.getImageDataFromCanva());
 
         return this.httpService.insertDrawing(drawingToSend).pipe(catchError(this.handleError<void>('basicPost')));
+    }
+    toStringArray(labels: Tag[]): string[] {
+        const tempArray = new Array<string>();
+        let i: number;
+        for (i = 0; i < labels.length; i++) tempArray.push(labels[i].name);
+        return tempArray;
     }
 
     drawPreviewImage(): void {
