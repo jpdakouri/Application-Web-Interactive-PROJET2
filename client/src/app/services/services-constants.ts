@@ -28,4 +28,4 @@ export const DEFAULT_WHITE = '#fff';
 /***IMAGE EXPORT/SAVE CONSTANTS***/
 /*********************************/
 export const FILE_NAME_REGEX = /^[a-zA-Z0-9-]*$/;
-export const LABEL_NAME_REGEX = /^[a-zA-Z0-9 ]*$/;
+export const TAG_NAME_REGEX = /^[a-zA-Z0-9 ]*$/;

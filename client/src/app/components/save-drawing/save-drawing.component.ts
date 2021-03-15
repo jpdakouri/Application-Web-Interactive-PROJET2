@@ -4,7 +4,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDialogRef } from '@angular/material/dialog';
 import { SaveDrawingService } from '@app/services/save-drawing/save-drawing.service';
-import { FILE_NAME_REGEX, LABEL_NAME_REGEX } from '@app/services/services-constants';
+import { FILE_NAME_REGEX, TAG_NAME_REGEX } from '@app/services/services-constants';
 import { ImageFormat } from '@app/utils/enums/image-format.enum';
 import { Tag } from '@app/utils/interfaces/tag';
 
@@ -32,7 +32,7 @@ export class SaveDrawingComponent implements OnInit, OnDestroy, AfterViewInit {
 
     constructor(private saveDrawingService: SaveDrawingService, public dialogRef: MatDialogRef<SaveDrawingComponent>) {
         this.fileName = new FormControl('', [Validators.required, Validators.pattern(FILE_NAME_REGEX)]);
-        this.tagName = new FormControl('', [Validators.pattern(LABEL_NAME_REGEX)]);
+        this.tagName = new FormControl('', [Validators.pattern(TAG_NAME_REGEX)]);
         this.formats = Object.values(ImageFormat);
         this.selectedFormat = ImageFormat.PNG;
         this.tags = [];
@@ -56,7 +56,7 @@ export class SaveDrawingComponent implements OnInit, OnDestroy, AfterViewInit {
         this.dialogRef.close();
     }
 
-    getErrorMessage(): string {
+    getErrorMessageName(): string {
         if (this.fileName.hasError('required')) {
             return 'Vous devez entrer un nom';
         }
@@ -96,7 +96,7 @@ export class SaveDrawingComponent implements OnInit, OnDestroy, AfterViewInit {
         const input = event.input;
         const value = event.value;
 
-        if ((value || '').trim() && LABEL_NAME_REGEX.test(value)) {
+        if ((value || '').trim() && TAG_NAME_REGEX.test(value)) {
             this.tags.push({ name: value.trim() });
         }
 

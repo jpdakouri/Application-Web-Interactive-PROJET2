@@ -3,7 +3,7 @@ import { DrawingData } from '@common/communication/drawing-data';
 import { injectable } from 'inversify';
 
 const FILE_NAME_REGEX = /^[a-zA-Z0-9-_]*$/;
-const LABEL_NAME_REGEX = /^[a-zA-Z0-9 ]*$/;
+const TAG_NAME_REGEX = /^[a-zA-Z0-9 ]*$/;
 @injectable()
 export class ImageDataService {
     drawingData: DrawingData[] = new Array();
@@ -39,7 +39,7 @@ export class ImageDataService {
     insertTagsCheckUp(drawingImage: DrawingData): boolean {
         let valideInput = true;
         drawingImage.tags.forEach((tag) => {
-            if (!LABEL_NAME_REGEX.test(tag)) valideInput = false;
+            if (!TAG_NAME_REGEX.test(tag)) valideInput = false;
         });
         return valideInput;
     }
