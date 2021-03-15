@@ -5,7 +5,9 @@
     height: 90vh;
     position: relative;
 }
-
+/*********************
+        Toolbar
+*********************/
 .toolbar {
     display: flex;
     flex-direction: row;
@@ -22,10 +24,15 @@
     font-family: 'Pacifico', cursive;
     font-size: 30px;
 }
+
+/*********************
+        drawings
+*********************/
 .matContainer {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    justify-content: center;
     position: absolute;
     width: 75vw;
     padding-top: 15px;
@@ -45,21 +52,32 @@
     filter: alpha(opacity=60);
 }
 
+/*********************
+        Arrows
+*********************/
 .arrowContainer {
     position: absolute;
     top: 37vh;
+    width: 75vw;
+    height: fit-content;
 }
 
 .leftArrow {
     position: inherit;
-    left: 30vh;
+    left: 27.5%;
 }
 
 .rightArrow {
     position: inherit;
-    left: 50vw;
+    left: 67.5%;
 }
 
-.arrowContainer mat-icon {
-    font-size: 200px;
+.arrowContainer .material-icons {
+    // font-size: 200px;
+}
+.mat-button {
+    line-height: 0vw;
+    min-width: 5%;
+    padding: 0vw;
+    margin: 0vw;
 }

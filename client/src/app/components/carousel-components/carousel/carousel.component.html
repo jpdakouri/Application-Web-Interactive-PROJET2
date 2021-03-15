@@ -9,13 +9,32 @@
         </span>
     </mat-toolbar>
 
-    <div class="matContainer" *ngIf="moreThanOne()">
-        <app-drawing-card class="sides" [positionCaracteristics]="sideCard" [infoDrawing]="drawingArray[0]"></app-drawing-card>
-        <app-drawing-card class="main" [positionCaracteristics]="mainCard" [infoDrawing]="drawingArray[1]"></app-drawing-card>
-        <app-drawing-card class="sides" [positionCaracteristics]="sideCard" [infoDrawing]="drawingArray[2]"></app-drawing-card>
+    <div class="matContainer">
+        <app-drawing-card
+            class="sides"
+            *ngIf="this.drawingArray.length > 1"
+            [positionCaracteristics]="sideCard"
+            [infoDrawing]="drawingArray[1]"
+        ></app-drawing-card>
+        <app-drawing-card
+            class="main"
+            *ngIf="this.drawingArray.length > 0"
+            [positionCaracteristics]="mainCard"
+            [infoDrawing]="drawingArray[0]"
+        ></app-drawing-card>
+        <app-drawing-card
+            class="sides"
+            *ngIf="this.drawingArray.length > 1"
+            [positionCaracteristics]="sideCard"
+            [infoDrawing]="drawingArray[2]"
+        ></app-drawing-card>
     </div>
-    <div class="arrowContainer">
-        <span class="leftArrow"><mat-icon color="primary">arrow_left</mat-icon></span>
-        <span class="rightArrow"><mat-icon color="primary">arrow_right</mat-icon></span>
+    <div class="arrowContainer" *ngIf="this.drawingArray.length > 0">
+        <button mat-button class="leftArrow" color="primary" [disabled]="this.drawingArray.length < 2">
+            <mat-icon>arrow_left</mat-icon>
+        </button>
+        <button mat-button class="rightArrow" color="primary" [disabled]="this.drawingArray.length < 2">
+            <mat-icon>arrow_right</mat-icon>
+        </button>
     </div>
 </div>

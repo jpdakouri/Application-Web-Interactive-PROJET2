@@ -48,8 +48,4 @@ export class CarouselComponent implements OnInit {
     onDialogClose(): void {
         this.dialogRef.close();
     }
-
-    moreThanOne(): boolean {
-        return this.drawingArray.length > 1;
-    }
 }
