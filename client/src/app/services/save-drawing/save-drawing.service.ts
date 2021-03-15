@@ -1,12 +1,8 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { ServerErrorMessageComponent } from '@app/components/server-error-message/server-error-message.component';
 import { HttpService } from '@app/services/http/http.service';
 import { ImageFormat } from '@app/utils/enums/image-format.enum';
 import { DrawingData } from '@common/communication/drawing-data';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -22,31 +18,112 @@ export class SaveDrawingService {
     selectedFormat: string;
     formats: string[];
     labelsChecked: string[];
+    drawing: DrawingData;
 
-    constructor(private httpService: HttpService, public dialog: MatDialog) {
-        this.originalCanvas = document.getElementById('canvas') as HTMLCanvasElement;
+    constructor(private httpService: HttpService) {
         this.currentFormat = new BehaviorSubject<string>(ImageFormat.PNG);
     }
 
-    private getImageDataFromCanva(): ImageData {
-        const emptyImageData = new ImageData(this.canvas.width, this.canvas.height);
-        const imageData = this.canvas
-            .getContext('2d', {
-                alpha: true,
-            })
-            ?.getImageData(0, 0, this.canvas.width, this.canvas.height);
-        return imageData ? imageData : emptyImageData;
-    }
+    getDataURLFromCanvas(): string {
+        const context = this.originalCanvas.getContext('2d');
+        const width = this.originalCanvas.width;
+        const height = this.originalCanvas.height;
+        let dataURL = '';
+        if (context) {
+            const data = context.getImageData(0, 0, width, height);
+            const compositeOperation = context.globalCompositeOperation;
+            context.globalCompositeOperation = 'destination-over';
+            context.fillStyle = '#ffffff';
+            context.fillRect(0, 0, width, height);
+            dataURL = this.originalCanvas.toDataURL('image/png');
+            context.clearRect(0, 0, width, height);
+            context.putImageData(data, 0, 0);
+            context.globalCompositeOperation = compositeOperation;
+        }
 
-    addDrawing(): Observable<unknown> {
+        return dataURL;
+    }
+    // private getImageDataFromCanva(): ImageData {
+    //     const emptyImageData = new ImageData(this.canvas.width, this.canvas.height);
+    //     const imageData = this.canvas
+    //         .getContext('2d', {
+    //             alpha: true,
+    //         })
+    //         ?.getImageData(0, 0, this.canvas.width, this.canvas.height);
+    //     return imageData ? imageData : emptyImageData;
+    // }
+
+    addDrawing(): void {
         const drawingToSend = new DrawingData(
             undefined,
             this.fileName,
             this.labelsChecked != undefined ? this.labelsChecked : ['none'],
-            this.getImageDataFromCanva(),
+            this.getDataURLFromCanvas(),
+            this.originalCanvas.width,
+            this.originalCanvas.height,
         );
 
-        return this.httpService.insertDrawing(drawingToSend).pipe(catchError(this.handleError<void>('basicPost')));
+        this.httpService.insertDrawing(drawingToSend).subscribe({
+            next: (result) => {
+                console.log("La requête POST s'est bien déroulée !");
+                console.log(result);
+                this.drawing = drawingToSend;
+                this.drawing.id = result;
+            },
+            error: (err) => {
+                console.log('Une erreur est survenue dans lors de la requête POST');
+                console.log(err);
+            },
+        });
+    }
+
+    deleteDrawing(): void {
+        if (this.drawing.id) {
+            this.httpService.deleteDrawing(this.drawing.id).subscribe({
+                next: (result) => {
+                    console.log("La requête DELETE s'est bien déroulée !");
+                    console.log(result);
+                },
+                error: (err) => {
+                    console.log('Une erreur est survenue lors de la requête DELETE !');
+                    console.log(err);
+                },
+            });
+        }
+    }
+
+    updateDrawing(): void {
+        const drawingToSend = new DrawingData(
+            this.drawing.id,
+            this.fileName,
+            this.labelsChecked != undefined ? this.labelsChecked : ['none'],
+            this.getDataURLFromCanvas(),
+            this.originalCanvas.width,
+            this.originalCanvas.height,
+        );
+        this.httpService.updateDrawing(drawingToSend).subscribe({
+            next: (result) => {
+                console.log("La requête PUT s'est bien déroulée !");
+                console.log(result);
+                this.drawing = drawingToSend;
+            },
+            error: (err) => {
+                console.log('Une erreur est survenue lors de la requête PUT !');
+                console.log(err);
+            },
+        });
+    }
+
+    getAllDrawings(): void {
+        this.httpService.getAllDrawings().subscribe({
+            next: (results) => {
+                console.log("La requête GET s'est bien déroulée !");
+            },
+            error: (err) => {
+                console.log('une erreur est survenue lors de la requête GET !');
+                console.log(err);
+            },
+        });
     }
 
     drawPreviewImage(): void {
@@ -68,18 +145,5 @@ export class SaveDrawingService {
                 previewContext.drawImage(image, x, y, image.width * scale, image.height * scale);
             };
         }
-    }
-
-    private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
-        return (error: HttpErrorResponse): Observable<T> => {
-            if (error.status === 0) this.openDialog('Serveur Indisponible');
-            else this.openDialog(error.error);
-            console.log(error);
-            return of(result as T);
-        };
-    }
-    // tslint:disable-next-line:no-any
-    openDialog(message: any): void {
-        this.dialog.open(ServerErrorMessageComponent, { data: message });
     }
 }

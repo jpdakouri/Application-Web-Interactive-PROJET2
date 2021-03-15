@@ -5,6 +5,7 @@ import { SaveDrawingService } from '@app/services/save-drawing/save-drawing.serv
 import { FILE_NAME_REGEX } from '@app/services/services-constants';
 import { ImageFormat } from '@app/utils/enums/image-format.enum';
 import { ImageLabels } from '@app/utils/enums/image-labels';
+import { DrawingData } from '@common/communication/drawing-data';
 
 @Component({
     selector: 'app-save-drawing',
@@ -26,6 +27,8 @@ export class SaveDrawingComponent implements OnInit, OnDestroy, AfterViewInit {
     originalCanvas: HTMLCanvasElement;
     imageSource: string;
     waitingForServer: boolean = false;
+    drawingsData: DrawingData[] = [];
+    currentIndex: number = 0;
 
     constructor(private saveDrawingService: SaveDrawingService, public dialogRef: MatDialogRef<SaveDrawingComponent>) {
         this.fileName = new FormControl('', [Validators.required, Validators.pattern(FILE_NAME_REGEX)]);
@@ -67,10 +70,22 @@ export class SaveDrawingComponent implements OnInit, OnDestroy, AfterViewInit {
         this.saveDrawingService.labelsChecked = this.labelsChecked;
     }
 
-    loadToServer(): void {
+    updateDrawing(): void {
+        this.saveDrawingService.updateDrawing();
+    }
+
+    deleteDrawing(): void {
+        this.saveDrawingService.deleteDrawing();
+    }
+
+    getAllDrawings(): void {
+        this.saveDrawingService.getAllDrawings();
+    }
+
+    addDrawing(): void {
         this.updateService();
         this.waitingForServer = true;
-        this.saveDrawingService.addDrawing().subscribe();
+        this.saveDrawingService.addDrawing();
         this.dialogRef.close();
     }
 }
