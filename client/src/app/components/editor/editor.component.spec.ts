@@ -33,7 +33,7 @@ describe('EditorComponent', () => {
     let drawingServiceSpy: jasmine.SpyObj<DrawingService>;
 
     beforeEach(async(() => {
-        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['createNewDrawing', 'restoreCanvas']);
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['createNewDrawing', 'restoreCanvas', 'isCanvasBlank']);
         toolManagerServiceMock = new ToolManagerServiceMock();
         TestBed.configureTestingModule({
             declarations: [

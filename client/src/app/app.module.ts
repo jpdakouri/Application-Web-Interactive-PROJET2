@@ -2,6 +2,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -44,6 +45,7 @@ import { ServerErrorMessageComponent } from './components/server-error-message/s
     ],
     imports: [
         BrowserModule,
+        MatChipsModule,
         HttpClientModule,
         AppRoutingModule,
         BrowserAnimationsModule,

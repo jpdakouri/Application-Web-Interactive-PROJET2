@@ -177,6 +177,11 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.currentTool.onKeyUp(event);
     }
 
+    @HostListener('contextmenu', ['$event'])
+    onContextMenu(): boolean {
+        return false; // disables the standard chrome menu
+    }
+
     onMiddleRightResizerClick(): void {
         this.drawingService.saveCanvas();
         this.canvasResizerService.onMiddleRightResizerClick();

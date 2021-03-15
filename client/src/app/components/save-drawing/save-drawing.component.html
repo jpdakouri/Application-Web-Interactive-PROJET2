@@ -5,7 +5,7 @@
             <mat-label>Nom du fichier</mat-label>
             <input matInput #input [formControl]="fileName" maxlength="25" placeholder="Ex. dessin1" required />
             <mat-hint align="end">{{ input.value?.length || 0 }}/25</mat-hint>
-            <mat-error *ngIf="fileName.invalid">{{ getErrorMessage() }}</mat-error>
+            <mat-error *ngIf="fileName.invalid">{{ getErrorMessageName() }}</mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="fill">
@@ -15,11 +15,25 @@
             </mat-select>
         </mat-form-field>
 
-        <mat-form-field appearance="fill">
-            <mat-label>Étiquette(s)</mat-label>
-            <mat-select multiple [(ngModel)]="labelsChecked">
-                <mat-option *ngFor="let label of labels" [value]="label">{{ label }}</mat-option>
-            </mat-select>
+        <mat-form-field class="example-chip-list">
+            <mat-chip-list #chipList>
+                <mat-chip *ngFor="let tag of tags" [removable]="true" (removed)="remove(tag)">
+                    {{ tag.name }}
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip>
+                <input
+                    placeholder="Étiquette(s)"
+                    maxlength="25"
+                    #tagValue
+                    [formControl]="tagName"
+                    [matChipInputFor]="chipList"
+                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                    [matChipInputAddOnBlur]="true"
+                    (matChipInputTokenEnd)="add($event)"
+                />
+                <mat-hint align="end">{{ tagValue.value?.length || 0 }}/25</mat-hint>
+                <mat-error *ngIf="tagName.invalid">{{ getErrorMessageLabel() }}</mat-error>
+            </mat-chip-list>
         </mat-form-field>
     </div>
 

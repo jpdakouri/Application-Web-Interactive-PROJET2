@@ -41,13 +41,13 @@ describe('DatabaseController', () => {
         imageDataService = container.get(TYPES.ImageDataService);
         databaseService = container.get(TYPES.DatabaseService);
         app = container.get<Application>(TYPES.Application).app;
-        chai.spy.on(imageDataService, 'insertCheckUp', () => true);
     });
 
     it('POST request to /drawings should respond a HTTP_STATUS_CREATED status code and insertedId if document inserted', async () => {
         const insertResult = ({ insertedCount: 1, insertedId: '1234' } as unknown) as InsertOneWriteOpResult<Metadata>;
         databaseService.insertDrawing.resolves(insertResult);
-        // chai.spy.on(imageDataService, 'insertCheckUp', () => true);
+        chai.spy.on(imageDataService, 'insertNameCheckUp', () => true);
+        chai.spy.on(imageDataService, 'insertTagsCheckUp', () => true);
         return supertest(app)
             .post('/api/drawings')
             .expect(HTTP_STATUS_CREATED)
@@ -62,7 +62,8 @@ describe('DatabaseController', () => {
         const dataURL = 'dataURLStub';
         const drawingData = new DrawingData(id, 'titleStub', ['tagStub1', 'tagStub2'], dataURL, 100, 100);
         const spy = chai.spy.on(imageDataService, 'writeDrawingToDisk');
-        // chai.spy.on(imageDataService, 'insertCheckUp', () => true);
+        chai.spy.on(imageDataService, 'insertNameCheckUp', () => true);
+        chai.spy.on(imageDataService, 'insertTagsCheckUp', () => true);
         return supertest(app)
             .post('/api/drawings')
             .send(drawingData)
@@ -75,7 +76,8 @@ describe('DatabaseController', () => {
     it('POST request to /drawings should respond a HTTP_STATUS_BAD_REQUEST and string message if document not inserted', async () => {
         const insertResult = ({ insertedCount: 0, insertedId: '1234' } as unknown) as InsertOneWriteOpResult<Metadata>;
         databaseService.insertDrawing.resolves(insertResult);
-        // chai.spy.on(imageDataService, 'insertCheckUp', () => true);
+        chai.spy.on(imageDataService, 'insertNameCheckUp', () => true);
+        chai.spy.on(imageDataService, 'insertTagsCheckUp', () => true);
         return supertest(app)
             .post('/api/drawings')
             .expect(HTTP_STATUS_BAD_REQUEST)
@@ -84,9 +86,34 @@ describe('DatabaseController', () => {
             });
     });
 
+    it('POST request to /drawings should respond a HTTP_STATUS_BAD_REQUEST if name is not valide', async () => {
+        databaseService.insertDrawing.rejects(new MongoError('Test Error'));
+        chai.spy.on(imageDataService, 'insertNameCheckUp', () => false);
+        chai.spy.on(imageDataService, 'insertTagsCheckUp', () => true);
+        return supertest(app)
+            .post('/api/drawings')
+            .expect(HTTP_STATUS_BAD_REQUEST)
+            .then((response: any) => {
+                expect(response.text).to.equal('Message du serveur: Nom Invalide !');
+            });
+    });
+
+    it('POST request to /drawings should respond a HTTP_STATUS_BAD_REQUEST if tags are not valide', async () => {
+        databaseService.insertDrawing.rejects(new MongoError('Test Error'));
+        chai.spy.on(imageDataService, 'insertNameCheckUp', () => true);
+        chai.spy.on(imageDataService, 'insertTagsCheckUp', () => false);
+        return supertest(app)
+            .post('/api/drawings')
+            .expect(HTTP_STATUS_BAD_REQUEST)
+            .then((response: any) => {
+                expect(response.text).to.equal('Message du serveur: Étiquette Invalide!');
+            });
+    });
+
     it('POST request to /drawings should respond a HTTP_STATUS_ERROR and string message if database error', async () => {
         databaseService.insertDrawing.rejects(new MongoError('Test Error'));
-        // chai.spy.on(imageDataService, 'insertCheckUp', () => true);
+        chai.spy.on(imageDataService, 'insertNameCheckUp', () => true);
+        chai.spy.on(imageDataService, 'insertTagsCheckUp', () => true);
         return supertest(app)
             .post('/api/drawings')
             .expect(HTTP_STATUS_ERROR)

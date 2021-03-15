@@ -147,11 +147,18 @@ describe('ImageDataService', () => {
         unlinkStub.restore();
     });
 
-    it('#insertCheckUp should return true if name input is valide', () => {
+    it('#insertNameCheckUp should return true if name input is valide', () => {
         const valideName = { title: 'aaa111' } as DrawingData;
         const inValideName = { title: 'aaa 111' } as DrawingData;
-        expect(service.insertCheckUp(valideName)).to.equal(true);
-        expect(service.insertCheckUp(inValideName)).to.equal(false);
+        expect(service.insertNameCheckUp(valideName)).to.equal(true);
+        expect(service.insertNameCheckUp(inValideName)).to.equal(false);
+    });
+
+    it('#insertTagsCheckUp should return true if name input is valide', () => {
+        const valideTags = { tags: ['aaa111', 'asdsad 1212'] } as DrawingData;
+        const inValideTags = { tags: ['aaa! 111'] } as DrawingData;
+        expect(service.insertTagsCheckUp(valideTags)).to.equal(true);
+        expect(service.insertTagsCheckUp(inValideTags)).to.equal(false);
     });
 
     it('#updateDrawing should return false and log error if writingFileSync fails', () => {

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpService } from '@app/services/http/http.service';
 import { ImageFormat } from '@app/utils/enums/image-format.enum';
+import { Tag } from '@app/utils/interfaces/tag';
 import { DrawingData } from '@common/communication/drawing-data';
 import { BehaviorSubject } from 'rxjs';
 
@@ -17,8 +18,9 @@ export class SaveDrawingService {
     fileName: string;
     selectedFormat: string;
     formats: string[];
-    labelsChecked: string[];
+
     drawing: DrawingData;
+    labelsChecked: Tag[];
 
     constructor(private httpService: HttpService) {
         this.currentFormat = new BehaviorSubject<string>(ImageFormat.PNG);
@@ -54,15 +56,17 @@ export class SaveDrawingService {
     // }
 
     addDrawing(): void {
+        const labels = this.toStringArray(this.labelsChecked);
         const drawingToSend = new DrawingData(
             undefined,
             this.fileName,
-            this.labelsChecked != undefined ? this.labelsChecked : ['none'],
+            this.labelsChecked != undefined ? labels : ['none'],
             this.getDataURLFromCanvas(),
             this.originalCanvas.width,
             this.originalCanvas.height,
         );
 
+        // tslint:disable: deprecation
         this.httpService.insertDrawing(drawingToSend).subscribe({
             next: (result) => {
                 console.log("La requête POST s'est bien déroulée !");
@@ -93,10 +97,11 @@ export class SaveDrawingService {
     }
 
     updateDrawing(): void {
+        const labels = this.toStringArray(this.labelsChecked);
         const drawingToSend = new DrawingData(
             this.drawing.id,
             this.fileName,
-            this.labelsChecked != undefined ? this.labelsChecked : ['none'],
+            this.labelsChecked != undefined ? labels : ['none'],
             this.getDataURLFromCanvas(),
             this.originalCanvas.width,
             this.originalCanvas.height,
@@ -124,6 +129,12 @@ export class SaveDrawingService {
                 console.log(err);
             },
         });
+    }
+    toStringArray(labels: Tag[]): string[] {
+        const tempArray = new Array<string>();
+        let i: number;
+        for (i = 0; i < labels.length; i++) tempArray.push(labels[i].name);
+        return tempArray;
     }
 
     drawPreviewImage(): void {
