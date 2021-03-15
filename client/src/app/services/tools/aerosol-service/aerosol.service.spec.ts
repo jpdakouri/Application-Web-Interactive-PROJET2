@@ -107,16 +107,6 @@ describe('AerosolService', () => {
         const radius = 50;
         const randomValue = 0.5;
         spyOn(Math, 'random').and.returnValue(randomValue);
-        // @ts-ignore
-        const calculatedRandomOffset = service['getRandomOffsetInRadius'](radius);
-        const expectedRandomOffsetInRadius = { x: -25, y: 3.061616997868383e-15 } as Vec2;
-        expect(calculatedRandomOffset).toEqual(expectedRandomOffsetInRadius);
-    });
-
-    it('#getRandomOffsetInRadius should be able to get a random offset in radius', () => {
-        const radius = 50;
-        const randomValue = 0.5;
-        spyOn(Math, 'random').and.returnValue(randomValue);
         const calculatedRandomOffset = service['getRandomOffsetInRadius'](radius);
         const expectedRandomOffsetInRadius = { x: -25, y: 3.061616997868383e-15 } as Vec2;
         expect(calculatedRandomOffset).toEqual(expectedRandomOffsetInRadius);
