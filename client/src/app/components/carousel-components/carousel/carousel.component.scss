@@ -3,6 +3,7 @@
 .container {
     width: 75vw;
     height: 90vh;
+    position: relative;
 }
 
 .toolbar {
@@ -23,7 +24,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    position: relative;
+    position: absolute;
     width: 75vw;
     padding-top: 15px;
     padding-bottom: 15px;
@@ -37,4 +38,26 @@
 .sides {
     width: 23vw;
     max-height: 15hv;
+
+    opacity: 0.6;
+    filter: alpha(opacity=60);
+}
+
+.arrowContainer {
+    position: absolute;
+    top: 37vh;
+}
+
+.leftArrow {
+    position: inherit;
+    left: 30vh;
+}
+
+.rightArrow {
+    position: inherit;
+    left: 50vw;
+}
+
+.arrowContainer mat-icon {
+    font-size: 200px;
 }

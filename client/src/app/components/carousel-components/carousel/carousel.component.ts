@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { MAX_HEIGHT_MAIN_CARD, MAX_HEIGHT_SIDE_CARD, MAX_WIDTH_MAIN_CARD, MAX_WIDTH_SIDE_CARD } from '@app/components/components-constants';
 import { CardStyle } from '@app/utils/interfaces/card-style';
-const MAX_WIDTH_SIDE_CARD = '15vw';
-const MAX_HEIGHT_SIDE_CARD = '20vh';
-const MAX_WIDTH_MAIN_CARD = '23vw';
-const MAX_HEIGHT_MAIN_CARD = '30vh';
 @Component({
     selector: 'app-carousel',
     templateUrl: './carousel.component.html',
@@ -17,18 +14,15 @@ export class CarouselComponent implements OnInit {
         this.sideCard = {
             maxWidth: MAX_WIDTH_SIDE_CARD,
             maxHeight: MAX_HEIGHT_SIDE_CARD,
+            position: 'side',
         };
 
         this.mainCard = {
             maxWidth: MAX_WIDTH_MAIN_CARD,
             maxHeight: MAX_HEIGHT_MAIN_CARD,
+            position: 'main',
         };
     }
 
     ngOnInit(): void {}
-
-    createArray(): number[] {
-        // tslint:disable-next-line:no-magic-numbers
-        return new Array(3);
-    }
 }

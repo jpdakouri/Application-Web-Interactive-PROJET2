@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CardStyle } from '@app/utils/interfaces/card-style';
+import { DrawingData } from '@common/communication/drawing-data';
 
 @Component({
     selector: 'app-drawing-card',
@@ -8,7 +9,9 @@ import { CardStyle } from '@app/utils/interfaces/card-style';
 })
 export class DrawingCardComponent implements OnInit {
     @Input() imageToShow: string;
-    @Input() positionOfDrawing: CardStyle;
+    @Input() positionCaracteristics: CardStyle;
+    @Input() infoDrawing: DrawingData;
+
     constructor() {}
 
     ngOnInit(): void {}

@@ -7,8 +7,12 @@
         </span>
     </mat-toolbar>
     <div class="matContainer">
-        <app-drawing-card class="sides" [positionOfDrawing]="sideCard"></app-drawing-card>
-        <app-drawing-card class="main" [positionOfDrawing]="mainCard"></app-drawing-card>
-        <app-drawing-card class="sides" [positionOfDrawing]="sideCard"></app-drawing-card>
+        <app-drawing-card class="sides" [positionCaracteristics]="sideCard"></app-drawing-card>
+        <app-drawing-card class="main" [positionCaracteristics]="mainCard"></app-drawing-card>
+        <app-drawing-card class="sides" [positionCaracteristics]="sideCard"></app-drawing-card>
+    </div>
+    <div class="arrowContainer">
+        <span class="leftArrow"><mat-icon color="primary">arrow_left</mat-icon></span>
+        <span class="rightArrow"><mat-icon color="primary">arrow_right</mat-icon></span>
     </div>
 </div>

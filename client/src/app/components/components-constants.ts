@@ -59,3 +59,11 @@ export const SIDEBAR_WIDTH = 465;
 export const WORKING_ZONE_VISIBLE_PORTION = 100;
 
 export const DEFAULT_WHITE = '#fff';
+
+/***********************/
+/***CAROUSEL CONSTANT***/
+/***********************/
+export const MAX_WIDTH_SIDE_CARD = '15vw';
+export const MAX_HEIGHT_SIDE_CARD = '20vh';
+export const MAX_WIDTH_MAIN_CARD = '23vw';
+export const MAX_HEIGHT_MAIN_CARD = '30vh';
