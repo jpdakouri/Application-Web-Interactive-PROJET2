@@ -64,18 +64,6 @@ export class SaveDrawingComponent implements AfterViewInit {
         this.saveDrawingService.labelsChecked = this.tags;
     }
 
-    updateDrawing(): void {
-        this.saveDrawingService.updateDrawing();
-    }
-
-    deleteDrawing(): void {
-        this.saveDrawingService.deleteDrawing();
-    }
-
-    getAllDrawings(): void {
-        this.saveDrawingService.getAllDrawings();
-    }
-
     addDrawing(): void {
         this.updateService();
         this.waitingForServer = true;
@@ -90,7 +78,7 @@ export class SaveDrawingComponent implements AfterViewInit {
         if (indexToRemove >= 0) this.tags.splice(indexToRemove, 1);
     }
 
-    add(event: MatChipInputEvent): void {
+    addChip(event: MatChipInputEvent): void {
         const input = event.input;
         const value = event.value;
 

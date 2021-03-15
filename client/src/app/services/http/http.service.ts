@@ -44,8 +44,8 @@ export class HttpService {
             return of(result as T);
         };
     }
-    // tslint:disable-next-line:no-any
-    openDialog(message: any): void {
+
+    openDialog(message: string): void {
         this.dialog.open(ServerErrorMessageComponent, { data: message });
     }
 }

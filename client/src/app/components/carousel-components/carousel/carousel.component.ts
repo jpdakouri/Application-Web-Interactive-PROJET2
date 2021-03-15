@@ -1,6 +1,7 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MAX_HEIGHT_MAIN_CARD, MAX_HEIGHT_SIDE_CARD, MAX_WIDTH_MAIN_CARD, MAX_WIDTH_SIDE_CARD } from '@app/components/components-constants';
+import { CarouselService } from '@app/services/carousel/carousel.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { CardStyle } from '@app/utils/interfaces/card-style';
 import { DrawingData } from '@common/communication/drawing-data';
@@ -34,7 +35,7 @@ export class CarouselComponent implements OnInit {
         },
     ] as DrawingData[];
 
-    constructor(public dialogRef: MatDialogRef<CarouselComponent>) {
+    constructor(public dialogRef: MatDialogRef<CarouselComponent>, public carouselService: CarouselService) {
         this.sideCard = {
             maxWidth: MAX_WIDTH_SIDE_CARD,
             maxHeight: MAX_HEIGHT_SIDE_CARD,
@@ -58,6 +59,18 @@ export class CarouselComponent implements OnInit {
 
     onDialogClose(): void {
         this.dialogRef.close();
+    }
+
+    // updateDrawing(): void {
+    //     this.carouselService.updateDrawing();
+    // }
+
+    deleteDrawing(): void {
+        this.carouselService.deleteDrawing();
+    }
+
+    getAllDrawings(): void {
+        this.carouselService.getAllDrawings();
     }
 
     shiftLeft(): void {
