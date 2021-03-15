@@ -1,0 +1,12 @@
+.imageContainer {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+
+    width: 100%;
+}
+
+.mat-card-image:first-child,
+.mat-card-image {
+    margin: 0px;
+}

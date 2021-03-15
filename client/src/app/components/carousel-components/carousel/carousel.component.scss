@@ -27,19 +27,14 @@
     width: 75vw;
     padding-top: 15px;
     padding-bottom: 15px;
+    align-items: center;
 }
 
 .main {
-    max-width: 45%;
+    max-width: 40vw;
+    max-height: 15hv;
 }
 .sides {
-    width: 25%;
-}
-
-.main img {
-    height: 60vh;
-}
-
-.sides img {
-    height: 60vh;
+    width: 23vw;
+    max-height: 15hv;
 }

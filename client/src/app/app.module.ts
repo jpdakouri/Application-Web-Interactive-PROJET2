@@ -19,7 +19,8 @@ import { ToolbarComponent } from '@app/components/toolbar-components/toolbar/too
 import { AppMaterialModule } from './app-material/app-material.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app/app.component';
-import { CarouselComponent } from './components/carousel/carousel.component';
+import { CarouselComponent } from './components/carousel-components/carousel/carousel.component';
+import { DrawingCardComponent } from './components/carousel-components/drawing-card/drawing-card.component';
 import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { ExportDrawingComponent } from './components/export-drawing/export-drawing.component';
@@ -44,6 +45,7 @@ import { ServerErrorMessageComponent } from './components/server-error-message/s
         SaveDrawingComponent,
         ServerErrorMessageComponent,
         CarouselComponent,
+        DrawingCardComponent,
     ],
     imports: [
         BrowserModule,

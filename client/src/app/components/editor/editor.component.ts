@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { CarouselComponent } from '@app/components/carousel/carousel.component';
+import { CarouselComponent } from '@app/components/carousel-components/carousel/carousel.component';
 import { ExportDrawingComponent } from '@app/components/export-drawing/export-drawing.component';
 import { SaveDrawingComponent } from '@app/components/save-drawing/save-drawing.component';
 import { ToolbarComponent } from '@app/components/toolbar-components/toolbar/toolbar.component';
