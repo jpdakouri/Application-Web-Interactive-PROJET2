@@ -1,8 +1,8 @@
 <mat-card>
     <mat-card-header>
         <div mat-card-avatar class="header-image"></div>
-        <mat-card-title> sadds </mat-card-title>
-        <mat-card-subtitle> There are following type of features </mat-card-subtitle>
+        <mat-card-title> {{ infoDrawing.title }}</mat-card-title>
+        <mat-card-subtitle> id : {{ infoDrawing.id }} </mat-card-subtitle>
     </mat-card-header>
     <div class="imageContainer">
         <img
@@ -15,7 +15,7 @@
         />
     </div>
     <mat-card-content>
-        <p>This image shows the features of the JAVA</p>
+        <p>Étiquette(s) : {{ infoDrawing.tags }}</p>
     </mat-card-content>
     <mat-card-actions>
         <button mat-button *ngIf="positionCaracteristics.position === 'main'">Ouvrir</button>

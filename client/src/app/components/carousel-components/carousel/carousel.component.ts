@@ -10,7 +10,23 @@ import { DrawingData } from '@common/communication/drawing-data';
 export class CarouselComponent implements OnInit {
     sideCard: CardStyle;
     mainCard: CardStyle;
-    drawingToShow: DrawingData[] = new Array(3);
+    drawingArray: DrawingData[] = [
+        {
+            id: undefined,
+            title: 'TEST!',
+            tags: ['asd', 'dsa'],
+        },
+        {
+            id: undefined,
+            title: 'YEEEE',
+            tags: ['asfadsfaddasdsadsdafd', 'dsa'],
+        },
+        {
+            id: undefined,
+            title: 'ytre',
+            tags: ['none'],
+        },
+    ] as DrawingData[];
 
     constructor() {
         this.sideCard = {
@@ -25,8 +41,8 @@ export class CarouselComponent implements OnInit {
             position: 'main',
         };
     }
-    ifExists(): boolean {
-        return this.drawingToShow.length > 0;
+    moreThanOne(): boolean {
+        return this.drawingArray.length > 1;
     }
 
     ngOnInit(): void {}

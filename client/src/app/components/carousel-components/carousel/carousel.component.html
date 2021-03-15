@@ -9,10 +9,10 @@
         </span>
     </mat-toolbar>
 
-    <div class="matContainer" *ngIf="ifExists()">
-        <app-drawing-card class="sides" [positionCaracteristics]="sideCard"></app-drawing-card>
-        <app-drawing-card class="main" [positionCaracteristics]="mainCard"></app-drawing-card>
-        <app-drawing-card class="sides" [positionCaracteristics]="sideCard"></app-drawing-card>
+    <div class="matContainer" *ngIf="moreThanOne()">
+        <app-drawing-card class="sides" [positionCaracteristics]="sideCard" [infoDrawing]="drawingArray[0]"></app-drawing-card>
+        <app-drawing-card class="main" [positionCaracteristics]="mainCard" [infoDrawing]="drawingArray[1]"></app-drawing-card>
+        <app-drawing-card class="sides" [positionCaracteristics]="sideCard" [infoDrawing]="drawingArray[2]"></app-drawing-card>
     </div>
     <div class="arrowContainer">
         <span class="leftArrow"><mat-icon color="primary">arrow_left</mat-icon></span>
