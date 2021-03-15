@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CarouselService } from '@app/services/carousel/carousel.service';
+import { DialogControllerService } from '@app/services/dialog-controller/dialog-controller.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { IndexService } from '@app/services/index/index.service';
 import { Message } from '@common/communication/message';
@@ -17,7 +17,11 @@ export class MainPageComponent {
     canOpen: boolean = false;
     isPendingDrawing: boolean = false;
 
-    constructor(private basicService: IndexService, private drawingService: DrawingService, private carouselService: CarouselService) {}
+    constructor(
+        private basicService: IndexService,
+        private drawingService: DrawingService,
+        private dialogControllerService: DialogControllerService,
+    ) {}
 
     sendTimeToServer(): void {
         const newTimeMessage: Message = {
@@ -46,6 +50,6 @@ export class MainPageComponent {
 
     openCarousel(): void {
         this.onCreateNewDrawing();
-        this.carouselService.openDialog();
+        this.dialogControllerService.openDialog('carousel');
     }
 }

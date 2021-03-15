@@ -3,7 +3,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ExportDrawingComponent } from '@app/components/export-drawing/export-drawing.component';
 import { SaveDrawingComponent } from '@app/components/save-drawing/save-drawing.component';
 import { ToolbarComponent } from '@app/components/toolbar-components/toolbar/toolbar.component';
-import { CarouselService } from '@app/services/carousel/carousel.service';
+import { DialogControllerService } from '@app/services/dialog-controller/dialog-controller.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
@@ -25,7 +25,7 @@ export class EditorComponent implements AfterViewInit {
     constructor(
         private toolManagerService: ToolManagerService,
         private drawingService: DrawingService,
-        private carouselService: CarouselService,
+        private dialogControllerService: DialogControllerService,
         public exportDrawingDialog: MatDialogRef<ExportDrawingComponent>,
         public saveDrawingDialog: MatDialogRef<SaveDrawingComponent>,
         public dialog: MatDialog,
@@ -81,7 +81,7 @@ export class EditorComponent implements AfterViewInit {
     }
 
     openSaveDrawingModal(): void {
-        this.saveDrawingDialog = this.dialog.open(SaveDrawingComponent, {});
+        this.dialogControllerService.openDialog('save');
     }
 
     onExportDrawing(): void {
@@ -89,10 +89,10 @@ export class EditorComponent implements AfterViewInit {
     }
 
     openExportDrawingModal(): void {
-        this.exportDrawingDialog = this.dialog.open(ExportDrawingComponent, {});
+        this.dialogControllerService.openDialog('export');
     }
 
     openCarouselModal(): void {
-        this.carouselService.openDialog();
+        this.dialogControllerService.openDialog('carousel');
     }
 }
