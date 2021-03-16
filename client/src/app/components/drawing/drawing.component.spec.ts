@@ -1,9 +1,11 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CanvasResizerService, Status } from '@app/services/canvas-resizer/canvas-resizer.service';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.service';
+import { SaveDrawingService } from '@app/services/save-drawing/save-drawing.service';
 import { SIDEBAR_WIDTH } from '@app/services/services-constants';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { PencilService } from '@app/services/tools/pencil-service/pencil.service';
@@ -35,8 +37,9 @@ describe('DrawingComponent', () => {
                 { provide: CanvasResizerService, useValue: canvasResizerStub },
                 { provide: MouseHandlerService, useValue: mouseStub },
                 { provide: ToolManagerService, useValue: toolManagerServiceMock },
+                { provide: SaveDrawingService, useValue: {} },
             ],
-            imports: [MatTooltipModule],
+            imports: [MatTooltipModule, HttpClientTestingModule],
         }).compileComponents();
     }));
 

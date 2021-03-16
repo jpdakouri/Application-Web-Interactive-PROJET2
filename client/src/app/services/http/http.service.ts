@@ -15,7 +15,7 @@ export class HttpService {
     private readonly BASE_URL: string = 'http://localhost:3000';
 
     getAllDrawings(): Observable<DrawingData[]> {
-        return this.http.get<DrawingData[]>(this.BASE_URL + '/api/drawings').pipe(catchError(this.handleError<DrawingData[]>('Get')));
+        return this.http.get<DrawingData[]>(this.BASE_URL + '/api/drawings').pipe(catchError(this.handleError<DrawingData[]>('GetAll')));
     }
 
     // For later !
@@ -35,6 +35,9 @@ export class HttpService {
             .put<string>(this.BASE_URL + `/api/drawings/${updatedDrawing.id}`, updatedDrawing)
             .pipe(catchError(this.handleError<string>('Put')));
     }
+    getOneDrawing(index: number): Observable<DrawingData> {
+        return this.http.get<DrawingData>(this.BASE_URL + `/api/drawings/${index}`).pipe(catchError(this.handleError<DrawingData>('GetOne')));
+    }
 
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
         return (error: HttpErrorResponse): Observable<T> => {
@@ -44,6 +47,7 @@ export class HttpService {
             return of(result as T);
         };
     }
+
     // tslint:disable-next-line:no-any
     openDialog(message: any): void {
         this.dialog.open(ServerErrorMessageComponent, { data: message });
