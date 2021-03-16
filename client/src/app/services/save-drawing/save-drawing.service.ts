@@ -53,8 +53,6 @@ export class SaveDrawingService {
             next: (result) => {
                 console.log("La requête POST s'est bien déroulée !");
                 console.log(result);
-                this.drawing = drawingToSend;
-                this.drawing.id = result;
             },
             error: (err) => {
                 console.log('Une erreur est survenue dans lors de la requête POST');
