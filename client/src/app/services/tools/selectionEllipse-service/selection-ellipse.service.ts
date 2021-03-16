@@ -120,7 +120,11 @@ export class SelectionEllipseService extends Tool {
             }
         }
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.drawingService.previewCtx.putImageData(this.imageData, this.topLeftCorner.x, this.topLeftCorner.y);
+        // this.drawingService.previewCtx.putImageData(this.imageData, this.topLeftCorner.x, this.topLeftCorner.y);
+        createImageBitmap(this.imageData).then((imgBitmap) => {
+            // this.clipArea(this.mouseDownCoord);
+            this.drawingService.previewCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
+        });
     }
 
     onKeyUp(event: KeyboardEvent): void {
@@ -230,19 +234,19 @@ export class SelectionEllipseService extends Tool {
     }
 
     private selectEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
-        this.clipArea(finalGrid);
-
-        this.imageData = this.drawingService.baseCtx.getImageData(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
-        this.drawingService.previewCtx.putImageData(this.imageData, this.firstGrid.x, this.firstGrid.y);
-        // const imageBuffer = new Uint8ClampedArray(this.imageData.data.buffer);
-        // const imageBitData = createImageBitmap(this.imageData);
+        ctx.save();
         // this.clipArea(finalGrid);
+        this.imageData = this.drawingService.baseCtx.getImageData(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
 
-        // imageBitData.then(this.drawingService.previewCtx.drawImage(imageBitData, this.firstGrid.x, this.firstGrid.y);
-
+        // this.drawingService.previewCtx.putImageData(this.imageData, this.firstGrid.x, this.firstGrid.y);
+        // const image = new Image();
+        createImageBitmap(this.imageData).then((imgBitmap) => {
+            this.clipArea(finalGrid);
+            ctx.drawImage(imgBitmap, this.firstGrid.x, this.firstGrid.y);
+        });
         // Remplir de blanc
-        this.drawingService.baseCtx.fillStyle = 'white';
-        this.drawingService.baseCtx.fillRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+        // this.drawingService.baseCtx.fillStyle = 'white';
+        // this.drawingService.baseCtx.fillRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
     }
 
     private updatePreview(): void {
