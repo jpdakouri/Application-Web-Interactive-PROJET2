@@ -8,6 +8,7 @@ const LABEL_NAME_REGEX = /^[a-zA-Z0-9 ]*$/;
 @injectable()
 export class ImageDataService {
     drawingData: DrawingData[] = new Array();
+    firstTimeFlag: boolean = true;
 
     updateDrawing(drawingData: DrawingData): boolean {
         const index = this.drawingData.findIndex((item: DrawingData) => item.id === drawingData.id);
@@ -53,12 +54,17 @@ export class ImageDataService {
         }
     }
 
-    filterArray(result: Metadata[]): void {
-        this.drawingData = this.drawingData.filter((drawingData) => result.find((metadata) => metadata._id === drawingData.id));
+    populateArray(result: Metadata[]): void {
+        result.forEach((element) => {
+            const path = `./app/drawings/${element._id?.toString()}.png`;
+            if (fs.existsSync(path)) {
+                const drawingData = new DrawingData(element._id?.toString(), element.title, element.tags, undefined, element.width, element.height);
+                this.drawingData.push(drawingData);
+            }
+        });
     }
 
     getImagesFromDisk(databaseResult: Metadata[]): DrawingData[] {
-        this.filterArray(databaseResult);
         const drawingsToSend: DrawingData[] = [];
         this.drawingData.forEach((element) => {
             const mime = 'image/png';
@@ -77,6 +83,26 @@ export class ImageDataService {
         return drawingsToSend;
     }
 
+    getOneDrawing(index: number): DrawingData | undefined {
+        const size = this.drawingData.length;
+        if (size > 0) {
+            const drawing = this.drawingData[index % size];
+            const mime = 'image/png';
+            const encoding = 'base64';
+            let data = '';
+            try {
+                data = fs.readFileSync(`./app/drawings/${drawing.id}.png`).toString(encoding);
+            } catch (err) {
+                console.log('Une erreur est survenue lors de la lecture du disque !');
+                console.log(err);
+            }
+            console.log("L'image a bien été lue du disque !");
+            const uri = `data:${mime};${encoding},${data}`;
+            return new DrawingData(drawing.id, drawing.title, drawing.tags, uri, drawing.width, drawing.height);
+        } else {
+            return undefined;
+        }
+    }
     removeID(id: string): void {
         try {
             fs.unlinkSync(`./app/drawings/${id}.png`);
