@@ -27,6 +27,10 @@ export class SelectionRectangleService extends Tool {
     private shiftDown: boolean;
     private selectionActive: boolean;
     private dragActive: boolean;
+    private upPressed: boolean;
+    private downPressed: boolean;
+    private leftPressed: boolean;
+    private rightPressed: boolean;
 
     rectangleService: RectangleService;
     currentColourService: CurrentColourService;
@@ -93,25 +97,25 @@ export class SelectionRectangleService extends Tool {
         switch (event.key) {
             case KeyboardButtons.Up: {
                 if (this.selectionActive) {
-                    this.topLeftCorner.y -= PIXELS_ARROW_STEPS;
+                    this.upPressed = true;
                 }
                 break;
             }
             case KeyboardButtons.Down: {
                 if (this.selectionActive) {
-                    this.topLeftCorner.y += PIXELS_ARROW_STEPS;
+                    this.downPressed = true;
                 }
                 break;
             }
             case KeyboardButtons.Right: {
                 if (this.selectionActive) {
-                    this.topLeftCorner.x += PIXELS_ARROW_STEPS;
+                    this.rightPressed = true;
                 }
                 break;
             }
             case KeyboardButtons.Left: {
                 if (this.selectionActive) {
-                    this.topLeftCorner.x -= PIXELS_ARROW_STEPS;
+                    this.leftPressed = true;
                 }
                 break;
             }
@@ -125,14 +129,40 @@ export class SelectionRectangleService extends Tool {
                 this.clearPath();
             }
         }
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.drawingService.previewCtx.putImageData(this.imageData, this.topLeftCorner.x, this.topLeftCorner.y);
+        this.updateArrowPosition();
     }
 
     onKeyUp(event: KeyboardEvent): void {
-        if (this.shiftDown && event.key === KeyboardButtons.Shift) {
-            this.shiftDown = false;
-            this.updatePreview();
+        switch (event.key) {
+            case KeyboardButtons.Up: {
+                if (this.selectionActive) {
+                    this.upPressed = false;
+                }
+                break;
+            }
+            case KeyboardButtons.Down: {
+                if (this.selectionActive) {
+                    this.downPressed = false;
+                }
+                break;
+            }
+            case KeyboardButtons.Right: {
+                if (this.selectionActive) {
+                    this.rightPressed = false;
+                }
+                break;
+            }
+            case KeyboardButtons.Left: {
+                if (this.selectionActive) {
+                    this.leftPressed = false;
+                }
+                break;
+            }
+            case KeyboardButtons.Shift: {
+                this.shiftDown = false;
+                this.updatePreview();
+                break;
+            }
         }
     }
 
@@ -220,7 +250,23 @@ export class SelectionRectangleService extends Tool {
         this.topLeftCorner.y = this.topLeftCornerInit.y + currentCoord.y - this.initial.y - this.imageData.height / 2;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawingService.previewCtx.putImageData(this.imageData, this.topLeftCorner.x, this.topLeftCorner.y);
-        console.log(this.topLeftCorner, this.initial, currentCoord);
+    }
+
+    private updateArrowPosition(): void {
+        if (this.selectionActive && this.upPressed) {
+            this.topLeftCorner.y -= PIXELS_ARROW_STEPS;
+        }
+        if (this.selectionActive && this.downPressed) {
+            this.topLeftCorner.y += PIXELS_ARROW_STEPS;
+        }
+        if (this.selectionActive && this.rightPressed) {
+            this.topLeftCorner.x += PIXELS_ARROW_STEPS;
+        }
+        if (this.selectionActive && this.leftPressed) {
+            this.topLeftCorner.x -= PIXELS_ARROW_STEPS;
+        }
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawingService.previewCtx.putImageData(this.imageData, this.topLeftCorner.x, this.topLeftCorner.y);
     }
 
     private selectionRectangle(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
