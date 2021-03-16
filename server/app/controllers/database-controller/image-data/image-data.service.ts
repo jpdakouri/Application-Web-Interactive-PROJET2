@@ -86,7 +86,7 @@ export class ImageDataService {
     getOneDrawing(index: number): DrawingData | undefined {
         const size = this.drawingData.length;
         if (size > 0) {
-            const drawing = this.drawingData[index % size];
+            const drawing = this.drawingData[(index + size) % size];
             const mime = 'image/png';
             const encoding = 'base64';
             let data = '';
@@ -115,8 +115,7 @@ export class ImageDataService {
     }
 
     insertNameCheckUp(drawingImage: DrawingData): boolean {
-        if (!FILE_NAME_REGEX.test(drawingImage.title)) return false;
-        return true;
+        return FILE_NAME_REGEX.test(drawingImage.title);
     }
 
     insertTagsCheckUp(drawingImage: DrawingData): boolean {

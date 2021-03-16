@@ -26,6 +26,7 @@ export class HttpService {
     deleteDrawing(drawingID: string): Observable<string> {
         return this.http.delete<string>(this.BASE_URL + `/api/drawings/${drawingID}`).pipe(catchError(this.handleError<string>('Deleted')));
     }
+
     insertDrawing(newDrawing: DrawingData): Observable<string> {
         return this.http.post<string>(this.BASE_URL + '/api/drawings', newDrawing).pipe(catchError(this.handleError<string>('Post')));
     }
@@ -35,8 +36,13 @@ export class HttpService {
             .put<string>(this.BASE_URL + `/api/drawings/${updatedDrawing.id}`, updatedDrawing)
             .pipe(catchError(this.handleError<string>('Put')));
     }
+
     getOneDrawing(index: number): Observable<DrawingData> {
         return this.http.get<DrawingData>(this.BASE_URL + `/api/drawings/${index}`).pipe(catchError(this.handleError<DrawingData>('GetOne')));
+    }
+
+    getLengthOfDrawings(): Observable<number> {
+        return this.http.get<number>(this.BASE_URL + '/api/drawings/length').pipe(catchError(this.handleError<number>('Get')));
     }
 
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {

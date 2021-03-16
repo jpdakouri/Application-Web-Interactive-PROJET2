@@ -62,6 +62,10 @@ export class DatabaseController {
                     });
         });
 
+        this.router.get('/length', (req: Request, res: Response, next: NextFunction) => {
+            res.status(HTTP_STATUS_OK).json(this.imageDataService.drawingData.length);
+        });
+
         this.router.get('/:index', (req: Request, res: Response, next: NextFunction) => {
             const drawing = this.imageDataService.getOneDrawing(+req.params.index);
             if (drawing) {

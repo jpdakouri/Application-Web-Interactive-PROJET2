@@ -4,7 +4,6 @@ import { Vec2 } from '@app/classes/vec2';
 import { DEFAULT_HEIGHT, DEFAULT_WHITE, DEFAULT_WIDTH, SIDEBAR_WIDTH, WORKING_ZONE_VISIBLE_PORTION } from '@app/components/components-constants';
 import { CanvasResizerService } from '@app/services/canvas-resizer/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { SaveDrawingService } from '@app/services/save-drawing/save-drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { MIN_ERASER_THICKNESS } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
@@ -51,7 +50,6 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         toolManagerService: ToolManagerService,
         canvasResizerService: CanvasResizerService,
         private undoRedo: UndoRedoService,
-        private saveDrawingService: SaveDrawingService,
     ) {
         this.toolManagerService = toolManagerService;
         this.canvasResizerService = canvasResizerService;
@@ -68,7 +66,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
-        this.drawingService.canvas = this.saveDrawingService.originalCanvas = this.baseCanvas.nativeElement;
+        this.drawingService.canvas = this.baseCanvas.nativeElement;
         this.drawingService.canvas.style.backgroundColor = DEFAULT_WHITE;
         this.canvasResizerService.canvasPreviewWidth = this.canvasSize.x;
         this.canvasResizerService.canvasPreviewHeight = this.canvasSize.y;
