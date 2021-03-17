@@ -7,6 +7,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
@@ -51,6 +52,7 @@ import { ServerErrorMessageComponent } from './components/server-error-message/s
     ],
     imports: [
         BrowserModule,
+        MatProgressBarModule,
         MatChipsModule,
         HttpClientModule,
         MatExpansionModule,

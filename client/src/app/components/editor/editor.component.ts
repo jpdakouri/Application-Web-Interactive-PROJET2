@@ -41,14 +41,6 @@ export class EditorComponent implements AfterViewInit {
         this.setEditorMinWidth();
     }
 
-    saveEditorMinWidth(event: number): void {
-        this.editorMinWidth = event;
-    }
-
-    setEditorMinWidth(): void {
-        this.editor.nativeElement.style.minWidth = this.editorMinWidth + 'px';
-    }
-
     @HostListener('window:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
         if (this.dialogControllerService.noDialogOpened) {
@@ -73,6 +65,14 @@ export class EditorComponent implements AfterViewInit {
                 }
             }
         }
+    }
+
+    saveEditorMinWidth(event: number): void {
+        this.editorMinWidth = event;
+    }
+
+    setEditorMinWidth(): void {
+        this.editor.nativeElement.style.minWidth = this.editorMinWidth + 'px';
     }
 
     onCreateNewDrawing(): void {

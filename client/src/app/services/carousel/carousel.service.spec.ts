@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { CarouselComponent } from '@app/components/carousel-components/carousel/carousel.component';
@@ -11,6 +12,7 @@ describe('CarouselService', () => {
             providers: [
                 { provide: MatDialogRef, useValue: {} },
                 { provide: CarouselComponent, useValue: {} },
+                { provide: HttpClient, useValue: {} },
             ],
             imports: [MatDialogModule],
         });

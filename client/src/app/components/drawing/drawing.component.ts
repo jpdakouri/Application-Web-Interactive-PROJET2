@@ -10,6 +10,7 @@ import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo
 import { Status } from '@app/utils/enums/canvas-resizer-status';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 import { EraserCursor } from '@app/utils/interfaces/eraser-cursor';
+import { DrawingData } from '@common/communication/drawing-data';
 
 @Component({
     selector: 'app-drawing',
@@ -218,5 +219,15 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.eraserCursor.left = mousePosition.x + 'px';
         this.eraserCursor.top = mousePosition.y + 'px';
         this.eraserActive = this.currentTool.eraserActive || false;
+    }
+
+    openDrawing(drawing: DrawingData): void {
+        this.drawingService.createNewDrawing();
+        this.canvasSize = this.canvasResizerService.calculateNewCanvasSize({ x: drawing.width, y: drawing.height } as Vec2);
+        const img = new Image();
+        img.onload = () => {
+            this.baseCtx.drawImage(img, 0, 0);
+        };
+        img.src = drawing.dataURL as string;
     }
 }

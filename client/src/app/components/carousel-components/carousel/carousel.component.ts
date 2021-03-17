@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { AfterViewInit, Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MAX_HEIGHT_MAIN_CARD, MAX_HEIGHT_SIDE_CARD, MAX_WIDTH_MAIN_CARD, MAX_WIDTH_SIDE_CARD } from '@app/components/components-constants';
 import { CarouselService } from '@app/services/carousel/carousel.service';
@@ -10,12 +10,15 @@ import { DrawingData } from '@common/communication/drawing-data';
     templateUrl: './carousel.component.html',
     styleUrls: ['./carousel.component.scss'],
 })
-export class CarouselComponent implements OnInit {
+export class CarouselComponent implements OnInit, AfterViewInit {
+    @ViewChild('queryFromServer') query: HTMLCanvasElement;
+    @ViewChild('matContainer') matContainer: HTMLCanvasElement;
     sideCard: CardStyle;
     mainCard: CardStyle;
     middle: number = 1;
     left: number = 0;
     right: number = 2;
+    visibility: string = 'none';
 
     drawingArray: DrawingData[];
 
@@ -37,7 +40,11 @@ export class CarouselComponent implements OnInit {
         this.carouselService.initCarousel();
         this.drawingArray = this.carouselService.drawingsToShow;
         console.log(this.carouselService.sizeOfArray);
+        // setTimeout(() => {}, 1000);
+        // this.query.style.visibility = 'hidden';
+        // this.matContainer.style.visibility = 'inherit';
     }
+    ngAfterViewInit(): void {}
 
     @HostListener('window:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
@@ -54,8 +61,13 @@ export class CarouselComponent implements OnInit {
     //     this.carouselService.updateDrawing();
     // }
 
-    deleteDrawing(): void {
-        this.carouselService.deleteDrawing();
+    deleteDrawing(id: string | undefined): void {
+        this.carouselService.deleteDrawing(id as string);
+    }
+
+    openDrawing(): void {
+        this.carouselService.openDrawing(this.drawingArray[1]);
+        this.onDialogClose();
     }
 
     getAllDrawings(): void {

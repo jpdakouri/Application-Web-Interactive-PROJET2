@@ -38,9 +38,7 @@
     padding-top: 15px;
     padding-bottom: 15px;
     align-items: center;
-}
-
-.main {
+    // visibility: hidden;
 }
 .sides {
     opacity: 0.6;
@@ -53,6 +51,19 @@
 .emptyCarousel {
     justify-self: center;
     align-self: center;
+}
+/*********************
+      Query Wait
+*********************/
+
+.queryFromServer {
+    width: 25%;
+    position: absolute;
+    top: 50%;
+    left: 37.5%;
+}
+.queryFromServer p {
+    text-align: center;
 }
 
 /*********************
