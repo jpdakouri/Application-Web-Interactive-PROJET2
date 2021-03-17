@@ -66,19 +66,22 @@ export class ImageDataService {
 
     getImagesFromDisk(databaseResult: Metadata[]): DrawingData[] {
         const drawingsToSend: DrawingData[] = [];
-        this.drawingData.forEach((element) => {
-            const mime = 'image/png';
-            const encoding = 'base64';
-            let data = '';
-            try {
-                data = fs.readFileSync(`./app/drawings/${element.id}.png`).toString(encoding);
-            } catch (err) {
-                console.log('Une erreur est survenue lors de la lecture du disque !');
-                console.log(err);
+        databaseResult.forEach((element) => {
+            const path = `./app/drawings/${element._id?.toString()}.png`;
+            if (fs.existsSync(path)) {
+                const mime = 'image/png';
+                const encoding = 'base64';
+                let data = '';
+                try {
+                    data = fs.readFileSync(path).toString(encoding);
+                } catch (err) {
+                    console.log('Une erreur est survenue lors de la lecture du disque !');
+                    console.log(err);
+                }
+                console.log("L'image a bien été lue du disque !");
+                const uri = `data:${mime};${encoding},${data}`;
+                drawingsToSend.push(new DrawingData(element._id?.toString(), element.title, element.tags, uri, element.width, element.height));
             }
-            console.log("L'image a bien été lue du disque !");
-            const uri = `data:${mime};${encoding},${data}`;
-            drawingsToSend.push(new DrawingData(element.id, element.title, element.tags, uri, element.width, element.height));
         });
         return drawingsToSend;
     }

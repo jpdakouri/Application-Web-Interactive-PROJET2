@@ -49,6 +49,13 @@ export class DatabaseService {
         return await this.collection.findOneAndDelete({ _id: new ObjectId(id) });
     }
 
+    async getDrawingsByTags(tags: string[]): Promise<Metadata[]> {
+        if (tags[0] === 'none') {
+            return this.collection.find({}).toArray();
+        } else {
+            return this.collection.find({ tags: { $in: tags } }).toArray();
+        }
+    }
     async updateDrawing(drawing: Metadata): Promise<FindAndModifyWriteOpResultObject<Metadata>> {
         const newValues = { $set: { title: drawing.title, tags: drawing.tags } };
         return await this.collection.findOneAndUpdate({ _id: new ObjectId(drawing._id) }, newValues);

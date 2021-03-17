@@ -71,6 +71,23 @@ export class DatabaseController {
             }
         });
 
+        this.router.get('/by-tags', (req: Request, res: Response, next: NextFunction) => {
+            const tags = req.query.tags as string[];
+            this.databaseService
+                .getDrawingsByTags(tags)
+                .then((results) => {
+                    if (results.length > 0) {
+                        const drawingsToSend = this.imageDataService.getImagesFromDisk(results);
+                        res.status(HTTP_STATUS_OK).json(drawingsToSend);
+                    } else {
+                        res.status(HTTP_STATUS_NOT_FOUND).json('Aucun dessin trouvé !');
+                    }
+                })
+                .catch(() => {
+                    res.status(HTTP_STATUS_ERROR).send("Erreur d'opération dans le serveur !");
+                });
+        });
+
         this.router.delete('/:id', (req: Request, res: Response, next: NextFunction) => {
             const isValid = ObjectId.isValid(req.params.id);
             if (isValid) {
