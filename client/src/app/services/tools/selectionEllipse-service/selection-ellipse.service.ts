@@ -19,6 +19,7 @@ const numberFive = 5;
 export class SelectionEllipseService extends Tool {
     private firstGrid: Vec2;
     private topLeftCorner: Vec2;
+    private bottomRightCorner: Vec2;
     private begin: Vec2;
     private end: Vec2;
     private imageData: ImageData;
@@ -32,6 +33,7 @@ export class SelectionEllipseService extends Tool {
         super(drawingService, currentColourService);
         this.currentColourService = currentColourService;
         this.topLeftCorner = { x: 0, y: 0 };
+        this.bottomRightCorner = { x: 0, y: 0 };
         this.selectionActive = false;
     }
 
@@ -51,7 +53,10 @@ export class SelectionEllipseService extends Tool {
                     console.log('click dedans');
                 } else {
                     this.selectionActive = false;
-                    this.drawingService.baseCtx.putImageData(this.imageData, this.topLeftCorner.x, this.topLeftCorner.y);
+                    createImageBitmap(this.imageData).then((imgBitmap) => {
+                        this.clipArea(this.drawingService.baseCtx, this.end);
+                        this.drawingService.baseCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
+                    });
                     console.log('click dehors');
                 }
             }
@@ -71,12 +76,13 @@ export class SelectionEllipseService extends Tool {
         if (this.mouseDown) {
             this.end = this.getPositionFromMouse(event);
             this.updateTopLeftCorner();
+            console.log(this.topLeftCorner);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             if (this.shiftDown) {
                 this.drawSquare(this.mouseDownCoord);
                 this.selectEllipse(this.drawingService.previewCtx, this.mouseDownCoord);
             }
-            this.selectEllipse(this.drawingService.baseCtx, this.mouseDownCoord);
+            this.selectEllipse(this.drawingService.previewCtx, this.mouseDownCoord);
             this.drawingService.previewCtx.stroke();
             this.clearPath();
         }
@@ -119,10 +125,14 @@ export class SelectionEllipseService extends Tool {
                 this.clearPath();
             }
         }
+        console.log('fleche');
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.updateBottomRightCorner();
         // this.drawingService.previewCtx.putImageData(this.imageData, this.topLeftCorner.x, this.topLeftCorner.y);
         createImageBitmap(this.imageData).then((imgBitmap) => {
-            // this.clipArea(this.mouseDownCoord);
+            this.clipArea(this.drawingService.previewCtx, this.bottomRightCorner);
+            // this.drawingService.previewCtx.fillStyle = 'red';
+            // this.drawingService.previewCtx.fillRect(250, 250, 500, 500);
             this.drawingService.previewCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
         });
     }
@@ -195,6 +205,11 @@ export class SelectionEllipseService extends Tool {
         }
     }
 
+    private updateBottomRightCorner(): void {
+        this.bottomRightCorner.x = this.topLeftCorner.x + this.imageData.width;
+        this.bottomRightCorner.y = this.topLeftCorner.y + this.imageData.height;
+    }
+
     private drawPreviewSelection(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.strokeStyle = 'black';
         ctx.setLineDash([4, 3]);
@@ -226,23 +241,19 @@ export class SelectionEllipseService extends Tool {
         ctx.ellipse(startCoord.x + width / 2, startCoord.y + height / 2, Math.abs(width / 2), Math.abs(height / 2), 0, 0, 2 * Math.PI, false);
     }
 
-    private clipArea(finalGrid: Vec2): void {
-        this.drawingService.baseCtx.beginPath();
-        this.drawEllipse(this.drawingService.baseCtx, finalGrid);
-        this.drawingService.baseCtx.closePath();
-        this.drawingService.baseCtx.clip();
+    private clipArea(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+        ctx.beginPath();
+        this.drawEllipse(ctx, finalGrid);
+        ctx.closePath();
+        ctx.clip();
     }
 
     private selectEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
-        ctx.save();
-        // this.clipArea(finalGrid);
+        // this.clipArea(ctx, finalGrid);
         this.imageData = this.drawingService.baseCtx.getImageData(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
-
-        // this.drawingService.previewCtx.putImageData(this.imageData, this.firstGrid.x, this.firstGrid.y);
-        // const image = new Image();
         createImageBitmap(this.imageData).then((imgBitmap) => {
-            this.clipArea(finalGrid);
-            ctx.drawImage(imgBitmap, this.firstGrid.x, this.firstGrid.y);
+            // this.clipArea(ctx, finalGrid);
+            ctx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
         });
         // Remplir de blanc
         // this.drawingService.baseCtx.fillStyle = 'white';
