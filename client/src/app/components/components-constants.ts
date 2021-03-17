@@ -66,4 +66,4 @@ export const DEFAULT_WHITE = '#fff';
 export const MAX_WIDTH_SIDE_CARD = '15vw';
 export const MAX_HEIGHT_SIDE_CARD = '20vh';
 export const MAX_WIDTH_MAIN_CARD = '23vw';
-export const MAX_HEIGHT_MAIN_CARD = '30vh';
+export const MAX_HEIGHT_MAIN_CARD = '50vh';

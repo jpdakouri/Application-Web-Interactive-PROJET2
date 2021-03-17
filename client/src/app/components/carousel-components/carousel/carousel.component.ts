@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MAX_HEIGHT_MAIN_CARD, MAX_HEIGHT_SIDE_CARD, MAX_WIDTH_MAIN_CARD, MAX_WIDTH_SIDE_CARD } from '@app/components/components-constants';
 import { CarouselService } from '@app/services/carousel/carousel.service';
@@ -10,7 +10,7 @@ import { DrawingData } from '@common/communication/drawing-data';
     templateUrl: './carousel.component.html',
     styleUrls: ['./carousel.component.scss'],
 })
-export class CarouselComponent {
+export class CarouselComponent implements OnInit {
     sideCard: CardStyle;
     mainCard: CardStyle;
     middle: number = 1;
@@ -31,7 +31,11 @@ export class CarouselComponent {
             maxHeight: MAX_HEIGHT_MAIN_CARD,
             position: 'main',
         };
-        this.drawingArray = this.carouselService.initCarousel();
+    }
+
+    ngOnInit(): void {
+        this.carouselService.initCarousel();
+        this.drawingArray = this.carouselService.drawingsToShow;
         console.log(this.carouselService.sizeOfArray);
     }
 
@@ -59,16 +63,16 @@ export class CarouselComponent {
     }
 
     shiftLeft(): void {
-        // requeste ici
-        // const test = this.drawingArray.slice(0, 1) as DrawingData[];
-        this.drawingArray.slice(this.left, this.left + 1);
+        // this.drawingArray.slice(this.left, this.left + 1);
         const loadedDrawing = this.carouselService.getDrawing(false);
         this.drawingArray = this.drawingArray.slice(this.middle, this.right + 1);
+        console.log(this.drawingArray);
+        console.log(loadedDrawing);
         if (this.drawingArray.indexOf(loadedDrawing) >= 0) this.drawingArray.push(loadedDrawing);
+        console.log(this.drawingArray);
     }
 
     shiftRight(): void {
-        // requeste ici
         // const test = this.drawingArray.slice(2, 3) as DrawingData[];
         this.drawingArray.slice(this.right, this.right + 1);
         const loadedDrawing = this.carouselService.getDrawing(true);

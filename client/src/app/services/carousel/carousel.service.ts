@@ -16,32 +16,30 @@ export class CarouselService {
 
     constructor(private httpService: HttpService) {}
 
-    initCarousel(): DrawingData[] {
+    initCarousel(): void {
         // 3 requete
         // update#1 du size
-        this.drawingsToShow = [] as DrawingData[];
+        this.drawingsToShow = [];
         this.getArraySizeOfDrawing();
         if (this.sizeOfArray > 0)
-            this.httpService.getOneDrawing(0).subscribe({
-                next: (result) => {
-                    this.drawingsToShow.push(result);
-                },
-            });
-        if (this.sizeOfArray > 1) {
-            this.httpService.getOneDrawing(1).subscribe({
-                next: (result) => {
-                    this.drawingsToShow.push(result);
-                },
-            });
-
             this.httpService.getOneDrawing(-1).subscribe({
                 next: (result) => {
                     this.drawingsToShow.push(result);
                 },
             });
-        }
+        if (this.sizeOfArray > 1) {
+            this.httpService.getOneDrawing(0).subscribe({
+                next: (result) => {
+                    this.drawingsToShow.push(result);
+                },
+            });
 
-        return this.drawingsToShow;
+            this.httpService.getOneDrawing(1).subscribe({
+                next: (result) => {
+                    this.drawingsToShow.push(result);
+                },
+            });
+        }
     }
 
     deleteDrawing(): void {
@@ -74,13 +72,20 @@ export class CarouselService {
      * @returns The next drawing in that direction.
      */
     getDrawing(rightSearch: boolean): DrawingData {
-        this.drawingsToShow = [] as DrawingData[];
-        this.httpService.getOneDrawing(rightSearch ? ++this.courrentIndex + 1 : --this.courrentIndex - 1).subscribe({
-            next: (result) => {
-                console.log("La requête GET s'est bien déroulée 111!");
-                this.drawingsToShow.push(result);
-            },
-        });
+        this.drawingsToShow = [];
+        this.httpService
+            // Need to make sure it doesn't go to infinite
+            .getOneDrawing(
+                rightSearch
+                    ? ((++this.courrentIndex + this.sizeOfArray) % this.sizeOfArray) + 1
+                    : ((--this.courrentIndex + this.sizeOfArray) % this.sizeOfArray) - 1,
+            )
+            .subscribe({
+                next: (result) => {
+                    console.log("La requête GET s'est bien déroulée 111!");
+                    this.drawingsToShow.push(result);
+                },
+            });
         return this.drawingsToShow[0];
     }
 

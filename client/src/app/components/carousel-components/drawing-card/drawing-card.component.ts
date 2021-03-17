@@ -8,11 +8,16 @@ import { DrawingData } from '@common/communication/drawing-data';
     styleUrls: ['./drawing-card.component.scss'],
 })
 export class DrawingCardComponent implements OnInit {
-    @Input() imageToShow: string;
     @Input() positionCaracteristics: CardStyle;
     @Input() infoDrawing: DrawingData;
 
     constructor() {}
 
-    ngOnInit(): void {}
+    ngOnInit(): void {
+        //ca bug somehow...
+        // this.infoDrawing.tags.forEach((tag) => {
+        //     tag = ' ' + tag.valueOf;
+        // });
+        console.log(this.infoDrawing.title);
+    }
 }
