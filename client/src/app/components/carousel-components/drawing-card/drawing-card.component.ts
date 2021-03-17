@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, ViewChild } from '@angular/core';
 import { CardStyle } from '@app/utils/interfaces/card-style';
 import { DrawingData } from '@common/communication/drawing-data';
 
@@ -7,17 +7,17 @@ import { DrawingData } from '@common/communication/drawing-data';
     templateUrl: './drawing-card.component.html',
     styleUrls: ['./drawing-card.component.scss'],
 })
-export class DrawingCardComponent implements OnInit {
+export class DrawingCardComponent implements AfterViewInit {
+    @ViewChild('image') image: HTMLCanvasElement;
     @Input() positionCaracteristics: CardStyle;
     @Input() infoDrawing: DrawingData;
+    imageSize: CardStyle;
 
     constructor() {}
 
-    ngOnInit(): void {
-        //ca bug somehow...
-        // this.infoDrawing.tags.forEach((tag) => {
-        //     tag = ' ' + tag.valueOf;
-        // });
-        console.log(this.infoDrawing.title);
+    ngAfterViewInit(): void {
+        console.log('oui');
+        const attribute = this.infoDrawing.width > this.infoDrawing.height ? '"width: 90%, height: auto"' : 'width: 75% , height: auto';
+        this.image.setAttribute('style', attribute);
     }
 }

@@ -63,7 +63,7 @@ export const DEFAULT_WHITE = '#fff';
 /***********************/
 /***CAROUSEL CONSTANT***/
 /***********************/
-export const MAX_WIDTH_SIDE_CARD = '15vw';
-export const MAX_HEIGHT_SIDE_CARD = '20vh';
-export const MAX_WIDTH_MAIN_CARD = '23vw';
+export const MAX_WIDTH_SIDE_CARD = '18vw';
+export const MAX_HEIGHT_SIDE_CARD = '40vh';
+export const MAX_WIDTH_MAIN_CARD = '28vw';
 export const MAX_HEIGHT_MAIN_CARD = '50vh';

@@ -1,5 +1,5 @@
 export interface CardStyle {
-    maxWidth: string;
-    maxHeight: string;
+    width: string;
+    height: string;
     position: string;
 }

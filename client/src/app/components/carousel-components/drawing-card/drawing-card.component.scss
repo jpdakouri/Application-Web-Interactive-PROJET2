@@ -1,10 +1,11 @@
-.imageContainer {
-    display: flex;
-    align-content: center;
-    justify-content: center;
-
-    width: 100%;
+.card-container {
+    position: relative;
 }
+
+.mat-card-image {
+    border: 1px solid #000;
+}
+
 .mat-card {
     box-shadow: 1px 2px 10px 10px grey !important;
 }
@@ -14,9 +15,6 @@
     margin-bottom: 0px !important;
 }
 
-.mat-card-image {
-    border: 1px solid #000;
-}
 .mat-card-image:first-child,
 .mat-card-image {
     margin: 0px;

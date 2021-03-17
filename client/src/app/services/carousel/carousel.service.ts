@@ -17,8 +17,6 @@ export class CarouselService {
     constructor(private httpService: HttpService) {}
 
     initCarousel(): void {
-        // 3 requete
-        // update#1 du size
         this.drawingsToShow = [];
         this.getArraySizeOfDrawing();
         if (this.sizeOfArray > 0)
@@ -46,7 +44,6 @@ export class CarouselService {
         if (this.drawing.id) {
             this.httpService.deleteDrawing(this.drawing.id).subscribe({
                 next: (result) => {
-                    console.log("La requête DELETE s'est bien déroulée !");
                     console.log(result);
                 },
                 error: (err) => {
@@ -62,7 +59,7 @@ export class CarouselService {
         this.httpService.getLengthOfDrawings().subscribe({
             next: (results) => {
                 this.sizeOfArray = results as number;
-                console.log("La requête GET s'est bien déroulée !");
+                console.log(results);
             },
         });
     }
@@ -72,9 +69,8 @@ export class CarouselService {
      * @returns The next drawing in that direction.
      */
     getDrawing(rightSearch: boolean): DrawingData {
-        this.drawingsToShow = [];
+        let drawing: DrawingData = {} as DrawingData;
         this.httpService
-            // Need to make sure it doesn't go to infinite
             .getOneDrawing(
                 rightSearch
                     ? ((++this.courrentIndex + this.sizeOfArray) % this.sizeOfArray) + 1
@@ -83,10 +79,10 @@ export class CarouselService {
             .subscribe({
                 next: (result) => {
                     console.log("La requête GET s'est bien déroulée 111!");
-                    this.drawingsToShow.push(result);
+                    drawing = result;
                 },
             });
-        return this.drawingsToShow[0];
+        return drawing;
     }
 
     getAllDrawings(): void {

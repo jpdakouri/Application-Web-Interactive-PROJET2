@@ -15,19 +15,19 @@
             Enregistrez un dessin et il apparaitera ici :)
         </h1>
         <app-drawing-card
-            class="sides cards"
+            class="sides card"
             *ngIf="this.drawingArray.length > 1"
             [positionCaracteristics]="sideCard"
             [infoDrawing]="drawingArray[left]"
         ></app-drawing-card>
         <app-drawing-card
-            class="main cards"
+            class="main card"
             *ngIf="this.drawingArray.length > 0"
             [positionCaracteristics]="mainCard"
             [infoDrawing]="drawingArray[middle]"
         ></app-drawing-card>
         <app-drawing-card
-            class="sides cards"
+            class="sides card"
             *ngIf="this.drawingArray.length > 1"
             [positionCaracteristics]="sideCard"
             [infoDrawing]="drawingArray[right]"

@@ -1,19 +1,10 @@
-<mat-card>
+<mat-card class="card-container" [style.width]="positionCaracteristics.width" [style.height]="positionCaracteristics.height">
     <mat-card-header>
         <div mat-card-avatar class="header-image"></div>
         <mat-card-title> {{ infoDrawing.title }}</mat-card-title>
         <mat-card-subtitle> id : {{ infoDrawing.id }} </mat-card-subtitle>
     </mat-card-header>
-    <div class="imageContainer">
-        <img
-            mat-card-image
-            id="image"
-            [style.width]="positionCaracteristics.maxWidth"
-            [style.max-heigt]="positionCaracteristics.maxHeight"
-            [src]="infoDrawing.dataURL"
-            alt="Dessin"
-        />
-    </div>
+    <img mat-card-image #image [src]="infoDrawing.dataURL" alt="Dessin" />
     <mat-card-content>
         <p>Étiquette(s) : {{ infoDrawing.tags }}</p>
     </mat-card-content>

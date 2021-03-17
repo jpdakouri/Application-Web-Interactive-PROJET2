@@ -21,14 +21,14 @@ export class CarouselComponent implements OnInit {
 
     constructor(public dialogRef: MatDialogRef<CarouselComponent>, public carouselService: CarouselService) {
         this.sideCard = {
-            maxWidth: MAX_WIDTH_SIDE_CARD,
-            maxHeight: MAX_HEIGHT_SIDE_CARD,
+            width: MAX_WIDTH_SIDE_CARD,
+            height: MAX_HEIGHT_SIDE_CARD,
             position: 'side',
         };
 
         this.mainCard = {
-            maxWidth: MAX_WIDTH_MAIN_CARD,
-            maxHeight: MAX_HEIGHT_MAIN_CARD,
+            width: MAX_WIDTH_MAIN_CARD,
+            height: MAX_HEIGHT_MAIN_CARD,
             position: 'main',
         };
     }
@@ -62,20 +62,35 @@ export class CarouselComponent implements OnInit {
         this.carouselService.getAllDrawings();
     }
 
+    // shiftLeft(): void {
+    //     const loadedDrawing = this.carouselService.getDrawing(true);
+    //     this.drawingArray = this.drawingArray.slice(this.left, this.middle + 1);
+
+    //     console.log(this.drawingArray);
+    //     console.log(loadedDrawing);
+
+    //     if (this.drawingArray.indexOf(loadedDrawing) >= 0) this.drawingArray.splice(this.left, 0, loadedDrawing);
+    // }
+
+    // shiftRight(): void {
+    //     const loadedDrawing = this.carouselService.getDrawing(false);
+    //     this.drawingArray = this.drawingArray.slice(this.middle, this.right + 1);
+
+    //     console.log(this.drawingArray);
+    //     console.log(loadedDrawing);
+
+    //     if (this.drawingArray.indexOf(loadedDrawing) >= 0) this.drawingArray.push(loadedDrawing);
+    // }
     shiftLeft(): void {
-        // this.drawingArray.slice(this.left, this.left + 1);
-        const loadedDrawing = this.carouselService.getDrawing(false);
-        this.drawingArray = this.drawingArray.slice(this.middle, this.right + 1);
-        console.log(this.drawingArray);
-        console.log(loadedDrawing);
-        if (this.drawingArray.indexOf(loadedDrawing) >= 0) this.drawingArray.push(loadedDrawing);
-        console.log(this.drawingArray);
+        // requeste ici
+        const test = this.drawingArray.slice(2, 3) as DrawingData[];
+        this.drawingArray.splice(0, 0, test[0]);
     }
 
     shiftRight(): void {
-        // const test = this.drawingArray.slice(2, 3) as DrawingData[];
-        this.drawingArray.slice(this.right, this.right + 1);
-        const loadedDrawing = this.carouselService.getDrawing(true);
-        if (this.drawingArray.indexOf(loadedDrawing) >= 0) this.drawingArray.splice(this.left, 0, loadedDrawing);
+        // requeste ici
+        const test = this.drawingArray.slice(0, 1) as DrawingData[];
+        this.drawingArray = this.drawingArray.slice(1, 3);
+        this.drawingArray.push(test[0]);
     }
 }
