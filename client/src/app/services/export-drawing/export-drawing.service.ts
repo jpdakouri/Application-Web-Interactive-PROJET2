@@ -1,4 +1,4 @@
-import { ElementRef, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { ImageFilter } from '@app/utils/enums/image-filter.enum';
 import { ImageFormat } from '@app/utils/enums/image-format.enum';
 import { BehaviorSubject } from 'rxjs';
@@ -10,9 +10,8 @@ export class ExportDrawingService {
     imageFilters: Map<string, string>;
     currentFilter: BehaviorSubject<string>;
     currentFormat: BehaviorSubject<string>;
-    link: HTMLAnchorElement;
     imageSource: string;
-    image: ElementRef<HTMLImageElement>;
+    link: HTMLAnchorElement;
     canvas: HTMLCanvasElement;
 
     constructor() {

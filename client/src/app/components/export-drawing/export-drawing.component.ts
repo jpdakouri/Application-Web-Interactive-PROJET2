@@ -20,19 +20,20 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
     formats: string[];
     selectedFormat: string;
     selectedFilter: string;
+    selectedFilterValue: string;
     fileName: FormControl;
     imageSource: string;
     originalCanvas: HTMLCanvasElement;
-    selectedFilterValue: string;
 
     constructor(private exportDrawingService: ExportDrawingService, public dialogRef: MatDialogRef<ExportDrawingComponent>) {
         this.filters = Object.values(ImageFilter);
         this.formats = Object.values(ImageFormat);
         this.selectedFormat = ImageFormat.PNG;
         this.selectedFilter = ImageFilter.None;
+        this.selectedFilterValue = this.exportDrawingService.imageFilters.get(ImageFilter.None) as string;
         this.fileName = new FormControl('', [Validators.required, Validators.pattern(FILE_NAME_REGEX)]);
         this.imageSource = '';
-        this.selectedFilterValue = 'none';
+        console.log(this.selectedFilterValue);
     }
 
     ngOnInit(): void {
@@ -74,20 +75,15 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
     }
 
     onFormatChange(selectedFormat: string): void {
-        if (selectedFormat !== null) {
-            this.exportDrawingService.currentFormat.next(selectedFormat);
-        }
+        this.exportDrawingService.currentFormat.next(selectedFormat);
     }
 
     onFilterChange(selectedFilter: string): void {
-        if (selectedFilter !== null) {
-            this.exportDrawingService.currentFilter.next(selectedFilter);
-            this.selectedFilterValue = this.exportDrawingService.imageFilters.get(selectedFilter) as string;
-        }
+        this.exportDrawingService.currentFilter.next(selectedFilter);
+        this.selectedFilterValue = this.exportDrawingService.imageFilters.get(selectedFilter) as string;
     }
 
     onDownload(): void {
-        this.exportDrawingService.image = this.previewImage;
         this.exportDrawingService.imageSource = this.imageSource;
         this.exportDrawingService.downloadImage(this.fileName.value, this.selectedFormat);
         this.dialogRef.close();
