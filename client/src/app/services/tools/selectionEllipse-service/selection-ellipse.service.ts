@@ -128,12 +128,12 @@ export class SelectionEllipseService extends Tool {
         console.log('fleche');
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.updateBottomRightCorner();
-        // this.drawingService.previewCtx.putImageData(this.imageData, this.topLeftCorner.x, this.topLeftCorner.y);
         createImageBitmap(this.imageData).then((imgBitmap) => {
             this.clipArea(this.drawingService.previewCtx, this.bottomRightCorner);
             // this.drawingService.previewCtx.fillStyle = 'red';
             // this.drawingService.previewCtx.fillRect(250, 250, 500, 500);
             this.drawingService.previewCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
+            this.drawingService.previewCtx.restore();
         });
     }
 
@@ -231,7 +231,7 @@ export class SelectionEllipseService extends Tool {
     }
 
     private drawEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
-        ctx.strokeStyle = '#00a2ff';
+        ctx.strokeStyle = 'blue';
         ctx.lineWidth = this.lineThickness = 0.5;
 
         const startCoord = { ...this.firstGrid };
@@ -242,6 +242,8 @@ export class SelectionEllipseService extends Tool {
     }
 
     private clipArea(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+        ctx.save();
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
         ctx.beginPath();
         this.drawEllipse(ctx, finalGrid);
         ctx.closePath();
@@ -249,15 +251,16 @@ export class SelectionEllipseService extends Tool {
     }
 
     private selectEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
-        // this.clipArea(ctx, finalGrid);
         this.imageData = this.drawingService.baseCtx.getImageData(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
         createImageBitmap(this.imageData).then((imgBitmap) => {
-            // this.clipArea(ctx, finalGrid);
+            this.clipArea(ctx, finalGrid);
             ctx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
+            ctx.restore();
         });
-        // Remplir de blanc
         // this.drawingService.baseCtx.fillStyle = 'white';
         // this.drawingService.baseCtx.fillRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+        // this.drawingService.baseCtx.stroke();
+        // Remplir de blanc
     }
 
     private updatePreview(): void {

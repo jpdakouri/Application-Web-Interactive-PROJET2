@@ -78,19 +78,19 @@ describe('RectangleService', () => {
         expect(drawRectangleSpy).not.toHaveBeenCalled();
     });
 
-    it(' onMouseUp should call drawSquare if shift is down', () => {
+    it(' onMouseUp should call makeSquare if shift is down', () => {
         service['shiftDown'] = true;
-        const drawSquareSpy = spyOn<any>(service, 'drawSquare').and.callThrough();
+        const makeSquareSpy = spyOn<any>(service, 'makeSquare').and.callThrough();
         service.onMouseDown(mouseEvent);
         service.onMouseUp(mouseEvent);
-        expect(drawSquareSpy).toHaveBeenCalled();
+        expect(makeSquareSpy).toHaveBeenCalled();
     });
 
-    it(' onMouseUp should not call drawSquare if shift is not down', () => {
+    it(' onMouseUp should not call makeSquare if shift is not down', () => {
         service['shiftDown'] = false;
-        const drawSquareSpy = spyOn<any>(service, 'drawSquare').and.callThrough();
+        const makeSquareSpy = spyOn<any>(service, 'makeSquare').and.callThrough();
         service.onMouseUp(mouseEvent);
-        expect(drawSquareSpy).not.toHaveBeenCalled();
+        expect(makeSquareSpy).not.toHaveBeenCalled();
     });
 
     it('onMouseMove should not be called when mouse is not down', () => {
@@ -106,13 +106,13 @@ describe('RectangleService', () => {
         } as KeyboardEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
 
-        const drawSquareSpy = spyOn<any>(service, 'drawSquare').and.callThrough();
+        const makeSquareSpy = spyOn<any>(service, 'makeSquare').and.callThrough();
         service['shiftDown'] = false;
         service.onKeyDown({
             key: KeyboardButtons.Shift,
         } as KeyboardEvent);
         expect(service['shiftDown']).toBeTrue();
-        expect(drawSquareSpy).toHaveBeenCalled();
+        expect(makeSquareSpy).toHaveBeenCalled();
     });
 
     it('onKeyup should update shift state', () => {
@@ -147,24 +147,24 @@ describe('RectangleService', () => {
         expect(service['shiftDown']).toBeTrue();
     });
 
-    it('drawSquare should be called when shiftDown is true', () => {
+    it('makeSquare should be called when shiftDown is true', () => {
         service.mouseDown = true;
         service['shiftDown'] = true;
-        const drawSquareSpy = spyOn<any>(service, 'drawSquare').and.callThrough();
+        const makeSquareSpy = spyOn<any>(service, 'makeSquare').and.callThrough();
 
         service.onMouseDown(mouseEvent);
         service.onMouseMove(mouseEvent);
-        expect(drawSquareSpy).toHaveBeenCalled();
+        expect(makeSquareSpy).toHaveBeenCalled();
     });
 
-    it('drawSquare should not be called when shiftDown is false ', () => {
+    it('makeSquare should not be called when shiftDown is false ', () => {
         service.mouseDown = true;
         service['shiftDown'] = false;
-        const drawSquareSpy = spyOn<any>(service, 'drawSquare').and.callThrough();
+        const makeSquareSpy = spyOn<any>(service, 'makeSquare').and.callThrough();
 
         service.onMouseDown(mouseEvent);
         service.onMouseMove(mouseEvent);
-        expect(drawSquareSpy).not.toHaveBeenCalled();
+        expect(makeSquareSpy).not.toHaveBeenCalled();
     });
 
     it(' drawOutline should be called when no shapeStyle is selected', () => {
@@ -210,7 +210,7 @@ describe('RectangleService', () => {
         service['shiftDown'] = true;
         const expected = { x: 200, y: 200 } as Vec2;
         const val = service.mouseDownCoord;
-        service['drawSquare'](val);
+        service['makeSquare'](val);
         expect(val).toEqual(expected);
     });
 
@@ -218,8 +218,8 @@ describe('RectangleService', () => {
         service.mouseDownCoord = { x: -300, y: 200 };
         const expected = { x: -200, y: 200 } as Vec2;
         const value = service.mouseDownCoord;
-        service['drawSquare'](value);
-        expect(service['drawSquare'](service.mouseDownCoord));
+        service['makeSquare'](value);
+        expect(service['makeSquare'](service.mouseDownCoord));
         expect(value).toEqual(expected);
     });
 
@@ -227,8 +227,8 @@ describe('RectangleService', () => {
         service.mouseDownCoord = { x: 300, y: -200 };
         const expected = { x: 200, y: -200 } as Vec2;
         const value = service.mouseDownCoord;
-        service['drawSquare'](value);
-        expect(service['drawSquare'](service.mouseDownCoord));
+        service['makeSquare'](value);
+        expect(service['makeSquare'](service.mouseDownCoord));
         expect(value).toEqual(expected);
     });
 
@@ -236,8 +236,8 @@ describe('RectangleService', () => {
         service.mouseDownCoord = { x: -300, y: -200 };
         const expected = { x: -200, y: -200 } as Vec2;
         const value = service.mouseDownCoord;
-        service['drawSquare'](value);
-        expect(service['drawSquare'](service.mouseDownCoord));
+        service['makeSquare'](value);
+        expect(service['makeSquare'](service.mouseDownCoord));
         expect(value).toEqual(expected);
     });
 
@@ -245,8 +245,8 @@ describe('RectangleService', () => {
         service.mouseDownCoord = { x: 200, y: -300 };
         const expected = { x: 200, y: -200 } as Vec2;
         const value = service.mouseDownCoord;
-        service['drawSquare'](value);
-        expect(service['drawSquare'](service.mouseDownCoord));
+        service['makeSquare'](value);
+        expect(service['makeSquare'](service.mouseDownCoord));
         expect(value).toEqual(expected);
     });
 
