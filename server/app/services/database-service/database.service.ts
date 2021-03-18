@@ -27,19 +27,9 @@ export class DatabaseService {
             });
     }
 
-    // TODO TESTS
-
     async insertDrawing(metadata: Metadata): Promise<InsertOneWriteOpResult<Metadata>> {
         return await this.collection.insertOne(metadata);
     }
-
-    // async getDrawingsByTags(tags: string[]): Promise<Metadata[]> {
-    //     if (tags.length > 0) {
-    //         return this.collection.find({}).toArray();
-    //     } else {
-    //         return this.collection.find({ tags: { $in: [tags] } }).toArray();
-    //     }
-    // }
 
     async getAllDrawings(): Promise<Metadata[]> {
         return await this.collection.find({}).toArray();

@@ -57,13 +57,13 @@ export class DatabaseController {
                         }
                     })
                     .catch((err) => {
-                        console.log(err);
+                        console.error(err);
                         res.status(HTTP_STATUS_ERROR).send("Erreur d'opération dans le serveur !");
                     });
         });
 
         this.router.get('/single/:index', (req: Request, res: Response, next: NextFunction) => {
-            const drawing = this.imageDataService.getOneDrawing(+req.params.index);
+            const drawing = this.imageDataService.getOneImageFromDisk(+req.params.index);
             if (drawing) {
                 res.status(HTTP_STATUS_OK).json(drawing);
             } else {
@@ -72,7 +72,6 @@ export class DatabaseController {
         });
 
         this.router.get('/by-tags', (req: Request, res: Response, next: NextFunction) => {
-            console.log(req.query.tags);
             const tags = req.query.tags as string[];
             this.databaseService
                 .getDrawingsByTags(tags)
