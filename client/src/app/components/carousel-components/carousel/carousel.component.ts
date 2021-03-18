@@ -71,7 +71,7 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     openDrawing(): void {
-        this.carouselService.openDrawing(this.drawingArray[1]);
+        this.carouselService.openDrawing(this.drawingArray[this.middle]);
         this.onDialogClose();
     }
 

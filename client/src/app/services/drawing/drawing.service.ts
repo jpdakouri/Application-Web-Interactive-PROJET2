@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { DrawingData } from '@common/communication/drawing-data';
 
 @Injectable({
     providedIn: 'root',
@@ -43,5 +44,16 @@ export class DrawingService {
                 sessionStorage.clear();
             }
         }
+    }
+
+    openDrawing(drawing: DrawingData): void {
+        this.createNewDrawing();
+        this.canvas.width = drawing.width;
+        this.canvas.height = drawing.height;
+        const img = new Image();
+        img.onload = () => {
+            this.canvas.getContext('2d')?.drawImage(img, 0, 0);
+        };
+        img.src = drawing.dataURL as string;
     }
 }

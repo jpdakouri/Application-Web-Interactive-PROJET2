@@ -4,13 +4,13 @@ import { Vec2 } from '@app/classes/vec2';
 import { DEFAULT_HEIGHT, DEFAULT_WHITE, DEFAULT_WIDTH, SIDEBAR_WIDTH, WORKING_ZONE_VISIBLE_PORTION } from '@app/components/components-constants';
 import { CanvasResizerService } from '@app/services/canvas-resizer/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { SaveDrawingService } from '@app/services/save-drawing/save-drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { MIN_ERASER_THICKNESS } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { Status } from '@app/utils/enums/canvas-resizer-status';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 import { EraserCursor } from '@app/utils/interfaces/eraser-cursor';
-import { DrawingData } from '@common/communication/drawing-data';
 
 @Component({
     selector: 'app-drawing',
@@ -51,6 +51,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         toolManagerService: ToolManagerService,
         canvasResizerService: CanvasResizerService,
         private undoRedo: UndoRedoService,
+        public saveService: SaveDrawingService,
     ) {
         this.toolManagerService = toolManagerService;
         this.canvasResizerService = canvasResizerService;
@@ -67,7 +68,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
-        this.drawingService.canvas = this.baseCanvas.nativeElement;
+        this.drawingService.canvas = this.saveService.originalCanvas = this.baseCanvas.nativeElement;
         this.drawingService.canvas.style.backgroundColor = DEFAULT_WHITE;
         this.canvasResizerService.canvasPreviewWidth = this.canvasSize.x;
         this.canvasResizerService.canvasPreviewHeight = this.canvasSize.y;
@@ -219,15 +220,5 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.eraserCursor.left = mousePosition.x + 'px';
         this.eraserCursor.top = mousePosition.y + 'px';
         this.eraserActive = this.currentTool.eraserActive || false;
-    }
-
-    openDrawing(drawing: DrawingData): void {
-        this.drawingService.createNewDrawing();
-        this.canvasSize = this.canvasResizerService.calculateNewCanvasSize({ x: drawing.width, y: drawing.height } as Vec2);
-        const img = new Image();
-        img.onload = () => {
-            this.baseCtx.drawImage(img, 0, 0);
-        };
-        img.src = drawing.dataURL as string;
     }
 }

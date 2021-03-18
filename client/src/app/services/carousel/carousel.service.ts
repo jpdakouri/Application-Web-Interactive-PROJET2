@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { CarouselComponent } from '@app/components/carousel-components/carousel/carousel.component';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HttpService } from '@app/services/http/http.service';
 import { DrawingData } from '@common/communication/drawing-data';
 
@@ -13,7 +14,7 @@ export class CarouselService {
     courrentIndex: number = 0;
     drawingsToShow: DrawingData[];
 
-    constructor(private httpService: HttpService) {}
+    constructor(private httpService: HttpService, public drawingService: DrawingService) {}
 
     async initCarousel(): Promise<DrawingData[]> {
         this.drawingsToShow = [];
@@ -99,7 +100,7 @@ export class CarouselService {
     }
 
     openDrawing(drawing: DrawingData): void {
-        // this.drawingComponent.openDrawing(drawing);
+        this.drawingService.openDrawing(drawing);
     }
 
     // updateDrawing(): void {
