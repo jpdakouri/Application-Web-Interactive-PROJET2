@@ -43,7 +43,7 @@ export class DatabaseController {
             const newMetadata = new Metadata(undefined, drawingData.title, drawingData.tags, drawingData.width, drawingData.height);
             if (!this.imageDataService.insertNameCheckUp(drawingData)) res.status(HTTP_STATUS_BAD_REQUEST).send('Message du serveur: Nom Invalide !');
             if (!this.imageDataService.insertTagsCheckUp(drawingData))
-                res.status(HTTP_STATUS_BAD_REQUEST).send('Message du serveur: Étiquette Invalide!');
+                res.status(HTTP_STATUS_BAD_REQUEST).send('Message du serveur: Étiquette Invalide !');
             else
                 this.databaseService
                     .insertDrawing(newMetadata)
@@ -58,11 +58,11 @@ export class DatabaseController {
                     })
                     .catch((err) => {
                         console.log(err);
-                        res.status(HTTP_STATUS_ERROR).send("Erreur d'opération dans le serveur!");
+                        res.status(HTTP_STATUS_ERROR).send("Erreur d'opération dans le serveur !");
                     });
         });
 
-        this.router.get('/:index', (req: Request, res: Response, next: NextFunction) => {
+        this.router.get('/single/:index', (req: Request, res: Response, next: NextFunction) => {
             const drawing = this.imageDataService.getOneDrawing(+req.params.index);
             if (drawing) {
                 res.status(HTTP_STATUS_OK).json(drawing);
@@ -72,13 +72,18 @@ export class DatabaseController {
         });
 
         this.router.get('/by-tags', (req: Request, res: Response, next: NextFunction) => {
+            console.log(req.query.tags);
             const tags = req.query.tags as string[];
             this.databaseService
                 .getDrawingsByTags(tags)
                 .then((results) => {
                     if (results.length > 0) {
                         const drawingsToSend = this.imageDataService.getImagesFromDisk(results);
-                        res.status(HTTP_STATUS_OK).json(drawingsToSend);
+                        if (drawingsToSend.length > 0) {
+                            res.status(HTTP_STATUS_OK).json(drawingsToSend);
+                        } else {
+                            res.status(HTTP_STATUS_NOT_FOUND).json('Aucun dessin trouvé !');
+                        }
                     } else {
                         res.status(HTTP_STATUS_NOT_FOUND).json('Aucun dessin trouvé !');
                     }

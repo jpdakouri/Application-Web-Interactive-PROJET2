@@ -106,7 +106,7 @@ describe('DatabaseController', () => {
             .post('/api/drawings')
             .expect(HTTP_STATUS_BAD_REQUEST)
             .then((response: any) => {
-                expect(response.text).to.equal('Message du serveur: Étiquette Invalide!');
+                expect(response.text).to.equal('Message du serveur: Étiquette Invalide !');
             });
     });
 
@@ -118,7 +118,7 @@ describe('DatabaseController', () => {
             .post('/api/drawings')
             .expect(HTTP_STATUS_ERROR)
             .then((response: any) => {
-                expect(response.text).to.equal("Erreur d'opération dans le serveur!");
+                expect(response.text).to.equal("Erreur d'opération dans le serveur !");
             });
     });
 
@@ -131,6 +131,65 @@ describe('DatabaseController', () => {
             .expect(HTTP_STATUS_OK)
             .then((response: any) => {
                 expect(response.body).to.deep.equal(drawing);
+            });
+    });
+
+    it('GET request to /drawings/by-tags should respond a HTTP_STATUS_OK and a DrawingData array', async () => {
+        const databaseResults: Metadata[] = [];
+        const serverResponse: DrawingData[] = [];
+        const uri = 'uriStub';
+        for (let i = 0; i < 0; i++) {
+            const drawingData = new DrawingData(i.toString(), `title${i}`, [`tag${i}`, `tag${i}`], uri, 100, 100);
+            const metadata = new Metadata(i.toString(), `title${i}`, [`tag${i}`, `tag${i}`], 100, 100);
+            databaseResults.push(metadata);
+            serverResponse.push(drawingData);
+        }
+        databaseService.insertDrawing.resolves(databaseResults);
+        imageDataService.getImagesFromDisk.returns(serverResponse);
+        return supertest(app)
+            .get('/api/drawings/0')
+            .expect(HTTP_STATUS_OK)
+            .then((response: any) => {
+                expect(response.body).to.deep.equal(serverResponse);
+            });
+    });
+
+    it('GET request to /drawings/by-tags should respond a HTTP_STATUS_OK and a DrawingData array', async () => {
+        const databaseResults: Metadata[] = [];
+        const serverResponse: DrawingData[] = [];
+        const uri = 'uriStub';
+        for (let i = 0; i < 0; i++) {
+            const drawingData = new DrawingData(i.toString(), `title${i}`, [`tag${i}`, `tag${i}`], uri, 100, 100);
+            const metadata = new Metadata(i.toString(), `title${i}`, [`tag${i}`, `tag${i}`], 100, 100);
+            databaseResults.push(metadata);
+            serverResponse.push(drawingData);
+        }
+        databaseService.insertDrawing.resolves(databaseResults);
+        imageDataService.getImagesFromDisk.returns(serverResponse);
+        return supertest(app)
+            .get('/api/drawings/0')
+            .expect(HTTP_STATUS_OK)
+            .then((response: any) => {
+                expect(response.body).to.deep.equal(serverResponse);
+            });
+    });
+
+    it('GET request to /drawings/by-tags should respond a HTTP_STATUS_ERROR and string message if server error', async () => {
+        const databaseResults: Metadata[] = [];
+        const serverResponse: DrawingData[] = [];
+        const uri = 'uriStub';
+        for (let i = 0; i < 0; i++) {
+            const drawingData = new DrawingData(i.toString(), `title${i}`, [`tag${i}`, `tag${i}`], uri, 100, 100);
+            const metadata = new Metadata(i.toString(), `title${i}`, [`tag${i}`, `tag${i}`], 100, 100);
+            databaseResults.push(metadata);
+            serverResponse.push(drawingData);
+        }
+        databaseService.insertDrawing.rejects();
+        return supertest(app)
+            .get('/api/drawings/0')
+            .expect(HTTP_STATUS_ERROR)
+            .then((response: any) => {
+                expect(response.text).to.equal("Erreur d'opération dans le serveur !");
             });
     });
 

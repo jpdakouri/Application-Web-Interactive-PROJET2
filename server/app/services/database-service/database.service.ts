@@ -50,10 +50,12 @@ export class DatabaseService {
     }
 
     async getDrawingsByTags(tags: string[]): Promise<Metadata[]> {
-        if (tags[0] === 'none') {
-            return this.collection.find({}).toArray();
-        } else {
+        if (Array.isArray(tags)) {
             return this.collection.find({ tags: { $in: tags } }).toArray();
+        } else if (tags) {
+            return this.collection.find({ tags: { $in: [tags] } }).toArray();
+        } else {
+            return this.collection.find({}).toArray();
         }
     }
     async updateDrawing(drawing: Metadata): Promise<FindAndModifyWriteOpResultObject<Metadata>> {

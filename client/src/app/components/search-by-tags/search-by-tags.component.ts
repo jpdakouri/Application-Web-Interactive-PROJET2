@@ -51,6 +51,12 @@ export class SearchByTagsComponent {
     getDrawingsByTags(): void {
         let tags = this.toStringArray(this.tags);
         tags = this.tags != undefined ? tags : ['none'];
-        this.httpService.getDrawingsByTags(tags);
+        this.httpService.getDrawingsByTags(tags).subscribe({
+            next: (result) => {
+                result.forEach((element) => {
+                    console.log(element);
+                });
+            },
+        });
     }
 }

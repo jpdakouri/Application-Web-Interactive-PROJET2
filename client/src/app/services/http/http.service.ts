@@ -36,7 +36,7 @@ export class HttpService {
             .pipe(catchError(this.handleError<string>('Put')));
     }
     getOneDrawing(index: number): Observable<DrawingData> {
-        return this.http.get<DrawingData>(this.BASE_URL + `/api/drawings/${index}`).pipe(catchError(this.handleError<DrawingData>('GetOne')));
+        return this.http.get<DrawingData>(this.BASE_URL + `/api/drawings/single/${index}`).pipe(catchError(this.handleError<DrawingData>('GetOne')));
     }
 
     getDrawingsByTags(tags: string[]): Observable<DrawingData[]> {

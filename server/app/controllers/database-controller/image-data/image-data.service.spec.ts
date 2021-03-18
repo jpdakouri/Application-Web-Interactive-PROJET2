@@ -83,9 +83,9 @@ describe('ImageDataService', () => {
         const encoding = 'base64';
         const uri = `data:${mime};${encoding},${data}`;
         const metadatas: Metadata[] = [];
+        const drawingDatas: DrawingData[] = [];
         for (let i = 0; i < 5; i++) {
             const drawingData = new DrawingData(i.toString(), `title${i}`, [`tag${i}`, `tag${i}`], uri, 100, 100);
-            service.drawingData.push(drawingData);
             const metadata = new Metadata(i.toString(), `title${i}`, [`tag${i}`, `tag${i}`], 100, 100);
             metadatas.push(metadata);
         }
@@ -107,7 +107,7 @@ describe('ImageDataService', () => {
         service.drawingData.push(drawingData);
         expect(service.getOneDrawing(0)).to.deep.equal(drawingData);
 
-        expect(readSpy).to.have.been.called.with(`./app/drawings/id.png`);
+        expect(readSpy).to.have.been.called.with('./app/drawings/id.png');
 
         readStub.restore();
     });
