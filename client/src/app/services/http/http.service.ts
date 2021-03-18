@@ -53,7 +53,7 @@ export class HttpService {
         return (error: HttpErrorResponse): Observable<T> => {
             if (error.status === 0) this.openDialog('Serveur Indisponible');
             else this.openDialog(error.error);
-            console.log(error);
+            console.error(error);
             return of(result as T);
         };
     }

@@ -52,11 +52,7 @@ export class SearchByTagsComponent {
         let tags = this.toStringArray(this.tags);
         tags = this.tags != undefined ? tags : ['none'];
         this.httpService.getDrawingsByTags(tags).subscribe({
-            next: (result) => {
-                result.forEach((element) => {
-                    console.log(element);
-                });
-            },
+            next: (result) => {},
         });
     }
 }
