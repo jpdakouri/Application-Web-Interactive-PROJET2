@@ -8,12 +8,12 @@
             </mat-form-field>
         </span>
     </mat-toolbar>
-    <div class="queryFromServer" #queryFromServer *ngIf="!verifyQuery()">
+    <div class="queryFromServer" #queryFromServer *ngIf="this.drawingArray.length < 1">
         <mat-progress-bar mode="query"></mat-progress-bar>
         <p>Attente du serveur ...</p>
     </div>
 
-    <div class="matContainer" #matContainer *ngIf="verifyQuery()">
+    <div class="matContainer" #matContainer *ngIf="this.drawingArray.length > 0">
         <h1 class="emptyCarousel" *ngIf="this.drawingArray.length < 1">
             La base de données est courrement vide! <br />
             Enregistrez un dessin et il apparaitera ici :)

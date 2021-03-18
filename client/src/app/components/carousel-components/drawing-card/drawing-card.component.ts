@@ -26,7 +26,7 @@ export class DrawingCardComponent implements AfterViewInit, OnInit {
             this.image.nativeElement.style.width = '90%';
             this.image.nativeElement.style.height = 'auto';
         } else {
-            this.image.nativeElement.style.height = '75%';
+            this.image.nativeElement.style.height = '10%';
             this.image.nativeElement.style.width = 'auto';
         }
     }

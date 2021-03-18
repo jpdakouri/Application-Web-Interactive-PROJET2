@@ -1,5 +1,6 @@
 .card-container {
     position: relative;
+    display: block;
 }
 
 .mat-card-image {
@@ -26,3 +27,8 @@
 .close:hover {
     color: red;
 }
+
+// .imageContainer {
+//     width: 100%;
+//     text-align: center;
+// }

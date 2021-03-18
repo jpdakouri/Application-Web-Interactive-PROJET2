@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MAX_HEIGHT_MAIN_CARD, MAX_HEIGHT_SIDE_CARD, MAX_WIDTH_MAIN_CARD, MAX_WIDTH_SIDE_CARD } from '@app/components/components-constants';
 import { CarouselService } from '@app/services/carousel/carousel.service';
@@ -10,7 +10,7 @@ import { DrawingData } from '@common/communication/drawing-data';
     templateUrl: './carousel.component.html',
     styleUrls: ['./carousel.component.scss'],
 })
-export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
+export class CarouselComponent implements OnInit, AfterViewInit {
     @ViewChild('queryFromServer') query: HTMLCanvasElement;
     @ViewChild('matContainer') matContainer: HTMLCanvasElement;
     sideCard: CardStyle;
@@ -23,7 +23,7 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
 
     drawingArray: DrawingData[] = [];
 
-    constructor(public dialogRef: MatDialogRef<CarouselComponent>, public carouselService: CarouselService) {
+    constructor(public dialogRef: MatDialogRef<CarouselComponent>, public carouselService: CarouselService, private cdRef: ChangeDetectorRef) {
         this.sideCard = {
             width: MAX_WIDTH_SIDE_CARD,
             height: MAX_HEIGHT_SIDE_CARD,
@@ -39,20 +39,17 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
 
     ngOnInit(): void {
         console.log('carousel comp init');
+
         this.carouselService.initCarousel().then((result) => {
-            this.drawingArray = result;
+            result.forEach((drawing) => this.drawingArray.push(drawing));
+            this.cdRef.detectChanges();
         });
         console.log(this.drawingArray);
-        while (!this.verifyQuery);
         console.log(this.carouselService.sizeOfArray);
     }
 
     ngAfterViewInit(): void {
         console.log('carousel comp after init');
-    }
-
-    ngOnDestroy(): void {
-        console.log('carousel comp detruit');
     }
 
     @HostListener('window:keydown', ['$event'])
@@ -113,9 +110,5 @@ export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
         const test = this.drawingArray.slice(0, 1) as DrawingData[];
         this.drawingArray = this.drawingArray.slice(1, 3);
         this.drawingArray.push(test[0]);
-    }
-
-    verifyQuery(): boolean {
-        return this.drawingArray.length > 0;
     }
 }

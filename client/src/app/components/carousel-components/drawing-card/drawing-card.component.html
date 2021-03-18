@@ -4,7 +4,9 @@
         <mat-card-title> {{ infoDrawing.title }}</mat-card-title>
         <mat-card-subtitle> id : {{ infoDrawing.id }} </mat-card-subtitle>
     </mat-card-header>
+    <!-- <div class="imageContainer"> -->
     <img mat-card-image #image [src]="infoDrawing.dataURL" alt="Dessin" />
+    <!-- </div> -->
     <mat-card-content>
         <p>Étiquette(s) : {{ infoDrawing.tags }}</p>
     </mat-card-content>
