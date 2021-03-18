@@ -18,7 +18,7 @@ import { CurrentColourComponent } from '@app/components/colour-components/curren
 import { HueSelectorComponent } from '@app/components/colour-components/hue-selector/hue-selector.component';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { ExportDrawingComponent } from '@app/components/export-drawing/export-drawing.component';
-import { ToolAttributeBarComponent } from '@app/components/toolbar-components/tool-attribute-bar/tool-attribute-bar.component';
+import { ToolAttributeComponent } from '@app/components/toolbar-components/tool-attribute/tool-attribute.component';
 import { ToolbarComponent } from '@app/components/toolbar-components/toolbar/toolbar.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
@@ -39,7 +39,7 @@ describe('EditorComponent', () => {
             declarations: [
                 EditorComponent,
                 DrawingComponent,
-                ToolAttributeBarComponent,
+                ToolAttributeComponent,
                 ToolbarComponent,
                 ColourSelectorComponent,
                 ColourPaletteSelectorComponent,

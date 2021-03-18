@@ -1,5 +1,5 @@
 .invertColours {
-    transform: translate(0, -100%);
+    transform: translate(0, -70%);
     display: inline-block;
     margin: 0 13px 0 20px;
 }
@@ -11,9 +11,9 @@
     border-radius: 5px;
 }
 
-.current-color {
-    padding: 10px 0;
-}
+// .current-color {
+//     padding: 10px 0;
+// }
 
 .color-container {
     display: inline-block;
@@ -24,4 +24,5 @@
     margin: 0 auto;
     display: flex;
     justify-content: center;
+    margin-bottom: -10px;
 }

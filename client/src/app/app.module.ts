@@ -14,7 +14,7 @@ import { ColourPaletteSelectorComponent } from '@app/components/colour-component
 import { ColourSelectorComponent } from '@app/components/colour-components/colour-selector/colour-selector.component';
 import { CurrentColourComponent } from '@app/components/colour-components/current-color/current-colour.component';
 import { HueSelectorComponent } from '@app/components/colour-components/hue-selector/hue-selector.component';
-import { ToolAttributeBarComponent } from '@app/components/toolbar-components/tool-attribute-bar/tool-attribute-bar.component';
+import { ToolAttributeComponent } from '@app/components/toolbar-components/tool-attribute/tool-attribute.component';
 import { ToolbarComponent } from '@app/components/toolbar-components/toolbar/toolbar.component';
 import { AppMaterialModule } from './app-material/app-material.module';
 import { AppRoutingModule } from './app-routing.module';
@@ -33,7 +33,7 @@ import { ServerErrorMessageComponent } from './components/server-error-message/s
         EditorComponent,
         DrawingComponent,
         MainPageComponent,
-        ToolAttributeBarComponent,
+        ToolAttributeComponent,
         ColourHistoryComponent,
         ColourSelectorComponent,
         ToolbarComponent,

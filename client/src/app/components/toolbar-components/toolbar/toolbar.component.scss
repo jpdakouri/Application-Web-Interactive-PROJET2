@@ -1,85 +1,11 @@
 .toolbar {
     min-height: 100vh;
-
-    width: 120px;
-    padding: 0 10px;
-}
-
-.flex-container {
-    max-height: 100vh;
-
     display: flex;
+    padding: 10px 10px 0px 10px;
     flex-direction: column;
 }
 
-.shaping-tools {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    padding: 10px 0;
-}
-.drawing-tools {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    padding: 10px 0;
-}
-
-.drawing-option-container {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    padding: 10px 0;
-}
-
-.mat-divider {
-    border-top-width: 1px;
-    border-top-color: #3f51b5;
-}
-
-.ellipse-button-container {
-    margin-bottom: 5px;
-}
-
-.pencil-button-container {
-    margin-bottom: 5px;
-}
-
-.new-drawing-container {
-    margin-bottom: 5px;
-}
-
-.save-container {
-    margin-bottom: 5px;
-}
-
-.view-carousel-container {
-    margin-bottom: 5px;
-}
-
-.export-container {
-    margin-bottom: 5px;
-}
-
-.select-box-button-container {
-    margin-top: 5px;
-}
-
-.select-ellipse-button-container {
-    margin-top: 5px;
-}
-
-.undo-redo-container {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    padding: 10px 0;
-}
-
-.undo-container {
-    margin-bottom: 5px;
-}
-
-.redo-container {
-    margin-bottom: 5px;
+.flex-item {
+    margin-bottom: 10px;
+    width: 40px;
 }
