@@ -41,7 +41,8 @@ export class ToolAttributeBarComponent {
             this.toolManagerService.isCurrentTool(ToolsNames.Eraser) ||
             this.toolManagerService.isCurrentTool(ToolsNames.Line) ||
             this.toolManagerService.isCurrentTool(ToolsNames.Rectangle) ||
-            this.toolManagerService.isCurrentTool(ToolsNames.Ellipse)
+            this.toolManagerService.isCurrentTool(ToolsNames.Ellipse) ||
+            this.toolManagerService.isCurrentTool(ToolsNames.Polygon)
         );
     }
 
@@ -54,7 +55,11 @@ export class ToolAttributeBarComponent {
     }
 
     showShapeStyle(): boolean {
-        return this.toolManagerService.isCurrentTool(ToolsNames.Ellipse) || this.toolManagerService.isCurrentTool(ToolsNames.Rectangle);
+        return (
+            this.toolManagerService.isCurrentTool(ToolsNames.Ellipse) ||
+            this.toolManagerService.isCurrentTool(ToolsNames.Rectangle) ||
+            this.toolManagerService.isCurrentTool(ToolsNames.Polygon)
+        );
     }
 
     showEraserThickness(): boolean {

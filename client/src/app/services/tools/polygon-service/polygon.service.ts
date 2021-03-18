@@ -4,10 +4,11 @@ import { Vec2 } from '@app/classes/vec2';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EllipseService } from '@app/services/tools/ellipse-service/ellipse.service';
-// import { DEFAULT_MIN_THICKNESS } from '@app/services/tools/tools-constants';
+import { DEFAULT_MIN_THICKNESS } from '@app/services/tools/tools-constants';
 // import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { Sign } from '@app/utils/enums/rgb-settings';
+import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
 
 const DEFAULT_NUMBER_OF_SIDE = 5;
@@ -16,12 +17,9 @@ const DEFAULT_NUMBER_OF_SIDE = 5;
 })
 export class PolygonService extends Tool {
     private firstGrid: Vec2;
-    // private begin: Vec2;
-    // private end: Vec2;
     private numberOfSides: number;
     currentColourService: CurrentColourService;
     visualisationEllipse: EllipseService;
-    private test: boolean = true;
 
     constructor(drawingService: DrawingService, currentColourService: CurrentColourService, visualisationEllipse: EllipseService) {
         super(drawingService, currentColourService);
@@ -36,7 +34,6 @@ export class PolygonService extends Tool {
         this.mouseDown = event.button === MouseButtons.Left;
         if (this.mouseDown) {
             this.firstGrid = this.getPositionFromMouse(event);
-            // this.begin = this.getPositionFromMouse(event);
         }
     }
 
@@ -44,30 +41,24 @@ export class PolygonService extends Tool {
         if (this.mouseDown) {
             this.mouseDownCoord.x = this.getPositionFromMouse(event).x - this.firstGrid.x;
             this.mouseDownCoord.y = this.getPositionFromMouse(event).y - this.firstGrid.y;
-            // this.end = this.getPositionFromMouse(event);
             console.log('mouseDown: ', this.mouseDownCoord);
             console.log('firstGrid: ', this.firstGrid);
 
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawingService.clearCanvas(this.drawingService.baseCtx);
             this.drawPolygon(this.drawingService.previewCtx, this.mouseDownCoord);
         }
     }
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
-            // this.end = this.getPositionFromMouse(event);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawPolygon(this.drawingService.baseCtx, this.mouseDownCoord);
-            /*if (this.test) {
-                this.drawPolygon(this.drawingService.previewCtx, this.mouseDownCoord);
-            }*/
             this.clearPath();
         }
         this.mouseDown = false;
     }
 
-    private drawPolygon(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+    private drawOutLine(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         this.drawCircle(finalGrid);
         const startCoord = { ...this.firstGrid };
         const width = finalGrid.x;
@@ -75,19 +66,95 @@ export class PolygonService extends Tool {
         const center: Vec2 = { x: startCoord.x + width / 2, y: startCoord.y + height / 2 };
         const radius = Math.abs(height / 2);
         const angle = (2 * Math.PI) / this.numberOfSides;
-        console.log('radius ', radius);
-        console.log('center ', center);
-        console.log('first ', this.firstGrid);
-        console.log('final ', finalGrid);
-        // console.log('angle ', angle);
+        ctx.setLineDash([]);
+        ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
+        ctx.strokeStyle = this.currentColourService.getSecondaryColorHex();
         ctx.beginPath();
-        // ctx.ellipse(center.x, center.y, radius, radius, 0, 0, 2 * Math.PI);
         ctx.moveTo(center.x + radius, center.y);
         for (let i = 1; i <= this.numberOfSides; i++) {
             ctx.lineTo(center.x + radius * Math.cos(i * angle), center.y + radius * Math.sin(i * angle));
         }
         ctx.stroke();
-        this.visualisationEllipse.drawOutline(this.drawingService.previewCtx, this.firstGrid, finalGrid, 'blue', 1);
+        if (ctx === this.drawingService.previewCtx) {
+            ctx.setLineDash([5, 5]);
+            finalGrid.x += ctx.lineWidth;
+            finalGrid.y += ctx.lineWidth;
+            this.visualisationEllipse.drawOutline(this.drawingService.previewCtx, this.firstGrid, finalGrid, 'blue', 1);
+        }
+    }
+
+    private drawFilled(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+        this.drawCircle(finalGrid);
+        const startCoord = { ...this.firstGrid };
+        const width = finalGrid.x;
+        const height = finalGrid.y;
+        const center: Vec2 = { x: startCoord.x + width / 2, y: startCoord.y + height / 2 };
+        const radius = Math.abs(height / 2);
+        const angle = (2 * Math.PI) / this.numberOfSides;
+        ctx.setLineDash([]);
+        ctx.lineWidth = DEFAULT_MIN_THICKNESS;
+        ctx.strokeStyle = this.currentColourService.getPrimaryColorHex();
+        ctx.fillStyle = this.currentColourService.getPrimaryColorHex();
+        ctx.beginPath();
+        ctx.moveTo(center.x + radius, center.y);
+        for (let i = 1; i <= this.numberOfSides; i++) {
+            ctx.lineTo(center.x + radius * Math.cos(i * angle), center.y + radius * Math.sin(i * angle));
+        }
+        ctx.fill();
+        ctx.stroke();
+        if (ctx === this.drawingService.previewCtx) {
+            ctx.setLineDash([5, 5]);
+            finalGrid.x += ctx.lineWidth;
+            finalGrid.y += ctx.lineWidth;
+            this.visualisationEllipse.drawOutline(this.drawingService.previewCtx, this.firstGrid, finalGrid, 'blue', 1);
+        }
+    }
+
+    private drawFilledOutLine(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+        this.drawCircle(finalGrid);
+        ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
+        const startCoord = { ...this.firstGrid };
+        const width = finalGrid.x;
+        const height = finalGrid.y;
+        const center: Vec2 = { x: startCoord.x + width / 2, y: startCoord.y + height / 2 };
+        const radius = Math.abs(height / 2);
+        const angle = (2 * Math.PI) / this.numberOfSides;
+        ctx.setLineDash([]);
+        ctx.fillStyle = this.currentColourService.getPrimaryColorHex();
+        ctx.beginPath();
+        ctx.moveTo(center.x + radius, center.y);
+        for (let i = 1; i <= this.numberOfSides; i++) {
+            ctx.lineTo(center.x + radius * Math.cos(i * angle), center.y + radius * Math.sin(i * angle));
+        }
+        ctx.fill();
+        ctx.stroke();
+        if (ctx === this.drawingService.previewCtx) {
+            ctx.setLineDash([5, 5]);
+            finalGrid.x += ctx.lineWidth / 2;
+            finalGrid.y += ctx.lineWidth / 2;
+            const test = { x: this.firstGrid.x - ctx.lineWidth / 2, y: this.firstGrid.y - ctx.lineWidth / 2 };
+            this.visualisationEllipse.drawOutline(this.drawingService.previewCtx, test, finalGrid, 'blue', 1);
+        }
+    }
+
+    private drawPolygon(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+        switch (this.shapeStyle) {
+            case ShapeStyle.Outline:
+                this.drawOutLine(ctx, finalGrid);
+                break;
+
+            case ShapeStyle.Filled:
+                this.drawFilled(ctx, finalGrid);
+                break;
+
+            case ShapeStyle.FilledOutline:
+                this.drawFilledOutLine(ctx, finalGrid);
+                break;
+
+            default:
+                this.drawOutLine(ctx, finalGrid);
+                break;
+        }
     }
 
     private isMouseInFirstQuadrant(): boolean {
