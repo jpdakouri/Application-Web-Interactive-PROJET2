@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ExportDrawingService } from '@app/services/export-drawing/export-drawing.service';
 import { FILE_NAME_REGEX } from '@app/services/services-constants';
 import { ImageFilter } from '@app/utils/enums/image-filter.enum';
@@ -25,7 +26,11 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
     imageSource: string;
     originalCanvas: HTMLCanvasElement;
 
-    constructor(private exportDrawingService: ExportDrawingService, public dialogRef: MatDialogRef<ExportDrawingComponent>) {
+    constructor(
+        private exportDrawingService: ExportDrawingService,
+        private drawingService: DrawingService,
+        public dialogRef: MatDialogRef<ExportDrawingComponent>,
+    ) {
         this.filters = Object.values(ImageFilter);
         this.formats = Object.values(ImageFormat);
         this.selectedFormat = ImageFormat.PNG;
@@ -33,7 +38,6 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
         this.selectedFilterValue = this.exportDrawingService.imageFilters.get(ImageFilter.None) as string;
         this.fileName = new FormControl('', [Validators.required, Validators.pattern(FILE_NAME_REGEX)]);
         this.imageSource = '';
-        console.log(this.selectedFilterValue);
     }
 
     ngOnInit(): void {
@@ -47,14 +51,15 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
     }
 
     ngAfterViewInit(): void {
-        this.originalCanvas = document.getElementById('canvas') as HTMLCanvasElement;
+        // this.originalCanvas = document.getElementById('canvas') as HTMLCanvasElement;
+        this.originalCanvas = this.drawingService.canvas;
         this.exportDrawingService.canvas = this.downloadProcessingCanvas.nativeElement as HTMLCanvasElement;
         this.exportDrawingService.link = this.link.nativeElement as HTMLAnchorElement;
-        setTimeout(() => {
-            if (this.originalCanvas) {
-                this.imageSource = this.originalCanvas.toDataURL('image/png') as string;
-            }
-        });
+        // setTimeout(() => {
+        // if (this.originalCanvas) {
+        this.imageSource = this.originalCanvas.toDataURL('image/png') as string;
+        // }
+        // });
     }
 
     ngOnDestroy(): void {
@@ -85,7 +90,7 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
 
     onDownload(): void {
         this.exportDrawingService.imageSource = this.imageSource;
-        this.exportDrawingService.downloadImage(this.fileName.value, this.selectedFormat);
+        this.exportDrawingService.downloadDrawingAsImage(this.fileName.value, this.selectedFormat);
         this.dialogRef.close();
     }
 }
