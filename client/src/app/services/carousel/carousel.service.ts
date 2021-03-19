@@ -43,6 +43,8 @@ export class CarouselService {
                         }
                     },
                 });
+            } else {
+                subject.next(this.drawingsToShow);
             }
         });
         return subject.asObservable();
@@ -78,8 +80,9 @@ export class CarouselService {
      * @param rightSearch if false, searches left, if true searches right
      * @returns The next drawing in that direction.
      */
-    getDrawing(rightSearch: boolean): DrawingData {
+    getDrawing(rightSearch: boolean): Observable<DrawingData> {
         let drawing: DrawingData = {} as DrawingData;
+        const subject = new Subject<DrawingData>();
         this.httpService
             .getOneDrawing(
                 rightSearch
@@ -90,9 +93,10 @@ export class CarouselService {
                 next: (result) => {
                     console.log("La requête GET s'est bien déroulée 111!");
                     drawing = result;
+                    subject.next(drawing);
                 },
             });
-        return drawing;
+        return subject.asObservable();
     }
 
     getAllDrawings(): void {

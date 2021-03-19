@@ -11,6 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CarouselComponent } from '@app/components/carousel-components/carousel/carousel.component';
 import { ColourHistoryComponent } from '@app/components/colour-components/colour-history/colour-history.component';
 import { ColourPaletteSelectorComponent } from '@app/components/colour-components/colour-palette-selector/colour-palette-selector.component';
 import { ColourSelectorComponent } from '@app/components/colour-components/colour-selector/colour-selector.component';
@@ -24,7 +25,6 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { ToolManagerServiceMock } from '@app/tests-mocks/tool-manager-mock';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
-import { CarouselComponent } from '../carousel-components/carousel/carousel.component';
 import { EditorComponent } from './editor.component';
 
 describe('EditorComponent', () => {

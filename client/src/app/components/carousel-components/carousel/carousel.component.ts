@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MAX_HEIGHT_MAIN_CARD, MAX_HEIGHT_SIDE_CARD, MAX_WIDTH_MAIN_CARD, MAX_WIDTH_SIDE_CARD } from '@app/components/components-constants';
 import { CarouselService } from '@app/services/carousel/carousel.service';
@@ -10,7 +10,7 @@ import { DrawingData } from '@common/communication/drawing-data';
     templateUrl: './carousel.component.html',
     styleUrls: ['./carousel.component.scss'],
 })
-export class CarouselComponent implements OnInit, AfterViewInit {
+export class CarouselComponent implements OnInit {
     @ViewChild('queryFromServer') query: HTMLCanvasElement;
     @ViewChild('matContainer') matContainer: HTMLCanvasElement;
     sideCard: CardStyle;
@@ -37,16 +37,11 @@ export class CarouselComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit(): void {
-        // console.log('carousel comp init');
         this.carouselService.initCarousel().subscribe((result) => {
             console.log(result);
             this.drawingArray = result;
             this.isLoading = false;
         });
-    }
-
-    ngAfterViewInit(): void {
-        console.log('carousel comp after init');
     }
 
     @HostListener('window:keydown', ['$event'])
@@ -78,32 +73,36 @@ export class CarouselComponent implements OnInit, AfterViewInit {
     //     this.carouselService.updateDrawing();
     // }
 
-    // shiftLeft(): void {
-    //     const loadedDrawing = this.carouselService.getDrawing(true);
-    //     this.drawingArray = this.drawingArray.slice(this.left, this.middle + 1);
-
-    //     console.log(this.drawingArray);
-    //     console.log(loadedDrawing);
-
-    //     if (this.drawingArray.indexOf(loadedDrawing) >= 0) this.drawingArray.splice(this.left, 0, loadedDrawing);
-    // }
-
-    // shiftRight(): void {
-    //     const loadedDrawing = this.carouselService.getDrawing(false);
-    //     this.drawingArray = this.drawingArray.slice(this.middle, this.right + 1);
-
-    //     console.log(this.drawingArray);
-    //     console.log(loadedDrawing);
-
-    //     if (this.drawingArray.indexOf(loadedDrawing) >= 0) this.drawingArray.push(loadedDrawing);
-    // }
     shiftLeft(): void {
+        let loadedDrawing: DrawingData;
+        this.carouselService.getDrawing(true).subscribe((result) => {
+            loadedDrawing = result;
+            this.drawingArray = this.drawingArray.slice(this.left, this.middle + 1);
+
+            console.log(loadedDrawing.title);
+            console.log(this.drawingArray.indexOf(loadedDrawing));
+            if (this.drawingArray.indexOf(loadedDrawing) === -1) this.drawingArray.splice(this.left, 0, loadedDrawing);
+        });
+    }
+
+    shiftRight(): void {
+        let loadedDrawing: DrawingData;
+        this.carouselService.getDrawing(false).subscribe((result) => {
+            loadedDrawing = result;
+            this.drawingArray = this.drawingArray.slice(this.middle, this.right + 1);
+
+            console.log(loadedDrawing.title);
+            console.log(this.drawingArray.indexOf(loadedDrawing));
+            if (this.drawingArray.indexOf(loadedDrawing) === -1) this.drawingArray.push(loadedDrawing);
+        });
+    }
+    shifteft(): void {
         // requeste ici
         const test = this.drawingArray.slice(2, 3) as DrawingData[];
         this.drawingArray.splice(0, 0, test[0]);
     }
 
-    shiftRight(): void {
+    shifRight(): void {
         // requeste ici
         const test = this.drawingArray.slice(0, 1) as DrawingData[];
         this.drawingArray = this.drawingArray.slice(1, 3);

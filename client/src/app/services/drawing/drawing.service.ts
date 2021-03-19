@@ -50,6 +50,8 @@ export class DrawingService {
         this.createNewDrawing();
         this.canvas.width = drawing.width;
         this.canvas.height = drawing.height;
+        // this.baseCtx.canvas.width = drawing.width;
+        // this.baseCtx.canvas.height = drawing.height;
         const img = new Image();
         img.onload = () => {
             this.canvas.getContext('2d')?.drawImage(img, 0, 0);
