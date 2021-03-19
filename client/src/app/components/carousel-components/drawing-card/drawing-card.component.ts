@@ -18,9 +18,13 @@ export class DrawingCardComponent implements AfterViewInit, OnInit {
     constructor() {
         this.toOpen = new EventEmitter<boolean>();
         this.toDelete = new EventEmitter<boolean>();
+        console.log('card const');
     }
-    ngOnInit(): void {}
+    ngOnInit(): void {
+        console.log('card init');
+    }
     ngAfterViewInit(): void {
+        console.log('cards afterinit');
         console.log(this.infoDrawing.width + '   ' + this.infoDrawing.height);
         if (this.image.nativeElement.width > this.image.nativeElement.height) {
             this.image.nativeElement.style.width = '90%';

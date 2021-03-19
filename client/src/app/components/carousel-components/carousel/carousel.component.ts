@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MAX_HEIGHT_MAIN_CARD, MAX_HEIGHT_SIDE_CARD, MAX_WIDTH_MAIN_CARD, MAX_WIDTH_SIDE_CARD } from '@app/components/components-constants';
 import { CarouselService } from '@app/services/carousel/carousel.service';
@@ -23,7 +23,7 @@ export class CarouselComponent implements OnInit, AfterViewInit {
 
     drawingArray: DrawingData[] = [];
 
-    constructor(public dialogRef: MatDialogRef<CarouselComponent>, public carouselService: CarouselService, private cdRef: ChangeDetectorRef) {
+    constructor(public dialogRef: MatDialogRef<CarouselComponent>, public carouselService: CarouselService) {
         this.sideCard = {
             width: MAX_WIDTH_SIDE_CARD,
             height: MAX_HEIGHT_SIDE_CARD,
@@ -39,11 +39,11 @@ export class CarouselComponent implements OnInit, AfterViewInit {
 
     ngOnInit(): void {
         console.log('carousel comp init');
-
-        this.carouselService.initCarousel().then((result) => {
-            result.forEach((drawing) => this.drawingArray.push(drawing));
-            this.cdRef.detectChanges();
-        });
+        this.drawingArray = this.carouselService.initCarousel();
+        // this.carouselService.initCarousel().then((result) => {
+        //     result.forEach((drawing) => this.drawingArray.push(drawing));
+        //     this.cdRef.detectChanges();
+        // });
         console.log(this.drawingArray);
         console.log(this.carouselService.sizeOfArray);
     }

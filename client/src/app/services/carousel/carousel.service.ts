@@ -16,7 +16,7 @@ export class CarouselService {
 
     constructor(private httpService: HttpService, public drawingService: DrawingService) {}
 
-    async initCarousel(): Promise<DrawingData[]> {
+    initCarousel(): DrawingData[] {
         this.drawingsToShow = [];
         this.getArraySizeOfDrawing();
         if (this.sizeOfArray > 0)
@@ -39,7 +39,7 @@ export class CarouselService {
             });
         }
         console.log(this.drawingsToShow);
-        return await this.drawingsToShow;
+        return this.drawingsToShow;
     }
 
     deleteDrawing(id: string): void {
