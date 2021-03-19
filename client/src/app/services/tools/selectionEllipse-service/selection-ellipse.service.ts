@@ -79,6 +79,7 @@ export class SelectionEllipseService extends Tool {
                 this.makeCircle(this.mouseDownCoord);
             }
             this.selectEllipse(this.drawingService.previewCtx, this.mouseDownCoord);
+            this.drawPreviewSelection(this.drawingService.previewCtx, this.mouseDownCoord);
         }
         this.mouseDown = false;
     }
@@ -213,9 +214,6 @@ export class SelectionEllipseService extends Tool {
             startCoord.y += finalGrid.y;
         }
         ctx.strokeRect(startCoord.x, startCoord.y, width, height);
-        // Mettre methode pour afficher 8 rectangles/carres
-        this.drawEllipse(ctx, finalGrid);
-        ctx.stroke();
     }
 
     private drawEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
@@ -232,9 +230,6 @@ export class SelectionEllipseService extends Tool {
     private clipArea(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.save();
         ctx.beginPath();
-        // if (this.shiftDown) {
-        //     this.makeCircle(finalGrid);
-        // }
         this.drawEllipse(ctx, finalGrid);
         ctx.closePath();
         ctx.clip();
@@ -260,8 +255,9 @@ export class SelectionEllipseService extends Tool {
         if (this.shiftDown) {
             this.makeCircle(currentCoord);
         }
-        this.drawPreviewSelection(this.drawingService.previewCtx, currentCoord);
+        this.drawEllipse(this.drawingService.previewCtx, currentCoord);
         this.drawingService.previewCtx.closePath();
+        this.drawingService.previewCtx.stroke();
     }
 
     private isClickIn(firstGrid: Vec2): boolean {
@@ -280,6 +276,10 @@ export class SelectionEllipseService extends Tool {
 
     private clearImageData(): void {
         for (let i = this.imageData.data.length; --i >= 0; ) this.imageData.data[i] = 0;
+    }
+
+    private emptyImageData(): void {
+        this.imageData = this.drawingService.previewCtx.createImageData(0, 0);
     }
 
     executeCommand(command: ToolCommand): void {
