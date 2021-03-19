@@ -138,7 +138,6 @@ export class SelectionEllipseService extends Tool {
         if (this.shiftDown && event.key === KeyboardButtons.Shift) {
             this.shiftDown = false;
             this.updatePreview();
-            this.clearImageData();
         }
     }
 
@@ -222,6 +221,7 @@ export class SelectionEllipseService extends Tool {
     }
 
     private drawEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+        ctx.beginPath();
         ctx.strokeStyle = 'blue';
         ctx.lineWidth = this.lineThickness = 0.5;
 
@@ -230,6 +230,7 @@ export class SelectionEllipseService extends Tool {
         const height = finalGrid.y;
 
         ctx.ellipse(startCoord.x + width / 2, startCoord.y + height / 2, Math.abs(width / 2), Math.abs(height / 2), 0, 0, 2 * Math.PI, false);
+        ctx.closePath();
     }
 
     private clipArea(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
@@ -249,8 +250,8 @@ export class SelectionEllipseService extends Tool {
         });
         // Remplir de blanc
         this.drawEllipse(this.drawingService.baseCtx, this.mouseDownCoord);
-        this.drawingService.baseCtx.fillStyle = 'white';
         this.drawingService.baseCtx.fill();
+        this.drawingService.baseCtx.fillStyle = 'white';
     }
 
     private updatePreview(): void {
@@ -259,11 +260,9 @@ export class SelectionEllipseService extends Tool {
         this.drawingService.previewCtx.beginPath();
         if (this.shiftDown) {
             this.makeCircle(currentCoord);
-            this.drawEllipse(this.drawingService.previewCtx, currentCoord);
-            this.drawingService.previewCtx.closePath();
         }
         this.drawEllipse(this.drawingService.previewCtx, currentCoord);
-        this.drawingService.previewCtx.closePath();
+        // this.drawingService.previewCtx.closePath();
         this.drawingService.previewCtx.stroke();
     }
 
