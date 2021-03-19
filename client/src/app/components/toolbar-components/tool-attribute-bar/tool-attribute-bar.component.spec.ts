@@ -38,6 +38,8 @@ describe('ToolAttributeBarComponent', () => {
             'setCurrentFrequency',
             'setCurrentDropletDiameter',
             'setCurrentJetDiameter',
+            'getCurrentNumberOfSides',
+            'setCurrentNumberOfSides',
         ]);
         TestBed.configureTestingModule({
             declarations: [

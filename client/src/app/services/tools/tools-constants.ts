@@ -47,3 +47,10 @@ export const DEFAULT_DROPLET_DIAMETER = 2;
 export const DEFAULT_JET_DIAMETER = 50;
 
 export const MS_PER_S = 1000;
+
+/***********************/
+/***POLYGON CONSTANTS**/
+/***********************/
+
+export const DEFAULT_NUMBER_OF_SIDE = 3;
+export const LINE_DASH = 5;

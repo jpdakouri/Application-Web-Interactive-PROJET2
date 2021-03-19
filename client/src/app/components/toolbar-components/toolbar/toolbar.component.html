@@ -73,8 +73,8 @@
 
             <div class="select-box-button-container">
                 <button
-                    aria-label='Selection rectangle "i"'
-                    title='Selection rectangle "i"'
+                    aria-label='Selection rectangle'
+                    title='Selection rectangle'
                     [color]="isSelected(this.toolsNames.SelectBox) ? 'accent' : 'primary'"
                     (click)="setCurrentTool(this.toolsNames.SelectBox)"
                     mat-fab
@@ -85,8 +85,8 @@
 
             <div class="select-ellipse-button-container">
                 <button
-                    aria-label='Selection ellipse "i"'
-                    title='Selection ellipse "i"'
+                    aria-label='Selection ellipse'
+                    title='Selection ellipse'
                     [color]="isSelected(this.toolsNames.SelectEllipse) ? 'accent' : 'primary'"
                     (click)="setCurrentTool(this.toolsNames.SelectEllipse)"
                     mat-fab
@@ -151,6 +151,18 @@
                             <g fill="#ffffff"><path d="M145.43294,16.43294l-129,129l10.13411,10.13411l129,-129z"></path></g>
                         </g>
                     </svg>
+                </button>
+            </div>
+
+            <div class="polygon-button-container">
+                <button
+                    aria-label='Polygonne'
+                    title='Polygonne'
+                    [color]="isSelected(this.toolsNames.Polygon) ? 'accent' : 'primary'"
+                    (click)="setCurrentTool(this.toolsNames.Polygon)"
+                    mat-fab
+                >
+                    <mat-icon>change_history</mat-icon>
                 </button>
             </div>
         </div>
