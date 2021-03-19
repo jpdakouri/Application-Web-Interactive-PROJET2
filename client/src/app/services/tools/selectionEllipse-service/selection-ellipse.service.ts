@@ -79,7 +79,9 @@ export class SelectionEllipseService extends Tool {
                 this.makeCircle(this.mouseDownCoord);
             }
             this.selectEllipse(this.drawingService.previewCtx, this.mouseDownCoord);
-            this.drawPreviewSelection(this.drawingService.previewCtx, this.mouseDownCoord);
+            this.drawEllipse(this.drawingService.previewCtx, this.mouseDownCoord);
+            this.drawingService.previewCtx.stroke();
+            this.drawFramingRectangle(this.drawingService.previewCtx, this.mouseDownCoord);
         }
         this.mouseDown = false;
     }
@@ -127,6 +129,9 @@ export class SelectionEllipseService extends Tool {
             this.drawingService.previewCtx.drawImage(imgBitmap, this.firstGrid.x, this.firstGrid.y);
             this.drawingService.previewCtx.restore();
         });
+        this.drawEllipse(this.drawingService.previewCtx, this.mouseDownCoord);
+        this.drawingService.previewCtx.stroke();
+        this.drawFramingRectangle(this.drawingService.previewCtx, this.mouseDownCoord);
     }
 
     onKeyUp(event: KeyboardEvent): void {
@@ -198,9 +203,9 @@ export class SelectionEllipseService extends Tool {
         }
     }
 
-    private drawPreviewSelection(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+    private drawFramingRectangle(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.strokeStyle = 'black';
-        ctx.setLineDash([4, 3]);
+        // ctx.setLineDash([4, 3]);
         ctx.lineWidth = this.lineThickness = 0.5;
 
         const startCoord = { ...this.firstGrid };
@@ -254,6 +259,8 @@ export class SelectionEllipseService extends Tool {
         this.drawingService.previewCtx.beginPath();
         if (this.shiftDown) {
             this.makeCircle(currentCoord);
+            this.drawEllipse(this.drawingService.previewCtx, currentCoord);
+            this.drawingService.previewCtx.closePath();
         }
         this.drawEllipse(this.drawingService.previewCtx, currentCoord);
         this.drawingService.previewCtx.closePath();
