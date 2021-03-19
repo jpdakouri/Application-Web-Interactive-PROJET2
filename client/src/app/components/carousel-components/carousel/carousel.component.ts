@@ -62,8 +62,8 @@ export class CarouselComponent implements OnInit {
     deleteDrawing(id: string | undefined): void {
         this.carouselService
             .deleteDrawing(id as string)
-            .then((err) => {
-                console.log(err);
+            .then((res) => {
+                console.log(res);
             })
             .catch(() => {
                 console.log('lel');
@@ -76,26 +76,16 @@ export class CarouselComponent implements OnInit {
     }
 
     shiftLeft(): void {
-        let loadedDrawing: DrawingData;
         this.carouselService.getDrawing(true).subscribe((result) => {
-            loadedDrawing = result;
             this.drawingArray = this.drawingArray.slice(this.left, this.middle + 1);
-
-            console.log(loadedDrawing.title);
-            console.log(this.drawingArray.indexOf(loadedDrawing));
-            if (this.drawingArray.indexOf(loadedDrawing) === -1) this.drawingArray.splice(this.left, 0, loadedDrawing);
+            this.drawingArray.splice(this.left, 0, result);
         });
     }
 
     shiftRight(): void {
-        let loadedDrawing: DrawingData;
         this.carouselService.getDrawing(false).subscribe((result) => {
-            loadedDrawing = result;
             this.drawingArray = this.drawingArray.slice(this.middle, this.right + 1);
-
-            console.log(loadedDrawing.title);
-            console.log(this.drawingArray.indexOf(loadedDrawing));
-            if (this.drawingArray.indexOf(loadedDrawing) === -1) this.drawingArray.push(loadedDrawing);
+            this.drawingArray.push(result);
         });
     }
 }

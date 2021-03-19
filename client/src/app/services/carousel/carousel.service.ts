@@ -12,7 +12,7 @@ import { Observable, Subject } from 'rxjs';
 export class CarouselService {
     carouselDialog: MatDialogRef<CarouselComponent>;
     sizeOfArray: number;
-    courrentIndex: number = 0;
+    courrentIndex: number = 1;
     drawingsToShow: DrawingData[];
 
     constructor(private httpService: HttpService, public drawingService: DrawingService) {}
