@@ -36,6 +36,7 @@ describe('HueSelectorComponent', () => {
         const bottomColor = canvasContext.getImageData(CANVAS_WIDTH - 1, CANVAS_HEIGHT - 1, 1, 1).data;
         expect(bottomColor[0]).toBe(RGBA_MAX);
         expect(bottomColor[1]).toBe(0);
+        // tslint:disable-next-line: no-magic-numbers
         const traceOfBlueRgb = bottomColor[2] === 3 || bottomColor[2] === 4 ? true : false;
         expect(traceOfBlueRgb).toBe(true);
     });
