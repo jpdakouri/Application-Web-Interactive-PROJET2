@@ -48,7 +48,7 @@ export class HttpService {
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
         return (error: HttpErrorResponse): Observable<T> => {
             if (error.status === 0) this.openDialog('Serveur Indisponible');
-            else this.openDialog(error.error);
+            else this.openDialog(error.error + ' test');
             console.log(error);
             return of(result as T);
         };

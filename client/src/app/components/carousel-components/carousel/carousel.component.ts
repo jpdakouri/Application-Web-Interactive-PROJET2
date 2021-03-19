@@ -57,21 +57,20 @@ export class CarouselComponent implements OnInit {
     }
 
     deleteDrawing(id: string | undefined): void {
-        this.carouselService.deleteDrawing(id as string);
+        this.carouselService
+            .deleteDrawing(id as string)
+            .then((err) => {
+                console.log(err);
+            })
+            .catch(() => {
+                console.log('lel');
+            });
     }
 
     openDrawing(): void {
         this.carouselService.openDrawing(this.drawingArray[this.middle]);
         this.onDialogClose();
     }
-
-    getAllDrawings(): void {
-        this.carouselService.getAllDrawings();
-    }
-
-    // updateDrawing(): void {
-    //     this.carouselService.updateDrawing();
-    // }
 
     shiftLeft(): void {
         let loadedDrawing: DrawingData;
@@ -95,17 +94,5 @@ export class CarouselComponent implements OnInit {
             console.log(this.drawingArray.indexOf(loadedDrawing));
             if (this.drawingArray.indexOf(loadedDrawing) === -1) this.drawingArray.push(loadedDrawing);
         });
-    }
-    shifteft(): void {
-        // requeste ici
-        const test = this.drawingArray.slice(2, 3) as DrawingData[];
-        this.drawingArray.splice(0, 0, test[0]);
-    }
-
-    shifRight(): void {
-        // requeste ici
-        const test = this.drawingArray.slice(0, 1) as DrawingData[];
-        this.drawingArray = this.drawingArray.slice(1, 3);
-        this.drawingArray.push(test[0]);
     }
 }

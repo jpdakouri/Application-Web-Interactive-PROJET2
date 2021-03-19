@@ -34,17 +34,20 @@ export class CarouselService {
                                         next: (resultThird) => {
                                             this.drawingsToShow.push(resultThird);
                                             subject.next(this.drawingsToShow);
+                                            console.log(this.drawingsToShow.length);
                                         },
                                     });
                                 },
                             });
                         } else {
                             subject.next(this.drawingsToShow);
+                            console.log(this.drawingsToShow.length);
                         }
                     },
                 });
             } else {
                 subject.next(this.drawingsToShow);
+                console.log(this.drawingsToShow.length);
             }
         });
         return subject.asObservable();
@@ -62,18 +65,33 @@ export class CarouselService {
         return subject.asObservable();
     }
 
-    deleteDrawing(id: string): void {
-        if (id) {
+    deleteDrawing(id: string): Promise<string> {
+        const promise = new Promise<string>((resolve, reject) => {
             this.httpService.deleteDrawing(id).subscribe({
                 next: (result) => {
-                    console.log(result);
+                    setTimeout(() => {
+                        console.log('Async Work Complete');
+                        if (result) {
+                            resolve('Le dessin a ne fait plus parti ');
+                        } else {
+                            reject('Le dessin a ne fait plus parti du Carousel ... Il ne peut pas être supprimé');
+                        }
+                    }, 200);
                 },
                 error: (err) => {
                     console.log('Une erreur est survenue lors de la requête DELETE !');
                     console.log(err);
                 },
             });
-        }
+        });
+        return promise;
+        // if (id) {
+        //     this.httpService.deleteDrawing(id).subscribe({
+        //         next: (result) => {
+        //             console.log(result);
+        //         },
+        //     });
+        // }
     }
 
     /**
