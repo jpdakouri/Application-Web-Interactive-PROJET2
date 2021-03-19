@@ -14,14 +14,12 @@ import { ToolCommand } from '@app/utils/interfaces/tool-command';
 
 // constante temporaire simplement pour facilier le merge
 
-const numberFive = 5;
 @Injectable({
     providedIn: 'root',
 })
 export class SelectionEllipseService extends Tool {
     private firstGrid: Vec2;
     private topLeftCorner: Vec2;
-    private bottomRightCorner: Vec2;
     private begin: Vec2;
     private end: Vec2;
     private imageData: ImageData;
@@ -35,13 +33,11 @@ export class SelectionEllipseService extends Tool {
         super(drawingService, currentColourService);
         this.currentColourService = currentColourService;
         this.topLeftCorner = { x: 0, y: 0 };
-        this.bottomRightCorner = { x: 0, y: 0 };
         this.selectionActive = false;
     }
 
     onMouseDown(event: MouseEvent): void {
         this.clearPath();
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.mouseDown = event.button === MouseButtons.Left;
         this.firstGrid = this.getPositionFromMouse(event);
         this.mouseMoved = false;
@@ -79,10 +75,9 @@ export class SelectionEllipseService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.end = this.getPositionFromMouse(event);
             this.updateTopLeftCorner();
-            // if (this.shiftDown) {
-            //     this.makeCircle(this.mouseDownCoord);
-            //     this.selectEllipse(this.drawingService.previewCtx, this.mouseDownCoord);
-            // }
+            if (this.shiftDown) {
+                this.makeCircle(this.mouseDownCoord);
+            }
             this.selectEllipse(this.drawingService.previewCtx, this.mouseDownCoord);
         }
         this.mouseDown = false;
@@ -120,7 +115,7 @@ export class SelectionEllipseService extends Tool {
                 break;
             }
             case KeyboardButtons.Escape: {
-                // this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.clearPath();
             }
         }
@@ -134,7 +129,6 @@ export class SelectionEllipseService extends Tool {
 
     onKeyUp(event: KeyboardEvent): void {
         if (this.shiftDown && event.key === KeyboardButtons.Shift) {
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.shiftDown = false;
             this.updatePreview();
         }
@@ -201,11 +195,6 @@ export class SelectionEllipseService extends Tool {
         }
     }
 
-    private updateBottomRightCorner(): void {
-        this.bottomRightCorner.x = this.topLeftCorner.x + this.imageData.width;
-        this.bottomRightCorner.y = this.topLeftCorner.y + this.imageData.height;
-    }
-
     private drawPreviewSelection(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.strokeStyle = 'black';
         ctx.setLineDash([4, 3]);
@@ -222,6 +211,7 @@ export class SelectionEllipseService extends Tool {
             startCoord.y += finalGrid.y;
         }
         ctx.strokeRect(startCoord.x, startCoord.y, width, height);
+        // Mettre methode pour afficher 8 rectangles/carres
         this.drawEllipse(ctx, finalGrid);
         ctx.stroke();
     }
@@ -240,9 +230,9 @@ export class SelectionEllipseService extends Tool {
     private clipArea(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.save();
         ctx.beginPath();
-        if (this.shiftDown) {
-            this.makeCircle(finalGrid);
-        }
+        // if (this.shiftDown) {
+        //     this.makeCircle(finalGrid);
+        // }
         this.drawEllipse(ctx, finalGrid);
         ctx.closePath();
         ctx.clip();
@@ -256,13 +246,9 @@ export class SelectionEllipseService extends Tool {
             ctx.restore();
         });
         // Remplir de blanc
-        if (this.shiftDown) {
-            this.makeCircle(finalGrid);
-        }
         this.drawEllipse(this.drawingService.baseCtx, this.mouseDownCoord);
         this.drawingService.baseCtx.fillStyle = 'white';
         this.drawingService.baseCtx.fill();
-        // this.drawingService.baseCtx.stroke();
     }
 
     private updatePreview(): void {
@@ -289,6 +275,9 @@ export class SelectionEllipseService extends Tool {
     private clearPath(): void {
         this.firstGrid = this.mouseDownCoord = { x: 0, y: 0 };
     }
+    // private clearImageData(): void {
+    //     for (let i = this.imageData.data.length; --i >= 0; ) this.imageData.data[i] = 0;
+    // }
 
     executeCommand(command: ToolCommand): void {
         throw new Error('Method not implemented.');

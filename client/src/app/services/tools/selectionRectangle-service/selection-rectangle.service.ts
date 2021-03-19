@@ -293,7 +293,6 @@ export class SelectionRectangleService extends Tool {
         this.drawingService.previewCtx.beginPath();
         if (this.shiftDown) {
             this.makeSquare(currentCoord);
-            this.drawRectanglePerimeter(this.drawingService.previewCtx, currentCoord);
         }
         this.drawRectanglePerimeter(this.drawingService.previewCtx, currentCoord);
         this.drawingService.previewCtx.closePath();
