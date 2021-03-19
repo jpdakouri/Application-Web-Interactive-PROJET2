@@ -32,6 +32,7 @@ export abstract class Tool {
     dropletDiameter?: number = MIN_DROPLET_DIAMETER;
     frequency?: number = MIN_FREQUENCY;
     jetDiameter?: number = MIN_JET_DIAMETER;
+    numberOfSides: number | undefined;
 
     constructor(protected drawingService: DrawingService, protected currentColourService: CurrentColourService) {}
 

@@ -24,11 +24,9 @@ mat-slider {
 .show-dots {
     padding: 8px 0 0 0;
     font-size: 16px;
-}
-
-.show-dots {
     height: 30px;
 }
+
 .rectangle-ellipse-type {
     padding: 10px 0 20px 0;
 }
@@ -52,4 +50,8 @@ mat-slider {
 .mat-divider {
     border-top-width: 1px;
     border-top-color: #3f51b5;
+}
+
+.number-of-sides {
+    padding: 5px 0;
 }

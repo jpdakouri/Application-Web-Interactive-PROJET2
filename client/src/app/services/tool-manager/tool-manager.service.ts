@@ -6,6 +6,7 @@ import { EraserService } from '@app/services/tools/eraser-service/eraser.service
 import { LineService } from '@app/services/tools/line-service/line.service';
 import { PencilService } from '@app/services/tools/pencil-service/pencil.service';
 import { PipetteService } from '@app/services/tools/pipette-service/pipette.service';
+import { PolygonService } from '@app/services/tools/polygon-service/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
 import { SelectionEllipseService } from '@app/services/tools/selectionEllipse-service/selection-ellipse.service';
 import { SelectionRectangleService } from '@app/services/tools/selectionRectangle-service/selection-rectangle.service';
@@ -34,6 +35,7 @@ export class ToolManagerService {
         pipetteService: PipetteService,
         selectBoxService: SelectionRectangleService,
         selectEllipseService: SelectionEllipseService,
+        polygonService: PolygonService,
     ) {
         this.toolBox = {
             Pencil: pencilService,
@@ -45,6 +47,7 @@ export class ToolManagerService {
             Pipette: pipetteService,
             SelectBox: selectBoxService,
             SelectEllipse: selectEllipseService,
+            Polygon: polygonService,
         };
         this.currentAttributes = {
             LineThickness: 1,
@@ -54,6 +57,7 @@ export class ToolManagerService {
             DropletDiameter: 1,
             Frequency: 1,
             JetDiameter: 1,
+            numberOfSides: 3,
         };
         this.shapeStyleSelection.set('Outline', ShapeStyle.Outline).set('Filled', ShapeStyle.Filled).set('FilledOutline', ShapeStyle.FilledOutline);
         this.toolChangeEmitter.subscribe((toolName: ToolsNames) => {
@@ -133,6 +137,15 @@ export class ToolManagerService {
 
     getCurrentToolInstance(): Tool {
         return this.toolBox[this.currentTool];
+    }
+
+    setCurrentNumberOfSides(numberOfSides?: number): void {
+        this.toolBox[this.currentTool].numberOfSides = numberOfSides;
+        this.currentAttributes.numberOfSides = numberOfSides;
+    }
+
+    getCurrentNumberOfSides(): number | undefined {
+        return this.currentAttributes.numberOfSides;
     }
 
     isCurrentTool(toolName: ToolsNames): boolean {

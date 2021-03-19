@@ -68,7 +68,6 @@
             <mat-icon>colorize</mat-icon>
         </button>
     </div>
-
     <div class="flex-item">
         <button
             aria-label='Selection rectangle "i"'
@@ -78,6 +77,17 @@
             mat-mini-fab
         >
             <mat-icon>crop</mat-icon>
+        </button>
+    </div>
+    <div class="flex-item">
+        <button
+            aria-label="Polygonne"
+            title="Polygonne"
+            [color]="isSelected(this.toolsNames.Polygon) ? 'accent' : 'primary'"
+            (click)="setCurrentTool(this.toolsNames.Polygon)"
+            mat-mini-fab
+        >
+            <mat-icon>change_history</mat-icon>
         </button>
     </div>
 

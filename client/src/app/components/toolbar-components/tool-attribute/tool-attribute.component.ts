@@ -41,7 +41,8 @@ export class ToolAttributeComponent {
             this.toolManagerService.isCurrentTool(ToolsNames.Eraser) ||
             this.toolManagerService.isCurrentTool(ToolsNames.Line) ||
             this.toolManagerService.isCurrentTool(ToolsNames.Rectangle) ||
-            this.toolManagerService.isCurrentTool(ToolsNames.Ellipse)
+            this.toolManagerService.isCurrentTool(ToolsNames.Ellipse) ||
+            this.toolManagerService.isCurrentTool(ToolsNames.Polygon)
         );
     }
 
@@ -54,7 +55,11 @@ export class ToolAttributeComponent {
     }
 
     showShapeStyle(): boolean {
-        return this.toolManagerService.isCurrentTool(ToolsNames.Ellipse) || this.toolManagerService.isCurrentTool(ToolsNames.Rectangle);
+        return (
+            this.toolManagerService.isCurrentTool(ToolsNames.Ellipse) ||
+            this.toolManagerService.isCurrentTool(ToolsNames.Rectangle) ||
+            this.toolManagerService.isCurrentTool(ToolsNames.Polygon)
+        );
     }
 
     showEraserThickness(): boolean {
@@ -63,6 +68,10 @@ export class ToolAttributeComponent {
 
     showAerosolAttributes(): boolean {
         return this.toolManagerService.isCurrentTool(ToolsNames.Aerosol);
+    }
+
+    showPolygonAttributes(): boolean {
+        return this.toolManagerService.isCurrentTool(ToolsNames.Polygon);
     }
 
     isChecked(shapeStyle: ShapeStyle): boolean {
@@ -93,6 +102,10 @@ export class ToolAttributeComponent {
         return this.toolManagerService.getCurrentShapeStyle();
     }
 
+    getCurrentNumberOfSides(): number | undefined {
+        return this.toolManagerService.getCurrentNumberOfSides();
+    }
+
     onThicknessChange(event: MatSliderChange): void {
         this.toolManagerService.setCurrentLineThickness(event.value || undefined);
     }
@@ -120,5 +133,9 @@ export class ToolAttributeComponent {
 
     onJetDiameterChange(event: MatSliderChange): void {
         this.toolManagerService.setCurrentJetDiameter(event.value || undefined);
+    }
+
+    onNumberOfSidesChange(event: MatSliderChange): void {
+        this.toolManagerService.setCurrentNumberOfSides(event.value || undefined);
     }
 }
