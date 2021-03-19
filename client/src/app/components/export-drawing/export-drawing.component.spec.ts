@@ -10,24 +10,27 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ExportDrawingService } from '@app/services/export-drawing/export-drawing.service';
+import { ExportDrawingServiceMock } from '@app/tests-mocks/export-drawing-service-mock';
 import { ExportDrawingComponent } from './export-drawing.component';
+// import { ImageFilter } from '@app/utils/enums/image-filter.enum';
 
 describe('ExportDrawingComponent', () => {
     let component: ExportDrawingComponent;
     let fixture: ComponentFixture<ExportDrawingComponent>;
     let canvasTestHelper: CanvasTestHelper;
-    let drawServiceSpy: jasmine.SpyObj<DrawingService>;
-    let exportDrawingSpy: jasmine.SpyObj<ExportDrawingService>;
+    let drawingServiceSpy: jasmine.SpyObj<DrawingService>;
+    let exportDrawingMock: ExportDrawingServiceMock;
 
     beforeEach(async(() => {
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['']);
-        exportDrawingSpy = jasmine.createSpyObj('ExportDrawingService', ['']);
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['']);
+        exportDrawingMock = new ExportDrawingServiceMock();
+
         TestBed.configureTestingModule({
             declarations: [ExportDrawingComponent],
             providers: [
                 { provide: MatDialogRef, useValue: {} },
-                { provide: DrawingService, useValue: { drawServiceSpy } },
-                { provide: ExportDrawingService, useValue: { exportDrawingSpy } },
+                { provide: ExportDrawingService, useValue: exportDrawingMock },
+                { provide: DrawingService, useValue: drawingServiceSpy },
             ],
             imports: [
                 BrowserAnimationsModule,
@@ -44,9 +47,10 @@ describe('ExportDrawingComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(ExportDrawingComponent);
         canvasTestHelper = TestBed.inject(CanvasTestHelper);
-        drawServiceSpy.canvas = canvasTestHelper.canvas;
+        drawingServiceSpy.canvas = canvasTestHelper.canvas;
         component = fixture.componentInstance;
-        component.originalCanvas = canvasTestHelper.canvas;
+        // component.originalCanvas = canvasTestHelper.canvas;
+        // component.selectedFilterValue = 'none';
         fixture.detectChanges();
     });
 

@@ -70,7 +70,7 @@ export class ExportDrawingService {
         context.filter = this.imageFilters.get(filter) as string;
     }
 
-    // // downloadDrawingAsImage v4 fonctionnelle
+    // downloadDrawingAsImage v4 fonctionnelle
     // downloadDrawingAsImage(fileName: string, format: string): void {
     //     const image = new Image();
     //     image.src = this.imageSource;
@@ -78,14 +78,14 @@ export class ExportDrawingService {
     //     const context = this.canvas.getContext('2d') as CanvasRenderingContext2D;
     //     this.canvas.width = image.width;
     //     this.canvas.height = image.height;
-    //     // image.onload = () => {
-    //     context.filter = this.imageFilters.get(this.currentFilter.value) as string;
-    //     context.drawImage(image, 0, 0);
-    //     // };
+    //     image.onload = () => {
+    //         context.filter = this.imageFilters.get(this.currentFilter.value) as string;
+    //         context.drawImage(image, 0, 0);
+    //         this.link.download = fileName;
+    //         this.link.href = image.src;
+    //         this.link.click();
+    //     };
     //     image.src = this.canvas.toDataURL(`image/${format}`);
     //     console.log(context.filter);
-    //     this.link.download = fileName;
-    //     this.link.href = image.src;
-    //     this.link.click();
     // }
 }
