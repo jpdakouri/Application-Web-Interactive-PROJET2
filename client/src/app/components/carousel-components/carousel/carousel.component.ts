@@ -1,5 +1,6 @@
-import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, HostListener, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
+import { DrawingCardComponent } from '@app/components/carousel-components/drawing-card/drawing-card.component';
 import { MAX_HEIGHT_MAIN_CARD, MAX_HEIGHT_SIDE_CARD, MAX_WIDTH_MAIN_CARD, MAX_WIDTH_SIDE_CARD } from '@app/components/components-constants';
 import { CarouselService } from '@app/services/carousel/carousel.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
@@ -10,9 +11,9 @@ import { DrawingData } from '@common/communication/drawing-data';
     templateUrl: './carousel.component.html',
     styleUrls: ['./carousel.component.scss'],
 })
-export class CarouselComponent implements OnInit {
-    @ViewChild('queryFromServer') query: HTMLCanvasElement;
-    @ViewChild('matContainer') matContainer: HTMLCanvasElement;
+export class CarouselComponent implements OnInit, AfterViewInit {
+    @ViewChildren(DrawingCardComponent) drawingCard: QueryList<DrawingCardComponent>;
+
     sideCard: CardStyle;
     mainCard: CardStyle;
     middle: number = 1;
@@ -47,6 +48,8 @@ export class CarouselComponent implements OnInit {
         });
     }
 
+    ngAfterViewInit(): void {}
+
     @HostListener('window:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
         if (event.key === KeyboardButtons.Left) this.shiftLeft();
@@ -76,16 +79,19 @@ export class CarouselComponent implements OnInit {
     }
 
     shiftLeft(): void {
-        this.carouselService.getDrawing(true).subscribe((result) => {
+        this.carouselService.getDrawing(false).subscribe((result) => {
             this.drawingArray = this.drawingArray.slice(this.left, this.middle + 1);
             this.drawingArray.splice(this.left, 0, result);
+            this.drawingCard.map((d) => d.adjustSizeOfImage());
         });
     }
 
     shiftRight(): void {
-        this.carouselService.getDrawing(false).subscribe((result) => {
+        this.carouselService.getDrawing(true).subscribe((result) => {
             this.drawingArray = this.drawingArray.slice(this.middle, this.right + 1);
             this.drawingArray.push(result);
+
+            this.drawingCard.map((d) => d.adjustSizeOfImage());
         });
     }
 }

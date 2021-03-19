@@ -12,7 +12,7 @@ import { Observable, Subject } from 'rxjs';
 export class CarouselService {
     carouselDialog: MatDialogRef<CarouselComponent>;
     sizeOfArray: number;
-    courrentIndex: number = 1;
+    courrentIndex: number = 0;
     drawingsToShow: DrawingData[];
 
     constructor(private httpService: HttpService, public drawingService: DrawingService) {}
@@ -53,7 +53,6 @@ export class CarouselService {
         return subject.asObservable();
     }
 
-    //// Comparer si le serveur a recu des nouveau dessins ou non
     getArraySizeOfDrawing(): Observable<number> {
         const subject = new Subject<number>();
         this.httpService.getLengthOfDrawings().subscribe({
@@ -66,15 +65,12 @@ export class CarouselService {
     }
 
     deleteDrawing(id: string): Promise<string> {
-        const promise = new Promise<string>((resolve, reject) => {
+        const promise = new Promise<string>((resolve) => {
             this.httpService.deleteDrawing(id).subscribe({
                 next: (result) => {
                     setTimeout(() => {
-                        console.log('Async Work Complete');
                         if (result) {
                             resolve('Le dessin a ne fait plus parti ');
-                        } else {
-                            reject('Le dessin a ne fait plus parti du Carousel ... Il ne peut pas être supprimé');
                         }
                     }, 200);
                 },
@@ -85,13 +81,6 @@ export class CarouselService {
             });
         });
         return promise;
-        // if (id) {
-        //     this.httpService.deleteDrawing(id).subscribe({
-        //         next: (result) => {
-        //             console.log(result);
-        //         },
-        //     });
-        // }
     }
 
     /**
@@ -109,7 +98,7 @@ export class CarouselService {
             )
             .subscribe({
                 next: (result) => {
-                    console.log("La requête GET s'est bien déroulée 111!");
+                    console.log("La requête GET s'est bien déroulée !");
                     drawing = result;
                     subject.next(drawing);
                 },
