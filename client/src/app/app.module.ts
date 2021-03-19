@@ -25,6 +25,7 @@ import { ExportDrawingComponent } from './components/export-drawing/export-drawi
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { SaveDrawingComponent } from './components/save-drawing/save-drawing.component';
 import { ServerErrorMessageComponent } from './components/server-error-message/server-error-message.component';
+import { PipettePreviewComponent } from './components/pipette-preview/pipette-preview.component';
 
 @NgModule({
     declarations: [
@@ -42,6 +43,7 @@ import { ServerErrorMessageComponent } from './components/server-error-message/s
         ExportDrawingComponent,
         SaveDrawingComponent,
         ServerErrorMessageComponent,
+        PipettePreviewComponent,
     ],
     imports: [
         BrowserModule,
