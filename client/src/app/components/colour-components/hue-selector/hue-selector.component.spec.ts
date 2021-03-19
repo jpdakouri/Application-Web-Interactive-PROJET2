@@ -36,7 +36,7 @@ describe('HueSelectorComponent', () => {
         const bottomColor = canvasContext.getImageData(CANVAS_WIDTH - 1, CANVAS_HEIGHT - 1, 1, 1).data;
         expect(bottomColor[0]).toBe(RGBA_MAX);
         expect(bottomColor[1]).toBe(0);
-        const traceOfBlueRgb = 4;
+        const traceOfBlueRgb = 3;
         expect(bottomColor[2]).toBe(traceOfBlueRgb);
     });
     it('the selector does not move if not clicked', () => {
