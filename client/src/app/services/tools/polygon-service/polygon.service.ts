@@ -4,14 +4,13 @@ import { Vec2 } from '@app/classes/vec2';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EllipseService } from '@app/services/tools/ellipse-service/ellipse.service';
-import { DEFAULT_MIN_THICKNESS } from '@app/services/tools/tools-constants';
+import { DEFAULT_MIN_THICKNESS, DEFAULT_NUMBER_OF_SIDE, LINE_DASH } from '@app/services/tools/tools-constants';
 // import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { Sign } from '@app/utils/enums/rgb-settings';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
 
-const DEFAULT_NUMBER_OF_SIDE = 3;
 @Injectable({
     providedIn: 'root',
 })
@@ -151,7 +150,7 @@ export class PolygonService extends Tool {
     }
 
     private drawPreview(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
-        ctx.setLineDash([5, 5]);
+        ctx.setLineDash([LINE_DASH, LINE_DASH]);
         this.drawCircle(finalGrid);
         let test: Vec2 = this.firstGrid;
         if (this.isMouseInFirstQuadrant()) {
@@ -177,9 +176,6 @@ export class PolygonService extends Tool {
             finalGrid.y -= ctx.lineWidth;
             test = { x: this.firstGrid.x - ctx.lineWidth / 2, y: this.firstGrid.y + ctx.lineWidth / 2 };
         }
-        // test = { x: this.firstGrid.x - ctx.lineWidth / 2, y: this.firstGrid.y - ctx.lineWidth / 2 };
-        console.log('test ', test);
-        console.log('final ', finalGrid);
         this.visualisationEllipse.drawOutline(this.drawingService.previewCtx, test, finalGrid, 'blue', 1);
     }
 
