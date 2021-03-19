@@ -101,5 +101,26 @@
             <mat-divider></mat-divider>
         </div>
     </div>
+
+    <div *ngIf="showPolygonAttributes()">
+        <div class="number-of-sides">
+            <h2 class="attribute-title">Nombres de côtés: {{ this.getCurrentNumberOfSides() }}</h2>
+            <mat-slider
+                [value]="this.getCurrentNumberOfSides()"
+                #numberOfSideSlider
+                color="primary"
+                min="3"
+                max="12"
+                (input)="onNumberOfSidesChange($event)"
+                (change)="onNumberOfSidesChange($event)"
+                step="1"
+            ></mat-slider>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="show-dots">
+            <mat-checkbox (change)="onShowDotChange($event)"><h2 class="show-dots-title">Voir les points</h2></mat-checkbox>
+        </div>
+        <mat-divider></mat-divider>
+    </div>
   <app-colour-selector></app-colour-selector>
 </div>

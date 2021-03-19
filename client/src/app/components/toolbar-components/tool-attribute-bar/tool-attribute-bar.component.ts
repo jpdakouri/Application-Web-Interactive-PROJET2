@@ -70,6 +70,10 @@ export class ToolAttributeBarComponent {
         return this.toolManagerService.isCurrentTool(ToolsNames.Aerosol);
     }
 
+    showPolygonAttributes(): boolean {
+        return this.toolManagerService.isCurrentTool(ToolsNames.Polygon);
+    }
+
     isChecked(shapeStyle: ShapeStyle): boolean {
         return this.getCurrentShapeStyle() === shapeStyle;
     }
@@ -96,6 +100,10 @@ export class ToolAttributeBarComponent {
 
     getCurrentShapeStyle(): ShapeStyle | undefined {
         return this.toolManagerService.getCurrentShapeStyle();
+    }
+
+    getCurrentNumberOfSides(): number | undefined {
+        return this.toolManagerService.getCurrentNumberOfSides();
     }
 
     onThicknessChange(event: MatSliderChange): void {
@@ -125,5 +133,9 @@ export class ToolAttributeBarComponent {
 
     onJetDiameterChange(event: MatSliderChange): void {
         this.toolManagerService.setCurrentJetDiameter(event.value || undefined);
+    }
+
+    onNumberOfSidesChange(event: MatSliderChange): void {
+        this.toolManagerService.setCurrentNumberOfSides(event.value || undefined);
     }
 }

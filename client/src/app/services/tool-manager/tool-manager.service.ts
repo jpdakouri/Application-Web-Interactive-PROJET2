@@ -57,6 +57,7 @@ export class ToolManagerService {
             DropletDiameter: 1,
             Frequency: 1,
             JetDiameter: 1,
+            numberOfSides: 3,
         };
         this.shapeStyleSelection.set('Outline', ShapeStyle.Outline).set('Filled', ShapeStyle.Filled).set('FilledOutline', ShapeStyle.FilledOutline);
         this.toolChangeEmitter.subscribe((toolName: ToolsNames) => {
@@ -136,6 +137,15 @@ export class ToolManagerService {
 
     getCurrentToolInstance(): Tool {
         return this.toolBox[this.currentTool];
+    }
+
+    setCurrentNumberOfSides(numberOfSides?: number): void {
+        this.toolBox[this.currentTool].numberOfSides = numberOfSides;
+        this.currentAttributes.numberOfSides = numberOfSides;
+    }
+
+    getCurrentNumberOfSides(): number | undefined {
+        return this.currentAttributes.numberOfSides;
     }
 
     isCurrentTool(toolName: ToolsNames): boolean {
