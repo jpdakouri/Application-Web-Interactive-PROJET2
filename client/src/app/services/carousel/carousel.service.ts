@@ -4,6 +4,7 @@ import { CarouselComponent } from '@app/components/carousel-components/carousel/
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HttpService } from '@app/services/http/http.service';
 import { DrawingData } from '@common/communication/drawing-data';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -16,30 +17,47 @@ export class CarouselService {
 
     constructor(private httpService: HttpService, public drawingService: DrawingService) {}
 
-    initCarousel(): DrawingData[] {
+    initCarousel(): Observable<DrawingData[]> {
         this.drawingsToShow = [];
-        this.getArraySizeOfDrawing();
-        if (this.sizeOfArray > 0)
-            this.httpService.getOneDrawing(-1).subscribe({
-                next: (result) => {
-                    this.drawingsToShow.push(result);
-                },
-            });
-        if (this.sizeOfArray > 1) {
-            this.httpService.getOneDrawing(0).subscribe({
-                next: (result) => {
-                    this.drawingsToShow.push(result);
-                },
-            });
+        const subject = new Subject<DrawingData[]>();
 
-            this.httpService.getOneDrawing(1).subscribe({
-                next: (result) => {
-                    this.drawingsToShow.push(result);
-                },
-            });
-        }
-        console.log(this.drawingsToShow);
-        return this.drawingsToShow;
+        this.getArraySizeOfDrawing().subscribe((size) => {
+            if (size > 0) {
+                this.httpService.getOneDrawing(-1).subscribe({
+                    next: (resultFirst) => {
+                        this.drawingsToShow.push(resultFirst);
+                        if (this.sizeOfArray > 1) {
+                            this.httpService.getOneDrawing(0).subscribe({
+                                next: (resultSecond) => {
+                                    this.drawingsToShow.push(resultSecond);
+                                    this.httpService.getOneDrawing(1).subscribe({
+                                        next: (resultThird) => {
+                                            this.drawingsToShow.push(resultThird);
+                                            subject.next(this.drawingsToShow);
+                                        },
+                                    });
+                                },
+                            });
+                        } else {
+                            subject.next(this.drawingsToShow);
+                        }
+                    },
+                });
+            }
+        });
+        return subject.asObservable();
+    }
+
+    //// Comparer si le serveur a recu des nouveau dessins ou non
+    getArraySizeOfDrawing(): Observable<number> {
+        const subject = new Subject<number>();
+        this.httpService.getLengthOfDrawings().subscribe({
+            next: (results) => {
+                this.sizeOfArray = results as number;
+                subject.next(this.sizeOfArray);
+            },
+        });
+        return subject.asObservable();
     }
 
     deleteDrawing(id: string): void {
@@ -54,16 +72,6 @@ export class CarouselService {
                 },
             });
         }
-    }
-
-    //// Comparer si le serveur a recu des nouveau dessins ou non
-    getArraySizeOfDrawing(): void {
-        this.httpService.getLengthOfDrawings().subscribe({
-            next: (results) => {
-                this.sizeOfArray = results as number;
-                console.log(results);
-            },
-        });
     }
 
     /**

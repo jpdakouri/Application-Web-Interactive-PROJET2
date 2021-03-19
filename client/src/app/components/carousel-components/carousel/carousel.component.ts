@@ -18,8 +18,7 @@ export class CarouselComponent implements OnInit, AfterViewInit {
     middle: number = 1;
     left: number = 0;
     right: number = 2;
-    visibility: string = 'none';
-    test: boolean = false;
+    isLoading: boolean = true;
 
     drawingArray: DrawingData[] = [];
 
@@ -38,14 +37,12 @@ export class CarouselComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit(): void {
-        console.log('carousel comp init');
-        this.drawingArray = this.carouselService.initCarousel();
-        // this.carouselService.initCarousel().then((result) => {
-        //     result.forEach((drawing) => this.drawingArray.push(drawing));
-        //     this.cdRef.detectChanges();
-        // });
-        console.log(this.drawingArray);
-        console.log(this.carouselService.sizeOfArray);
+        // console.log('carousel comp init');
+        this.carouselService.initCarousel().subscribe((result) => {
+            console.log(result);
+            this.drawingArray = result;
+            this.isLoading = false;
+        });
     }
 
     ngAfterViewInit(): void {
@@ -60,6 +57,7 @@ export class CarouselComponent implements OnInit, AfterViewInit {
 
     onDialogClose(): void {
         this.drawingArray = [];
+        this.isLoading = true;
         this.dialogRef.close();
     }
 

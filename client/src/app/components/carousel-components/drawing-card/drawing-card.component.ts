@@ -25,7 +25,6 @@ export class DrawingCardComponent implements AfterViewInit, OnInit {
     }
     ngAfterViewInit(): void {
         console.log('cards afterinit');
-        console.log(this.infoDrawing.width + '   ' + this.infoDrawing.height);
         if (this.image.nativeElement.width > this.image.nativeElement.height) {
             this.image.nativeElement.style.width = '90%';
             this.image.nativeElement.style.height = 'auto';
