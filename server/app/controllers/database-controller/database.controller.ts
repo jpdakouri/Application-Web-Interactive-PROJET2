@@ -21,7 +21,14 @@ export class DatabaseController {
         @inject(TYPES.DatabaseService) private databaseService: DatabaseService,
         @inject(TYPES.ImageDataService) private imageDataService: ImageDataService,
     ) {
-        this.databaseService.startDB(this.databaseService.databaseURI, this.databaseService.options);
+        this.databaseService.startDB(this.databaseService.databaseURI, this.databaseService.options).then(() => {
+            this.databaseService.getAllDrawings().then((result) => {
+                if (result.length > 0) {
+                    this.imageDataService.populateArray(result);
+                }
+            });
+        });
+
         this.configureRouter();
     }
 
@@ -55,20 +62,13 @@ export class DatabaseController {
                     });
         });
 
-        this.router.get('/', (req: Request, res: Response, next: NextFunction) => {
-            this.databaseService
-                .getAllDrawings()
-                .then((result) => {
-                    if (result.length > 0) {
-                        const response = this.imageDataService.getImagesFromDisk(result);
-                        res.status(HTTP_STATUS_OK).json(response);
-                    } else {
-                        res.status(HTTP_STATUS_NOT_FOUND).send('Aucun dessin trouvé !');
-                    }
-                })
-                .catch((err) => {
-                    res.status(HTTP_STATUS_ERROR).send("Erreur d'opération dans le serveur !");
-                });
+        this.router.get('/:index', (req: Request, res: Response, next: NextFunction) => {
+            const drawing = this.imageDataService.getOneDrawing(+req.params.index);
+            if (drawing) {
+                res.status(HTTP_STATUS_OK).json(drawing);
+            } else {
+                res.status(HTTP_STATUS_NOT_FOUND).send('Aucun dessin trouvé !');
+            }
         });
 
         this.router.delete('/:id', (req: Request, res: Response, next: NextFunction) => {
