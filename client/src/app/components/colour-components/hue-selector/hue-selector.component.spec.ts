@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HueSelectorComponent } from './hue-selector.component';
 const RGBA_MAX = 255;
-const CANVAS_WIDTH = 50;
-const CANVAS_HEIGHT = 250;
+const CANVAS_WIDTH = 40;
+const CANVAS_HEIGHT = 200;
 describe('HueSelectorComponent', () => {
     let component: HueSelectorComponent;
     let fixture: ComponentFixture<HueSelectorComponent>;
@@ -36,7 +36,7 @@ describe('HueSelectorComponent', () => {
         const bottomColor = canvasContext.getImageData(CANVAS_WIDTH - 1, CANVAS_HEIGHT - 1, 1, 1).data;
         expect(bottomColor[0]).toBe(RGBA_MAX);
         expect(bottomColor[1]).toBe(0);
-        const traceOfBlueRgb = 3;
+        const traceOfBlueRgb = 4;
         expect(bottomColor[2]).toBe(traceOfBlueRgb);
     });
     it('the selector does not move if not clicked', () => {
@@ -70,7 +70,7 @@ describe('HueSelectorComponent', () => {
         spyOn(component.color, 'emit');
         const clickEvent = new MouseEvent('mousedown', { clientX: 10, clientY: 10 });
         component.onMouseDown(clickEvent);
-        const moveEvent = new MouseEvent('mousemove', { clientX: 30, clientY: 200 });
+        const moveEvent = new MouseEvent('mousemove', { clientX: 30, clientY: 150 });
         component.onMouseMove(moveEvent);
         component.onMouseUp();
         component.onMouseMove(moveEvent);
