@@ -131,6 +131,7 @@ export class CarouselService {
 
     openDrawing(drawing: DrawingData): void {
         this.drawingService.openDrawing(drawing);
+        console.log(drawing.width, drawing.height);
     }
 
     // updateDrawing(): void {

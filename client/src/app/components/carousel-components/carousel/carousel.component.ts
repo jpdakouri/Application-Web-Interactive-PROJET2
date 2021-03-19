@@ -40,6 +40,9 @@ export class CarouselComponent implements OnInit {
         this.carouselService.initCarousel().subscribe((result) => {
             console.log(result);
             this.drawingArray = result;
+            if (this.drawingArray.length === 1) {
+                this.middle = 0;
+            }
             this.isLoading = false;
         });
     }

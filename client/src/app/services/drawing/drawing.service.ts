@@ -48,8 +48,9 @@ export class DrawingService {
 
     openDrawing(drawing: DrawingData): void {
         this.createNewDrawing();
-        this.canvas.width = drawing.width;
-        this.canvas.height = drawing.height;
+        console.log(drawing.width, drawing.height);
+        // this.canvas.width = drawing.width;
+        // this.canvas.height = drawing.height;
         // this.baseCtx.canvas.width = drawing.width;
         // this.baseCtx.canvas.height = drawing.height;
         const img = new Image();

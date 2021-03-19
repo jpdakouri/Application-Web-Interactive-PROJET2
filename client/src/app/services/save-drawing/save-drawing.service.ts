@@ -48,6 +48,7 @@ export class SaveDrawingService {
             this.originalCanvas.width,
             this.originalCanvas.height,
         );
+        console.log(drawingToSend.width, drawingToSend.height);
 
         this.httpService.insertDrawing(drawingToSend).subscribe({
             next: (result) => {
