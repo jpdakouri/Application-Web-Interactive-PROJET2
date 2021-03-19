@@ -1,4 +1,3 @@
-// import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { ImageFilter } from '@app/utils/enums/image-filter.enum';
 import { ImageFormat } from '@app/utils/enums/image-format.enum';
 import { BehaviorSubject } from 'rxjs';
@@ -13,5 +12,6 @@ export class ExportDrawingServiceMock {
     imageSource: string = '';
     link: HTMLAnchorElement = document.createElement('a');
     canvas: HTMLCanvasElement;
-    // canvasTestHelper: CanvasTestHelper;
+
+    downloadDrawingAsImage(): void {}
 }

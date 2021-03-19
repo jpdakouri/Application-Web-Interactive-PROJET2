@@ -27,5 +27,9 @@ export const DEFAULT_WHITE = '#fff';
 /*********************************/
 /***IMAGE EXPORT/SAVE CONSTANTS***/
 /*********************************/
-export const FILE_NAME_REGEX = /^[a-zA-Z0-9-]*$/;
-export const LABEL_NAME_REGEX = /^[a-zA-Z0-9 ]*$/;
+export const FILE_NAME_REGEX = /^[a-zA-Z0-9][a-zA-Z0-9-_]*$/;
+export const LABEL_NAME_REGEX = /^[a-zA-Z0-9 ][a-zA-Z0-9-_]*$/;
+
+export const INVALID_FILE_NAME_ERROR_MESSAGE = 'Nom de fichier invalide';
+export const REQUIRED_FILE_NAME_ERROR_MESSAGE = 'Vous devez entrer un nom';
+export const NO_ERROR_MESSAGE = '';

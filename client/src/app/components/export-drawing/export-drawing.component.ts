@@ -3,7 +3,12 @@ import { FormControl, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ExportDrawingService } from '@app/services/export-drawing/export-drawing.service';
-import { FILE_NAME_REGEX } from '@app/services/services-constants';
+import {
+    FILE_NAME_REGEX,
+    INVALID_FILE_NAME_ERROR_MESSAGE,
+    NO_ERROR_MESSAGE,
+    REQUIRED_FILE_NAME_ERROR_MESSAGE,
+} from '@app/services/services-constants';
 import { ImageFilter } from '@app/utils/enums/image-filter.enum';
 import { ImageFormat } from '@app/utils/enums/image-format.enum';
 
@@ -51,7 +56,6 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
     }
 
     ngAfterViewInit(): void {
-        // this.originalCanvas = document.getElementById('canvas') as HTMLCanvasElement;
         this.originalCanvas = this.drawingService.canvas;
         this.exportDrawingService.canvas = this.downloadProcessingCanvas.nativeElement as HTMLCanvasElement;
         this.exportDrawingService.link = this.link.nativeElement as HTMLAnchorElement;
@@ -69,9 +73,9 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
 
     getErrorMessage(): string {
         if (this.fileName.hasError('required')) {
-            return 'Vous devez entrer un nom';
+            return REQUIRED_FILE_NAME_ERROR_MESSAGE;
         }
-        return this.fileName.invalid ? 'Nom de fichier invalide' : '';
+        return this.fileName.invalid ? INVALID_FILE_NAME_ERROR_MESSAGE : NO_ERROR_MESSAGE;
     }
 
     onDialogClose(): void {
