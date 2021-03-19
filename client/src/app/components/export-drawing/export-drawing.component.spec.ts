@@ -7,18 +7,28 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-// import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
+import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
+import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ExportDrawingService } from '@app/services/export-drawing/export-drawing.service';
 import { ExportDrawingComponent } from './export-drawing.component';
 
 describe('ExportDrawingComponent', () => {
     let component: ExportDrawingComponent;
     let fixture: ComponentFixture<ExportDrawingComponent>;
-    // let canvasTestHelper: CanvasTestHelper;
+    let canvasTestHelper: CanvasTestHelper;
+    let drawServiceSpy: jasmine.SpyObj<DrawingService>;
+    let exportDrawingSpy: jasmine.SpyObj<ExportDrawingService>;
 
     beforeEach(async(() => {
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['']);
+        exportDrawingSpy = jasmine.createSpyObj('ExportDrawingService', ['']);
         TestBed.configureTestingModule({
             declarations: [ExportDrawingComponent],
-            providers: [{ provide: MatDialogRef, useValue: {} }],
+            providers: [
+                { provide: MatDialogRef, useValue: {} },
+                { provide: DrawingService, useValue: { drawServiceSpy } },
+                { provide: ExportDrawingService, useValue: { exportDrawingSpy } },
+            ],
             imports: [
                 BrowserAnimationsModule,
                 MatOptionModule,
@@ -33,9 +43,10 @@ describe('ExportDrawingComponent', () => {
 
     beforeEach(() => {
         fixture = TestBed.createComponent(ExportDrawingComponent);
+        canvasTestHelper = TestBed.inject(CanvasTestHelper);
+        drawServiceSpy.canvas = canvasTestHelper.canvas;
         component = fixture.componentInstance;
-        // canvasTestHelper = TestBed.inject(CanvasTestHelper);
-        // component.originalCanvas = canvasTestHelper.canvas;
+        component.originalCanvas = canvasTestHelper.canvas;
         fixture.detectChanges();
     });
 

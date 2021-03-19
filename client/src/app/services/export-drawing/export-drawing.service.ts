@@ -52,7 +52,7 @@ export class ExportDrawingService {
         this.link.click();
     }
 
-    drawImageOnCanvas(image: HTMLImageElement, canvas: HTMLCanvasElement, filter?: string): void {
+    private drawImageOnCanvas(image: HTMLImageElement, canvas: HTMLCanvasElement, filter?: string): void {
         if (image === undefined) return;
         const context = canvas.getContext('2d') as CanvasRenderingContext2D;
         canvas.width = image.width;
@@ -65,7 +65,7 @@ export class ExportDrawingService {
         context.drawImage(image, 0, 0);
     }
 
-    applyFilterOnCanvas(filter: string, canvas: HTMLCanvasElement): void {
+    private applyFilterOnCanvas(filter: string, canvas: HTMLCanvasElement): void {
         const context = canvas.getContext('2d') as CanvasRenderingContext2D;
         context.filter = this.imageFilters.get(filter) as string;
     }
