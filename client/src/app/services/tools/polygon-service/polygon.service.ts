@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import { PolygonCommand } from '@app/classes/tool-commands/polygon-command';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EllipseService } from '@app/services/tools/ellipse-service/ellipse.service';
 import { DEFAULT_MIN_THICKNESS, DEFAULT_NUMBER_OF_SIDE, LINE_DASH } from '@app/services/tools/tools-constants';
-// import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
+import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { Sign } from '@app/utils/enums/rgb-settings';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
-import { ToolCommand } from '@app/utils/interfaces/tool-command';
 
 @Injectable({
     providedIn: 'root',
@@ -19,11 +19,18 @@ export class PolygonService extends Tool {
     numberOfSides: number;
     currentColourService: CurrentColourService;
     visualisationEllipse: EllipseService;
+    private undoRedo: UndoRedoService;
 
-    constructor(drawingService: DrawingService, currentColourService: CurrentColourService, visualisationEllipse: EllipseService) {
+    constructor(
+        drawingService: DrawingService,
+        currentColourService: CurrentColourService,
+        visualisationEllipse: EllipseService,
+        undoRedo: UndoRedoService,
+    ) {
         super(drawingService, currentColourService);
         this.currentColourService = currentColourService;
         this.visualisationEllipse = visualisationEllipse;
+        this.undoRedo = undoRedo;
         this.clearPath();
     }
 
@@ -40,7 +47,16 @@ export class PolygonService extends Tool {
             this.mouseDownCoord.x = this.getPositionFromMouse(event).x - this.firstGrid.x;
             this.mouseDownCoord.y = this.getPositionFromMouse(event).y - this.firstGrid.y;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawPolygon(this.drawingService.previewCtx, this.mouseDownCoord);
+            this.drawPolygon(
+                this.drawingService.previewCtx,
+                this.currentColourService.getPrimaryColorHex(),
+                this.currentColourService.getSecondaryColorHex(),
+                this.firstGrid,
+                this.mouseDownCoord,
+                this.numberOfSides,
+                this.lineThickness || DEFAULT_MIN_THICKNESS,
+                this.shapeStyle,
+            );
         }
     }
 
@@ -49,26 +65,53 @@ export class PolygonService extends Tool {
             this.mouseDownCoord.x = this.getPositionFromMouse(event).x - this.firstGrid.x;
             this.mouseDownCoord.y = this.getPositionFromMouse(event).y - this.firstGrid.y;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawPolygon(this.drawingService.baseCtx, this.mouseDownCoord);
+            this.drawPolygon(
+                this.drawingService.baseCtx,
+                this.currentColourService.getPrimaryColorHex(),
+                this.currentColourService.getSecondaryColorHex(),
+                this.firstGrid,
+                this.mouseDownCoord,
+                this.numberOfSides,
+                this.lineThickness || DEFAULT_MIN_THICKNESS,
+                this.shapeStyle,
+            );
+            const command = new PolygonCommand(
+                this,
+                this.currentColourService.getPrimaryColorHex(),
+                this.currentColourService.getSecondaryColorHex(),
+                this.firstGrid,
+                this.mouseDownCoord,
+                this.numberOfSides,
+                this.lineThickness || DEFAULT_MIN_THICKNESS,
+                this.shapeStyle,
+            );
+            this.undoRedo.addCommand(command);
             this.clearPath();
         }
         this.mouseDown = false;
     }
 
-    private drawOutLine(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+    private drawOutLine(
+        ctx: CanvasRenderingContext2D,
+        secondaryColor: string,
+        firstGrid: Vec2,
+        finalGrid: Vec2,
+        numberOfSides: number,
+        strokeThickness: number,
+    ): void {
         this.drawCircle(finalGrid);
-        const startCoord = { ...this.firstGrid };
+        const startCoord = { ...firstGrid };
         const width = finalGrid.x;
         const height = finalGrid.y;
         const center: Vec2 = { x: startCoord.x + width / 2, y: startCoord.y + height / 2 };
         const radius = Math.abs(height / 2);
-        const angle = (2 * Math.PI) / this.numberOfSides;
+        const angle = (2 * Math.PI) / numberOfSides;
         ctx.setLineDash([]);
-        ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
-        ctx.strokeStyle = this.currentColourService.getSecondaryColorHex();
+        ctx.lineWidth = strokeThickness;
+        ctx.strokeStyle = secondaryColor;
         ctx.beginPath();
         ctx.moveTo(center.x, center.y - radius);
-        for (let i = 1; i < this.numberOfSides; i++) {
+        for (let i = 1; i < numberOfSides; i++) {
             ctx.lineTo(center.x + radius * Math.sin(i * angle), center.y - radius * Math.cos(i * angle));
         }
         ctx.closePath();
@@ -78,21 +121,21 @@ export class PolygonService extends Tool {
         }
     }
 
-    private drawFilled(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+    private drawFilled(ctx: CanvasRenderingContext2D, primaryColor: string, firstGrid: Vec2, finalGrid: Vec2, numberOfSides: number): void {
         this.drawCircle(finalGrid);
-        const startCoord = { ...this.firstGrid };
+        const startCoord = { ...firstGrid };
         const width = finalGrid.x;
         const height = finalGrid.y;
         const center: Vec2 = { x: startCoord.x + width / 2, y: startCoord.y + height / 2 };
         const radius = Math.abs(height / 2);
-        const angle = (2 * Math.PI) / this.numberOfSides;
+        const angle = (2 * Math.PI) / numberOfSides;
         ctx.setLineDash([]);
         ctx.lineWidth = DEFAULT_MIN_THICKNESS;
-        ctx.strokeStyle = this.currentColourService.getPrimaryColorHex();
-        ctx.fillStyle = this.currentColourService.getPrimaryColorHex();
+        ctx.strokeStyle = primaryColor;
+        ctx.fillStyle = primaryColor;
         ctx.beginPath();
         ctx.moveTo(center.x, center.y - radius);
-        for (let i = 1; i < this.numberOfSides; i++) {
+        for (let i = 1; i < numberOfSides; i++) {
             ctx.lineTo(center.x + radius * Math.sin(i * angle), center.y - radius * Math.cos(i * angle));
         }
         ctx.closePath();
@@ -103,21 +146,29 @@ export class PolygonService extends Tool {
         }
     }
 
-    private drawFilledOutLine(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+    private drawFilledOutLine(
+        ctx: CanvasRenderingContext2D,
+        primaryColor: string,
+        secondaryColor: string,
+        firstGrid: Vec2,
+        finalGrid: Vec2,
+        numberOfSides: number,
+        strokeThickness: number,
+    ): void {
         this.drawCircle(finalGrid);
-        ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
-        const startCoord = { ...this.firstGrid };
+        ctx.lineWidth = strokeThickness;
+        const startCoord = { ...firstGrid };
         const width = finalGrid.x;
         const height = finalGrid.y;
         const center: Vec2 = { x: startCoord.x + width / 2, y: startCoord.y + height / 2 };
         const radius = Math.abs(height / 2);
-        const angle = (2 * Math.PI) / this.numberOfSides;
+        const angle = (2 * Math.PI) / numberOfSides;
         ctx.setLineDash([]);
-        ctx.strokeStyle = this.currentColourService.getSecondaryColorHex();
-        ctx.fillStyle = this.currentColourService.getPrimaryColorHex();
+        ctx.strokeStyle = secondaryColor;
+        ctx.fillStyle = primaryColor;
         ctx.beginPath();
         ctx.moveTo(center.x, center.y - radius);
-        for (let i = 1; i < this.numberOfSides; i++) {
+        for (let i = 1; i < numberOfSides; i++) {
             ctx.lineTo(center.x + radius * Math.sin(i * angle), center.y - radius * Math.cos(i * angle));
         }
         ctx.closePath();
@@ -128,22 +179,31 @@ export class PolygonService extends Tool {
         }
     }
 
-    private drawPolygon(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
-        switch (this.shapeStyle) {
+    private drawPolygon(
+        ctx: CanvasRenderingContext2D,
+        primaryColor: string,
+        secondaryColor: string,
+        firstGrid: Vec2,
+        finalGrid: Vec2,
+        numberOfSides: number,
+        strokeThickness: number,
+        shapeStyle?: ShapeStyle,
+    ): void {
+        switch (shapeStyle) {
             case ShapeStyle.Outline:
-                this.drawOutLine(ctx, finalGrid);
+                this.drawOutLine(ctx, secondaryColor, firstGrid, finalGrid, numberOfSides, strokeThickness);
                 break;
 
             case ShapeStyle.Filled:
-                this.drawFilled(ctx, finalGrid);
+                this.drawFilled(ctx, primaryColor, firstGrid, finalGrid, numberOfSides);
                 break;
 
             case ShapeStyle.FilledOutline:
-                this.drawFilledOutLine(ctx, finalGrid);
+                this.drawFilledOutLine(ctx, primaryColor, secondaryColor, firstGrid, finalGrid, numberOfSides, strokeThickness);
                 break;
 
             default:
-                this.drawOutLine(ctx, finalGrid);
+                this.drawOutLine(ctx, secondaryColor, firstGrid, finalGrid, numberOfSides, strokeThickness);
                 break;
         }
         this.numberOfSides = this.numberOfSides || DEFAULT_NUMBER_OF_SIDE;
@@ -229,7 +289,16 @@ export class PolygonService extends Tool {
         this.firstGrid = this.mouseDownCoord = { x: 0, y: 0 };
     }
 
-    executeCommand(command: ToolCommand): void {
-        throw new Error('Method not implemented.');
+    executeCommand(command: PolygonCommand): void {
+        this.drawPolygon(
+            this.drawingService.baseCtx,
+            command.primaryColor,
+            command.secondaryColor,
+            command.initialPosition,
+            command.finalPosition,
+            command.numberOfSides,
+            command.strokeThickness,
+            command.shapeStyle,
+        );
     }
 }
