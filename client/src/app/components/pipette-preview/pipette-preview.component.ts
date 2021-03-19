@@ -1,15 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { PipetteService } from '@app/services/tools/pipette-service/pipette.service';
 
 @Component({
-  selector: 'app-pipette-preview',
-  templateUrl: './pipette-preview.component.html',
-  styleUrls: ['./pipette-preview.component.scss']
+    selector: 'app-pipette-preview',
+    templateUrl: './pipette-preview.component.html',
+    styleUrls: ['./pipette-preview.component.scss'],
 })
-export class PipettePreviewComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+export class PipettePreviewComponent {
+    constructor(public pipette: PipetteService) {}
 }
