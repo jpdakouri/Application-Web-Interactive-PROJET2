@@ -116,6 +116,7 @@ export class SelectionEllipseService extends Tool {
             }
             case KeyboardButtons.Escape: {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                this.clearImageData();
                 this.clearPath();
             }
         }
@@ -131,6 +132,7 @@ export class SelectionEllipseService extends Tool {
         if (this.shiftDown && event.key === KeyboardButtons.Shift) {
             this.shiftDown = false;
             this.updatePreview();
+            this.clearImageData();
         }
     }
 
@@ -275,9 +277,10 @@ export class SelectionEllipseService extends Tool {
     private clearPath(): void {
         this.firstGrid = this.mouseDownCoord = { x: 0, y: 0 };
     }
-    // private clearImageData(): void {
-    //     for (let i = this.imageData.data.length; --i >= 0; ) this.imageData.data[i] = 0;
-    // }
+
+    private clearImageData(): void {
+        for (let i = this.imageData.data.length; --i >= 0; ) this.imageData.data[i] = 0;
+    }
 
     executeCommand(command: ToolCommand): void {
         throw new Error('Method not implemented.');
