@@ -11,6 +11,10 @@ import { Tag } from '@app/utils/interfaces/tag';
     templateUrl: './search-by-tags.component.html',
     styleUrls: ['./search-by-tags.component.scss'],
 })
+
+/*********************************/
+/************TODO: TESTS**********/
+/*********************************/
 export class SearchByTagsComponent {
     tagName: FormControl;
     tags: Tag[];
@@ -52,7 +56,9 @@ export class SearchByTagsComponent {
         let tags = this.toStringArray(this.tags);
         tags = this.tags != undefined ? tags : ['none'];
         this.httpService.getDrawingsByTags(tags).subscribe({
-            next: (result) => {},
+            next: (result) => {
+                console.log(result);
+            },
         });
     }
 }
