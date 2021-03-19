@@ -71,6 +71,7 @@ export class SelectionEllipseService extends Tool {
     }
 
     onMouseUp(event: MouseEvent): void {
+        // debugger;
         if (this.mouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.end = this.getPositionFromMouse(event);
@@ -81,6 +82,7 @@ export class SelectionEllipseService extends Tool {
             this.selectEllipse(this.drawingService.previewCtx, this.mouseDownCoord);
             this.drawEllipse(this.drawingService.previewCtx, this.mouseDownCoord);
             this.drawingService.previewCtx.stroke();
+            this.drawingService.previewCtx.setLineDash([]);
             this.drawFramingRectangle(this.drawingService.previewCtx, this.mouseDownCoord);
         }
         this.mouseDown = false;
@@ -118,9 +120,9 @@ export class SelectionEllipseService extends Tool {
                 break;
             }
             case KeyboardButtons.Escape: {
-                this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                this.clearImageData();
                 this.clearPath();
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                this.topLeftCorner = { x: 0, y: 0 };
             }
         }
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -131,6 +133,7 @@ export class SelectionEllipseService extends Tool {
         });
         this.drawEllipse(this.drawingService.previewCtx, this.mouseDownCoord);
         this.drawingService.previewCtx.stroke();
+        this.drawingService.previewCtx.setLineDash([]);
         this.drawFramingRectangle(this.drawingService.previewCtx, this.mouseDownCoord);
     }
 
@@ -204,7 +207,6 @@ export class SelectionEllipseService extends Tool {
 
     private drawFramingRectangle(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.strokeStyle = 'black';
-        // ctx.setLineDash([4, 3]);
         ctx.lineWidth = this.lineThickness = 0.5;
 
         const startCoord = { ...this.firstGrid };
@@ -222,6 +224,7 @@ export class SelectionEllipseService extends Tool {
 
     private drawEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.beginPath();
+        ctx.setLineDash([5, 15]);
         ctx.strokeStyle = 'blue';
         ctx.lineWidth = this.lineThickness = 0.5;
 
@@ -235,9 +238,7 @@ export class SelectionEllipseService extends Tool {
 
     private clipArea(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.save();
-        ctx.beginPath();
         this.drawEllipse(ctx, finalGrid);
-        ctx.closePath();
         ctx.clip();
     }
 
@@ -245,13 +246,13 @@ export class SelectionEllipseService extends Tool {
         this.imageData = this.drawingService.baseCtx.getImageData(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
         createImageBitmap(this.imageData).then((imgBitmap) => {
             this.clipArea(ctx, finalGrid);
-            ctx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
+            ctx.drawImage(imgBitmap, this.firstGrid.x, this.firstGrid.y);
             ctx.restore();
         });
         // Remplir de blanc
-        this.drawEllipse(this.drawingService.baseCtx, this.mouseDownCoord);
-        this.drawingService.baseCtx.fill();
         this.drawingService.baseCtx.fillStyle = 'white';
+        this.drawEllipse(this.drawingService.baseCtx, finalGrid);
+        this.drawingService.baseCtx.fill();
     }
 
     private updatePreview(): void {
@@ -262,7 +263,6 @@ export class SelectionEllipseService extends Tool {
             this.makeCircle(currentCoord);
         }
         this.drawEllipse(this.drawingService.previewCtx, currentCoord);
-        // this.drawingService.previewCtx.closePath();
         this.drawingService.previewCtx.stroke();
     }
 
@@ -280,13 +280,13 @@ export class SelectionEllipseService extends Tool {
         this.firstGrid = this.mouseDownCoord = { x: 0, y: 0 };
     }
 
-    private clearImageData(): void {
-        for (let i = this.imageData.data.length; --i >= 0; ) this.imageData.data[i] = 0;
-    }
+    // private clearImageData(): void {
+    //     for (let i = this.imageData.data.length; --i >= 0; ) this.imageData.data[i] = 0;
+    // }
 
-    private emptyImageData(): void {
-        this.imageData = this.drawingService.previewCtx.createImageData(0, 0);
-    }
+    // private emptyImageData(): void {
+    //     this.imageData = this.drawingService.previewCtx.createImageData(0, 0);
+    // }
 
     executeCommand(command: ToolCommand): void {
         throw new Error('Method not implemented.');
