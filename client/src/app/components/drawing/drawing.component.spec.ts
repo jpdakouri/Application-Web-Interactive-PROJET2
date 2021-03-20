@@ -123,7 +123,7 @@ describe('DrawingComponent', () => {
     });
 
     it('onContextMenu returns false if right clicked while pipette is in use', () => {
-        component['toolManagerService'].currentTool = ToolsNames.Pipette;
+        component.toolManagerService.currentTool = ToolsNames.Pipette;
         expect(component.onContextMenu()).toBeFalse();
     });
 

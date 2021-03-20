@@ -37,6 +37,7 @@ describe('HttpService', () => {
         req.flush(response);
     });
     it('#insertDrawing should send correct request', () => {
+        // tslint:disable-next-line:no-magic-numbers
         const drawingStub = new DrawingData(undefined, 'testTitle', ['testTag1', 'testTag2'], 'dataURL', 100, 100);
         service.insertDrawing(drawingStub).subscribe((result) => {
             expect(result).toEqual('this is the mongo generated ID');

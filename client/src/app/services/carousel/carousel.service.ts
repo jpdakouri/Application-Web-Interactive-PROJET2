@@ -17,6 +17,7 @@ export class CarouselService {
 
     constructor(private httpService: HttpService, public drawingService: DrawingService) {}
 
+    // tslint:disable:no-magic-numbers
     initCarousel(): Observable<DrawingData[]> {
         this.drawingsToShow = [];
         const subject = new Subject<DrawingData[]>();
@@ -88,7 +89,7 @@ export class CarouselService {
         console.log(drawing.width, drawing.height);
     }
 
-    deleteDrawing(id: string): Promise<string> {
+    async deleteDrawing(id: string): Promise<string> {
         const promise = new Promise<string>((resolve) => {
             this.httpService.deleteDrawing(id).subscribe({
                 next: (result) => {

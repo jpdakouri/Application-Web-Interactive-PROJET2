@@ -61,10 +61,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.updateCurrentTool();
         this.setCanvasSize();
         this.subscribeToToolChange();
-        // this.drawingService.newDrawing.subscribe((result: Vec2) => {
-        //     this.canvasSize = result;
-        //     this.canvasResizerService.resizePreview(result);
-        // });
+        this.subscribeToNewDrawing();
     }
 
     ngAfterViewInit(): void {
@@ -228,5 +225,12 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.eraserCursor.left = mousePosition.x + 'px';
         this.eraserCursor.top = mousePosition.y + 'px';
         this.eraserActive = this.currentTool.eraserActive || false;
+    }
+
+    subscribeToNewDrawing(): void {
+        this.drawingService.newDrawing.subscribe((result: Vec2) => {
+            this.canvasSize = result;
+            this.canvasResizerService.resizePreview(result);
+        });
     }
 }

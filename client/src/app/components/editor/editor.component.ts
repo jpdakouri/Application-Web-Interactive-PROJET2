@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { ToolbarComponent } from '@app/components/toolbar-components/toolbar/toolbar.component';
 import { DialogControllerService } from '@app/services/dialog-controller/dialog-controller.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -24,7 +23,6 @@ export class EditorComponent implements AfterViewInit {
         private toolManagerService: ToolManagerService,
         private drawingService: DrawingService,
         private dialogControllerService: DialogControllerService,
-        public dialog: MatDialog,
     ) {
         this.toolFinder = new Map<KeyboardButtons, ToolsNames>();
         this.toolFinder

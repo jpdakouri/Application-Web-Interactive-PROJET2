@@ -11,6 +11,7 @@ class DrawingMock {
     width: number;
     height: number;
     constructor() {
+        // tslint:disable:no-magic-numbers
         (this.id = '111'), (this.title = 'testDrawing'), (this.tags = ['beau']), (this.dataURL = 'asdasdd'), (this.width = 300), (this.height = 300);
     }
 }
