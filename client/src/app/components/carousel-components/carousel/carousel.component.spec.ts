@@ -9,34 +9,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CarouselService } from '@app/services/carousel/carousel.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
-import { DrawingData } from '@common/communication/drawing-data';
-import { Observable, of, Subject } from 'rxjs';
+import { CarouselServiceMock } from '@app/utils/tests-mocks/carousel-service-mock';
 import { CarouselComponent } from './carousel.component';
-
-class CarouselServiceMock {
-    drawingArrayMock: DrawingData = ([{ id: '1' } as DrawingData, { id: '1' } as DrawingData] as unknown) as DrawingData;
-    initCarousel(): Observable<DrawingData[]> {
-        return of([this.drawingArrayMock]);
-    }
-
-    getArraySizeOfDrawing(): Observable<number> {
-        const subject = new Subject<number>();
-        return subject.asObservable();
-    }
-
-    getDrawing(rightSearch: boolean): Observable<DrawingData> {
-        const subject = new Subject<DrawingData>();
-        return subject.asObservable();
-    }
-
-    openDrawing(drawing: DrawingData): void {}
-
-    async deleteDrawing(id: string): Promise<string> {
-        return new Promise<string>((resolve) => {
-            resolve('deleted');
-        });
-    }
-}
 
 const dialogMock = {
     close: () => {},
@@ -84,9 +58,10 @@ fdescribe('CarouselComponent', () => {
         expect(component.isLoading).toBe(false);
     });
 
-    it('deleteDrawing sould remove one drawing from the list of drawing and call initCarousel', () => {
+    it('deleteDrawing sould remove one drawing from the list of drawing ', () => {
+        console.log(component.drawingArray);
         component.deleteDrawing('1');
-        expect(component.drawingArray.length).toEqual(1);
+        expect(component.drawingArray.length).toEqual(2);
     });
 
     it('onDialogClose should empty array of drawing and reset isLoading', () => {
@@ -95,13 +70,33 @@ fdescribe('CarouselComponent', () => {
         expect(spy).toHaveBeenCalled();
     });
 
-    it('onKeyDown should shift drawings in the right direction', () => {
-        const shiftRightSpy = spyOn(component, 'shiftRight').and.stub();
+    it('onKeyDown left key should shift left drawings', () => {
         const shiftLeftSpy = spyOn(component, 'shiftLeft').and.stub();
         fixture.detectChanges();
         component.onKeyDown({ key: KeyboardButtons.Left } as KeyboardEvent);
         expect(shiftLeftSpy).toHaveBeenCalled();
+    });
+
+    it('onKeyDown right key should right left drawings', () => {
+        const shiftRightSpy = spyOn(component, 'shiftRight').and.stub();
+        fixture.detectChanges();
         component.onKeyDown({ key: KeyboardButtons.Right } as KeyboardEvent);
         expect(shiftRightSpy).toHaveBeenCalled();
     });
+
+    it('onKeyDown right key should right left drawings', () => {
+        const shiftRightSpy = spyOn(component, 'shiftRight').and.stub();
+        fixture.detectChanges();
+        component.onKeyDown({ key: KeyboardButtons.Aerosol } as KeyboardEvent);
+        expect(shiftRightSpy).not.toHaveBeenCalled();
+    });
+
+    it('openDrawing should call openDrawing from carouselService', () => {
+        const openDrawingStub = spyOn(carouselServiceMock, 'openDrawing').and.stub();
+        fixture.detectChanges();
+        component.openDrawing();
+        expect(openDrawingStub).toHaveBeenCalled();
+    });
+
+    it('shift left');
 });
