@@ -189,7 +189,18 @@ describe('LineService', () => {
         service['pathData'].push({ x: DETECTION_RANGE, y: -DETECTION_RANGE });
 
         service.onDblClick();
-        expect(drawLineSpy).toHaveBeenCalledWith(jasmine.any(CanvasRenderingContext2D), comparingArray, true);
+
+        const expectedLineThickness = 5;
+        expect(drawLineSpy).toHaveBeenCalledWith(
+            jasmine.any(CanvasRenderingContext2D),
+            '#000000',
+            '#ffffff',
+            false,
+            expectedLineThickness,
+            comparingArray,
+            1,
+            true,
+        );
     });
 
     it(' onDblClick should adapt if last 2 points are 20px close', () => {
@@ -207,7 +218,7 @@ describe('LineService', () => {
         service['pathData'].push({ x: mouseEvent.offsetX + DETECTION_RANGE, y: mouseEvent.offsetY - DETECTION_RANGE });
 
         service.onDblClick();
-        expect(drawLineSpy).toHaveBeenCalledWith(jasmine.any(CanvasRenderingContext2D), comparingArray, false);
+        expect(drawLineSpy).toHaveBeenCalledWith(jasmine.any(CanvasRenderingContext2D), '#000000', '#ffffff', true, 1, comparingArray, 1, false);
     });
 
     it(' onDblClick should do nothing if distance is greater than 20px', () => {
@@ -224,7 +235,17 @@ describe('LineService', () => {
         service['pathData'].push({ x: mouseEvent.offsetX + DETECTION_RANGE * 2, y: mouseEvent.offsetY - DETECTION_RANGE });
 
         service.onDblClick();
-        expect(drawLineSpy).toHaveBeenCalledWith(jasmine.any(CanvasRenderingContext2D), comparingArray, false);
+        const expectedLineThickness = 5;
+        expect(drawLineSpy).toHaveBeenCalledWith(
+            jasmine.any(CanvasRenderingContext2D),
+            '#000000',
+            '#ffffff',
+            false,
+            expectedLineThickness,
+            comparingArray,
+            1,
+            false,
+        );
     });
 
     it(' keys should perform their task', () => {

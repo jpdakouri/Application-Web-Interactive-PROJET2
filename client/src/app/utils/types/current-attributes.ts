@@ -8,4 +8,5 @@ export type CurrentAttributes = {
     DropletDiameter?: number;
     Frequency?: number;
     JetDiameter?: number;
+    numberOfSides?: number;
 };

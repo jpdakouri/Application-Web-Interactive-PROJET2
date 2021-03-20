@@ -6,11 +6,11 @@ import { ToolCommand } from '@app/utils/interfaces/tool-command';
 export class EraserCommand implements ToolCommand {
     readonly tool: Tool;
     readonly strokeThickness: number;
-    readonly strokePath: (Vec2 | undefined)[];
+    readonly strokePaths: Vec2[][];
 
-    constructor(tool: EraserService, thickness: number, strokePath: (Vec2 | undefined)[]) {
+    constructor(tool: EraserService, thickness: number, strokePaths: Vec2[][]) {
         this.tool = tool;
         this.strokeThickness = thickness;
-        this.strokePath = strokePath;
+        this.strokePaths = strokePaths;
     }
 }

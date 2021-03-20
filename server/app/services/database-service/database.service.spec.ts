@@ -72,6 +72,76 @@ describe('DatabaseService', () => {
         expect(spy).to.have.been.called.with(toDelete);
     });
 
+    it('getDrawingsByTags() should return drawings by tag array if only one tag is specified', async () => {
+        const newDrawing1: Metadata = { _id: undefined, title: 'test1', tags: ['tag1.1', 'tag1.2'], width: 100, height: 100 };
+        const newDrawing2: Metadata = { _id: undefined, title: 'test2', tags: ['tag2.1', 'tag2.2'], width: 100, height: 100 };
+        const newDrawing3: Metadata = { _id: undefined, title: 'test3', tags: ['tag3.1', 'tag3.2'], width: 100, height: 100 };
+        const newDrawing4: Metadata = { _id: undefined, title: 'test4', tags: ['tag1.1', 'tag4.2'], width: 100, height: 100 };
+        const newDrawing5: Metadata = { _id: undefined, title: 'test5', tags: ['tag5.1', 'tag5.2'], width: 100, height: 100 };
+        const newDrawings: Metadata[] = [];
+        newDrawings.push(newDrawing1);
+        newDrawings.push(newDrawing4);
+        await databaseService.insertDrawing(newDrawing1);
+        await databaseService.insertDrawing(newDrawing2);
+        await databaseService.insertDrawing(newDrawing3);
+        await databaseService.insertDrawing(newDrawing4);
+        await databaseService.insertDrawing(newDrawing5);
+        const drawings = await databaseService.getDrawingsByTags(('tag1.1' as unknown) as string[]);
+        expect(drawings.length).to.equal(2);
+        drawings.forEach((element, index) => {
+            expect(element.title).to.equal(newDrawings[index].title);
+            expect(element.tags).to.deep.equal(newDrawings[index].tags);
+        });
+    });
+
+    it('getDrawingsByTags() should return drawings by tags', async () => {
+        const newDrawing1: Metadata = { _id: undefined, title: 'test1', tags: ['tag1.1', 'tag1.2'], width: 100, height: 100 };
+        const newDrawing2: Metadata = { _id: undefined, title: 'test2', tags: ['tag2.1', 'tag2.2'], width: 100, height: 100 };
+        const newDrawing3: Metadata = { _id: undefined, title: 'test3', tags: ['tag3.1', 'tag3.2'], width: 100, height: 100 };
+        const newDrawing4: Metadata = { _id: undefined, title: 'test4', tags: ['tag1.1', 'tag4.2'], width: 100, height: 100 };
+        const newDrawing5: Metadata = { _id: undefined, title: 'test5', tags: ['tag5.1', 'tag5.2'], width: 100, height: 100 };
+        const newDrawings: Metadata[] = [];
+        newDrawings.push(newDrawing1);
+        newDrawings.push(newDrawing3);
+        newDrawings.push(newDrawing4);
+        await databaseService.insertDrawing(newDrawing1);
+        await databaseService.insertDrawing(newDrawing2);
+        await databaseService.insertDrawing(newDrawing3);
+        await databaseService.insertDrawing(newDrawing4);
+        await databaseService.insertDrawing(newDrawing5);
+        const drawings = await databaseService.getDrawingsByTags(['tag1.1', 'tag3.2']);
+        expect(drawings.length).to.equal(3);
+        drawings.forEach((element, index) => {
+            expect(element.title).to.equal(newDrawings[index].title);
+            expect(element.tags).to.deep.equal(newDrawings[index].tags);
+        });
+    });
+
+    it('getDrawingsByTags() should return all drawings if tag array is undefined', async () => {
+        const newDrawing1: Metadata = { _id: undefined, title: 'test1', tags: ['tag1.1', 'tag1.2'], width: 100, height: 100 };
+        const newDrawing2: Metadata = { _id: undefined, title: 'test2', tags: ['tag2.1', 'tag2.2'], width: 100, height: 100 };
+        const newDrawing3: Metadata = { _id: undefined, title: 'test3', tags: ['tag3.1', 'tag3.2'], width: 100, height: 100 };
+        const newDrawing4: Metadata = { _id: undefined, title: 'test4', tags: ['tag1.1', 'tag4.2'], width: 100, height: 100 };
+        const newDrawing5: Metadata = { _id: undefined, title: 'test5', tags: ['tag5.1', 'tag5.2'], width: 100, height: 100 };
+        const newDrawings: Metadata[] = [];
+        newDrawings.push(newDrawing1);
+        newDrawings.push(newDrawing2);
+        newDrawings.push(newDrawing3);
+        newDrawings.push(newDrawing4);
+        newDrawings.push(newDrawing5);
+        await databaseService.insertDrawing(newDrawing1);
+        await databaseService.insertDrawing(newDrawing2);
+        await databaseService.insertDrawing(newDrawing3);
+        await databaseService.insertDrawing(newDrawing4);
+        await databaseService.insertDrawing(newDrawing5);
+        const drawings = await databaseService.getDrawingsByTags((undefined as unknown) as string[]);
+        expect(drawings.length).to.equal(5);
+        drawings.forEach((element, index) => {
+            expect(element.title).to.equal(newDrawings[index].title);
+            expect(element.tags).to.deep.equal(newDrawings[index].tags);
+        });
+    });
+
     it('updateDrawing() should update the drawing in DB', async () => {
         const spy = chai.spy.on(databaseService.collection, 'findOneAndUpdate');
         const id = new ObjectId().toString();

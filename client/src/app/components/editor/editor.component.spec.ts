@@ -1,16 +1,19 @@
 import { HttpClientModule } from '@angular/common/http';
+import { EventEmitter } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { Vec2 } from '@app/classes/vec2';
+import { CarouselComponent } from '@app/components/carousel-components/carousel/carousel.component';
 import { ColourHistoryComponent } from '@app/components/colour-components/colour-history/colour-history.component';
 import { ColourPaletteSelectorComponent } from '@app/components/colour-components/colour-palette-selector/colour-palette-selector.component';
 import { ColourSelectorComponent } from '@app/components/colour-components/colour-selector/colour-selector.component';
@@ -18,28 +21,57 @@ import { CurrentColourComponent } from '@app/components/colour-components/curren
 import { HueSelectorComponent } from '@app/components/colour-components/hue-selector/hue-selector.component';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { ExportDrawingComponent } from '@app/components/export-drawing/export-drawing.component';
-import { ToolAttributeBarComponent } from '@app/components/toolbar-components/tool-attribute-bar/tool-attribute-bar.component';
+import { ToolAttributeComponent } from '@app/components/toolbar-components/tool-attribute/tool-attribute.component';
 import { ToolbarComponent } from '@app/components/toolbar-components/toolbar/toolbar.component';
+import { DialogControllerService } from '@app/services/dialog-controller/dialog-controller.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { ToolManagerServiceMock } from '@app/tests-mocks/tool-manager-mock';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
+import { DrawingData } from '@common/communication/drawing-data';
 import { EditorComponent } from './editor.component';
+
+class DrawingServiceMock {
+    // tslint:disable:no-empty
+    newDrawing: EventEmitter<Vec2> = new EventEmitter<Vec2>();
+
+    saveCanvas(): void {}
+
+    restoreCanvas(): void {}
+
+    clearCanvas(context: CanvasRenderingContext2D): void {}
+
+    isCanvasBlank(): boolean {
+        return true;
+    }
+
+    createNewDrawing(): void {}
+
+    openDrawing(drawing: DrawingData): void {}
+}
+
+// tslint:disable-next-line:max-classes-per-file
+class DialogServiceMock {
+    noDialogOpened: boolean = true;
+    openDialog(component: string): void {}
+}
 
 describe('EditorComponent', () => {
     let component: EditorComponent;
     let fixture: ComponentFixture<EditorComponent>;
     let toolManagerServiceMock: ToolManagerServiceMock;
-    let drawingServiceSpy: jasmine.SpyObj<DrawingService>;
+    let drawingServiceSpy: DrawingServiceMock;
+    let dialogServiceMock: DialogServiceMock;
 
     beforeEach(async(() => {
-        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['createNewDrawing', 'restoreCanvas', 'isCanvasBlank']);
+        drawingServiceSpy = new DrawingServiceMock();
         toolManagerServiceMock = new ToolManagerServiceMock();
+        dialogServiceMock = new DialogServiceMock();
         TestBed.configureTestingModule({
             declarations: [
                 EditorComponent,
                 DrawingComponent,
-                ToolAttributeBarComponent,
+                ToolAttributeComponent,
                 ToolbarComponent,
                 ColourSelectorComponent,
                 ColourPaletteSelectorComponent,
@@ -65,7 +97,9 @@ describe('EditorComponent', () => {
             providers: [
                 { provide: ToolManagerService, useValue: toolManagerServiceMock },
                 { provide: DrawingService, useValue: drawingServiceSpy },
-                { provide: MatDialogRef, useValue: {} },
+                // { provide: MatDialogRef, useValue: {} },
+                { provide: CarouselComponent, useValue: {} },
+                { provide: DialogControllerService, useValue: dialogServiceMock },
             ],
         }).compileComponents();
     }));
@@ -76,6 +110,7 @@ describe('EditorComponent', () => {
         fixture.detectChanges();
         // tslint:disable:no-any
         spyOn<any>(toolManagerServiceMock, 'emitToolChange').and.callThrough();
+        // spyOn<any>(drawingServiceSpy, 'getPositionFromMouse').and.returnValue({ x: 100, y: 100 });
     });
 
     it('should create', () => {
@@ -118,20 +153,23 @@ describe('EditorComponent', () => {
         expect(toolManagerServiceMock.emitToolChange).not.toHaveBeenCalled();
     });
 
-    it(' #onKeyDown should call create new drawing if input is valid ', () => {
-        const goodInput = { key: KeyboardButtons.NewDrawing, ctrlKey: true } as KeyboardEvent;
-        component.onKeyDown(goodInput);
-        expect(drawingServiceSpy.createNewDrawing).toHaveBeenCalled();
-    });
-
     it(' #onKeyDown should not call create new drawing if input is invalid ', () => {
         const goodInput = { key: KeyboardButtons.NewDrawing, ctrlKey: false } as KeyboardEvent;
         component.onKeyDown(goodInput);
+        spyOn(drawingServiceSpy, 'createNewDrawing').and.stub();
         expect(drawingServiceSpy.createNewDrawing).not.toHaveBeenCalled();
     });
 
+    it(' #onKeyDown should call create new drawing if input is valid ', () => {
+        const goodInput = { key: KeyboardButtons.NewDrawing, ctrlKey: true } as KeyboardEvent;
+        const creatNewDrawing = spyOn(component, 'onCreateNewDrawing').and.stub();
+        component.onKeyDown(goodInput);
+        expect(creatNewDrawing).toHaveBeenCalled();
+    });
+
     it('should create new drawing when new drawing button is clicked', () => {
+        const creatNewDrawing = spyOn(drawingServiceSpy, 'createNewDrawing').and.callThrough();
         component.onCreateNewDrawing();
-        expect(drawingServiceSpy.createNewDrawing).toHaveBeenCalled();
+        expect(creatNewDrawing).toHaveBeenCalled();
     });
 });

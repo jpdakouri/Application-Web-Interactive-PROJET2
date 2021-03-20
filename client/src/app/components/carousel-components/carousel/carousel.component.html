@@ -1,0 +1,50 @@
+<div class="container">
+    <mat-toolbar [style.height.px]="60" class="toolbar" color="primary">
+        <span></span>
+        <span class="pacifico">Carrousel de Dessins</span>
+        <span style="text-align: right; font-size: 15px">
+            <mat-form-field *ngIf="this.drawingArray.length > 0">
+                <input matInput placeholder="Recherche Par Étiquettes" />
+            </mat-form-field>
+        </span>
+    </mat-toolbar>
+    <div class="queryFromServer" #queryFromServer *ngIf="isLoading">
+        <mat-progress-bar mode="query"></mat-progress-bar>
+        <p>Attente du serveur ...</p>
+    </div>
+
+    <div class="matContainer" #matContainer *ngIf="!isLoading">
+        <h1 class="emptyCarousel" *ngIf="this.drawingArray.length < 1">
+            La base de données est courrement vide! <br />
+            Enregistrez un dessin et il apparaitera ici :)
+        </h1>
+        <app-drawing-card
+            class="sides card"
+            *ngIf="this.drawingArray.length > 1"
+            [positionCaracteristics]="sideCard"
+            [infoDrawing]="drawingArray[left]"
+        ></app-drawing-card>
+        <app-drawing-card
+            class="main card"
+            *ngIf="this.drawingArray.length > 0"
+            (toDelete)="deleteDrawing(drawingArray[middle].id)"
+            (toOpen)="openDrawing()"
+            [positionCaracteristics]="mainCard"
+            [infoDrawing]="drawingArray[middle]"
+        ></app-drawing-card>
+        <app-drawing-card
+            class="sides card"
+            *ngIf="this.drawingArray.length > 1"
+            [positionCaracteristics]="sideCard"
+            [infoDrawing]="drawingArray[right]"
+        ></app-drawing-card>
+    </div>
+    <div class="arrowContainer" *ngIf="this.drawingArray.length > 0">
+        <button mat-button class="leftArrow" color="primary" (click)="shiftLeft()" [disabled]="this.drawingArray.length < 2">
+            <mat-icon>arrow_left</mat-icon>
+        </button>
+        <button mat-button class="rightArrow" color="primary" (click)="shiftRight()" [disabled]="this.drawingArray.length < 2">
+            <mat-icon>arrow_right</mat-icon>
+        </button>
+    </div>
+</div>

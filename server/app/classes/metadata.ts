@@ -5,6 +5,8 @@ export class Metadata {
         this._id = _id;
         this.title = title;
         this.tags = tags;
+        this.width = width;
+        this.height = height;
     }
     _id: string | undefined | ObjectId;
     title: string;

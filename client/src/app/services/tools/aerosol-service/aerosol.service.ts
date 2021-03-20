@@ -69,10 +69,12 @@ export class AerosolService extends Tool {
 
     onMouseLeave(event: MouseEvent): void {
         window.clearInterval(this.intervalID);
+        console.log(this.isSpraying);
         this.isSpraying = false;
     }
 
     onMouseEnter(event: MouseEvent): void {
+        console.log(event);
         if (this.mouseDown) {
             this.isSpraying = true;
             this.spray();
@@ -80,10 +82,12 @@ export class AerosolService extends Tool {
     }
 
     private async spray(): Promise<void> {
-        window.clearInterval(this.intervalID);
-        this.intervalID = window.setInterval(() => {
-            this.generateSprayParticles();
-        }, (MS_PER_S * DOTS_PER_SPRAY) / (this.frequency || MIN_FREQUENCY));
+        if (this.isSpraying) {
+            window.clearInterval(this.intervalID);
+            this.intervalID = window.setInterval(() => {
+                this.generateSprayParticles();
+            }, (MS_PER_S * DOTS_PER_SPRAY) / (this.frequency || MIN_FREQUENCY));
+        }
     }
 
     private generateSprayParticles(): void {

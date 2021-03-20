@@ -30,13 +30,14 @@ describe('DatabaseController', () => {
             getAllDrawings: sandbox.stub().resolves(),
             deleteDrawing: sandbox.stub().resolves(),
             updateDrawing: sandbox.stub().resolves(),
+            getDrawingsByTags: sandbox.stub().resolves(),
         });
         container.rebind(TYPES.ImageDataService).toConstantValue({
             removeID: sandbox.stub().resolves(),
             updateDrawing: sandbox.stub().resolves(),
             writeDrawingToDisk: sandbox.stub().resolves(),
             getImagesFromDisk: sandbox.stub().resolves(),
-            getOneDrawing: sandbox.stub().returns(undefined),
+            getOneImageFromDisk: sandbox.stub().returns(undefined),
         });
         imageDataService = container.get(TYPES.ImageDataService);
         databaseService = container.get(TYPES.DatabaseService);
@@ -106,7 +107,7 @@ describe('DatabaseController', () => {
             .post('/api/drawings')
             .expect(HTTP_STATUS_BAD_REQUEST)
             .then((response: any) => {
-                expect(response.text).to.equal('Message du serveur: Étiquette Invalide!');
+                expect(response.text).to.equal('Message du serveur: Étiquette Invalide !');
             });
     });
 
@@ -118,42 +119,131 @@ describe('DatabaseController', () => {
             .post('/api/drawings')
             .expect(HTTP_STATUS_ERROR)
             .then((response: any) => {
-                expect(response.text).to.equal("Erreur d'opération dans le serveur!");
+                expect(response.text).to.equal("Erreur d'opération dans le serveur !");
             });
     });
 
-    it('GET request to /drawings/:id should respond a HTTP_STATUS_OK and a DrawingData', async () => {
+    it('GET request to /drawings/single/:index should respond a HTTP_STATUS_OK and a DrawingData', async () => {
         const dataURL = 'dataURLStub';
         const drawing = new DrawingData('id', 'title', ['tag1', 'tag2'], dataURL, 100, 100);
-        imageDataService.getOneDrawing.returns(drawing);
+        imageDataService.getOneImageFromDisk.returns(drawing);
         return supertest(app)
-            .get('/api/drawings/0')
+            .get('/api/drawings/single/0')
             .expect(HTTP_STATUS_OK)
             .then((response: any) => {
                 expect(response.body).to.deep.equal(drawing);
             });
     });
 
-    it('GET request to /drawings/:id should respond a HTTP_STATUS_NOT_FOUND and corresponding message if no drawing found', async () => {
-        imageDataService.getOneDrawing.returns(undefined);
+    it('GET request to /drawings/single/:index should respond a HTTP_STATUS_NOT_FOUND and corresponding message if no drawing found', async () => {
+        imageDataService.getOneImageFromDisk.returns(undefined);
         return supertest(app)
-            .get('/api/drawings/0')
+            .get('/api/drawings/single/0')
             .expect(HTTP_STATUS_NOT_FOUND)
             .then((response: any) => {
                 expect(response.text).to.deep.equal('Aucun dessin trouvé !');
             });
     });
 
-    it('GET request to /drawings/:id should call #getOneDrawing from imageDataService with correct parameter ', async () => {
+    it('GET request to /drawings/single/:index should call #getOneImageFromDisk from imageDataService with correct parameter ', async () => {
         const dataURL = 'dataURLStub';
         const drawing = new DrawingData('id', 'title', ['tag1', 'tag2'], dataURL, 100, 100);
-        imageDataService.getOneDrawing.returns(drawing);
-        const spy = chai.spy.on(imageDataService, 'getOneDrawing');
+        imageDataService.getOneImageFromDisk.returns(drawing);
+        const spy = chai.spy.on(imageDataService, 'getOneImageFromDisk');
         return supertest(app)
-            .get('/api/drawings/0')
+            .get('/api/drawings/single/0')
             .expect(HTTP_STATUS_OK)
             .then((response: any) => {
                 expect(spy).to.have.been.called.with(0);
+            });
+    });
+
+    it('GET request to /drawings/by-tags should respond HTTP_STATUS_OK and drawing array ', async () => {
+        const drawingDatas: DrawingData[] = [];
+        const metadatas: Metadata[] = [];
+        const uri = 'utiStub';
+        for (let i = 0; i < 5; i++) {
+            const drawingData = new DrawingData(i.toString(), `title${i}`, [`tag${i}`, `tag${i}`], uri, 100, 100);
+            const metadata = new Metadata(i.toString(), `title${i}`, [`tag${i}`, `tag${i}`], 100, 100);
+            metadatas.push(metadata);
+            drawingDatas.push(drawingData);
+        }
+        databaseService.getDrawingsByTags.resolves(metadatas);
+        imageDataService.getImagesFromDisk.returns(drawingDatas);
+        return supertest(app)
+            .get('/api/drawings/by-tags')
+            .expect(HTTP_STATUS_OK)
+            .then((response: any) => {
+                expect(response.body).to.deep.equal(drawingDatas);
+            });
+    });
+    it('GET request to /drawings/by-tags should respond HTTP_STATUS_NOT_FOUND and message if no drawings are found in database ', async () => {
+        databaseService.getDrawingsByTags.resolves([]);
+        return supertest(app)
+            .get('/api/drawings/by-tags')
+            .expect(HTTP_STATUS_NOT_FOUND)
+            .then((response: any) => {
+                expect(response.text).to.equal('"Aucun dessin trouvé !"');
+            });
+    });
+    it('GET request to /drawings/by-tags should respond HTTP_STATUS_NOT_FOUND and message if no drawings are found on disk', async () => {
+        const drawingDatas: DrawingData[] = [];
+        const metadatas: Metadata[] = [];
+        const uri = 'uriStub';
+        for (let i = 0; i < 5; i++) {
+            const drawingData = new DrawingData(i.toString(), `title${i}`, [`tag${i}`, `tag${i}`], uri, 100, 100);
+            const metadata = new Metadata(i.toString(), `title${i}`, [`tag${i}`, `tag${i}`], 100, 100);
+            metadatas.push(metadata);
+            drawingDatas.push(drawingData);
+        }
+        databaseService.getDrawingsByTags.resolves(metadatas);
+        imageDataService.getImagesFromDisk.returns([]);
+        return supertest(app)
+            .get('/api/drawings/by-tags')
+            .expect(HTTP_STATUS_NOT_FOUND)
+            .then((response: any) => {
+                expect(response.text).to.equal('"Aucun dessin trouvé !"');
+            });
+    });
+
+    it('GET request to /drawings/by-tags should respond a HTTP_STATUS_ERROR and message if error in database', async () => {
+        databaseService.getDrawingsByTags.rejects(new MongoError('Test error !'));
+        return supertest(app)
+            .get('/api/drawings/by-tags')
+            .expect(HTTP_STATUS_ERROR)
+            .then((response: any) => {
+                expect(response.text).to.equal("Erreur d'opération dans le serveur !");
+            });
+    });
+
+    it('GET request to /drawings/by-tags should call getDrawingsByTags from databaseService with correct parameter', async () => {
+        databaseService.getDrawingsByTags.resolves([]);
+        const spy = chai.spy.on(databaseService, 'getDrawingsByTags');
+        return supertest(app)
+            .get('/api/drawings/by-tags')
+            .query({ tags: ['testTag1', 'testTag2'] })
+            .expect(HTTP_STATUS_NOT_FOUND)
+            .then((response: any) => {
+                expect(spy).to.have.been.called.with(['testTag1', 'testTag2']);
+            });
+    });
+
+    it('GET request to /drawings/by-tags should respond a HTTP_STATUS_ERROR and string message if server error', async () => {
+        const databaseResults: Metadata[] = [];
+        const serverResponse: DrawingData[] = [];
+        const uri = 'uriStub';
+        for (let i = 0; i < 0; i++) {
+            const drawingData = new DrawingData(i.toString(), `title${i}`, [`tag${i}`, `tag${i}`], uri, 100, 100);
+            const metadata = new Metadata(i.toString(), `title${i}`, [`tag${i}`, `tag${i}`], 100, 100);
+            databaseResults.push(metadata);
+            serverResponse.push(drawingData);
+        }
+        databaseService.getDrawingsByTags.rejects();
+        return supertest(app)
+            .get('/api/drawings/by-tags')
+            .expect(HTTP_STATUS_ERROR)
+            .then((response: any) => {
+                expect(response.text).to.equal("Erreur d'opération dans le serveur !");
             });
     });
 

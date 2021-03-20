@@ -15,7 +15,6 @@ describe('SaveDrawingComponent', () => {
         await TestBed.configureTestingModule({
             declarations: [SaveDrawingComponent],
             providers: [
-                // { provide: MatDialogRef, useValue: {} },
                 { provide: HttpClient, useValue: {} },
                 { provide: MatDialogRef, useValue: {} },
             ],

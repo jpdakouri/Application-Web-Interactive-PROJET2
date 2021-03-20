@@ -26,6 +26,12 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
+    private cursorHeight: number;
+    eraserActive: boolean = false;
+    currentTool: Tool;
+    toolManagerService: ToolManagerService;
+    canvasResizerService: CanvasResizerService;
+    toolsNames: typeof ToolsNames = ToolsNames;
 
     eraserCursor: EraserCursor = {
         cursor: 'none',
@@ -39,19 +45,13 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         transform: 'translate(-50%, -50%)',
         zIndex: '3',
     };
-    private cursorHeight: number;
-    eraserActive: boolean = false;
-    currentTool: Tool;
-    toolManagerService: ToolManagerService;
-    canvasResizerService: CanvasResizerService;
-    toolsNames: typeof ToolsNames = ToolsNames;
 
     constructor(
         private drawingService: DrawingService,
         toolManagerService: ToolManagerService,
         canvasResizerService: CanvasResizerService,
         private undoRedo: UndoRedoService,
-        private saveDrawingService: SaveDrawingService,
+        public saveService: SaveDrawingService,
     ) {
         this.toolManagerService = toolManagerService;
         this.canvasResizerService = canvasResizerService;
@@ -61,6 +61,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.updateCurrentTool();
         this.setCanvasSize();
         this.subscribeToToolChange();
+        this.subscribeToNewDrawing();
     }
 
     ngAfterViewInit(): void {
@@ -68,12 +69,14 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
-        this.drawingService.canvas = this.saveDrawingService.originalCanvas = this.baseCanvas.nativeElement;
+        this.drawingService.canvas = this.saveService.originalCanvas = this.baseCanvas.nativeElement;
         this.drawingService.canvas.style.backgroundColor = DEFAULT_WHITE;
         this.canvasResizerService.canvasPreviewWidth = this.canvasSize.x;
         this.canvasResizerService.canvasPreviewHeight = this.canvasSize.y;
         this.drawingService.restoreCanvas();
-        this.undoRedo.saveInitialState();
+        setTimeout(() => {
+            this.undoRedo.saveInitialState();
+        });
     }
 
     subscribeToToolChange(): void {
@@ -137,6 +140,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     @HostListener('mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
+        console.log('non');
         if (this.canvasResizerService.isResizing()) {
             this.canvasResizerService.onMouseUp(event);
             this.resizeCanvas();
@@ -181,7 +185,8 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     @HostListener('contextmenu', ['$event'])
     onContextMenu(): boolean {
-        return false; // disables the standard chrome menu
+        if (this.toolManagerService.currentTool === this.toolsNames.Pipette) return false; // disables the standard chrome menu
+        return true;
     }
 
     onMiddleRightResizerClick(): void {
@@ -220,5 +225,12 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.eraserCursor.left = mousePosition.x + 'px';
         this.eraserCursor.top = mousePosition.y + 'px';
         this.eraserActive = this.currentTool.eraserActive || false;
+    }
+
+    subscribeToNewDrawing(): void {
+        this.drawingService.newDrawing.subscribe((result: Vec2) => {
+            this.canvasSize = result;
+            this.canvasResizerService.resizePreview(result);
+        });
     }
 }

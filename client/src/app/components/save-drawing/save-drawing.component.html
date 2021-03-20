@@ -1,5 +1,11 @@
 <div style="margin: auto">
-    <canvas #previewCanvas [attr.width]="620" [attr.height]="450"></canvas>
+    <img
+        #previewImage
+        [src]="imageSource"
+        title="vignette de prévisualisation de l'image à exporter"
+        class="preview-image"
+        alt="Impossible d'afficher l'aperçu"
+    />
     <div class="export-options">
         <mat-form-field hintLabel="Max 25 caractères" appearance="fill">
             <mat-label>Nom du fichier</mat-label>
@@ -10,8 +16,8 @@
 
         <mat-form-field appearance="fill">
             <mat-label>Extension</mat-label>
-            <mat-select [(value)]="selectedFormat" (selectionChange)="onFormatChange(selectedFormat)">
-                <mat-option *ngFor="let format of formats" [value]="format">{{ format }}</mat-option>
+            <mat-select [(value)]="selectedFormat">
+                <mat-option [value]="selectedFormat">{{ selectedFormat }}</mat-option>
             </mat-select>
         </mat-form-field>
 
@@ -30,7 +36,7 @@
                     [matChipInputFor]="chipList"
                     [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                     [matChipInputAddOnBlur]="true"
-                    (matChipInputTokenEnd)="add($event)"
+                    (matChipInputTokenEnd)="addChip($event)"
                 />
                 <mat-hint align="end">{{ tagValue.value?.length || 0 }}/25</mat-hint>
                 <mat-error *ngIf="tagName.invalid">{{ getErrorMessageLabel() }}</mat-error>
