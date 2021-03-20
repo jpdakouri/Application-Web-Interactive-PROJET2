@@ -46,4 +46,6 @@
         *ngIf="canvasResizerService.isResizing()"
         [ngStyle]="{ width: getPreviewCanvasSize().x + 'px', height: getPreviewCanvasSize().y + 'px' }"
     ></div>
+
+    <canvas #selectedArea style="border: 10px"> </canvas>
 </div>

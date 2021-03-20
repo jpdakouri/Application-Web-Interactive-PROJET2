@@ -284,14 +284,6 @@ export class SelectionEllipseService extends Tool {
         this.firstGrid = this.mouseDownCoord = { x: 0, y: 0 };
     }
 
-    // private clearImageData(): void {
-    //     for (let i = this.imageData.data.length; --i >= 0; ) this.imageData.data[i] = 0;
-    // }
-
-    // private emptyImageData(): void {
-    //     this.imageData = this.drawingService.previewCtx.createImageData(0, 0);
-    // }
-
     executeCommand(command: ToolCommand): void {
         throw new Error('Method not implemented.');
     }
