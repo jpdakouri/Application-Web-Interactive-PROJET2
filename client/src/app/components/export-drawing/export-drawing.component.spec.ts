@@ -91,6 +91,7 @@ describe('ExportDrawingComponent', () => {
     });
 
     it('onDownload should correctly set image source and call ExportDrawingService download method', () => {
+        // TODO: remove spy and use mock methods
         component.imageSource = 'abed';
         const downloadDrawingSpy = spyOn<any>(exportDrawingMock, 'downloadDrawingAsImage');
         const expectedImageSource = component.imageSource;

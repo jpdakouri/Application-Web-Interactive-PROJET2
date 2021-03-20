@@ -44,8 +44,10 @@ export class ExportDrawingService {
         this.drawImageOnCanvas(image, this.canvas, this.currentFilter.getValue());
 
         // set the image to image with current filter applied on
-        const dataURL = this.canvas.toDataURL(`image/${format}`) as string;
-        if (dataURL !== undefined) image.src = dataURL;
+        // const dataURL = this.canvas.toDataURL(`image/${format}`) as string;
+        image.src = this.canvas.toDataURL(`image/${format}`) as string;
+        // if (dataURL !== undefined)
+        // image.src = dataURL;
 
         this.link.download = fileName;
         this.link.href = image.src;
@@ -53,7 +55,7 @@ export class ExportDrawingService {
     }
 
     private drawImageOnCanvas(image: HTMLImageElement, canvas: HTMLCanvasElement, filter?: string): void {
-        if (image === undefined) return;
+        // if (image === undefined) return;
         const context = canvas.getContext('2d') as CanvasRenderingContext2D;
         canvas.width = image.width;
         canvas.height = image.height;
