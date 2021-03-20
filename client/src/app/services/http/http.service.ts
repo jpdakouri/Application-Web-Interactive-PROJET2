@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ServerErrorMessageComponent } from '@app/components/server-error-message/server-error-message.component';
@@ -36,14 +36,24 @@ export class HttpService {
             .pipe(catchError(this.handleError<string>('Put')));
     }
     getOneDrawing(index: number): Observable<DrawingData> {
-        return this.http.get<DrawingData>(this.BASE_URL + `/api/drawings/${index}`).pipe(catchError(this.handleError<DrawingData>('GetOne')));
+        return this.http.get<DrawingData>(this.BASE_URL + `/api/drawings/single/${index}`).pipe(catchError(this.handleError<DrawingData>('GetOne')));
+    }
+
+    getDrawingsByTags(tags: string[]): Observable<DrawingData[]> {
+        let params = new HttpParams();
+        for (const tag of tags) {
+            params = params.append('tags', tag);
+        }
+        return this.http
+            .get<DrawingData[]>(this.BASE_URL + '/api/drawings/by-tags', { params })
+            .pipe(catchError(this.handleError<DrawingData[]>('GetByTags')));
     }
 
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
         return (error: HttpErrorResponse): Observable<T> => {
             if (error.status === 0) this.openDialog('Serveur Indisponible');
             else this.openDialog(error.error);
-            console.log(error);
+            console.error(error);
             return of(result as T);
         };
     }

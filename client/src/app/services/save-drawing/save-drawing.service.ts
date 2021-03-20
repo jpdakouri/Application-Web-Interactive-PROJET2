@@ -65,8 +65,8 @@ export class SaveDrawingService {
                 this.drawing.id = result;
             },
             error: (err) => {
-                console.log('Une erreur est survenue dans lors de la requête POST');
-                console.log(err);
+                console.error('Une erreur est survenue dans lors de la requête POST');
+                console.error(err);
             },
         });
     }
@@ -79,8 +79,8 @@ export class SaveDrawingService {
                     console.log(result);
                 },
                 error: (err) => {
-                    console.log('Une erreur est survenue lors de la requête DELETE !');
-                    console.log(err);
+                    console.error('Une erreur est survenue lors de la requête DELETE !');
+                    console.error(err);
                 },
             });
         }
@@ -103,8 +103,8 @@ export class SaveDrawingService {
                 this.drawing = drawingToSend;
             },
             error: (err) => {
-                console.log('Une erreur est survenue lors de la requête PUT !');
-                console.log(err);
+                console.error('Une erreur est survenue lors de la requête PUT !');
+                console.error(err);
             },
         });
     }
@@ -115,8 +115,8 @@ export class SaveDrawingService {
                 console.log("La requête GET s'est bien déroulée !");
             },
             error: (err) => {
-                console.log('une erreur est survenue lors de la requête GET !');
-                console.log(err);
+                console.error('une erreur est survenue lors de la requête GET !');
+                console.error(err);
             },
         });
     }

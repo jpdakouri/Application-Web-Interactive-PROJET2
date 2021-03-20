@@ -1,9 +1,9 @@
 <div class="current-color">
-    <h2>Couleur actuelle:</h2>
+    <h3>Couleur actuelle:</h3>
     <div class="block-container">
         <div class="yet-another-container">
             <div class="color-container">
-                <canvas class="color-preview" [style.background]="currentColourService.getPrimaryColorRgb()" width="50" height="50"></canvas>
+                <canvas class="color-preview" [style.background]="currentColourService.getPrimaryColorRgb()" width="30" height="30"></canvas>
                 <h4 class="primary-title">Primaire</h4>
             </div>
             <div class="invertColours">
@@ -18,7 +18,7 @@
                 </button>
             </div>
             <div class="color-container">
-                <canvas class="color-preview" [style.background]="currentColourService.getSecondaryColorRgb()" width="50" height="50"></canvas>
+                <canvas class="color-preview" [style.background]="currentColourService.getSecondaryColorRgb()" width="30" height="30"></canvas>
                 <h4 class="secondary-title">Secondaire</h4>
             </div>
         </div>
