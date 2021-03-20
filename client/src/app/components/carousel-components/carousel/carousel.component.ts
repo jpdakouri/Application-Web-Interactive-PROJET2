@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, HostListener, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, HostListener, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { DrawingCardComponent } from '@app/components/carousel-components/drawing-card/drawing-card.component';
 import { MAX_HEIGHT_MAIN_CARD, MAX_HEIGHT_SIDE_CARD, MAX_WIDTH_MAIN_CARD, MAX_WIDTH_SIDE_CARD } from '@app/components/components-constants';
@@ -11,7 +11,7 @@ import { DrawingData } from '@common/communication/drawing-data';
     templateUrl: './carousel.component.html',
     styleUrls: ['./carousel.component.scss'],
 })
-export class CarouselComponent implements OnInit, AfterViewInit {
+export class CarouselComponent implements OnInit {
     @ViewChildren(DrawingCardComponent) drawingCard: QueryList<DrawingCardComponent>;
 
     sideCard: CardStyle;
@@ -48,7 +48,11 @@ export class CarouselComponent implements OnInit, AfterViewInit {
         });
     }
 
-    ngAfterViewInit(): void {}
+    onDialogClose(): void {
+        this.drawingArray = [];
+        this.isLoading = true;
+        this.dialogRef.close();
+    }
 
     @HostListener('window:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
@@ -56,10 +60,9 @@ export class CarouselComponent implements OnInit, AfterViewInit {
         else if (event.key === KeyboardButtons.Right) this.shiftRight();
     }
 
-    onDialogClose(): void {
-        this.drawingArray = [];
-        this.isLoading = true;
-        this.dialogRef.close();
+    openDrawing(): void {
+        this.carouselService.openDrawing(this.drawingArray[this.middle]);
+        this.onDialogClose();
     }
 
     deleteDrawing(id: string | undefined): void {
@@ -71,11 +74,6 @@ export class CarouselComponent implements OnInit, AfterViewInit {
             .catch(() => {
                 console.log('lel');
             });
-    }
-
-    openDrawing(): void {
-        this.carouselService.openDrawing(this.drawingArray[this.middle]);
-        this.onDialogClose();
     }
 
     shiftLeft(): void {

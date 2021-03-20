@@ -14,10 +14,6 @@ export class HttpService {
 
     private readonly BASE_URL: string = 'http://localhost:3000';
 
-    getAllDrawings(): Observable<DrawingData[]> {
-        return this.http.get<DrawingData[]>(this.BASE_URL + '/api/drawings').pipe(catchError(this.handleError<DrawingData[]>('GetAll')));
-    }
-
     // For later !
     // getDrawingsByTags(): Observable<Metadata[]> {
     //     return this.http.get<Metadata[]>(this.BASE_URL + '/api/drawings');
@@ -29,12 +25,6 @@ export class HttpService {
 
     insertDrawing(newDrawing: DrawingData): Observable<string> {
         return this.http.post<string>(this.BASE_URL + '/api/drawings', newDrawing).pipe(catchError(this.handleError<string>('Post')));
-    }
-
-    updateDrawing(updatedDrawing: DrawingData): Observable<string> {
-        return this.http
-            .put<string>(this.BASE_URL + `/api/drawings/${updatedDrawing.id}`, updatedDrawing)
-            .pipe(catchError(this.handleError<string>('Put')));
     }
 
     getOneDrawing(index: number): Observable<DrawingData> {

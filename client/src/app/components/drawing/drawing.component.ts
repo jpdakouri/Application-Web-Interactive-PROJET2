@@ -26,6 +26,12 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
+    private cursorHeight: number;
+    eraserActive: boolean = false;
+    currentTool: Tool;
+    toolManagerService: ToolManagerService;
+    canvasResizerService: CanvasResizerService;
+    toolsNames: typeof ToolsNames = ToolsNames;
 
     eraserCursor: EraserCursor = {
         cursor: 'none',
@@ -39,12 +45,6 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         transform: 'translate(-50%, -50%)',
         zIndex: '3',
     };
-    private cursorHeight: number;
-    eraserActive: boolean = false;
-    currentTool: Tool;
-    toolManagerService: ToolManagerService;
-    canvasResizerService: CanvasResizerService;
-    toolsNames: typeof ToolsNames = ToolsNames;
 
     constructor(
         private drawingService: DrawingService,
@@ -61,6 +61,10 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.updateCurrentTool();
         this.setCanvasSize();
         this.subscribeToToolChange();
+        this.drawingService.newDrawing.subscribe((result: Vec2) => {
+            this.canvasSize = result;
+            this.canvasResizerService.resizePreview(result);
+        });
     }
 
     ngAfterViewInit(): void {
@@ -137,6 +141,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     @HostListener('mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
+        console.log('non');
         if (this.canvasResizerService.isResizing()) {
             this.canvasResizerService.onMouseUp(event);
             this.resizeCanvas();
@@ -180,8 +185,8 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     }
 
     @HostListener('contextmenu', ['$event'])
-    onContextMenu(): boolean {
-        return false; // disables the standard chrome menu
+    onContextMenu(event: MouseEvent): void {
+        if (this.toolManagerService.currentTool === this.toolsNames.Pipette) event.preventDefault(); // disables the standard chrome menu
     }
 
     onMiddleRightResizerClick(): void {

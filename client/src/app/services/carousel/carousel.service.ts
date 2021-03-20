@@ -64,6 +64,30 @@ export class CarouselService {
         return subject.asObservable();
     }
 
+    /**
+     * @param rightSearch if false, searches left, if true searches right
+     * @returns The next drawing in that direction.
+     */
+    getDrawing(rightSearch: boolean): Observable<DrawingData> {
+        const subject = new Subject<DrawingData>();
+        const k: number = rightSearch
+            ? ((++this.courrentIndex + this.sizeOfArray) % this.sizeOfArray) + 1
+            : ((--this.courrentIndex + this.sizeOfArray) % this.sizeOfArray) - 1;
+        console.log(k, ' : ', this.courrentIndex);
+        this.httpService.getOneDrawing(k).subscribe({
+            next: (result) => {
+                console.log("La requête GET s'est bien déroulée !");
+                subject.next(result);
+            },
+        });
+        return subject.asObservable();
+    }
+
+    openDrawing(drawing: DrawingData): void {
+        this.drawingService.openDrawing(drawing);
+        console.log(drawing.width, drawing.height);
+    }
+
     deleteDrawing(id: string): Promise<string> {
         const promise = new Promise<string>((resolve) => {
             this.httpService.deleteDrawing(id).subscribe({
@@ -82,67 +106,4 @@ export class CarouselService {
         });
         return promise;
     }
-
-    /**
-     * @param rightSearch if false, searches left, if true searches right
-     * @returns The next drawing in that direction.
-     */
-    getDrawing(rightSearch: boolean): Observable<DrawingData> {
-        let drawing: DrawingData = {} as DrawingData;
-        const subject = new Subject<DrawingData>();
-        this.httpService
-            .getOneDrawing(
-                rightSearch
-                    ? ((++this.courrentIndex + this.sizeOfArray) % this.sizeOfArray) + 1
-                    : ((--this.courrentIndex + this.sizeOfArray) % this.sizeOfArray) - 1,
-            )
-            .subscribe({
-                next: (result) => {
-                    console.log("La requête GET s'est bien déroulée !");
-                    drawing = result;
-                    subject.next(drawing);
-                },
-            });
-        return subject.asObservable();
-    }
-
-    getAllDrawings(): void {
-        this.httpService.getAllDrawings().subscribe({
-            next: (results) => {
-                console.log("La requête GET s'est bien déroulée !");
-            },
-            error: (err) => {
-                console.log('une erreur est survenue lors de la requête GET !');
-                console.log(err);
-            },
-        });
-    }
-
-    openDrawing(drawing: DrawingData): void {
-        this.drawingService.openDrawing(drawing);
-        console.log(drawing.width, drawing.height);
-    }
-
-    // updateDrawing(): void {
-    //     const labels = this.toStringArray(this.labelsChecked);
-    //     const drawingToSend = new DrawingData(
-    //         this.drawing.id,
-    //         this.fileName,
-    //         this.labelsChecked != undefined ? labels : ['none'],
-    //         this.getDataURLFromCanvas(),
-    //         this.originalCanvas.width,
-    //         this.originalCanvas.height,
-    //     );
-    //     this.httpService.updateDrawing(drawingToSend).subscribe({
-    //         next: (result) => {
-    //             console.log("La requête PUT s'est bien déroulée !");
-    //             console.log(result);
-    //             this.drawing = drawingToSend;
-    //         },
-    //         error: (err) => {
-    //             console.log('Une erreur est survenue lors de la requête PUT !');
-    //             console.log(err);
-    //         },
-    //     });
-    // }
 }
