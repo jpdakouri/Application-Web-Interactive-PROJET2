@@ -21,6 +21,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('canvasResizerPreview', { static: false }) canvasResizerPreview: ElementRef<HTMLDivElement>;
+    @ViewChild('selectedArea', { static: false }) selectedArea: ElementRef<HTMLCanvasElement>;
     @Output() editorMinWidthEmitter: EventEmitter<number> = new EventEmitter<number>();
 
     private baseCtx: CanvasRenderingContext2D;
@@ -45,6 +46,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     toolManagerService: ToolManagerService;
     canvasResizerService: CanvasResizerService;
     toolsNames: typeof ToolsNames = ToolsNames;
+    selectedAreaCtx: CanvasRenderingContext2D;
 
     constructor(
         private drawingService: DrawingService,
@@ -65,9 +67,11 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.selectedAreaCtx = this.selectedArea.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
+        this.drawingService.selectedAreaCtx = this.selectedAreaCtx;
         this.drawingService.canvas = this.saveDrawingService.originalCanvas = this.baseCanvas.nativeElement;
         this.drawingService.canvas.style.backgroundColor = DEFAULT_WHITE;
         this.canvasResizerService.canvasPreviewWidth = this.canvasSize.x;
