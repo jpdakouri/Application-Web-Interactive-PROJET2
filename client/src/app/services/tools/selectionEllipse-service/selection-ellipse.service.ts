@@ -35,6 +35,7 @@ export class SelectionEllipseService extends Tool {
         this.topLeftCorner = { x: 0, y: 0 };
         this.selectionActive = false;
         this.drawingService.selectedAreaCtx = this.drawingService.baseCtx;
+
         // this.drawingService.selectedAreaCtx.canvas.width = 1000;
         // this.drawingService.selectedAreaCtx.canvas.height = 1000;
     }
@@ -133,17 +134,8 @@ export class SelectionEllipseService extends Tool {
                 this.topLeftCorner = { x: 0, y: 0 };
             }
         }
-        this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
-        // const imageData = this.drawingService.baseCtx.getImageData(this.firstGrid.x, this.firstGrid.y, this.mouseDownCoord.x, this.mouseDownCoord.y);
-        // createImageBitmap(imageData).then((imgBitmap) => {
-        //     // this.clipArea(this.drawingService.selectedAreaCtx, this.mouseDownCoord);
-        //     this.drawingService.selectedAreaCtx.drawImage(imgBitmap, this.firstGrid.x, this.firstGrid.y);
-        //     this.drawingService.selectedAreaCtx.restore();
-        // });
-        this.drawEllipse(this.drawingService.selectedAreaCtx, this.mouseDownCoord);
-        this.drawingService.selectedAreaCtx.stroke();
-        this.drawingService.selectedAreaCtx.setLineDash([]);
-        this.drawFramingRectangle(this.drawingService.selectedAreaCtx, this.mouseDownCoord);
+        this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y + 'px';
+        this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x + 'px';
     }
 
     onKeyUp(event: KeyboardEvent): void {
@@ -258,15 +250,18 @@ export class SelectionEllipseService extends Tool {
         // console.log(this.imageData.data);
         createImageBitmap(imageData).then((imgBitmap) => {
             this.clipArea(ctx, finalGrid);
-            this.drawingService.selectedAreaCtx.drawImage(imgBitmap, this.firstGrid.x, this.firstGrid.y);
+            this.drawingService.selectedAreaCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
             ctx.restore();
         });
         // Resize le selectedAreaCtx
-        // this.drawingService.baseCtx.canvas
-        // console.log(imageData);
         ctx.canvas.width = bottomRightCorner.x;
         ctx.canvas.height = bottomRightCorner.y;
-        ctx.translate(-this.firstGrid.x, -this.firstGrid.y);
+        // Deplacer le resultat de la selection topLeftCorner
+        ctx.translate(-this.topLeftCorner.x, -this.topLeftCorner.y);
+
+        // Remettre la selection à la position de la souris
+        ctx.canvas.style.top = this.topLeftCorner.y + 'px';
+        ctx.canvas.style.left = this.topLeftCorner.x + 'px';
         // Remplir de blanc
         this.drawingService.baseCtx.fillStyle = 'white';
         this.drawEllipse(this.drawingService.baseCtx, finalGrid);
