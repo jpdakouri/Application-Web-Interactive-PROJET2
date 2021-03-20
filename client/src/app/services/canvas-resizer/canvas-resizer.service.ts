@@ -122,7 +122,7 @@ export class CanvasResizerService {
         return;
     }
 
-    resizePreview(coord: Vec2): void {
+    resizeCanvas(coord: Vec2): void {
         this.canvasPreviewHeight = coord.y;
         this.canvasPreviewWidth = coord.x;
     }
