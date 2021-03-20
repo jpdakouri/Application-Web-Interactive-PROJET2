@@ -22,34 +22,39 @@ export class CarouselService {
         this.drawingsToShow = [];
         const subject = new Subject<DrawingData[]>();
 
-        this.getArraySizeOfDrawing().subscribe((size) => {
-            if (size > 0) {
-                this.httpService.getOneDrawing(-1).subscribe({
-                    next: (resultFirst) => {
-                        this.drawingsToShow.push(resultFirst);
-                        if (this.sizeOfArray > 1) {
-                            this.httpService.getOneDrawing(0).subscribe({
-                                next: (resultSecond) => {
-                                    this.drawingsToShow.push(resultSecond);
-                                    this.httpService.getOneDrawing(1).subscribe({
-                                        next: (resultThird) => {
-                                            this.drawingsToShow.push(resultThird);
-                                            subject.next(this.drawingsToShow);
-                                            console.log(this.drawingsToShow.length);
-                                        },
-                                    });
-                                },
-                            });
-                        } else {
-                            subject.next(this.drawingsToShow);
-                            console.log(this.drawingsToShow.length);
-                        }
-                    },
-                });
-            } else {
-                subject.next(this.drawingsToShow);
+        this.getArraySizeOfDrawing().subscribe({
+            next: (size) => {
+                if (size > 0) {
+                    this.httpService.getOneDrawing(-1).subscribe({
+                        next: (resultFirst) => {
+                            this.drawingsToShow.push(resultFirst);
+                            if (this.sizeOfArray > 1) {
+                                this.httpService.getOneDrawing(0).subscribe({
+                                    next: (resultSecond) => {
+                                        this.drawingsToShow.push(resultSecond);
+                                        this.httpService.getOneDrawing(1).subscribe({
+                                            next: (resultThird) => {
+                                                this.drawingsToShow.push(resultThird);
+                                                subject.next(this.drawingsToShow);
+                                                console.log(this.drawingsToShow.length);
+                                            },
+                                        });
+                                    },
+                                });
+                            } else {
+                                subject.next(this.drawingsToShow);
+                                console.log(this.drawingsToShow.length);
+                            }
+                        },
+                    });
+                } else {
+                    subject.next(this.drawingsToShow);
+                    console.log(this.drawingsToShow.length);
+                }
+            },
+            error: () => {
                 console.log(this.drawingsToShow.length);
-            }
+            },
         });
         return subject.asObservable();
     }

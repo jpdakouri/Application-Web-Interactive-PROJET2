@@ -12,10 +12,8 @@ export class ServerErrorMessageComponent implements OnInit {
         this.message = data;
     }
 
-    // tslint:disable-next-line:no-empty
-    ngOnInit(): void {
-        console.log(this.message);
-    }
+    ngOnInit(): void {}
+
     close(): void {
         this.dialogRef.close();
     }

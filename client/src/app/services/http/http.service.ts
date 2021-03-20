@@ -6,6 +6,10 @@ import { DrawingData } from '@common/communication/drawing-data';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
+// const HTTP_STATUS_ERROR = 500;
+// const HTTP_STATUS_BAD_REQUEST = 400;
+const HTTP_STATUS_NOT_FOUND = 404;
+const HTTP_STATUS_NO_SERVER = 0;
 @Injectable({
     providedIn: 'root',
 })
@@ -20,7 +24,7 @@ export class HttpService {
     // }
 
     deleteDrawing(drawingID: string): Observable<string> {
-        return this.http.delete<string>(this.BASE_URL + `/api/drawings/${drawingID}`).pipe(catchError(this.handleError<string>('Deleted')));
+        return this.http.delete<string>(this.BASE_URL + `/api/drawings/${drawingID}`).pipe(catchError(this.handleError<string>('Delete')));
     }
 
     insertDrawing(newDrawing: DrawingData): Observable<string> {
@@ -32,7 +36,7 @@ export class HttpService {
     }
 
     getLengthOfDrawings(): Observable<number> {
-        return this.http.get<number>(this.BASE_URL + '/api/drawings/length').pipe(catchError(this.handleError<number>('Get')));
+        return this.http.get<number>(this.BASE_URL + '/api/drawings/length').pipe(catchError(this.handleError<number>('GetLength')));
     }
 
     getDrawingsByTags(tags: string[]): Observable<DrawingData[]> {
@@ -47,13 +51,16 @@ export class HttpService {
 
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
         return (error: HttpErrorResponse): Observable<T> => {
-            if (error.status === 0) this.openDialog('Serveur Indisponible');
-            else this.openDialog(error.error);
+            if (error.status === HTTP_STATUS_NO_SERVER) this.openErrorDialog('Serveur Indisponible');
+            else if (error.status === HTTP_STATUS_NOT_FOUND) {
+                if (request === 'Delete') this.openErrorDialog('Impossible de supprimer le dessin, il ne fait plus parti de la base de données');
+                else if (request === 'GetOne') this.openErrorDialog("Impossible d'ouvrir le dessin, il ne fait plus parti de la base de données");
+            } else this.openErrorDialog(error.error);
             return of(result as T);
         };
     }
 
-    openDialog(message: string): void {
+    openErrorDialog(message: string): void {
         this.dialog.open(ServerErrorMessageComponent, { data: message });
     }
 }
