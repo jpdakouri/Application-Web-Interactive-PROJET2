@@ -56,8 +56,8 @@ export class SaveDrawingService {
                 console.log(result);
             },
             error: (err) => {
-                console.log('Une erreur est survenue dans lors de la requête POST');
-                console.log(err);
+                console.error('Une erreur est survenue dans lors de la requête POST');
+                console.error(err);
             },
         });
     }

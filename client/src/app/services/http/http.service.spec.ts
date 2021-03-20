@@ -27,20 +27,6 @@ describe('HttpService', () => {
         expect(httpMock).toBeTruthy();
     });
 
-    it('#getAllDrawings should send correct request', () => {
-        // tslint:disable: no-magic-numbers
-        // tslint:disable: deprecation
-        service.getAllDrawings().subscribe((result) => {
-            expect(result).toEqual(data);
-        });
-        const req = httpMock.expectOne(baseUrl + '/api/drawings');
-        expect(req.request.method).toBe('GET');
-        const data: DrawingData[] = [];
-        for (let i = 0; i < 5; i++) {
-            data.push(new DrawingData(`testID${i}`, `testTitle${i}`, [`testTag${i}`, `testTag${i + 1}`], 'dataURL', 100, 100));
-        }
-        req.flush(data);
-    });
     it('#deleteDrawings should send correct request', () => {
         service.deleteDrawing('testID').subscribe((result) => {
             expect(result).toEqual(response);
@@ -58,17 +44,6 @@ describe('HttpService', () => {
         const req = httpMock.expectOne(baseUrl + '/api/drawings');
         expect(req.request.method).toBe('POST');
         const response = 'this is the mongo generated ID';
-        req.flush(response);
-    });
-
-    it('#updateDrawing should send correct request', () => {
-        const drawingStub = new DrawingData('testID', 'testTitle', ['testTag1', 'testTag2'], 'dataURL', 100, 100);
-        service.updateDrawing(drawingStub).subscribe((result) => {
-            expect(result).toEqual('Drawing was updated !');
-        });
-        const req = httpMock.expectOne(baseUrl + '/api/drawings/testID');
-        expect(req.request.method).toBe('PUT');
-        const response = 'Drawing was updated !';
         req.flush(response);
     });
 });

@@ -1,5 +1,4 @@
-import { EventEmitter, Injectable, Output } from '@angular/core';
-import { Vec2 } from '@app/classes/vec2';
+import { Injectable } from '@angular/core';
 import { DrawingData } from '@common/communication/drawing-data';
 
 @Injectable({
@@ -9,7 +8,7 @@ export class DrawingService {
     baseCtx: CanvasRenderingContext2D;
     previewCtx: CanvasRenderingContext2D;
     canvas: HTMLCanvasElement;
-    @Output() newDrawing: EventEmitter<Vec2> = new EventEmitter();
+    // @Output() newDrawing: EventEmitter<Vec2> = new EventEmitter();
 
     saveCanvas(): void {
         sessionStorage.setItem('canvasBuffer', this.canvas.toDataURL());
@@ -62,7 +61,7 @@ export class DrawingService {
         };
         img.src = drawing.dataURL as string;
         console.log('canva : ', this.canvas.width, this.canvas.height);
-        this.newDrawing.emit({ x: drawing.width, y: drawing.height } as Vec2);
+        // this.newDrawing.emit({ x: drawing.width, y: drawing.height } as Vec2);
         this.saveCanvas();
     }
 }

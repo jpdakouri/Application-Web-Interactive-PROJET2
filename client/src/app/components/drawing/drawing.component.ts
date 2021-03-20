@@ -61,10 +61,10 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.updateCurrentTool();
         this.setCanvasSize();
         this.subscribeToToolChange();
-        this.drawingService.newDrawing.subscribe((result: Vec2) => {
-            this.canvasSize = result;
-            this.canvasResizerService.resizePreview(result);
-        });
+        // this.drawingService.newDrawing.subscribe((result: Vec2) => {
+        //     this.canvasSize = result;
+        //     this.canvasResizerService.resizePreview(result);
+        // });
     }
 
     ngAfterViewInit(): void {
@@ -77,7 +77,9 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.canvasResizerService.canvasPreviewWidth = this.canvasSize.x;
         this.canvasResizerService.canvasPreviewHeight = this.canvasSize.y;
         this.drawingService.restoreCanvas();
-        this.undoRedo.saveInitialState();
+        setTimeout(() => {
+            this.undoRedo.saveInitialState();
+        });
     }
 
     subscribeToToolChange(): void {
@@ -185,8 +187,9 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     }
 
     @HostListener('contextmenu', ['$event'])
-    onContextMenu(event: MouseEvent): void {
-        if (this.toolManagerService.currentTool === this.toolsNames.Pipette) event.preventDefault(); // disables the standard chrome menu
+    onContextMenu(): boolean {
+        if (this.toolManagerService.currentTool === this.toolsNames.Pipette) return false; // disables the standard chrome menu
+        return true;
     }
 
     onMiddleRightResizerClick(): void {

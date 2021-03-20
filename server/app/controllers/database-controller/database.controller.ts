@@ -43,7 +43,7 @@ export class DatabaseController {
             const newMetadata = new Metadata(undefined, drawingData.title, drawingData.tags, drawingData.width, drawingData.height);
             if (!this.imageDataService.insertNameCheckUp(drawingData)) res.status(HTTP_STATUS_BAD_REQUEST).send('Message du serveur: Nom Invalide !');
             if (!this.imageDataService.insertTagsCheckUp(drawingData))
-                res.status(HTTP_STATUS_BAD_REQUEST).send('Message du serveur: Étiquette Invalide!');
+                res.status(HTTP_STATUS_BAD_REQUEST).send('Message du serveur: Étiquette Invalide !');
             else
                 this.databaseService
                     .insertDrawing(newMetadata)
@@ -57,22 +57,42 @@ export class DatabaseController {
                         }
                     })
                     .catch((err) => {
-                        console.log(err);
-                        res.status(HTTP_STATUS_ERROR).send("Erreur d'opération dans le serveur!");
+                        console.error(err);
+                        res.status(HTTP_STATUS_ERROR).send("Erreur d'opération dans le serveur !");
                     });
         });
 
         this.router.get('/length', (req: Request, res: Response, next: NextFunction) => {
             res.status(HTTP_STATUS_OK).json(this.imageDataService.drawingData.length);
         });
-
-        this.router.get('/:index', (req: Request, res: Response, next: NextFunction) => {
-            const drawing = this.imageDataService.getOneDrawing(+req.params.index);
+        this.router.get('/single/:index', (req: Request, res: Response, next: NextFunction) => {
+            const drawing = this.imageDataService.getOneImageFromDisk(+req.params.index);
             if (drawing) {
                 res.status(HTTP_STATUS_OK).json(drawing);
             } else {
                 res.status(HTTP_STATUS_NOT_FOUND).send('Aucun dessin trouvé !');
             }
+        });
+
+        this.router.get('/by-tags', (req: Request, res: Response, next: NextFunction) => {
+            const tags = req.query.tags as string[];
+            this.databaseService
+                .getDrawingsByTags(tags)
+                .then((results) => {
+                    if (results.length > 0) {
+                        const drawingsToSend = this.imageDataService.getImagesFromDisk(results);
+                        if (drawingsToSend.length > 0) {
+                            res.status(HTTP_STATUS_OK).json(drawingsToSend);
+                        } else {
+                            res.status(HTTP_STATUS_NOT_FOUND).json('Aucun dessin trouvé !');
+                        }
+                    } else {
+                        res.status(HTTP_STATUS_NOT_FOUND).json('Aucun dessin trouvé !');
+                    }
+                })
+                .catch(() => {
+                    res.status(HTTP_STATUS_ERROR).send("Erreur d'opération dans le serveur !");
+                });
         });
 
         this.router.delete('/:id', (req: Request, res: Response, next: NextFunction) => {

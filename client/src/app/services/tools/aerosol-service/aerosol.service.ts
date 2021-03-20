@@ -64,7 +64,7 @@ export class AerosolService extends Tool {
     }
 
     onMouseMove(event: MouseEvent): void {
-        if (this.isSpraying) this.mouseCurrentPosition = this.getPositionFromMouse(event);
+        this.mouseCurrentPosition = this.getPositionFromMouse(event);
     }
 
     onMouseLeave(event: MouseEvent): void {

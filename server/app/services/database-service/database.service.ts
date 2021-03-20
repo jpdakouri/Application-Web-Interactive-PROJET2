@@ -27,19 +27,9 @@ export class DatabaseService {
             });
     }
 
-    // TODO TESTS
-
     async insertDrawing(metadata: Metadata): Promise<InsertOneWriteOpResult<Metadata>> {
         return await this.collection.insertOne(metadata);
     }
-
-    // async getDrawingsByTags(tags: string[]): Promise<Metadata[]> {
-    //     if (tags.length > 0) {
-    //         return this.collection.find({}).toArray();
-    //     } else {
-    //         return this.collection.find({ tags: { $in: [tags] } }).toArray();
-    //     }
-    // }
 
     async getAllDrawings(): Promise<Metadata[]> {
         return await this.collection.find({}).toArray();
@@ -49,6 +39,15 @@ export class DatabaseService {
         return await this.collection.findOneAndDelete({ _id: new ObjectId(id) });
     }
 
+    async getDrawingsByTags(tags: string[]): Promise<Metadata[]> {
+        if (Array.isArray(tags)) {
+            return this.collection.find({ tags: { $in: tags } }).toArray();
+        } else if (tags) {
+            return this.collection.find({ tags: { $in: [tags] } }).toArray();
+        } else {
+            return this.collection.find({}).toArray();
+        }
+    }
     async updateDrawing(drawing: Metadata): Promise<FindAndModifyWriteOpResultObject<Metadata>> {
         const newValues = { $set: { title: drawing.title, tags: drawing.tags } };
         return await this.collection.findOneAndUpdate({ _id: new ObjectId(drawing._id) }, newValues);

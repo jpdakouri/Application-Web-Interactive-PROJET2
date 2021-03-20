@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ServerErrorMessageComponent } from '@app/components/server-error-message/server-error-message.component';
@@ -28,11 +28,21 @@ export class HttpService {
     }
 
     getOneDrawing(index: number): Observable<DrawingData> {
-        return this.http.get<DrawingData>(this.BASE_URL + `/api/drawings/${index}`).pipe(catchError(this.handleError<DrawingData>('GetOne')));
+        return this.http.get<DrawingData>(this.BASE_URL + `/api/drawings/single/${index}`).pipe(catchError(this.handleError<DrawingData>('GetOne')));
     }
 
     getLengthOfDrawings(): Observable<number> {
         return this.http.get<number>(this.BASE_URL + '/api/drawings/length').pipe(catchError(this.handleError<number>('Get')));
+    }
+
+    getDrawingsByTags(tags: string[]): Observable<DrawingData[]> {
+        let params = new HttpParams();
+        for (const tag of tags) {
+            params = params.append('tags', tag);
+        }
+        return this.http
+            .get<DrawingData[]>(this.BASE_URL + '/api/drawings/by-tags', { params })
+            .pipe(catchError(this.handleError<DrawingData[]>('GetByTags')));
     }
 
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {

@@ -9,6 +9,7 @@ import { SaveDrawingService } from '@app/services/save-drawing/save-drawing.serv
 import { SIDEBAR_WIDTH } from '@app/services/services-constants';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { PencilService } from '@app/services/tools/pencil-service/pencil.service';
+import { ToolsNames } from '@app/utils/enums/tools-names';
 import { ToolManagerServiceMock } from '@app/utils/tests-mocks/tool-manager-mock';
 import { ToolStub } from '@app/utils/tests-mocks/tool-stub';
 import { DrawingComponent } from './drawing.component';
@@ -121,7 +122,8 @@ describe('DrawingComponent', () => {
         expect(mouseEventSpy).toHaveBeenCalled();
     });
 
-    it('onContextMenu always returns false to prevent the Chrome menu from appearing', () => {
+    it('onContextMenu returns false if right clicked while pipette is in use', () => {
+        component['toolManagerService'].currentTool = ToolsNames.Pipette;
         expect(component.onContextMenu()).toBeFalse();
     });
 

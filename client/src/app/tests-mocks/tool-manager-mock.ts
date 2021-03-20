@@ -37,6 +37,10 @@ export class ToolManagerServiceMock {
         return 1;
     }
 
+    getCurrentNumberOfSides(): number {
+        return 1;
+    }
+
     emitToolChange(): void {}
 
     setCurrentTool(): void {}

@@ -15,11 +15,11 @@ import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 
 @Component({
-    selector: 'app-tool-attribute-bar',
-    templateUrl: './tool-attribute-bar.component.html',
-    styleUrls: ['./tool-attribute-bar.component.scss'],
+    selector: 'app-tool-attribute',
+    templateUrl: './tool-attribute.component.html',
+    styleUrls: ['./tool-attribute.component.scss'],
 })
-export class ToolAttributeBarComponent {
+export class ToolAttributeComponent {
     readonly MIN_FREQUENCY: number = MIN_FREQUENCY;
     readonly MIN_JET_DIAMETER: number = MIN_JET_DIAMETER;
     readonly MIN_DROPLET_DIAMETER: number = MIN_DROPLET_DIAMETER;
@@ -41,7 +41,8 @@ export class ToolAttributeBarComponent {
             this.toolManagerService.isCurrentTool(ToolsNames.Eraser) ||
             this.toolManagerService.isCurrentTool(ToolsNames.Line) ||
             this.toolManagerService.isCurrentTool(ToolsNames.Rectangle) ||
-            this.toolManagerService.isCurrentTool(ToolsNames.Ellipse)
+            this.toolManagerService.isCurrentTool(ToolsNames.Ellipse) ||
+            this.toolManagerService.isCurrentTool(ToolsNames.Polygon)
         );
     }
 
@@ -54,7 +55,11 @@ export class ToolAttributeBarComponent {
     }
 
     showShapeStyle(): boolean {
-        return this.toolManagerService.isCurrentTool(ToolsNames.Ellipse) || this.toolManagerService.isCurrentTool(ToolsNames.Rectangle);
+        return (
+            this.toolManagerService.isCurrentTool(ToolsNames.Ellipse) ||
+            this.toolManagerService.isCurrentTool(ToolsNames.Rectangle) ||
+            this.toolManagerService.isCurrentTool(ToolsNames.Polygon)
+        );
     }
 
     showEraserThickness(): boolean {
@@ -63,6 +68,10 @@ export class ToolAttributeBarComponent {
 
     showAerosolAttributes(): boolean {
         return this.toolManagerService.isCurrentTool(ToolsNames.Aerosol);
+    }
+
+    showPolygonAttributes(): boolean {
+        return this.toolManagerService.isCurrentTool(ToolsNames.Polygon);
     }
 
     isChecked(shapeStyle: ShapeStyle): boolean {
@@ -93,6 +102,10 @@ export class ToolAttributeBarComponent {
         return this.toolManagerService.getCurrentShapeStyle();
     }
 
+    getCurrentNumberOfSides(): number | undefined {
+        return this.toolManagerService.getCurrentNumberOfSides();
+    }
+
     onThicknessChange(event: MatSliderChange): void {
         this.toolManagerService.setCurrentLineThickness(event.value || undefined);
     }
@@ -120,5 +133,9 @@ export class ToolAttributeBarComponent {
 
     onJetDiameterChange(event: MatSliderChange): void {
         this.toolManagerService.setCurrentJetDiameter(event.value || undefined);
+    }
+
+    onNumberOfSidesChange(event: MatSliderChange): void {
+        this.toolManagerService.setCurrentNumberOfSides(event.value || undefined);
     }
 }
