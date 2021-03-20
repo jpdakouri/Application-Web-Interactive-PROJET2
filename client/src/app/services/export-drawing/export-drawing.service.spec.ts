@@ -32,6 +32,16 @@ describe('ExportDrawingService', () => {
         expect(context.filter).toEqual(expectedFilterValue);
     });
 
+    it('#drawImageOnCanvas should not call #applyFilterOnCanvas if filter is undefined', () => {
+        const applyFilterOnCanvasSpy = spyOn<any>(service, 'applyFilterOnCanvas').and.stub();
+        const image = new Image();
+        image.src = service.imageSource;
+
+        service['drawImageOnCanvas'](image, service.canvas);
+
+        expect(applyFilterOnCanvasSpy).not.toHaveBeenCalled();
+    });
+
     it('should be able to draw image on canvas with filter', () => {
         const image = new Image();
         image.src = service.imageSource;
@@ -41,13 +51,15 @@ describe('ExportDrawingService', () => {
         const context = service.canvas.getContext('2d') as CanvasRenderingContext2D;
         const drawImageSpy = spyOn<any>(context, 'drawImage').and.callThrough();
         const applyFilterOnCanvasSpy = spyOn<any>(service, 'applyFilterOnCanvas').and.callThrough();
+        const whiteColor = '#ffffff' as string;
         service['drawImageOnCanvas'](image, service.canvas, filter);
+        expect(context.fillStyle).toBe(whiteColor);
         expect(drawImageSpy).toHaveBeenCalled();
         expect(applyFilterOnCanvasSpy).toHaveBeenCalled();
         // expect(context.filter).toEqual(expectedFilterValue);
     });
 
-    it('should...', () => {
+    it('#drawImageOnCanvas should correctly set canvas size ', () => {
         const imageWidth = 200;
         const imageHeight = 200;
         const image = new Image(imageWidth, imageHeight);

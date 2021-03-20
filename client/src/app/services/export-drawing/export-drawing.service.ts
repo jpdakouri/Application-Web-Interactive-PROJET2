@@ -59,7 +59,6 @@ export class ExportDrawingService {
         const context = canvas.getContext('2d') as CanvasRenderingContext2D;
         canvas.width = image.width;
         canvas.height = image.height;
-
         // set context background color to white
         context.fillStyle = DEFAULT_WHITE;
         if (filter !== undefined) this.applyFilterOnCanvas(this.currentFilter.getValue(), canvas);
