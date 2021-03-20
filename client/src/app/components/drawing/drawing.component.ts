@@ -6,6 +6,7 @@ import { CanvasResizerService } from '@app/services/canvas-resizer/canvas-resize
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SaveDrawingService } from '@app/services/save-drawing/save-drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
+import { SelectionEllipseService } from '@app/services/tools/selectionEllipse-service/selection-ellipse.service';
 import { MIN_ERASER_THICKNESS } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { Status } from '@app/utils/enums/canvas-resizer-status';
@@ -45,6 +46,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     currentTool: Tool;
     toolManagerService: ToolManagerService;
     canvasResizerService: CanvasResizerService;
+
     toolsNames: typeof ToolsNames = ToolsNames;
     selectedAreaCtx: CanvasRenderingContext2D;
 
@@ -53,6 +55,8 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         toolManagerService: ToolManagerService,
         canvasResizerService: CanvasResizerService,
         private undoRedo: UndoRedoService,
+        private selectionEllipseService: SelectionEllipseService,
+
         private saveDrawingService: SaveDrawingService,
     ) {
         this.toolManagerService = toolManagerService;
@@ -73,11 +77,16 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.selectedAreaCtx = this.selectedAreaCtx;
         this.drawingService.canvas = this.saveDrawingService.originalCanvas = this.baseCanvas.nativeElement;
+        this.drawingService.selectedAreaCanvas = this.selectedArea.nativeElement;
         this.drawingService.canvas.style.backgroundColor = DEFAULT_WHITE;
         this.canvasResizerService.canvasPreviewWidth = this.canvasSize.x;
         this.canvasResizerService.canvasPreviewHeight = this.canvasSize.y;
         this.drawingService.restoreCanvas();
         this.undoRedo.saveInitialState();
+        setTimeout(() => {
+            this.selectionEllipseService.height = this.drawingService.canvas.height;
+            this.selectionEllipseService.width = this.drawingService.canvas.width;
+        });
     }
 
     subscribeToToolChange(): void {
@@ -224,5 +233,8 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.eraserCursor.left = mousePosition.x + 'px';
         this.eraserCursor.top = mousePosition.y + 'px';
         this.eraserActive = this.currentTool.eraserActive || false;
+    }
+    getSelectedAreaSize(): Vec2 {
+        return { x: this.selectionEllipseService.width, y: this.selectionEllipseService.height };
     }
 }

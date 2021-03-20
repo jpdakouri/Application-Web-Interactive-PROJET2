@@ -8,6 +8,7 @@ export class DrawingService {
     previewCtx: CanvasRenderingContext2D;
     canvas: HTMLCanvasElement;
     selectedAreaCtx: CanvasRenderingContext2D;
+    selectedAreaCanvas: HTMLCanvasElement;
 
     saveCanvas(): void {
         sessionStorage.setItem('canvasBuffer', this.canvas.toDataURL());

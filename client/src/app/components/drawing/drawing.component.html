@@ -47,5 +47,22 @@
         [ngStyle]="{ width: getPreviewCanvasSize().x + 'px', height: getPreviewCanvasSize().y + 'px' }"
     ></div>
 
-    <canvas #selectedArea style="border: 10px" [attr.width]="width" [attr.height]="height"> </canvas>
+    <canvas
+        #selectedArea
+        style="border: 10px; background-color: chartreuse; border: 1px solid"
+        [attr.width]="getSelectedAreaSize().x"
+        [attr.height]="getSelectedAreaSize().y"
+    >
+    </canvas>
+    <div
+        class="resizer selection-box-middle-right"
+        [ngStyle]="{ left: getSelectedAreaSize().x + 'px', top: getSelectedAreaSize().y / 2 - 2.5 + 'px' }"
+    ></div>
+
+    <div class="resizer selection-box-bottom-right" [ngStyle]="{ left: getSelectedAreaSize().x + 'px', top: getSelectedAreaSize().y + 'px' }"></div>
+
+    <div
+        class="resizer selection-box-middle-bottom"
+        [ngStyle]="{ left: getSelectedAreaSize().x / 2 - 2.5 + 'px', top: getSelectedAreaSize().y + 'px' }"
+    ></div>
 </div>
