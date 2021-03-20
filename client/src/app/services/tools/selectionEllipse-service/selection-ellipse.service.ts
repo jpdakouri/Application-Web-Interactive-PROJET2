@@ -93,24 +93,28 @@ export class SelectionEllipseService extends Tool {
             case KeyboardButtons.Up: {
                 if (this.selectionActive) {
                     this.firstGrid.y -= PIXELS_ARROW_STEPS;
+                    this.topLeftCorner.y -= PIXELS_ARROW_STEPS;
                 }
                 break;
             }
             case KeyboardButtons.Down: {
                 if (this.selectionActive) {
                     this.firstGrid.y += PIXELS_ARROW_STEPS;
+                    this.topLeftCorner.y += PIXELS_ARROW_STEPS;
                 }
                 break;
             }
             case KeyboardButtons.Right: {
                 if (this.selectionActive) {
                     this.firstGrid.x += PIXELS_ARROW_STEPS;
+                    this.topLeftCorner.x += PIXELS_ARROW_STEPS;
                 }
                 break;
             }
             case KeyboardButtons.Left: {
                 if (this.selectionActive) {
                     this.firstGrid.x -= PIXELS_ARROW_STEPS;
+                    this.topLeftCorner.x -= PIXELS_ARROW_STEPS;
                 }
                 break;
             }
