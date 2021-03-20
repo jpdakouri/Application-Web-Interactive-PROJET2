@@ -82,12 +82,10 @@ export class AerosolService extends Tool {
     }
 
     private async spray(): Promise<void> {
-        if (this.isSpraying) {
-            window.clearInterval(this.intervalID);
-            this.intervalID = window.setInterval(() => {
-                this.generateSprayParticles();
-            }, (MS_PER_S * DOTS_PER_SPRAY) / (this.frequency || MIN_FREQUENCY));
-        }
+        window.clearInterval(this.intervalID);
+        this.intervalID = window.setInterval(() => {
+            this.generateSprayParticles();
+        }, (MS_PER_S * DOTS_PER_SPRAY) / (this.frequency || MIN_FREQUENCY));
     }
 
     private generateSprayParticles(): void {
