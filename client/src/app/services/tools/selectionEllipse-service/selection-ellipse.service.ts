@@ -22,7 +22,7 @@ export class SelectionEllipseService extends Tool {
     private topLeftCorner: Vec2;
     private begin: Vec2;
     private end: Vec2;
-    private imageData: ImageData;
+    // private imageData: ImageData;
     private shiftDown: boolean;
     private selectionActive: boolean;
 
@@ -34,10 +34,14 @@ export class SelectionEllipseService extends Tool {
         this.currentColourService = currentColourService;
         this.topLeftCorner = { x: 0, y: 0 };
         this.selectionActive = false;
+        this.drawingService.selectedAreaCtx = this.drawingService.baseCtx;
+        // this.drawingService.selectedAreaCtx.canvas.width = 1000;
+        // this.drawingService.selectedAreaCtx.canvas.height = 1000;
     }
 
     onMouseDown(event: MouseEvent): void {
         this.clearPath();
+        this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
         this.mouseDown = event.button === MouseButtons.Left;
         this.firstGrid = this.getPositionFromMouse(event);
         this.mouseMoved = false;
@@ -51,10 +55,10 @@ export class SelectionEllipseService extends Tool {
                     console.log('click dedans');
                 } else {
                     this.selectionActive = false;
-                    createImageBitmap(this.imageData).then((imgBitmap) => {
-                        this.clipArea(this.drawingService.baseCtx, this.end);
-                        this.drawingService.baseCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
-                    });
+                    // createImageBitmap(this.imageData).then((imgBitmap) => {
+                    //     this.clipArea(this.drawingService.baseCtx, this.end);
+                    //     this.drawingService.baseCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
+                    // });
                     console.log('click dehors');
                 }
             }
@@ -79,11 +83,11 @@ export class SelectionEllipseService extends Tool {
             if (this.shiftDown) {
                 this.makeCircle(this.mouseDownCoord);
             }
-            this.selectEllipse(this.drawingService.previewCtx, this.mouseDownCoord);
-            this.drawEllipse(this.drawingService.previewCtx, this.mouseDownCoord);
-            this.drawingService.previewCtx.stroke();
-            this.drawingService.previewCtx.setLineDash([]);
-            this.drawFramingRectangle(this.drawingService.previewCtx, this.mouseDownCoord);
+            this.selectEllipse(this.drawingService.selectedAreaCtx, this.mouseDownCoord);
+            this.drawEllipse(this.drawingService.selectedAreaCtx, this.mouseDownCoord);
+            this.drawingService.selectedAreaCtx.stroke();
+            this.drawingService.selectedAreaCtx.setLineDash([]);
+            this.drawFramingRectangle(this.drawingService.selectedAreaCtx, this.mouseDownCoord);
         }
         this.mouseDown = false;
     }
@@ -129,16 +133,17 @@ export class SelectionEllipseService extends Tool {
                 this.topLeftCorner = { x: 0, y: 0 };
             }
         }
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        createImageBitmap(this.imageData).then((imgBitmap) => {
-            this.clipArea(this.drawingService.previewCtx, this.mouseDownCoord);
-            this.drawingService.previewCtx.drawImage(imgBitmap, this.firstGrid.x, this.firstGrid.y);
-            this.drawingService.previewCtx.restore();
-        });
-        this.drawEllipse(this.drawingService.previewCtx, this.mouseDownCoord);
-        this.drawingService.previewCtx.stroke();
-        this.drawingService.previewCtx.setLineDash([]);
-        this.drawFramingRectangle(this.drawingService.previewCtx, this.mouseDownCoord);
+        this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
+        // const imageData = this.drawingService.baseCtx.getImageData(this.firstGrid.x, this.firstGrid.y, this.mouseDownCoord.x, this.mouseDownCoord.y);
+        // createImageBitmap(imageData).then((imgBitmap) => {
+        //     // this.clipArea(this.drawingService.selectedAreaCtx, this.mouseDownCoord);
+        //     this.drawingService.selectedAreaCtx.drawImage(imgBitmap, this.firstGrid.x, this.firstGrid.y);
+        //     this.drawingService.selectedAreaCtx.restore();
+        // });
+        this.drawEllipse(this.drawingService.selectedAreaCtx, this.mouseDownCoord);
+        this.drawingService.selectedAreaCtx.stroke();
+        this.drawingService.selectedAreaCtx.setLineDash([]);
+        this.drawFramingRectangle(this.drawingService.selectedAreaCtx, this.mouseDownCoord);
     }
 
     onKeyUp(event: KeyboardEvent): void {
@@ -247,12 +252,19 @@ export class SelectionEllipseService extends Tool {
     }
 
     private selectEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
-        this.imageData = this.drawingService.baseCtx.getImageData(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
-        createImageBitmap(this.imageData).then((imgBitmap) => {
+        this.drawingService.clearCanvas(ctx);
+        const imageData = this.drawingService.baseCtx.getImageData(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+        // console.log(this.imageData.data);
+        createImageBitmap(imageData).then((imgBitmap) => {
             this.clipArea(ctx, finalGrid);
-            ctx.drawImage(imgBitmap, this.firstGrid.x, this.firstGrid.y);
+            this.drawingService.selectedAreaCtx.drawImage(imgBitmap, this.firstGrid.x, this.firstGrid.y);
             ctx.restore();
         });
+        // Resize le selectedAreaCtx
+        ctx.translate(-this.topLeftCorner.x, -this.topLeftCorner.x);
+
+        // ctx.canvas.width = finalGrid.x;
+        // ctx.canvas.height = finalGrid.y;
         // Remplir de blanc
         this.drawingService.baseCtx.fillStyle = 'white';
         this.drawEllipse(this.drawingService.baseCtx, finalGrid);
@@ -271,12 +283,12 @@ export class SelectionEllipseService extends Tool {
     }
 
     private isClickIn(firstGrid: Vec2): boolean {
-        if (firstGrid.x < this.topLeftCorner.x || firstGrid.x > this.topLeftCorner.x + this.imageData.width) {
-            return false;
-        }
-        if (firstGrid.y < this.topLeftCorner.y || firstGrid.y > this.topLeftCorner.y + this.imageData.height) {
-            return false;
-        }
+        // if (firstGrid.x < this.topLeftCorner.x || firstGrid.x > this.topLeftCorner.x + this.imageData.width) {
+        //     return false;
+        // }
+        // if (firstGrid.y < this.topLeftCorner.y || firstGrid.y > this.topLeftCorner.y + this.imageData.height) {
+        //     return false;
+        // }
         return true;
     }
 
