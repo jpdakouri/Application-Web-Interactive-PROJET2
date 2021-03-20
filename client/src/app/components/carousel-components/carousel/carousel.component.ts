@@ -38,8 +38,11 @@ export class CarouselComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.initCarousel();
+    }
+
+    initCarousel(): void {
         this.carouselService.initCarousel().subscribe((result) => {
-            console.log(result);
             this.drawingArray = result;
             if (this.drawingArray.length === 1) {
                 this.middle = 0;
@@ -66,10 +69,12 @@ export class CarouselComponent implements OnInit {
     }
 
     deleteDrawing(id: string | undefined): void {
+        this.isLoading = true;
         this.carouselService
             .deleteDrawing(id as string)
             .then((res) => {
                 console.log(res);
+                this.initCarousel();
             })
             .catch(() => {
                 console.log('lel');
