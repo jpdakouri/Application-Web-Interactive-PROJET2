@@ -254,6 +254,7 @@ export class SelectionEllipseService extends Tool {
     private selectEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         this.drawingService.clearCanvas(ctx);
         const imageData = this.drawingService.baseCtx.getImageData(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+        const bottomRightCorner: Vec2 = { x: imageData.width, y: imageData.height };
         // console.log(this.imageData.data);
         createImageBitmap(imageData).then((imgBitmap) => {
             this.clipArea(ctx, finalGrid);
@@ -261,10 +262,11 @@ export class SelectionEllipseService extends Tool {
             ctx.restore();
         });
         // Resize le selectedAreaCtx
-        ctx.translate(-this.topLeftCorner.x, -this.topLeftCorner.x);
-
-        // ctx.canvas.width = finalGrid.x;
-        // ctx.canvas.height = finalGrid.y;
+        // this.drawingService.baseCtx.canvas
+        // console.log(imageData);
+        ctx.canvas.width = bottomRightCorner.x;
+        ctx.canvas.height = bottomRightCorner.y;
+        ctx.translate(-this.firstGrid.x, -this.firstGrid.y);
         // Remplir de blanc
         this.drawingService.baseCtx.fillStyle = 'white';
         this.drawEllipse(this.drawingService.baseCtx, finalGrid);
