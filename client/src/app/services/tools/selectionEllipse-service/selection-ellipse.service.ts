@@ -19,12 +19,12 @@ import { ToolCommand } from '@app/utils/interfaces/tool-command';
 })
 export class SelectionEllipseService extends Tool {
     private firstGrid: Vec2;
-    private topLeftCorner: Vec2;
+    topLeftCorner: Vec2;
     private begin: Vec2;
     private end: Vec2;
     private shiftDown: boolean;
-    private selectionActive: boolean;
     private dragActive: boolean;
+    selectionActive: boolean;
     height: number;
     width: number;
 
@@ -38,7 +38,7 @@ export class SelectionEllipseService extends Tool {
         this.selectionActive = false;
         this.dragActive = false;
 
-        // this.drawingService.selectedAreaCtx = this.drawingService.baseCtx;
+        this.drawingService.selectedAreaCtx = this.drawingService.baseCtx;
     }
 
     onMouseDown(event: MouseEvent): void {

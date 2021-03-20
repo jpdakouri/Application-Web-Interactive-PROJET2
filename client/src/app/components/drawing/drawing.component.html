@@ -47,22 +47,84 @@
         [ngStyle]="{ width: getPreviewCanvasSize().x + 'px', height: getPreviewCanvasSize().y + 'px' }"
     ></div>
 
-    <canvas
-        #selectedArea
-        style="border: 10px; background-color: chartreuse; border: 1px solid"
-        [attr.width]="getSelectedAreaSize().x"
-        [attr.height]="getSelectedAreaSize().y"
-    >
-    </canvas>
+    <canvas #selectedArea style="border: 10px; border: 1px solid" [attr.width]="width" [attr.height]="height"> </canvas>
     <div
         class="resizer selection-box-middle-right"
-        [ngStyle]="{ left: getSelectedAreaSize().x + 'px', top: getSelectedAreaSize().y / 2 - 2.5 + 'px' }"
+        [ngStyle]="{
+            left: getSelectedAreaSize().x + 'px',
+            top: getSelectedAreaSize().y / 2 - 2.5 + 'px',
+            transform: 'translate(' + getTopLeftCorner().x + 'px, ' + getTopLeftCorner().y + 'px)'
+        }"
+        *ngIf="selectionEllipseService.selectionActive"
     ></div>
 
-    <div class="resizer selection-box-bottom-right" [ngStyle]="{ left: getSelectedAreaSize().x + 'px', top: getSelectedAreaSize().y + 'px' }"></div>
+    <div
+        class="resizer selection-box-bottom-right"
+        [ngStyle]="{
+            left: getSelectedAreaSize().x + 'px',
+            top: getSelectedAreaSize().y + 'px',
+            transform: 'translate(' + getTopLeftCorner().x + 'px, ' + getTopLeftCorner().y + 'px)'
+        }"
+        *ngIf="selectionEllipseService.selectionActive"
+    ></div>
 
     <div
         class="resizer selection-box-middle-bottom"
-        [ngStyle]="{ left: getSelectedAreaSize().x / 2 - 2.5 + 'px', top: getSelectedAreaSize().y + 'px' }"
+        [ngStyle]="{
+            left: getSelectedAreaSize().x / 2 - 2 + 'px',
+            top: getSelectedAreaSize().y + 'px',
+            transform: 'translate(' + getTopLeftCorner().x + 'px, ' + getTopLeftCorner().y + 'px)'
+        }"
+        *ngIf="selectionEllipseService.selectionActive"
+    ></div>
+
+    <div
+        class="resizer selection-box-top-left"
+        [ngStyle]="{
+            left: -2 + 'px',
+            top: -2 + 'px',
+            transform: 'translate(' + getTopLeftCorner().x + 'px, ' + getTopLeftCorner().y + 'px)'
+        }"
+        *ngIf="selectionEllipseService.selectionActive"
+    ></div>
+
+    <div
+        class="resizer selection-box-top-middle"
+        [ngStyle]="{
+            left: getSelectedAreaSize().x / 2 - 2 + 'px',
+            top: -2 + 'px',
+            transform: 'translate(' + getTopLeftCorner().x + 'px, ' + getTopLeftCorner().y + 'px)'
+        }"
+        *ngIf="selectionEllipseService.selectionActive"
+    ></div>
+
+    <div
+        class="resizer selection-box-top-right"
+        [ngStyle]="{
+            left: getSelectedAreaSize().x - 2 + 'px',
+            top: -2 + 'px',
+            transform: 'translate(' + getTopLeftCorner().x + 'px, ' + getTopLeftCorner().y + 'px)'
+        }"
+        *ngIf="selectionEllipseService.selectionActive"
+    ></div>
+
+    <div
+        class="resizer selection-box-middle-left"
+        [ngStyle]="{
+            left: -2 + 'px',
+            top: getSelectedAreaSize().y / 2 + 2 + 'px',
+            transform: 'translate(' + getTopLeftCorner().x + 'px, ' + getTopLeftCorner().y + 'px)'
+        }"
+        *ngIf="selectionEllipseService.selectionActive"
+    ></div>
+
+    <div
+        class="resizer selection-box-bottom-left"
+        [ngStyle]="{
+            left: -2 + 'px',
+            top: getSelectedAreaSize().y - 2 + 'px',
+            transform: 'translate(' + getTopLeftCorner().x + 'px, ' + getTopLeftCorner().y + 'px)'
+        }"
+        *ngIf="selectionEllipseService.selectionActive"
     ></div>
 </div>

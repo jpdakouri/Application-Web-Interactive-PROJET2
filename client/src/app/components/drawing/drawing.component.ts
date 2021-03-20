@@ -46,7 +46,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     currentTool: Tool;
     toolManagerService: ToolManagerService;
     canvasResizerService: CanvasResizerService;
-
+    selectionEllipseService: SelectionEllipseService;
     toolsNames: typeof ToolsNames = ToolsNames;
     selectedAreaCtx: CanvasRenderingContext2D;
 
@@ -55,12 +55,12 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         toolManagerService: ToolManagerService,
         canvasResizerService: CanvasResizerService,
         private undoRedo: UndoRedoService,
-        private selectionEllipseService: SelectionEllipseService,
-
+        selectionEllipseService: SelectionEllipseService,
         private saveDrawingService: SaveDrawingService,
     ) {
         this.toolManagerService = toolManagerService;
         this.canvasResizerService = canvasResizerService;
+        this.selectionEllipseService = selectionEllipseService;
     }
 
     ngOnInit(): void {
@@ -77,7 +77,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.selectedAreaCtx = this.selectedAreaCtx;
         this.drawingService.canvas = this.saveDrawingService.originalCanvas = this.baseCanvas.nativeElement;
-        this.drawingService.selectedAreaCanvas = this.selectedArea.nativeElement;
+        // this.drawingService.selectedAreaCanvas = this.selectedArea.nativeElement;
         this.drawingService.canvas.style.backgroundColor = DEFAULT_WHITE;
         this.canvasResizerService.canvasPreviewWidth = this.canvasSize.x;
         this.canvasResizerService.canvasPreviewHeight = this.canvasSize.y;
@@ -236,5 +236,9 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     }
     getSelectedAreaSize(): Vec2 {
         return { x: this.selectionEllipseService.width, y: this.selectionEllipseService.height };
+    }
+
+    getTopLeftCorner(): Vec2 {
+        return { x: this.selectionEllipseService.topLeftCorner.x, y: this.selectionEllipseService.topLeftCorner.y };
     }
 }
