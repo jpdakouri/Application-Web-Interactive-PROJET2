@@ -12,7 +12,7 @@ export class ExportDrawingService {
     currentFilter: BehaviorSubject<string>;
     currentFormat: BehaviorSubject<string>;
     imageSource: string;
-    link: HTMLAnchorElement;
+    link: HTMLAnchorElement; /* for the image downloading */
     canvas: HTMLCanvasElement;
 
     constructor() {
@@ -30,7 +30,7 @@ export class ExportDrawingService {
             .set(ImageFilter.Brightness, 'brightness(80%)')
             .set(ImageFilter.BlackAndWhite, 'grayscale(100%)')
             .set(ImageFilter.Contrast, 'contrast(200%)')
-            .set(ImageFilter.HueRotate, 'hue-rotate(120deg)')
+            .set(ImageFilter.HueRotate, 'hue-rotate(180deg)')
             .set(ImageFilter.Opacity, 'opacity(50%)')
             .set(ImageFilter.Inversion, 'invert(100%)')
             .set(ImageFilter.Saturation, 'saturate(200%)')
@@ -39,29 +39,27 @@ export class ExportDrawingService {
 
     downloadDrawingAsImage(fileName: string, format: string): void {
         const image = new Image();
-
         image.src = this.imageSource;
+
         this.drawImageOnCanvas(image, this.canvas, this.currentFilter.getValue());
 
         // set the image to image with current filter applied on
-        // const dataURL = this.canvas.toDataURL(`image/${format}`) as string;
         image.src = this.canvas.toDataURL(`image/${format}`) as string;
-        // if (dataURL !== undefined)
-        // image.src = dataURL;
 
+        // download the image
         this.link.download = fileName;
         this.link.href = image.src;
         this.link.click();
     }
 
     private drawImageOnCanvas(image: HTMLImageElement, canvas: HTMLCanvasElement, filter?: string): void {
-        // if (image === undefined) return;
         const context = canvas.getContext('2d') as CanvasRenderingContext2D;
         canvas.width = image.width;
         canvas.height = image.height;
-        // set context background color to white
+
         context.fillStyle = DEFAULT_WHITE;
         if (filter !== undefined) this.applyFilterOnCanvas(this.currentFilter.getValue(), canvas);
+        // set context background color to white
         context.fillRect(0, 0, this.canvas.width, this.canvas.height);
         context.drawImage(image, 0, 0);
     }

@@ -60,11 +60,17 @@ describe('ExportDrawingComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('#onDialogClose should close the dialog', () => {
+    it('#dialogClose should close the dialog', () => {
         // tslint:disable:no-any
         const closeSpy = spyOn<any>(component.dialogRef, 'close').and.callThrough();
         component.onDialogClose();
         expect(closeSpy).toHaveBeenCalled();
+    });
+
+    it('#onDialogClose should call #dialogClose', () => {
+        const dialogCloseSpy = spyOn<any>(component, 'closeDialog').and.callThrough();
+        component.onDialogClose();
+        expect(dialogCloseSpy).toHaveBeenCalled();
     });
 
     it('#onFilterChange should change selectedFilterValue and update exportDrawingService current filter', () => {
@@ -91,11 +97,12 @@ describe('ExportDrawingComponent', () => {
     });
 
     it('onDownload should correctly set image source and call ExportDrawingService download method', () => {
-        // TODO: remove spy and use mock methods
         component.imageSource = 'abed';
-        const downloadDrawingSpy = spyOn<any>(exportDrawingMock, 'downloadDrawingAsImage');
+        const downloadDrawingSpy = spyOn<any>(exportDrawingMock, 'downloadDrawingAsImage').and.stub();
         const expectedImageSource = component.imageSource;
+
         component.onDownload();
+
         expect(exportDrawingMock.imageSource).toBe(expectedImageSource);
         expect(downloadDrawingSpy).toHaveBeenCalled();
     });

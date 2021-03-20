@@ -59,9 +59,8 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
         this.originalCanvas = this.drawingService.canvas;
         this.exportDrawingService.canvas = this.downloadProcessingCanvas.nativeElement as HTMLCanvasElement;
         this.exportDrawingService.link = this.link.nativeElement as HTMLAnchorElement;
-        const dataUrl = this.originalCanvas.toDataURL('image/png') as string;
         setTimeout(() => {
-            this.imageSource = dataUrl;
+            this.imageSource = this.originalCanvas.toDataURL('image/png') as string;
         });
     }
 
@@ -79,6 +78,10 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
     }
 
     onDialogClose(): void {
+        this.closeDialog();
+    }
+
+    closeDialog(): void {
         this.dialogRef.close();
     }
 
