@@ -75,30 +75,6 @@ describe('ImageDataService', () => {
         writeStub.restore();
     });
 
-    it('#getImagesFromDisk should call fs.readFileSync with correct parameter and return array of drawings', () => {
-        const data = 'fakeData';
-        const readStub = sinon.stub(fs, 'readFileSync').returns(data);
-        const readSpy = chai.spy.on(fs, 'readFileSync');
-        const existsStub = sinon.stub(fs, 'existsSync').returns(true);
-        const mime = 'image/png';
-        const encoding = 'base64';
-        const uri = `data:${mime};${encoding},${data}`;
-        const metadatas: Metadata[] = [];
-        const drawingDatas: DrawingData[] = [];
-        for (let i = 0; i < 5; i++) {
-            const drawingData = new DrawingData(i.toString(), `title${i}`, [`tag${i}`, `tag${i}`], uri, 100, 100);
-            const metadata = new Metadata(i.toString(), `title${i}`, [`tag${i}`, `tag${i}`], 100, 100);
-            metadatas.push(metadata);
-            drawingDatas.push(drawingData);
-        }
-        expect(service.getImagesFromDisk(metadatas)).to.deep.equal(drawingDatas);
-        for (let i = 0; i < 5; i++) {
-            expect(readSpy).to.have.been.called.with(`./app/drawings/${i}.png`);
-        }
-        readStub.restore();
-        existsStub.restore();
-    });
-
     it('#getOneImageFromDisk should call fs.readFileSync with correct parameter and return drawing', () => {
         const data = 'fakeData';
         const readStub = sinon.stub(fs, 'readFileSync').returns(data);
@@ -109,7 +85,7 @@ describe('ImageDataService', () => {
         const uri = `data:${mime};${encoding},${data}`;
         const drawingData = new DrawingData('id', 'title', ['tag1', 'tag2'], uri, 100, 100);
         service.drawingData.push(drawingData);
-        expect(service.getOneImageFromDisk(0)).to.deep.equal(drawingData);
+        expect(service.getOneImageFromDisk(0, false)).to.deep.equal(drawingData);
 
         expect(readSpy).to.have.been.called.with('./app/drawings/id.png');
 
@@ -121,16 +97,16 @@ describe('ImageDataService', () => {
         const drawingData = new DrawingData('id', 'title', ['tag1', 'tag2'], 'uri', 100, 100);
         service.drawingData.push(drawingData);
         const nonExistingStub = sinon.stub(fs, 'existsSync').returns(false);
-        expect(service.getOneImageFromDisk(0)).to.equal(undefined);
+        expect(service.getOneImageFromDisk(0, false)).to.equal(undefined);
         service.drawingData = [];
-        expect(service.getOneImageFromDisk(0)).to.equal(undefined);
+        expect(service.getOneImageFromDisk(0, false)).to.equal(undefined);
 
         nonExistingStub.restore();
     });
 
     it('#getOneImageFromDisk should return undefined if theres no drawing in server', () => {
         service.drawingData = [];
-        expect(service.getOneImageFromDisk(0)).to.equal(undefined);
+        expect(service.getOneImageFromDisk(0, false)).to.equal(undefined);
     });
 
     it('#removeID should remove data correspondind to ID and call fs.unlinkSync', () => {
@@ -194,7 +170,7 @@ describe('ImageDataService', () => {
             metadatas.push(metadata);
             drawingDatas.push(drawingData);
         }
-        service.populateArray(metadatas);
+        service.populateArray(metadatas, false);
         expect(service.drawingData).to.deep.equal(drawingDatas);
         existsStub.restore();
     });

@@ -24,7 +24,7 @@ export class DatabaseController {
         this.databaseService.startDB(this.databaseService.databaseURI, this.databaseService.options).then(() => {
             this.databaseService.getAllDrawings().then((result) => {
                 if (result.length > 0) {
-                    this.imageDataService.populateArray(result);
+                    this.imageDataService.populateArray(result, false);
                 }
             });
         });
@@ -62,30 +62,35 @@ export class DatabaseController {
                     });
         });
 
-        this.router.get('/length', (req: Request, res: Response, next: NextFunction) => {
-            res.status(HTTP_STATUS_OK).json(this.imageDataService.drawingData.length);
-        });
-        this.router.get('/single/:index', (req: Request, res: Response, next: NextFunction) => {
-            const drawing = this.imageDataService.getOneImageFromDisk(+req.params.index);
-            if (drawing) {
-                res.status(HTTP_STATUS_OK).json(drawing);
+        this.router.get('/length/:tagFlag', (req: Request, res: Response, next: NextFunction) => {
+            const tagFlag = req.params.tagFlag === 'true';
+            if (tagFlag) {
+                res.status(HTTP_STATUS_OK).json(this.imageDataService.filteredDrawingData.length);
             } else {
-                res.status(HTTP_STATUS_NOT_FOUND).send('Aucun dessin trouvé !');
+                res.status(HTTP_STATUS_OK).json(this.imageDataService.drawingData.length);
+            }
+        });
+        this.router.get('/single', (req: Request, res: Response, next: NextFunction) => {
+            const index = req.query.index;
+            const tagFlag = req.query.tagFlag === 'true';
+            if (index) {
+                const drawing = this.imageDataService.getOneImageFromDisk(+index, tagFlag);
+                if (drawing) {
+                    res.status(HTTP_STATUS_OK).json(drawing);
+                } else {
+                    res.status(HTTP_STATUS_NOT_FOUND).send('Aucun dessin trouvé !');
+                }
             }
         });
 
-        this.router.get('/by-tags', (req: Request, res: Response, next: NextFunction) => {
-            const tags = req.query.tags as string[];
+        this.router.post('/tags', (req: Request, res: Response, next: NextFunction) => {
+            const tags = req.body as string[];
             this.databaseService
                 .getDrawingsByTags(tags)
                 .then((results) => {
                     if (results.length > 0) {
-                        const drawingsToSend = this.imageDataService.getImagesFromDisk(results);
-                        if (drawingsToSend.length > 0) {
-                            res.status(HTTP_STATUS_OK).json(drawingsToSend);
-                        } else {
-                            res.status(HTTP_STATUS_NOT_FOUND).json('Aucun dessin trouvé !');
-                        }
+                        this.imageDataService.populateArray(results, true);
+                        res.status(HTTP_STATUS_OK).json('Tags bien reçus');
                     } else {
                         res.status(HTTP_STATUS_NOT_FOUND).json('Aucun dessin trouvé !');
                     }

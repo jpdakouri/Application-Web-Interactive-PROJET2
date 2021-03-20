@@ -1,0 +1,19 @@
+.mat-expansion-panel {
+    top: 6px;
+    right: 6px;
+    position: absolute;
+    z-index: 1;
+    width: 400px;
+}
+
+.form-field {
+    min-height: 60px;
+    width: 350px;
+    margin-bottom: 25px;
+}
+
+button {
+    position: absolute;
+    left: 25px;
+    bottom: 10px;
+}

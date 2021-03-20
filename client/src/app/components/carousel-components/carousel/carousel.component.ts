@@ -20,6 +20,7 @@ export class CarouselComponent implements OnInit {
     left: number = 0;
     right: number = 2;
     isLoading: boolean = true;
+    tagFlag: boolean = false;
 
     drawingArray: DrawingData[] = [];
 
@@ -38,7 +39,12 @@ export class CarouselComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.carouselService.initCarousel().subscribe((result) => {
+        this.initCarousel();
+    }
+
+    initCarousel(): void {
+        this.carouselService.initCarousel(this.tagFlag).subscribe((result) => {
+            console.log('initCarousel result:');
             console.log(result);
             this.drawingArray = result;
             if (this.drawingArray.length === 1) {
@@ -69,27 +75,37 @@ export class CarouselComponent implements OnInit {
         this.carouselService
             .deleteDrawing(id as string)
             .then((res) => {
+                console.log('deleteDrawing result:');
                 console.log(res);
             })
-            .catch(() => {
-                console.log('lel');
+            .catch((err) => {
+                console.log(err);
             });
     }
 
     shiftLeft(): void {
-        this.carouselService.getDrawing(false).subscribe((result) => {
+        this.carouselService.getDrawing(false, this.tagFlag).subscribe((result) => {
             this.drawingArray = this.drawingArray.slice(this.left, this.middle + 1);
             this.drawingArray.splice(this.left, 0, result);
             this.drawingCard.map((d) => d.adjustSizeOfImage());
+            console.log('shiftLeft');
+            console.log(this.drawingArray);
         });
     }
 
     shiftRight(): void {
-        this.carouselService.getDrawing(true).subscribe((result) => {
+        this.carouselService.getDrawing(true, this.tagFlag).subscribe((result) => {
             this.drawingArray = this.drawingArray.slice(this.middle, this.right + 1);
             this.drawingArray.push(result);
 
             this.drawingCard.map((d) => d.adjustSizeOfImage());
+            console.log('shiftRigth');
+            console.log(this.drawingArray);
         });
+    }
+
+    toggleTagFlag(event: boolean): void {
+        this.tagFlag = event;
+        this.initCarousel();
     }
 }

@@ -3,16 +3,13 @@
         <span></span>
         <span class="pacifico">Carrousel de Dessins</span>
         <span style="text-align: right; font-size: 15px">
-            <mat-form-field *ngIf="this.drawingArray.length > 0">
-                <input matInput placeholder="Recherche Par Étiquettes" />
-            </mat-form-field>
+            <app-search-by-tags (tagFlag)="this.toggleTagFlag($event)"></app-search-by-tags>
         </span>
     </mat-toolbar>
     <div class="queryFromServer" #queryFromServer *ngIf="isLoading">
         <mat-progress-bar mode="query"></mat-progress-bar>
         <p>Attente du serveur ...</p>
     </div>
-
     <div class="matContainer" #matContainer *ngIf="!isLoading">
         <h1 class="emptyCarousel" *ngIf="this.drawingArray.length < 1">
             La base de données est courrement vide! <br />

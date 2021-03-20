@@ -36,8 +36,8 @@ describe('DatabaseController', () => {
             removeID: sandbox.stub().resolves(),
             updateDrawing: sandbox.stub().resolves(),
             writeDrawingToDisk: sandbox.stub().resolves(),
-            getImagesFromDisk: sandbox.stub().resolves(),
             getOneImageFromDisk: sandbox.stub().returns(undefined),
+            populateArray: sandbox.stub().resolves(),
         });
         imageDataService = container.get(TYPES.ImageDataService);
         databaseService = container.get(TYPES.DatabaseService);
@@ -128,7 +128,8 @@ describe('DatabaseController', () => {
         const drawing = new DrawingData('id', 'title', ['tag1', 'tag2'], dataURL, 100, 100);
         imageDataService.getOneImageFromDisk.returns(drawing);
         return supertest(app)
-            .get('/api/drawings/single/0')
+            .get('/api/drawings/single')
+            .query({ tagFlag: 'false', index: '0' })
             .expect(HTTP_STATUS_OK)
             .then((response: any) => {
                 expect(response.body).to.deep.equal(drawing);
@@ -138,7 +139,8 @@ describe('DatabaseController', () => {
     it('GET request to /drawings/single/:index should respond a HTTP_STATUS_NOT_FOUND and corresponding message if no drawing found', async () => {
         imageDataService.getOneImageFromDisk.returns(undefined);
         return supertest(app)
-            .get('/api/drawings/single/0')
+            .get('/api/drawings/single')
+            .query({ tagFlag: 'false', index: '0' })
             .expect(HTTP_STATUS_NOT_FOUND)
             .then((response: any) => {
                 expect(response.text).to.deep.equal('Aucun dessin trouvé !');
@@ -151,42 +153,15 @@ describe('DatabaseController', () => {
         imageDataService.getOneImageFromDisk.returns(drawing);
         const spy = chai.spy.on(imageDataService, 'getOneImageFromDisk');
         return supertest(app)
-            .get('/api/drawings/single/0')
+            .get('/api/drawings/single')
+            .query({ tagFlag: 'false', index: '0' })
             .expect(HTTP_STATUS_OK)
             .then((response: any) => {
                 expect(spy).to.have.been.called.with(0);
             });
     });
 
-    it('GET request to /drawings/by-tags should respond HTTP_STATUS_OK and drawing array ', async () => {
-        const drawingDatas: DrawingData[] = [];
-        const metadatas: Metadata[] = [];
-        const uri = 'utiStub';
-        for (let i = 0; i < 5; i++) {
-            const drawingData = new DrawingData(i.toString(), `title${i}`, [`tag${i}`, `tag${i}`], uri, 100, 100);
-            const metadata = new Metadata(i.toString(), `title${i}`, [`tag${i}`, `tag${i}`], 100, 100);
-            metadatas.push(metadata);
-            drawingDatas.push(drawingData);
-        }
-        databaseService.getDrawingsByTags.resolves(metadatas);
-        imageDataService.getImagesFromDisk.returns(drawingDatas);
-        return supertest(app)
-            .get('/api/drawings/by-tags')
-            .expect(HTTP_STATUS_OK)
-            .then((response: any) => {
-                expect(response.body).to.deep.equal(drawingDatas);
-            });
-    });
-    it('GET request to /drawings/by-tags should respond HTTP_STATUS_NOT_FOUND and message if no drawings are found in database ', async () => {
-        databaseService.getDrawingsByTags.resolves([]);
-        return supertest(app)
-            .get('/api/drawings/by-tags')
-            .expect(HTTP_STATUS_NOT_FOUND)
-            .then((response: any) => {
-                expect(response.text).to.equal('"Aucun dessin trouvé !"');
-            });
-    });
-    it('GET request to /drawings/by-tags should respond HTTP_STATUS_NOT_FOUND and message if no drawings are found on disk', async () => {
+    it('POST request to /drawings/by-tags should respond HTTP_STATUS_OK and drawing array ', async () => {
         const drawingDatas: DrawingData[] = [];
         const metadatas: Metadata[] = [];
         const uri = 'uriStub';
@@ -197,31 +172,44 @@ describe('DatabaseController', () => {
             drawingDatas.push(drawingData);
         }
         databaseService.getDrawingsByTags.resolves(metadatas);
-        imageDataService.getImagesFromDisk.returns([]);
+        const spy = chai.spy.on(imageDataService, 'populateArray');
         return supertest(app)
-            .get('/api/drawings/by-tags')
+            .post('/api/drawings/tags')
+            .send(['tag1', 'tag2'])
+            .expect(HTTP_STATUS_OK)
+            .then((response: any) => {
+                expect(spy).to.have.been.called();
+            });
+    });
+    it('POST request to /drawings/by-tags should respond HTTP_STATUS_NOT_FOUND and message if no drawings are found in database ', async () => {
+        databaseService.getDrawingsByTags.resolves([]);
+        return supertest(app)
+            .post('/api/drawings/tags')
+            .send(['tag1', 'tag2'])
             .expect(HTTP_STATUS_NOT_FOUND)
             .then((response: any) => {
                 expect(response.text).to.equal('"Aucun dessin trouvé !"');
             });
     });
 
-    it('GET request to /drawings/by-tags should respond a HTTP_STATUS_ERROR and message if error in database', async () => {
+    it('POST request to /drawings/by-tags should respond a HTTP_STATUS_ERROR and message if error in database', async () => {
         databaseService.getDrawingsByTags.rejects(new MongoError('Test error !'));
         return supertest(app)
-            .get('/api/drawings/by-tags')
+            .post('/api/drawings/tags')
+            .send(['tag1', 'tag2'])
+
             .expect(HTTP_STATUS_ERROR)
             .then((response: any) => {
                 expect(response.text).to.equal("Erreur d'opération dans le serveur !");
             });
     });
 
-    it('GET request to /drawings/by-tags should call getDrawingsByTags from databaseService with correct parameter', async () => {
+    it('POST request to /drawings/by-tags should call getDrawingsByTags from databaseService with correct parameter', async () => {
         databaseService.getDrawingsByTags.resolves([]);
         const spy = chai.spy.on(databaseService, 'getDrawingsByTags');
         return supertest(app)
-            .get('/api/drawings/by-tags')
-            .query({ tags: ['testTag1', 'testTag2'] })
+            .post('/api/drawings/tags')
+            .send(['testTag1', 'testTag2'])
             .expect(HTTP_STATUS_NOT_FOUND)
             .then((response: any) => {
                 expect(spy).to.have.been.called.with(['testTag1', 'testTag2']);
@@ -240,7 +228,9 @@ describe('DatabaseController', () => {
         }
         databaseService.getDrawingsByTags.rejects();
         return supertest(app)
-            .get('/api/drawings/by-tags')
+            .post('/api/drawings/tags')
+            .send(['tag1', 'tag2'])
+
             .expect(HTTP_STATUS_ERROR)
             .then((response: any) => {
                 expect(response.text).to.equal("Erreur d'opération dans le serveur !");

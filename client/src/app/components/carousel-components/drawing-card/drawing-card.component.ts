@@ -38,7 +38,7 @@ export class DrawingCardComponent implements OnInit {
 
     set drawingData(dd: DrawingData) {
         this.infoDrawing = dd;
-        console.log(this.infoDrawing.height, dd.height);
+        // console.log(this.infoDrawing.height, dd.height);
         this.adjustSizeOfImage();
     }
 
