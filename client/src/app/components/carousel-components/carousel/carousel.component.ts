@@ -6,6 +6,7 @@ import { CarouselService } from '@app/services/carousel/carousel.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { CardStyle } from '@app/utils/interfaces/card-style';
 import { DrawingData } from '@common/communication/drawing-data';
+
 @Component({
     selector: 'app-carousel',
     templateUrl: './carousel.component.html',
@@ -70,15 +71,9 @@ export class CarouselComponent implements OnInit {
 
     deleteDrawing(id: string | undefined): void {
         this.isLoading = true;
-        this.carouselService
-            .deleteDrawing(id as string)
-            .then((res) => {
-                console.log(res);
-                this.initCarousel();
-            })
-            .catch(() => {
-                console.log('lel');
-            });
+        this.carouselService.deleteDrawing(id as string).then((res) => {
+            this.initCarousel();
+        });
     }
 
     shiftLeft(): void {

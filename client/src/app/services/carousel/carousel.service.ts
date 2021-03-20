@@ -17,7 +17,6 @@ export class CarouselService {
 
     constructor(private httpService: HttpService, public drawingService: DrawingService) {}
 
-    // tslint:disable:no-magic-numbers
     initCarousel(): Observable<DrawingData[]> {
         this.drawingsToShow = [];
         const subject = new Subject<DrawingData[]>();

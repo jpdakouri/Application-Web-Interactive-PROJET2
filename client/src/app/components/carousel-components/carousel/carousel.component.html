@@ -14,10 +14,7 @@
     </div>
 
     <div class="matContainer" #matContainer *ngIf="!isLoading">
-        <h1 class="emptyCarousel" *ngIf="this.drawingArray.length < 1">
-            La base de données est courrement vide! <br />
-            Enregistrez un dessin et il apparaitera ici :)
-        </h1>
+        <h1 class="emptyCarousel" *ngIf="this.drawingArray.length < 1">Aucun dessin de trouvé!</h1>
         <app-drawing-card
             class="sides card"
             *ngIf="this.drawingArray.length > 1"
