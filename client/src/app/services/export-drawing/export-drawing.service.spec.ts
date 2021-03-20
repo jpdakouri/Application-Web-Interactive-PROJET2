@@ -39,6 +39,7 @@ describe('ExportDrawingService', () => {
         image.src = service.imageSource;
 
         const context = service.canvas.getContext('2d') as CanvasRenderingContext2D;
+        // tslint:disable:no-any
         const drawImageSpy = spyOn<any>(context, 'drawImage').and.callThrough();
         const whiteColor = '#ffffff' as string;
 

@@ -13,5 +13,6 @@ export class ExportDrawingServiceMock {
     link: HTMLAnchorElement = document.createElement('a');
     canvas: HTMLCanvasElement;
 
+    // tslint:disable-next-line:no-empty
     downloadDrawingAsImage(): void {}
 }

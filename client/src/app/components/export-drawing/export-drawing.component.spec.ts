@@ -22,6 +22,7 @@ describe('ExportDrawingComponent', () => {
     let drawingServiceSpy: jasmine.SpyObj<DrawingService>;
     let exportDrawingMock: ExportDrawingServiceMock;
     const dialogMock = {
+        // tslint:disable-next-line:no-empty
         close: () => {},
     };
 
