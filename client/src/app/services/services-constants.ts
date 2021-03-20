@@ -29,3 +29,13 @@ export const DEFAULT_WHITE = '#fff';
 /*********************************/
 export const FILE_NAME_REGEX = /^[a-zA-Z0-9-]*$/;
 export const LABEL_NAME_REGEX = /^[a-zA-Z0-9 ]*$/;
+
+/****************************/
+/***SELECTION CONSTANTS*/
+/****************************/
+
+export const RED_POS = 3;
+export const GREEN_POS = 2;
+export const BLUE_POS = 1;
+export const ALPHA_POS = 4;
+export const MAX_BYTE_VALUE = 255;

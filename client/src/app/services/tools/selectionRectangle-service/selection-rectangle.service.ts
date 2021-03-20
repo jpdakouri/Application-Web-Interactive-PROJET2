@@ -3,6 +3,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ALPHA_POS, BLUE_POS, GREEN_POS, MAX_BYTE_VALUE, RED_POS } from '@app/services/services-constants';
 // import { Sign } from '@app/services/services-constants';
 import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
 import { PIXELS_ARROW_STEPS } from '@app/services/tools/tools-constants';
@@ -58,13 +59,11 @@ export class SelectionRectangleService extends Tool {
                 this.selectionActive = true;
             } else {
                 if (this.isClickIn(this.firstGrid)) {
-                    console.log('click dedans');
                     this.initial = this.topLeftCornerInit = this.getPositionFromMouse(event);
                     this.dragActive = true;
                 } else {
                     this.selectionActive = false;
                     this.drawingService.baseCtx.putImageData(this.imageData, this.topLeftCorner.x, this.topLeftCorner.y);
-                    console.log('click dehors');
                 }
             }
         }
@@ -82,7 +81,7 @@ export class SelectionRectangleService extends Tool {
     }
 
     onMouseUp(event: MouseEvent): void {
-        if (this.mouseDown && this.selectionActive && !this.dragActive) {
+        if (this.mouseDown && this.selectionActive && !this.dragActive && this.mouseMoved) {
             this.end = this.getPositionFromMouse(event);
             this.updateTopLeftCorner();
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -95,6 +94,7 @@ export class SelectionRectangleService extends Tool {
         }
         this.mouseDown = false;
         this.dragActive = false;
+        this.mouseMoved = false;
     }
 
     onKeyDown(event: KeyboardEvent): void {
@@ -285,6 +285,16 @@ export class SelectionRectangleService extends Tool {
         // Print rectangle de selection
         ctx.setLineDash([numberFive, numberFifteen]);
         ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+
+        // Remplace les pixels vierges du canvas par des pixels blancs
+        for (let i = 3; i < this.imageData.data.length; i += ALPHA_POS) {
+            if (this.imageData.data[i] === 0) {
+                this.imageData.data[i - RED_POS] = MAX_BYTE_VALUE;
+                this.imageData.data[i - GREEN_POS] = MAX_BYTE_VALUE;
+                this.imageData.data[i - BLUE_POS] = MAX_BYTE_VALUE;
+                this.imageData.data[i] = MAX_BYTE_VALUE;
+            }
+        }
     }
 
     private updatePreview(): void {

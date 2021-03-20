@@ -25,6 +25,9 @@ export class SelectionEllipseService extends Tool {
     // private imageData: ImageData;
     private shiftDown: boolean;
     private selectionActive: boolean;
+    private dragActive: boolean;
+    private height: number;
+    private width: number;
 
     rectangleService: RectangleService;
     currentColourService: CurrentColourService;
@@ -34,6 +37,7 @@ export class SelectionEllipseService extends Tool {
         this.currentColourService = currentColourService;
         this.topLeftCorner = { x: 0, y: 0 };
         this.selectionActive = false;
+        this.dragActive = false;
         this.drawingService.selectedAreaCtx = this.drawingService.baseCtx;
 
         // this.drawingService.selectedAreaCtx.canvas.width = 1000;
@@ -53,6 +57,7 @@ export class SelectionEllipseService extends Tool {
                 this.selectionActive = true;
             } else {
                 if (this.isClickIn(this.firstGrid)) {
+                    this.dragActive = true;
                     console.log('click dedans');
                 } else {
                     this.selectionActive = false;
@@ -67,7 +72,7 @@ export class SelectionEllipseService extends Tool {
     }
 
     onMouseMove(event: MouseEvent): void {
-        if (this.mouseDown && this.selectionActive) {
+        if (this.mouseDown && this.selectionActive && !this.dragActive) {
             this.mouseMoved = true;
             this.mouseDownCoord.x = this.getPositionFromMouse(event).x - this.firstGrid.x;
             this.mouseDownCoord.y = this.getPositionFromMouse(event).y - this.firstGrid.y;
@@ -77,7 +82,7 @@ export class SelectionEllipseService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         // debugger;
-        if (this.mouseDown) {
+        if (this.mouseDown && this.selectionActive && !this.dragActive && this.mouseMoved) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.end = this.getPositionFromMouse(event);
             this.updateTopLeftCorner();
@@ -91,6 +96,8 @@ export class SelectionEllipseService extends Tool {
             this.drawFramingRectangle(this.drawingService.selectedAreaCtx, this.mouseDownCoord);
         }
         this.mouseDown = false;
+        this.dragActive = false;
+        this.mouseMoved = false;
     }
 
     onKeyDown(event: KeyboardEvent): void {
@@ -240,7 +247,7 @@ export class SelectionEllipseService extends Tool {
     private clipArea(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.save();
         this.drawEllipse(ctx, finalGrid);
-        ctx.clip();
+        ctx.clip('nonzero');
     }
 
     private selectEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
@@ -253,6 +260,10 @@ export class SelectionEllipseService extends Tool {
             this.drawingService.selectedAreaCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
             ctx.restore();
         });
+
+        this.height = imageData.height;
+        this.width = imageData.width;
+
         // Resize le selectedAreaCtx
         ctx.canvas.width = bottomRightCorner.x;
         ctx.canvas.height = bottomRightCorner.y;
@@ -280,12 +291,12 @@ export class SelectionEllipseService extends Tool {
     }
 
     private isClickIn(firstGrid: Vec2): boolean {
-        // if (firstGrid.x < this.topLeftCorner.x || firstGrid.x > this.topLeftCorner.x + this.imageData.width) {
-        //     return false;
-        // }
-        // if (firstGrid.y < this.topLeftCorner.y || firstGrid.y > this.topLeftCorner.y + this.imageData.height) {
-        //     return false;
-        // }
+        if (firstGrid.x < this.topLeftCorner.x || firstGrid.x > this.topLeftCorner.x + this.width) {
+            return false;
+        }
+        if (firstGrid.y < this.topLeftCorner.y || firstGrid.y > this.topLeftCorner.y + this.height) {
+            return false;
+        }
         return true;
     }
 
