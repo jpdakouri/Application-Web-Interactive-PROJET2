@@ -1,5 +1,5 @@
 // tslint:disable:no-relative-imports
-import { Observable, of, Subject } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { DrawingDataMock } from './drawing-data-mock';
 
 export class CarouselServiceMock {
@@ -12,14 +12,8 @@ export class CarouselServiceMock {
         return of(this.drawingArrayMock);
     }
 
-    getArraySizeOfDrawing(): Observable<number> {
-        const subject = new Subject<number>();
-        return subject.asObservable();
-    }
-
     getDrawing(rightSearch: boolean): Observable<DrawingDataMock> {
-        const subject = new Subject<DrawingDataMock>();
-        return subject.asObservable();
+        return of();
     }
 
     openDrawing(drawing: DrawingDataMock): void {}

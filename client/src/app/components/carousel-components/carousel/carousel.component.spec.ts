@@ -20,7 +20,7 @@ const dialogMock = {
     close: () => {},
 };
 
-fdescribe('CarouselComponent', () => {
+describe('CarouselComponent', () => {
     let component: CarouselComponent;
     let fixture: ComponentFixture<CarouselComponent>;
     let carouselServiceMock: CarouselServiceMock;
