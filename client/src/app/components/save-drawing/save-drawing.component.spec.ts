@@ -9,6 +9,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SaveDrawingService } from '@app/services/save-drawing/save-drawing.service';
+import {
+    INVALIDE_TAG_NAME_ERROR_MESSAGE,
+    INVALID_FILE_NAME_ERROR_MESSAGE,
+    NO_ERROR_MESSAGE,
+    REQUIRED_FILE_NAME_ERROR_MESSAGE,
+} from '@app/services/tools/tools-constants';
 import { Tag } from '@app/utils/interfaces/tag';
 import { DrawingDataMock } from '@app/utils/tests-mocks/drawing-data-mock';
 import { SaveDrawingComponent } from './save-drawing.component';
@@ -71,6 +77,31 @@ fdescribe('SaveDrawingComponent', () => {
         spyOn(dialogMock, 'close').and.callThrough();
         component.onDialogClose();
         expect(dialogMock.close).toHaveBeenCalled();
+    });
+
+    it('it should be able to get correct messages errors for fileName', () => {
+        component.fileName.setValue('drawing1');
+        const expectedErrorMessage = component.getErrorMessageName();
+        expect(expectedErrorMessage).toBe(NO_ERROR_MESSAGE);
+
+        component.fileName.setValue('):');
+        const invalidFileNameError = component.getErrorMessageName();
+        expect(invalidFileNameError).toBe(INVALID_FILE_NAME_ERROR_MESSAGE);
+
+        component.fileName.setValue('');
+        const noNameInputError = component.getErrorMessageName();
+        expect(component.fileName.hasError('required')).toBeTruthy();
+        expect(noNameInputError).toBe(REQUIRED_FILE_NAME_ERROR_MESSAGE);
+    });
+
+    it('it should be able to get correct messages errors for tag name', () => {
+        component.tagName.setValue('!!!');
+        let expectedErrorMessage = component.getErrorMessageTag();
+        expect(expectedErrorMessage).toBe(INVALIDE_TAG_NAME_ERROR_MESSAGE);
+
+        component.tagName.setValue('Good Input');
+        expectedErrorMessage = component.getErrorMessageTag();
+        expect(expectedErrorMessage).toBe(NO_ERROR_MESSAGE);
     });
 
     it('updateService should update the values of the services', () => {
