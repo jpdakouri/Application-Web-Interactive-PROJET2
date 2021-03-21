@@ -5,9 +5,6 @@ import { DialogControllerService } from './dialog-controller.service';
 
 describe('DialogControllerService', () => {
     let service: DialogControllerService;
-    // const mockDialogRef = {
-    //     close: jasmine.createSpy('close'),
-    // };
     beforeEach(() => {
         TestBed.configureTestingModule({
             declarations: [CarouselComponent],

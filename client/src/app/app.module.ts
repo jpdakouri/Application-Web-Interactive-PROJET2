@@ -9,6 +9,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSliderModule } from '@angular/material/slider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
@@ -72,6 +73,7 @@ import { ServerErrorMessageComponent } from './components/server-error-message/s
         MatCheckboxModule,
         MatSelectModule,
         ReactiveFormsModule,
+        MatSliderModule,
     ],
     providers: [
         {

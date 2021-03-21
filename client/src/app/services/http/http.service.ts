@@ -18,42 +18,36 @@ export class HttpService {
 
     private readonly BASE_URL: string = 'http://localhost:3000';
 
-    // For later !
-    // getDrawingsByTags(): Observable<Metadata[]> {
-    //     return this.http.get<Metadata[]>(this.BASE_URL + '/api/drawings');
-    // }
-
     deleteDrawing(drawingID: string): Observable<string> {
-        return this.http.delete<string>(this.BASE_URL + `/api/drawings/${drawingID}`).pipe(catchError(this.handleError<string>('Delete')));
+        return this.http.delete<string>(this.BASE_URL + `/api/drawings/${drawingID}`).pipe(catchError(this.handleError<string>('DeleteDrawing')));
     }
 
     insertDrawing(newDrawing: DrawingData): Observable<string> {
-        return this.http.post<string>(this.BASE_URL + '/api/drawings', newDrawing).pipe(catchError(this.handleError<string>('Post')));
+        return this.http.post<string>(this.BASE_URL + '/api/drawings', newDrawing).pipe(catchError(this.handleError<string>('InsertOneDrawing')));
     }
 
-    getOneDrawing(index: number): Observable<DrawingData> {
-        return this.http.get<DrawingData>(this.BASE_URL + `/api/drawings/single/${index}`).pipe(catchError(this.handleError<DrawingData>('GetOne')));
-    }
-
-    getLengthOfDrawings(): Observable<number> {
-        return this.http.get<number>(this.BASE_URL + '/api/drawings/length').pipe(catchError(this.handleError<number>('GetLength')));
-    }
-
-    getDrawingsByTags(tags: string[]): Observable<DrawingData[]> {
+    getOneDrawing(index: number, tagFlag: boolean): Observable<DrawingData> {
         let params = new HttpParams();
-        for (const tag of tags) {
-            params = params.append('tags', tag);
-        }
+        params = params.append('index', index.toString());
+        params = params.append('tagFlag', tagFlag.toString());
         return this.http
-            .get<DrawingData[]>(this.BASE_URL + '/api/drawings/by-tags', { params })
-            .pipe(catchError(this.handleError<DrawingData[]>('GetByTags')));
+            .get<DrawingData>(this.BASE_URL + '/api/drawings/single', { params })
+            .pipe(catchError(this.handleError<DrawingData>('GetOneDrawing')));
+    }
+
+    getLengthOfDrawings(tagFlag: boolean): Observable<number> {
+        return this.http.get<number>(this.BASE_URL + `/api/drawings/length/${tagFlag}`).pipe(catchError(this.handleError<number>('GetLength')));
+    }
+
+    sendTags(tags: string[]): Observable<string> {
+        return this.http.post<string>(this.BASE_URL + '/api/drawings/tags', tags).pipe(catchError(this.handleError<string>('PostTags')));
     }
 
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
         return (error: HttpErrorResponse): Observable<T> => {
             if (error.status === HTTP_STATUS_NO_SERVER) this.openErrorDialog('Serveur Indisponible');
             else if (error.status === HTTP_STATUS_NOT_FOUND) {
-                if (request === 'Delete') this.openErrorDialog('Impossible de supprimer le dessin, il ne fait plus parti de la base de données');
+                if (request === 'DeleteDrawing') this.openErrorDialog('Impossible de supprimer le dessin, il ne fait plus parti de la base de données');
                 else if (request === 'GetOne') this.openErrorDialog("Impossible d'ouvrir le dessin, il ne fait plus parti de la base de données");
             } else this.openErrorDialog(error.error);
             return of(result as T);

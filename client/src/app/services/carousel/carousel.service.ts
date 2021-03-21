@@ -17,50 +17,43 @@ export class CarouselService {
 
     constructor(private httpService: HttpService, public drawingService: DrawingService) {}
 
-    initCarousel(): Observable<DrawingData[]> {
+    // tslint:disable:no-magic-numbers
+    initCarousel(tagFlag: boolean): Observable<DrawingData[]> {
         this.drawingsToShow = [];
         const subject = new Subject<DrawingData[]>();
 
-        this.getArraySizeOfDrawing().subscribe({
-            next: (size) => {
-                if (size > 0) {
-                    this.httpService.getOneDrawing(-1).subscribe({
-                        next: (resultFirst) => {
-                            this.drawingsToShow.push(resultFirst);
-                            if (this.sizeOfArray > 1) {
-                                this.httpService.getOneDrawing(0).subscribe({
-                                    next: (resultSecond) => {
-                                        this.drawingsToShow.push(resultSecond);
-                                        this.httpService.getOneDrawing(1).subscribe({
-                                            next: (resultThird) => {
-                                                this.drawingsToShow.push(resultThird);
-                                                subject.next(this.drawingsToShow);
-                                                console.log(this.drawingsToShow.length);
-                                            },
-                                        });
-                                    },
-                                });
-                            } else {
-                                subject.next(this.drawingsToShow);
-                                console.log(this.drawingsToShow.length);
-                            }
-                        },
-                    });
-                } else {
-                    subject.next(this.drawingsToShow);
-                    console.log(this.drawingsToShow.length);
-                }
-            },
-            error: () => {
-                console.log(this.drawingsToShow.length);
-            },
+        this.getArraySizeOfDrawing(tagFlag).subscribe((size) => {
+            if (size > 0) {
+                this.httpService.getOneDrawing(-1, tagFlag).subscribe({
+                    next: (resultFirst) => {
+                        this.drawingsToShow.push(resultFirst);
+                        if (this.sizeOfArray > 1) {
+                            this.httpService.getOneDrawing(0, tagFlag).subscribe({
+                                next: (resultSecond) => {
+                                    this.drawingsToShow.push(resultSecond);
+                                    this.httpService.getOneDrawing(1, tagFlag).subscribe({
+                                        next: (resultThird) => {
+                                            this.drawingsToShow.push(resultThird);
+                                            subject.next(this.drawingsToShow);
+                                        },
+                                    });
+                                },
+                            });
+                        } else {
+                            subject.next(this.drawingsToShow);
+                        }
+                    },
+                });
+            } else {
+                subject.next(this.drawingsToShow);
+            }
         });
         return subject.asObservable();
     }
 
-    getArraySizeOfDrawing(): Observable<number> {
+    getArraySizeOfDrawing(tagFlag: boolean): Observable<number> {
         const subject = new Subject<number>();
-        this.httpService.getLengthOfDrawings().subscribe({
+        this.httpService.getLengthOfDrawings(tagFlag).subscribe({
             next: (results) => {
                 this.sizeOfArray = results as number;
                 subject.next(this.sizeOfArray);
@@ -73,13 +66,13 @@ export class CarouselService {
      * @param rightSearch if false, searches left, if true searches right
      * @returns The next drawing in that direction.
      */
-    getDrawing(rightSearch: boolean): Observable<DrawingData> {
+    getDrawing(rightSearch: boolean, tagFlag: boolean): Observable<DrawingData> {
         const subject = new Subject<DrawingData>();
         const k: number = rightSearch
             ? ((++this.courrentIndex + this.sizeOfArray) % this.sizeOfArray) + 1
             : ((--this.courrentIndex + this.sizeOfArray) % this.sizeOfArray) - 1;
-        console.log(k, ' : ', this.courrentIndex);
-        this.httpService.getOneDrawing(k).subscribe({
+
+        this.httpService.getOneDrawing(k, tagFlag).subscribe({
             next: (result) => {
                 subject.next(result);
             },

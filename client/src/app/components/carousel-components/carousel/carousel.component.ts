@@ -21,6 +21,7 @@ export class CarouselComponent implements OnInit {
     left: number = 0;
     right: number = 2;
     isLoading: boolean = true;
+    tagFlag: boolean = false;
 
     drawingArray: DrawingData[] = [];
 
@@ -43,10 +44,12 @@ export class CarouselComponent implements OnInit {
     }
 
     initCarousel(): void {
-        this.carouselService.initCarousel().subscribe((result) => {
+        this.carouselService.initCarousel(this.tagFlag).subscribe((result) => {
             this.drawingArray = result;
             if (this.drawingArray.length === 1) {
                 this.middle = 0;
+            } else {
+                this.middle = 1;
             }
             this.isLoading = false;
         });
@@ -77,7 +80,7 @@ export class CarouselComponent implements OnInit {
     }
 
     shiftLeft(): void {
-        this.carouselService.getDrawing(false).subscribe((result) => {
+        this.carouselService.getDrawing(false, this.tagFlag).subscribe((result) => {
             this.drawingArray = this.drawingArray.slice(this.left, this.middle + 1);
             this.drawingArray.splice(this.left, 0, result);
             this.drawingCard.map((d) => d.adjustSizeOfImage());
@@ -85,11 +88,16 @@ export class CarouselComponent implements OnInit {
     }
 
     shiftRight(): void {
-        this.carouselService.getDrawing(true).subscribe((result) => {
+        this.carouselService.getDrawing(true, this.tagFlag).subscribe((result) => {
             this.drawingArray = this.drawingArray.slice(this.middle, this.right + 1);
             this.drawingArray.push(result);
 
             this.drawingCard.map((d) => d.adjustSizeOfImage());
         });
+    }
+
+    toggleTagFlag(event: boolean): void {
+        this.tagFlag = event;
+        this.initCarousel();
     }
 }

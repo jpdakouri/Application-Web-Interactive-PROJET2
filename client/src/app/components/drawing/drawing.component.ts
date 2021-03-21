@@ -140,7 +140,6 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     @HostListener('mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
-        console.log('non');
         if (this.canvasResizerService.isResizing()) {
             this.canvasResizerService.onMouseUp(event);
             this.resizeCanvas();
