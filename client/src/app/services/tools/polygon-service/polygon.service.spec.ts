@@ -101,7 +101,7 @@ describe('PolygonService', () => {
         const drawOutlineSpy = spyOn<any>(service, 'drawOutLine').and.callThrough();
         service.onMouseDown(mouseEvent);
         service.onMouseUp(mouseEvent);
-        expect(drawOutlineSpy).toHaveBeenCalledWith(jasmine.any(CanvasRenderingContext2D), service.mouseDownCoord);
+        expect(drawOutlineSpy).toHaveBeenCalled();
     });
 
     it(' drawOutline should be called when shapeStyle OutLine is selected', () => {
@@ -111,7 +111,7 @@ describe('PolygonService', () => {
         const drawOutlineSpy = spyOn<any>(service, 'drawOutLine').and.callThrough();
         service.onMouseDown(mouseEvent);
         service.onMouseUp(mouseEvent);
-        expect(drawOutlineSpy).toHaveBeenCalledWith(jasmine.any(CanvasRenderingContext2D), service.mouseDownCoord);
+        expect(drawOutlineSpy).toHaveBeenCalled();
     });
 
     it(' drawFilled should be called when shapeeStyke Filled is selected', () => {
@@ -121,7 +121,7 @@ describe('PolygonService', () => {
         const drawFilledSpy = spyOn<any>(service, 'drawFilled').and.callThrough();
         service.onMouseDown(mouseEvent);
         service.onMouseUp(mouseEvent);
-        expect(drawFilledSpy).toHaveBeenCalledWith(jasmine.any(CanvasRenderingContext2D), service.mouseDownCoord);
+        expect(drawFilledSpy).toHaveBeenCalled();
     });
 
     it(' drawFilledOutline should be called when shapeStyle  is selected', () => {
@@ -131,7 +131,7 @@ describe('PolygonService', () => {
         const drawFilledOutlineSpy = spyOn<any>(service, 'drawFilledOutLine').and.callThrough();
         service.onMouseDown(mouseEvent);
         service.onMouseUp(mouseEvent);
-        expect(drawFilledOutlineSpy).toHaveBeenCalledWith(jasmine.any(CanvasRenderingContext2D), service.mouseDownCoord);
+        expect(drawFilledOutlineSpy).toHaveBeenCalled();
     });
 
     it('should draw a circle in the first quadrant', () => {
