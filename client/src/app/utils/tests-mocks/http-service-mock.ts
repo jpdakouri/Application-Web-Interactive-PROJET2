@@ -19,7 +19,7 @@ export class HttpServiceMock {
         return of();
     }
 
-    getOneDrawing(index: number): Observable<DrawingDataMock> {
+    getOneDrawing(index: number, tag: boolean): Observable<DrawingDataMock> {
         return of();
     }
 

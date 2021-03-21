@@ -42,7 +42,7 @@ describe('CarouselService', () => {
 
     it('getArraySizeOfDrawing should return un observable with the new size', async(() => {
         spyOn(httpServiceMock, 'getLengthOfDrawings').and.returnValue(of(1));
-        service.getArraySizeOfDrawing().subscribe((result) => {
+        service.getArraySizeOfDrawing(false).subscribe((result) => {
             expect(result).toEqual(1);
         });
     }));
@@ -51,12 +51,12 @@ describe('CarouselService', () => {
         service.courrentIndex = 0;
         service.sizeOfArray = 5;
         const getDrawingSpy = spyOn(httpServiceMock, 'getOneDrawing').and.returnValue(of(new DrawingDataMock('1')));
-        service.getDrawing(false);
-        expect(getDrawingSpy).toHaveBeenCalledWith(3);
+        service.getDrawing(false, false);
+        expect(getDrawingSpy).toHaveBeenCalledWith(3, false);
 
         service.courrentIndex = 0;
-        service.getDrawing(true);
-        expect(getDrawingSpy).toHaveBeenCalledWith(2);
+        service.getDrawing(true, false);
+        expect(getDrawingSpy).toHaveBeenCalledWith(2, false);
     }));
 
     it('openDrawing should call drawing service to open the drawing', () => {

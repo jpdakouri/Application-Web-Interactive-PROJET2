@@ -86,14 +86,16 @@ describe('SaveDrawingComponent', () => {
         expect(noNameInputError).toBe(REQUIRED_FILE_NAME_ERROR_MESSAGE);
     });
 
-    it('it should be able to get correct messages errors for tag name', () => {
+    it('it should be able to get correct messages errors for invalid tag name', () => {
         component.tagName.setValue('!!!');
-        let expectedErrorMessage = component.getErrorMessageTag();
-        expect(expectedErrorMessage).toBe(INVALIDE_TAG_NAME_ERROR_MESSAGE);
+        const invalideInput = component.getErrorMessageTag();
+        expect(invalideInput).toBe(INVALIDE_TAG_NAME_ERROR_MESSAGE);
+    });
 
+    it('it should be able to get correct messages errors for valid tag name', () => {
         component.tagName.setValue('Good Input');
-        expectedErrorMessage = component.getErrorMessageTag();
-        expect(expectedErrorMessage).toBe(NO_ERROR_MESSAGE);
+        const valideInput = component.getErrorMessageTag();
+        expect(valideInput).toBe(NO_ERROR_MESSAGE);
     });
 
     it('updateService should update the values of the services', () => {
