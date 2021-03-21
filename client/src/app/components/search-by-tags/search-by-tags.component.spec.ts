@@ -9,7 +9,7 @@ import { HttpServiceMock } from '@app/utils/tests-mocks/http-service-mock';
 import { of } from 'rxjs';
 import { SearchByTagsComponent } from './search-by-tags.component';
 
-fdescribe('SearchByTagsComponent', () => {
+describe('SearchByTagsComponent', () => {
     let component: SearchByTagsComponent;
     let fixture: ComponentFixture<SearchByTagsComponent>;
     let httpServiceMock: HttpServiceMock;
