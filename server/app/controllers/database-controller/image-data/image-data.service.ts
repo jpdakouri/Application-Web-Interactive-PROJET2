@@ -8,6 +8,7 @@ const TAG_NAME_REGEX = /^[a-zA-Z0-9 ]*$/;
 @injectable()
 export class ImageDataService {
     drawingData: DrawingData[] = new Array();
+    filteredDrawingData: DrawingData[] = new Array();
     firstTimeFlag: boolean = true;
 
     updateDrawing(drawingData: DrawingData): boolean {
@@ -54,42 +55,21 @@ export class ImageDataService {
         }
     }
 
-    populateArray(result: Metadata[]): void {
+    populateArray(result: Metadata[], tagFlag: boolean): void {
+        if (tagFlag) this.filteredDrawingData = [];
         result.forEach((element) => {
             const path = `./app/drawings/${element._id?.toString()}.png`;
             if (fs.existsSync(path)) {
                 const drawingData = new DrawingData(element._id?.toString(), element.title, element.tags, undefined, element.width, element.height);
-                this.drawingData.push(drawingData);
+                tagFlag ? this.filteredDrawingData.push(drawingData) : this.drawingData.push(drawingData);
             }
         });
     }
 
-    getImagesFromDisk(databaseResult: Metadata[]): DrawingData[] {
-        const drawingsToSend: DrawingData[] = [];
-        databaseResult.forEach((element) => {
-            const path = `./app/drawings/${element._id?.toString()}.png`;
-            if (fs.existsSync(path)) {
-                const mime = 'image/png';
-                const encoding = 'base64';
-                let data = '';
-                try {
-                    data = fs.readFileSync(path).toString(encoding);
-                } catch (err) {
-                    console.error('Une erreur est survenue lors de la lecture du disque !');
-                    console.error(err);
-                }
-                console.log("L'image a bien été lue du disque !");
-                const uri = `data:${mime};${encoding},${data}`;
-                drawingsToSend.push(new DrawingData(element._id?.toString(), element.title, element.tags, uri, element.width, element.height));
-            }
-        });
-        return drawingsToSend;
-    }
-
-    getOneImageFromDisk(index: number): DrawingData | undefined {
-        const size = this.drawingData.length;
+    getOneImageFromDisk(index: number, tagFlag: boolean): DrawingData | undefined {
+        const size = tagFlag ? this.filteredDrawingData.length : this.drawingData.length;
         if (size > 0) {
-            const drawing = this.drawingData[(index + size) % size];
+            const drawing = tagFlag ? this.filteredDrawingData[(index + size) % size] : this.drawingData[(index + size) % size];
             const mime = 'image/png';
             const encoding = 'base64';
             let data = '';
@@ -118,6 +98,7 @@ export class ImageDataService {
         }
         console.log("L'image a bien été supprimée du disque !");
         this.drawingData = this.drawingData.filter((drawingData) => !(drawingData.id === id));
+        this.filteredDrawingData = this.drawingData.filter((drawingData) => !(drawingData.id === id));
     }
 
     insertNameCheckUp(drawingImage: DrawingData): boolean {

@@ -48,12 +48,10 @@ export class SaveDrawingService {
             this.originalCanvas.width,
             this.originalCanvas.height,
         );
-        console.log(drawingToSend.width, drawingToSend.height);
 
         this.httpService.insertDrawing(drawingToSend).subscribe({
             next: (result) => {
                 console.log("La requête POST s'est bien déroulée !");
-                console.log(result);
             },
             error: (err) => {
                 console.error('Une erreur est survenue dans lors de la requête POST');

@@ -50,8 +50,6 @@ export class DrawingService {
 
     openDrawing(drawing: DrawingData): void {
         this.createNewDrawing();
-        console.log(drawing.width, drawing.height);
-        console.log('canva : ', this.canvas.width, this.canvas.height);
         this.canvas.width = drawing.width;
         this.canvas.height = drawing.height;
         this.previewCtx.canvas.width = drawing.width;
@@ -61,7 +59,6 @@ export class DrawingService {
             this.canvas.getContext('2d')?.drawImage(img, 0, 0);
         };
         img.src = drawing.dataURL as string;
-        console.log('canva : ', this.canvas.width, this.canvas.height);
         this.newDrawing.emit({ x: drawing.width, y: drawing.height } as Vec2);
         this.saveCanvas();
     }

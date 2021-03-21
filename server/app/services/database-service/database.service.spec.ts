@@ -20,16 +20,12 @@ describe('DatabaseService', () => {
 
     beforeEach(async () => {
         databaseService = new DatabaseService();
-
-        // Start a local test server
         mongoServer = new MongoMemoryServer();
         mongoUri = await mongoServer.getUri();
         client = await MongoClient.connect(mongoUri, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });
-
-        // We use the local Mongo Instance and not the production database
         db = client.db(await mongoServer.getDbName());
         databaseService.collection = db.collection('test');
     });

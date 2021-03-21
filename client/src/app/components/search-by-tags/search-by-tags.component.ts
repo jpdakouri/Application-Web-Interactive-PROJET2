@@ -1,5 +1,5 @@
 import { ENTER } from '@angular/cdk/keycodes';
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { HttpService } from '@app/services/http/http.service';
@@ -19,6 +19,7 @@ export class SearchByTagsComponent {
     tagName: FormControl;
     tags: Tag[];
     readonly separatorKeysCodes: number[] = [ENTER];
+    @Output() tagFlag: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     constructor(private httpService: HttpService) {
         this.tagName = new FormControl('', [Validators.pattern(TAG_NAME_REGEX)]);
@@ -55,10 +56,8 @@ export class SearchByTagsComponent {
     getDrawingsByTags(): void {
         let tags = this.toStringArray(this.tags);
         tags = this.tags != undefined ? tags : ['none'];
-        this.httpService.getDrawingsByTags(tags).subscribe({
-            next: (result) => {
-                console.log(result);
-            },
+        this.httpService.sendTags(tags).subscribe((result) => {
+            this.tagFlag.emit(true);
         });
     }
 }
