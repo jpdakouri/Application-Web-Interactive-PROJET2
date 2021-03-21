@@ -14,18 +14,18 @@ export class PipettePreviewComponent {
     constructor(public pipette: PipetteService) {}
 
     @HostListener('window:mousemove', [])
-    onMouseLeave(): void {
+    onMouseMouse(): void {
         if (this.pipette.getIsCursorOnCanvas()) this.drawPreview();
     }
 
-    drawPreview(): void {
+    private drawPreview(): void {
         if (this.pipettePreviewCanvas != undefined) {
             const ctx = this.pipettePreviewCanvas.nativeElement.getContext('2d');
             if (ctx != null) {
                 const previewColors = this.pipette.getPreviewColors();
                 for (let i = 0; i < PREVIEW_NUMBER_OF_SQUARES_PER_SIDE; i++) {
                     for (let j = 0; j < PREVIEW_NUMBER_OF_SQUARES_PER_SIDE; j++) {
-                        this.drawSquare(ctx, j, i, previewColors[j][i]);
+                        this.drawSquare(ctx, i, j, previewColors[j][i]);
                     }
                 }
             }
