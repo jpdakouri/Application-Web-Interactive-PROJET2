@@ -5,21 +5,31 @@ import { CarouselComponent } from '@app/components/carousel-components/carousel/
 import { HttpService } from '@app/services/http/http.service';
 import { DrawingDataMock } from '@app/utils/tests-mocks/drawing-data-mock';
 import { HttpServiceMock } from '@app/utils/tests-mocks/http-service-mock';
+import { DrawingData } from '@common/communication/drawing-data';
 import { of } from 'rxjs';
+import { DrawingService } from '../drawing/drawing.service';
 import { CarouselService } from './carousel.service';
 
+class DrawingServiceMock {
+    openDrawing(drawing: any): void {}
+}
+
+// tslint:disable:no-magic-numbers
 fdescribe('CarouselService', () => {
     let service: CarouselService;
     let httpServiceMock: HttpServiceMock;
+    let drawingServiceMock: DrawingServiceMock;
 
     beforeEach(() => {
         httpServiceMock = new HttpServiceMock();
+        drawingServiceMock = new DrawingServiceMock();
         TestBed.configureTestingModule({
             providers: [
                 { provide: MatDialogRef, useValue: {} },
                 { provide: CarouselComponent, useValue: {} },
                 { provide: HttpClient, useValue: {} },
                 { provide: HttpService, useValue: httpServiceMock },
+                { provide: DrawingService, useValue: drawingServiceMock },
             ],
             imports: [MatDialogModule],
         });
@@ -47,5 +57,18 @@ fdescribe('CarouselService', () => {
         service.courrentIndex = 0;
         service.getDrawing(true);
         expect(getDrawingSpy).toHaveBeenCalledWith(2);
+    }));
+
+    it('openDrawing should call drawing service to open the drawing', () => {
+        const openDrawingSpy = spyOn(drawingServiceMock, 'openDrawing').and.stub();
+        service.openDrawing({} as DrawingData);
+        expect(openDrawingSpy).toHaveBeenCalled();
+    });
+
+    it('deleteDrawing should retrun a promise', async(() => {
+        spyOn(httpServiceMock, 'getOneDrawing').and.returnValue(of(new DrawingDataMock('1')));
+        service.deleteDrawing('id').then((result) => {
+            expect(result).toEqual('Le dessin a été supprimé');
+        });
     }));
 });
