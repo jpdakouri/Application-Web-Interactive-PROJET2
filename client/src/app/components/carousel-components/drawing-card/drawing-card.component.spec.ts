@@ -8,7 +8,7 @@ import { DrawingCardComponent } from './drawing-card.component';
 const snackBarMock = {
     open: () => {},
 };
-fdescribe('DrawingCardComponent', () => {
+describe('DrawingCardComponent', () => {
     let component: DrawingCardComponent;
     let fixture: ComponentFixture<DrawingCardComponent>;
 

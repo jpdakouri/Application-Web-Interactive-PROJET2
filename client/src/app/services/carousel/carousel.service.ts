@@ -81,7 +81,6 @@ export class CarouselService {
         console.log(k, ' : ', this.courrentIndex);
         this.httpService.getOneDrawing(k).subscribe({
             next: (result) => {
-                console.log("La requête GET s'est bien déroulée !");
                 subject.next(result);
             },
         });
