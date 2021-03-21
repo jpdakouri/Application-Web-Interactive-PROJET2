@@ -38,25 +38,21 @@ export class DrawingCardComponent implements OnInit {
 
     set drawingData(dd: DrawingData) {
         this.infoDrawing = dd;
-        // console.log(this.infoDrawing.height, dd.height);
         this.adjustSizeOfImage();
     }
 
     adjustSizeOfImage(): void {
-        // console.log(this.infoDrawing.title + ': ', this.infoDrawing.width, this.infoDrawing.height);
         if (this.infoDrawing.width > this.infoDrawing.height) {
             this.imageSize = {
                 width: '90%',
                 height: 'auto',
             } as CardStyle;
-            // console.log('wi');
         }
         if (this.infoDrawing.width <= this.infoDrawing.height) {
             this.imageSize = {
                 width: 'auto',
                 height: '75%',
             } as CardStyle;
-            // console.log('he');
         }
     }
 }

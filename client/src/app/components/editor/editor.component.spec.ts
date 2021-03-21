@@ -110,7 +110,6 @@ describe('EditorComponent', () => {
         fixture.detectChanges();
         // tslint:disable:no-any
         spyOn<any>(toolManagerServiceMock, 'emitToolChange').and.callThrough();
-        // spyOn<any>(drawingServiceSpy, 'getPositionFromMouse').and.returnValue({ x: 100, y: 100 });
     });
 
     it('should create', () => {

@@ -44,11 +44,11 @@ export class CarouselComponent implements OnInit {
 
     initCarousel(): void {
         this.carouselService.initCarousel(this.tagFlag).subscribe((result) => {
-            console.log('initCarousel result:');
-            console.log(result);
             this.drawingArray = result;
             if (this.drawingArray.length === 1) {
                 this.middle = 0;
+            } else {
+                this.middle = 1;
             }
             this.isLoading = false;
         });
@@ -72,15 +72,9 @@ export class CarouselComponent implements OnInit {
     }
 
     deleteDrawing(id: string | undefined): void {
-        this.carouselService
-            .deleteDrawing(id as string)
-            .then((res) => {
-                console.log('deleteDrawing result:');
-                console.log(res);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        this.carouselService.deleteDrawing(id as string).catch((err) => {
+            console.error(err);
+        });
     }
 
     shiftLeft(): void {
@@ -88,8 +82,6 @@ export class CarouselComponent implements OnInit {
             this.drawingArray = this.drawingArray.slice(this.left, this.middle + 1);
             this.drawingArray.splice(this.left, 0, result);
             this.drawingCard.map((d) => d.adjustSizeOfImage());
-            console.log('shiftLeft');
-            console.log(this.drawingArray);
         });
     }
 
@@ -99,8 +91,6 @@ export class CarouselComponent implements OnInit {
             this.drawingArray.push(result);
 
             this.drawingCard.map((d) => d.adjustSizeOfImage());
-            console.log('shiftRigth');
-            console.log(this.drawingArray);
         });
     }
 

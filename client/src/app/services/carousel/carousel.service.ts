@@ -23,8 +23,6 @@ export class CarouselService {
         const subject = new Subject<DrawingData[]>();
 
         this.getArraySizeOfDrawing(tagFlag).subscribe((size) => {
-            console.log('getArraySize result:');
-            console.log(size);
             if (size > 0) {
                 this.httpService.getOneDrawing(-1, tagFlag).subscribe({
                     next: (resultFirst) => {
@@ -37,25 +35,17 @@ export class CarouselService {
                                         next: (resultThird) => {
                                             this.drawingsToShow.push(resultThird);
                                             subject.next(this.drawingsToShow);
-                                            console.log('drawingToShow length size>1: ');
-                                            console.log(this.drawingsToShow.length);
                                         },
                                     });
                                 },
                             });
                         } else {
                             subject.next(this.drawingsToShow);
-                            console.log('drawingToShow length size <1: ');
-
-                            console.log(this.drawingsToShow.length);
                         }
                     },
                 });
             } else {
                 subject.next(this.drawingsToShow);
-                console.log('drawingToShow length size<0: ');
-
-                console.log(this.drawingsToShow.length);
             }
         });
         return subject.asObservable();
@@ -81,13 +71,9 @@ export class CarouselService {
         const k: number = rightSearch
             ? ((++this.courrentIndex + this.sizeOfArray) % this.sizeOfArray) + 1
             : ((--this.courrentIndex + this.sizeOfArray) % this.sizeOfArray) - 1;
-        console.log('getDrawing: ');
-        console.log(k, ' : ', this.courrentIndex);
+
         this.httpService.getOneDrawing(k, tagFlag).subscribe({
             next: (result) => {
-                console.log("La requête GET s'est bien déroulée !");
-                console.log('getOneDrawingResult: ');
-                console.log(result);
                 subject.next(result);
             },
         });
@@ -96,22 +82,23 @@ export class CarouselService {
 
     openDrawing(drawing: DrawingData): void {
         this.drawingService.openDrawing(drawing);
-        console.log(drawing.width, drawing.height);
     }
 
     async deleteDrawing(id: string): Promise<string> {
-        const promise = new Promise<string>((resolve) => {
+        const promise = new Promise<string>((resolve, reject) => {
             this.httpService.deleteDrawing(id).subscribe({
                 next: (result) => {
+                    this.sizeOfArray = this.sizeOfArray - 1;
                     setTimeout(() => {
                         if (result) {
-                            resolve('Le dessin a ne fait plus parti ');
+                            resolve('Le dessin est supprimé !');
                         }
                     }, 200);
                 },
                 error: (err) => {
                     console.log('Une erreur est survenue lors de la requête DELETE !');
-                    console.log(err);
+                    console.error(err);
+                    reject(err);
                 },
             });
         });

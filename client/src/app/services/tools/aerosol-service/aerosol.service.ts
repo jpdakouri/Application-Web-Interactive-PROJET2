@@ -69,12 +69,10 @@ export class AerosolService extends Tool {
 
     onMouseLeave(event: MouseEvent): void {
         window.clearInterval(this.intervalID);
-        console.log(this.isSpraying);
         this.isSpraying = false;
     }
 
     onMouseEnter(event: MouseEvent): void {
-        console.log(event);
         if (this.mouseDown) {
             this.isSpraying = true;
             this.spray();

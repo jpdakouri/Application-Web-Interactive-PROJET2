@@ -37,10 +37,10 @@
         ></app-drawing-card>
     </div>
     <div class="arrowContainer" *ngIf="this.drawingArray.length > 0">
-        <button mat-button class="leftArrow" color="primary" (click)="shiftLeft()" [disabled]="this.drawingArray.length < 2">
+        <button mat-mini-fab class="leftArrow" color="primary" (click)="shiftLeft()" [disabled]="this.drawingArray.length < 2">
             <mat-icon>arrow_left</mat-icon>
         </button>
-        <button mat-button class="rightArrow" color="primary" (click)="shiftRight()" [disabled]="this.drawingArray.length < 2">
+        <button mat-mini-fab class="rightArrow" color="primary" (click)="shiftRight()" [disabled]="this.drawingArray.length < 2">
             <mat-icon>arrow_right</mat-icon>
         </button>
     </div>

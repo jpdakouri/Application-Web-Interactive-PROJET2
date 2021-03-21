@@ -14,11 +14,6 @@ export class HttpService {
 
     private readonly BASE_URL: string = 'http://localhost:3000';
 
-    // For later !
-    // getDrawingsByTags(): Observable<Metadata[]> {
-    //     return this.http.get<Metadata[]>(this.BASE_URL + '/api/drawings');
-    // }
-
     deleteDrawing(drawingID: string): Observable<string> {
         return this.http.delete<string>(this.BASE_URL + `/api/drawings/${drawingID}`).pipe(catchError(this.handleError<string>('DeleteDrawing')));
     }
@@ -45,7 +40,6 @@ export class HttpService {
     }
 
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
-        console.log(request);
         return (error: HttpErrorResponse): Observable<T> => {
             if (error.status === 0) this.openDialog('Serveur Indisponible');
             else this.openDialog(error.error);
