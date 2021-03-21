@@ -18,6 +18,7 @@ import { CurrentColourComponent } from '@app/components/colour-components/curren
 import { HueSelectorComponent } from '@app/components/colour-components/hue-selector/hue-selector.component';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { ExportDrawingComponent } from '@app/components/export-drawing/export-drawing.component';
+import { PipettePreviewComponent } from '@app/components/pipette-preview/pipette-preview.component';
 import { ToolAttributeBarComponent } from '@app/components/toolbar-components/tool-attribute-bar/tool-attribute-bar.component';
 import { ToolbarComponent } from '@app/components/toolbar-components/toolbar/toolbar.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -47,6 +48,7 @@ describe('EditorComponent', () => {
                 CurrentColourComponent,
                 HueSelectorComponent,
                 ExportDrawingComponent,
+                PipettePreviewComponent,
             ],
             imports: [
                 MatCheckboxModule,
