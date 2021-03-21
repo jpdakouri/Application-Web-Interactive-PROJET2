@@ -62,6 +62,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.setCanvasSize();
         this.subscribeToToolChange();
         this.subscribeToNewDrawing();
+        this.subscribeToCreateNewDrawingEmitter();
     }
 
     ngAfterViewInit(): void {
@@ -82,6 +83,13 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     subscribeToToolChange(): void {
         this.toolManagerService.toolChangeEmitter.subscribe((toolName: ToolsNames) => {
             this.updateCurrentTool();
+        });
+    }
+
+    subscribeToCreateNewDrawingEmitter(): void {
+        this.drawingService.createNewDrawingEmitter.subscribe(() => {
+            this.canvasSize = this.canvasResizerService.calculateCanvasSize();
+            this.canvasResizerService.updatePreviewCanvasSize(this.canvasSize);
         });
     }
 
@@ -230,7 +238,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     subscribeToNewDrawing(): void {
         this.drawingService.newDrawing.subscribe((result: Vec2) => {
             this.canvasSize = result;
-            this.canvasResizerService.resizeCanvas(result);
+            this.canvasResizerService.updatePreviewCanvasSize(result);
         });
     }
 }
