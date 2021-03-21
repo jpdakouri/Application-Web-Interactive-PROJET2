@@ -6,7 +6,7 @@ import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { SelectionEllipseService } from './selection-ellipse.service';
 
-fdescribe('SelectionEllipseService', () => {
+describe('SelectionEllipseService', () => {
     let service: SelectionEllipseService;
     let mouseEvent: MouseEvent;
     let canvasTestHelper: CanvasTestHelper;
@@ -81,6 +81,7 @@ fdescribe('SelectionEllipseService', () => {
 
     it(' mouseDown should not activate the selection when isClickIn is false', () => {
         service.selectionActive = true;
+        // tslint:disable:no-magic-numbers
         service.height = service.width = 100;
 
         service.topLeftCorner = { x: 200, y: 200 };
@@ -97,6 +98,7 @@ fdescribe('SelectionEllipseService', () => {
     });
 
     it('onMouseMove should call updatePreview when mouse is down', () => {
+        // tslint:disable:no-any
         const updatePreviewSpy = spyOn<any>(service, 'updatePreview').and.callThrough();
         service.onMouseDown(mouseEvent);
         service.onMouseMove(mouseEvent);

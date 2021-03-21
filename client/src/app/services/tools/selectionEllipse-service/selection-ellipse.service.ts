@@ -24,13 +24,15 @@ export class SelectionEllipseService extends Tool {
     private end: Vec2;
     private shiftDown: boolean;
     private dragActive: boolean;
-    private initial: Vec2;
-    private topLeftCornerInit: Vec2;
     topLeftCorner: Vec2;
     selectionActive: boolean;
     height: number;
     width: number;
     private offset: Vec2;
+    private upPressed: boolean;
+    private downPressed: boolean;
+    private leftPressed: boolean;
+    private rightPressed: boolean;
 
     rectangleService: RectangleService;
     currentColourService: CurrentColourService;
@@ -57,9 +59,9 @@ export class SelectionEllipseService extends Tool {
                 this.selectionActive = true;
             } else {
                 if (this.isClickIn(this.firstGrid)) {
-                    this.initial = this.topLeftCornerInit = this.getPositionFromMouse(event);
-                    this.offset.x = this.topLeftCorner.x - this.initial.x;
-                    this.offset.y = this.topLeftCorner.y - this.initial.y;
+                    const initial = this.getPositionFromMouse(event);
+                    this.offset.x = this.topLeftCorner.x - initial.x;
+                    this.offset.y = this.topLeftCorner.y - initial.y;
                     this.dragActive = true;
                     console.log('click dedans');
                 } else {
@@ -112,29 +114,25 @@ export class SelectionEllipseService extends Tool {
         switch (event.key) {
             case KeyboardButtons.Up: {
                 if (this.selectionActive) {
-                    this.firstGrid.y -= PIXELS_ARROW_STEPS;
-                    this.topLeftCorner.y -= PIXELS_ARROW_STEPS;
+                    this.upPressed = true;
                 }
                 break;
             }
             case KeyboardButtons.Down: {
                 if (this.selectionActive) {
-                    this.firstGrid.y += PIXELS_ARROW_STEPS;
-                    this.topLeftCorner.y += PIXELS_ARROW_STEPS;
+                    this.downPressed = true;
                 }
                 break;
             }
             case KeyboardButtons.Right: {
                 if (this.selectionActive) {
-                    this.firstGrid.x += PIXELS_ARROW_STEPS;
-                    this.topLeftCorner.x += PIXELS_ARROW_STEPS;
+                    this.rightPressed = true;
                 }
                 break;
             }
             case KeyboardButtons.Left: {
                 if (this.selectionActive) {
-                    this.firstGrid.x -= PIXELS_ARROW_STEPS;
-                    this.topLeftCorner.x -= PIXELS_ARROW_STEPS;
+                    this.leftPressed = true;
                 }
                 break;
             }
@@ -149,14 +147,40 @@ export class SelectionEllipseService extends Tool {
                 this.topLeftCorner = { x: 0, y: 0 };
             }
         }
-        this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y + 'px';
-        this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x + 'px';
+        this.updateArrowPosition();
     }
 
     onKeyUp(event: KeyboardEvent): void {
-        if (this.shiftDown && event.key === KeyboardButtons.Shift) {
-            this.shiftDown = false;
-            this.updatePreview();
+        switch (event.key) {
+            case KeyboardButtons.Up: {
+                if (this.selectionActive) {
+                    this.upPressed = false;
+                }
+                break;
+            }
+            case KeyboardButtons.Down: {
+                if (this.selectionActive) {
+                    this.downPressed = false;
+                }
+                break;
+            }
+            case KeyboardButtons.Right: {
+                if (this.selectionActive) {
+                    this.rightPressed = false;
+                }
+                break;
+            }
+            case KeyboardButtons.Left: {
+                if (this.selectionActive) {
+                    this.leftPressed = false;
+                }
+                break;
+            }
+            case KeyboardButtons.Shift: {
+                this.shiftDown = false;
+                this.updatePreview();
+                break;
+            }
         }
     }
 
@@ -226,11 +250,9 @@ export class SelectionEllipseService extends Tool {
         ctx.setLineDash([5, 15]);
         ctx.strokeStyle = 'blue';
         ctx.lineWidth = this.lineThickness = 0.5;
-
         const startCoord = { ...this.firstGrid };
         const width = finalGrid.x;
         const height = finalGrid.y;
-
         ctx.ellipse(startCoord.x + width / 2, startCoord.y + height / 2, Math.abs(width / 2), Math.abs(height / 2), 0, 0, 2 * Math.PI, false);
         ctx.closePath();
     }
@@ -245,7 +267,6 @@ export class SelectionEllipseService extends Tool {
         this.drawingService.clearCanvas(ctx);
         const imageData = this.drawingService.baseCtx.getImageData(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
         const bottomRightCorner: Vec2 = { x: imageData.width, y: imageData.height };
-        // console.log(this.imageData.data);
 
         // Remplace les pixels vierges du canvas par des pixels blancs
         for (let i = 3; i < imageData.data.length; i += ALPHA_POS) {
@@ -261,16 +282,13 @@ export class SelectionEllipseService extends Tool {
             this.drawingService.selectedAreaCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
             ctx.restore();
         });
-
         this.height = imageData.height;
         this.width = imageData.width;
-
         // Resize le selectedAreaCtx
         ctx.canvas.width = bottomRightCorner.x;
         ctx.canvas.height = bottomRightCorner.y;
         // Deplacer le resultat de la selection topLeftCorner
         ctx.translate(-this.topLeftCorner.x, -this.topLeftCorner.y);
-
         // Remettre la selection à la position de la souris
         ctx.canvas.style.top = this.topLeftCorner.y + 'px';
         ctx.canvas.style.left = this.topLeftCorner.x + 'px';
@@ -303,8 +321,29 @@ export class SelectionEllipseService extends Tool {
 
     private updateDragPosition(grid: Vec2): void {
         const currentCoord = { ...grid };
-        this.topLeftCorner.x = this.topLeftCornerInit.x + currentCoord.x - this.initial.x + this.offset.x;
-        this.topLeftCorner.y = this.topLeftCornerInit.y + currentCoord.y - this.initial.y + this.offset.y;
+        this.topLeftCorner.x = currentCoord.x + this.offset.x;
+        this.topLeftCorner.y = currentCoord.y + this.offset.y;
+        this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y + 'px';
+        this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x + 'px';
+    }
+
+    private updateArrowPosition(): void {
+        if (this.selectionActive && this.upPressed) {
+            this.topLeftCorner.y -= PIXELS_ARROW_STEPS;
+            this.firstGrid.y -= PIXELS_ARROW_STEPS;
+        }
+        if (this.selectionActive && this.downPressed) {
+            this.topLeftCorner.y += PIXELS_ARROW_STEPS;
+            this.firstGrid.y += PIXELS_ARROW_STEPS;
+        }
+        if (this.selectionActive && this.rightPressed) {
+            this.topLeftCorner.x += PIXELS_ARROW_STEPS;
+            this.firstGrid.x += PIXELS_ARROW_STEPS;
+        }
+        if (this.selectionActive && this.leftPressed) {
+            this.topLeftCorner.x -= PIXELS_ARROW_STEPS;
+            this.firstGrid.x -= PIXELS_ARROW_STEPS;
+        }
         this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y + 'px';
         this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x + 'px';
     }

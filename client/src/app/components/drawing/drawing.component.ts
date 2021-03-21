@@ -194,7 +194,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     @HostListener('contextmenu', ['$event'])
     onContextMenu(): boolean {
-        return true; // disables the standard chrome menu
+        return false; // disables the standard chrome menu
     }
 
     onMiddleRightResizerClick(): void {
