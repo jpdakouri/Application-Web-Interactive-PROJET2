@@ -65,7 +65,7 @@ describe('SelectionRectangleService', () => {
         service['shiftDown'] = true;
         const expected = { x: 200, y: 200 } as Vec2;
         const val = service.mouseDownCoord;
-        service['drawSquare'](val);
+        service['makeSquare'](val);
         expect(val).toEqual(expected);
     });
 
@@ -73,8 +73,8 @@ describe('SelectionRectangleService', () => {
         service.mouseDownCoord = { x: -300, y: 200 };
         const expected = { x: -200, y: 200 } as Vec2;
         const value = service.mouseDownCoord;
-        service['drawSquare'](value);
-        expect(service['drawSquare'](service.mouseDownCoord));
+        service['makeSquare'](value);
+        expect(service['makeSquare'](service.mouseDownCoord));
         expect(value).toEqual(expected);
     });
 
@@ -82,8 +82,8 @@ describe('SelectionRectangleService', () => {
         service.mouseDownCoord = { x: 300, y: -200 };
         const expected = { x: 200, y: -200 } as Vec2;
         const value = service.mouseDownCoord;
-        service['drawSquare'](value);
-        expect(service['drawSquare'](service.mouseDownCoord));
+        service['makeSquare'](value);
+        expect(service['makeSquare'](service.mouseDownCoord));
         expect(value).toEqual(expected);
     });
 
@@ -91,8 +91,8 @@ describe('SelectionRectangleService', () => {
         service.mouseDownCoord = { x: -300, y: -200 };
         const expected = { x: -200, y: -200 } as Vec2;
         const value = service.mouseDownCoord;
-        service['drawSquare'](value);
-        expect(service['drawSquare'](service.mouseDownCoord));
+        service['makeSquare'](value);
+        expect(service['makeSquare'](service.mouseDownCoord));
         expect(value).toEqual(expected);
     });
 
@@ -100,8 +100,8 @@ describe('SelectionRectangleService', () => {
         service.mouseDownCoord = { x: 200, y: -300 };
         const expected = { x: 200, y: -200 } as Vec2;
         const value = service.mouseDownCoord;
-        service['drawSquare'](value);
-        expect(service['drawSquare'](service.mouseDownCoord));
+        service['makeSquare'](value);
+        expect(service['makeSquare'](service.mouseDownCoord));
         expect(value).toEqual(expected);
     });
 });

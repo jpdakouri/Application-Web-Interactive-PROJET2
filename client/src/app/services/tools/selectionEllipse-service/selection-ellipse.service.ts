@@ -20,16 +20,16 @@ import { ToolCommand } from '@app/utils/interfaces/tool-command';
 })
 export class SelectionEllipseService extends Tool {
     private firstGrid: Vec2;
-    topLeftCorner: Vec2;
     private begin: Vec2;
     private end: Vec2;
     private shiftDown: boolean;
     private dragActive: boolean;
+    private initial: Vec2;
+    private topLeftCornerInit: Vec2;
+    topLeftCorner: Vec2;
     selectionActive: boolean;
     height: number;
     width: number;
-    private initial: Vec2;
-    private topLeftCornerInit: Vec2;
     private offset: Vec2;
 
     rectangleService: RectangleService;
@@ -40,10 +40,7 @@ export class SelectionEllipseService extends Tool {
         this.currentColourService = currentColourService;
         this.topLeftCorner = { x: 0, y: 0 };
         this.offset = { x: 0, y: 0 };
-
-        this.selectionActive = false;
-        this.dragActive = false;
-
+        this.selectionActive = this.dragActive = false;
         this.drawingService.selectedAreaCtx = this.drawingService.baseCtx;
     }
 
@@ -95,7 +92,6 @@ export class SelectionEllipseService extends Tool {
     }
 
     onMouseUp(event: MouseEvent): void {
-        // debugger;
         if (this.mouseDown && this.selectionActive && !this.dragActive && this.mouseMoved) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.end = this.getPositionFromMouse(event);
@@ -109,9 +105,7 @@ export class SelectionEllipseService extends Tool {
             this.drawingService.previewCtx.setLineDash([]);
             this.drawingService.baseCtx.setLineDash([]);
         }
-        this.mouseDown = false;
-        this.dragActive = false;
-        this.mouseMoved = false;
+        this.mouseDown = this.dragActive = this.mouseMoved = false;
     }
 
     onKeyDown(event: KeyboardEvent): void {
@@ -226,23 +220,6 @@ export class SelectionEllipseService extends Tool {
             this.topLeftCorner.y = this.begin.y;
         }
     }
-
-    // private drawFramingRectangle(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
-    //     ctx.strokeStyle = 'black';
-    //     ctx.lineWidth = this.lineThickness = 0.5;
-
-    //     const startCoord = { ...this.firstGrid };
-    //     const width = Math.abs(finalGrid.x);
-    //     const height = Math.abs(finalGrid.y);
-
-    //     if (finalGrid.x < 0) {
-    //         startCoord.x += finalGrid.x;
-    //     }
-    //     if (finalGrid.y < 0) {
-    //         startCoord.y += finalGrid.y;
-    //     }
-    //     ctx.strokeRect(startCoord.x, startCoord.y, width, height);
-    // }
 
     private drawEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.beginPath();
