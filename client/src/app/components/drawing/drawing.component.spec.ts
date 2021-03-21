@@ -13,6 +13,9 @@ import { ToolsNames } from '@app/utils/enums/tools-names';
 import { ToolManagerServiceMock } from '@app/utils/tests-mocks/tool-manager-mock';
 import { ToolStub } from '@app/utils/tests-mocks/tool-stub';
 import { DrawingComponent } from './drawing.component';
+// import { of } from 'rxjs';
+// import { delay } from 'rxjs/operators';
+// import { of } from 'rxjs';
 
 describe('DrawingComponent', () => {
     let component: DrawingComponent;
@@ -67,12 +70,42 @@ describe('DrawingComponent', () => {
         component.updateCurrentTool();
         expect(component.currentTool).toEqual(toolManagerServiceMock.currentTool);
     });
-
-    it('#subscribeToToolChange should subscribe to tool change emitter and call #updateCurrentTool on emission', () => {
+    it(' #subscribeToToolChange should subscribe to tool change emitter and call #updateCurrentTool on emission', () => {
         spyOn(component, 'updateCurrentTool').and.callThrough();
         toolManagerServiceMock.toolChangeEmitter.emit();
         expect(component.updateCurrentTool).toHaveBeenCalled();
     });
+
+    // fit(
+    //     '#subscribeToCreateNewDrawingEmitter should subscribe to DrawingService createNewDrawingEmitter and call' + '#emitCreateNewDrawing',
+    //     fakeAsync(() => {
+    //         // // spyOn(component, 'subscribeToCreateNewDrawingEmitter');
+    //         // spyOn(drawingStub, 'emitCreateNewDrawing');
+    //         // spyOn(drawingStub.createNewDrawingEmitter, 'emit');
+    //         // component.subscribeToCreateNewDrawingEmitter();
+    //         //
+    //         // expect(drawingStub.emitCreateNewDrawing).toHaveBeenCalled();
+    //         // spyOn(component, 'subscribeToCreateNewDrawingEmitter').and.returnValue();
+    //         // component.subscribeToCreateNewDrawingEmitter();
+    //         // fixture.detectChanges();
+    //         // expect(drawingStub.emitCreateNewDrawing).toHaveBeenCalled();
+    //
+    //         spyOn(component, 'subscribeToCreateNewDrawingEmitter').and.stub();
+    //
+    //         // Trigger ngOnInit()
+    //         fixture.detectChanges();
+    //
+    //         // expect(component.loading).toBeTruthy();
+    //         // expect(component.users).toBeUndefined();
+    //         expect(component.subscribeToCreateNewDrawingEmitter).toHaveBeenCalledWith();
+    //
+    //         // Simulates the asynchronous passage of time
+    //         tick(1);
+    //
+    //         // expect(component.loading).toBeFalsy();
+    //         // expect(component.users).toEqual([user]);
+    //     }),
+    // );
 
     it("#ngAfterViewInit should call darwingService's #restoreCanvas", () => {
         spyOn(drawingStub, 'restoreCanvas').and.callThrough();

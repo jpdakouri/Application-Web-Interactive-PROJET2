@@ -5,6 +5,7 @@ import { DrawingService } from './drawing.service';
 describe('DrawingService', () => {
     let service: DrawingService;
     let canvasTestHelper: CanvasTestHelper;
+
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(DrawingService);
@@ -140,5 +141,21 @@ describe('DrawingService', () => {
         // expect(isCanvasBlank).toBeFalse();
         expect(window.confirm).toHaveBeenCalledWith("Le canvas n'est pas vide! Voulez-vous procéder tout de même?");
         expect(sessionStorageClearSpy).toHaveBeenCalled();
+    });
+
+    it('#createNewDrawing should call #emitCreateNewDrawing if canvas is not blank', () => {
+        const emitSpy = spyOn(service, 'emitCreateNewDrawing').and.callThrough();
+        const rectangleWidth = 10;
+        const rectangleHeight = 10;
+
+        service.baseCtx.fillRect(0, 0, rectangleWidth, rectangleHeight);
+        service.saveCanvas();
+
+        spyOn(window, 'confirm').and.returnValue(true);
+
+        service.createNewDrawing();
+
+        expect(window.confirm).toHaveBeenCalledWith("Le canvas n'est pas vide! Voulez-vous procéder tout de même?");
+        expect(emitSpy).toHaveBeenCalled();
     });
 });

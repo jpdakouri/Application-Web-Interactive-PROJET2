@@ -34,6 +34,7 @@ import { EditorComponent } from './editor.component';
 class DrawingServiceMock {
     // tslint:disable:no-empty
     newDrawing: EventEmitter<Vec2> = new EventEmitter<Vec2>();
+    createNewDrawingEmitter: EventEmitter<boolean> = new EventEmitter();
 
     saveCanvas(): void {}
 
