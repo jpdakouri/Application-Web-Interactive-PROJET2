@@ -103,19 +103,20 @@ fdescribe('SelectionEllipseService', () => {
         expect(updatePreviewSpy).toHaveBeenCalled();
     });
 
-    // À revoir
-    xit('onMouseMove should call updateDragPosition when mouse is down and is currently selecting', () => {
+    it('onMouseMove should call updateDragPosition when mouse is down and is currently selecting', () => {
         const updateDragPositionSpy = spyOn<any>(service, 'updateDragPosition').and.callThrough();
         service.mouseDown = service.selectionActive = service['dragActive'] = true;
-
-        service.topLeftCorner = { x: 200, y: 200 };
-
-        service.onMouseMove(mouseEvent);
+        const grid = (service.mouseDownCoord = { x: 100, y: 100 });
+        service.height = service.width = 100;
         service.onMouseDown(mouseEvent);
+
         const mouseEventLClick = {
+            x: 100,
+            y: 100,
             button: MouseButtons.Left,
         } as MouseEvent;
-        expect(updateDragPositionSpy).toHaveBeenCalledWith(mouseEventLClick);
+        service.onMouseMove(mouseEventLClick);
+        expect(updateDragPositionSpy).toHaveBeenCalledWith(grid);
     });
 
     it(' onMouseUp should call drawEllipse and selectEllipse if mouse was already down', () => {
@@ -271,12 +272,28 @@ fdescribe('SelectionEllipseService', () => {
         expect(service['shiftDown']).toBeTrue();
     });
 
-    it('updateDragPosition() should be properly called during a mouseMove event', () => {
-        service.topLeftCorner = { x: 200, y: 200 };
-        service.mouseDownCoord = { x: 300, y: 100 };
-        const grid = service.mouseDownCoord;
+    it('updateLeftCorner() should be able to update topLeftCorner in any situation', () => {
+        service.mouseDown = service.selectionActive = service.mouseMoved = true;
+        service['dragActive'] = false;
+        service.mouseDownCoord = { x: 100, y: 100 };
+        // const grid = service.mouseDownCoord;
+        service['firstGrid'] = { x: 100, y: 100 };
+        service['begin'] = { x: 200, y: 200 };
+        service['end'] = { x: 100, y: 100 };
+
+        service.onMouseUp(mouseEvent);
+        expect(service.topLeftCorner.x).toEqual(service['end'].x);
+        expect(service.topLeftCorner.x).toEqual(service['end'].y);
+    });
+
+    // à revoir, le test le rentre pas dnas le if de shiftDown dans le mouseUp
+    xit('makeCircle() should be called when the Shift key is being pressed during a mouseUp event', () => {
+        service['shiftDown'] = service.mouseDown = service.selectionActive = service.mouseMoved = true;
+        service['dragActive'] = false;
+        const makeCircleSpy = spyOn<any>(service, 'makeCircle').and.callThrough();
         service.onMouseDown(mouseEvent);
-        expect(service['isClickIn'](grid)).toEqual(false);
+        service.onMouseUp(mouseEvent);
+        expect(makeCircleSpy).toHaveBeenCalled();
     });
 
     // ----//

@@ -87,7 +87,7 @@ export class SelectionEllipseService extends Tool {
             this.mouseDownCoord.y = this.getPositionFromMouse(event).y - this.firstGrid.y;
             this.updatePreview();
         } else if (this.mouseDown && this.selectionActive && this.dragActive) {
-            this.updateDragPosition(event);
+            this.updateDragPosition(this.getPositionFromMouse(event));
         }
     }
 
@@ -301,8 +301,8 @@ export class SelectionEllipseService extends Tool {
         return true;
     }
 
-    private updateDragPosition(event: MouseEvent): void {
-        const currentCoord = this.getPositionFromMouse(event);
+    private updateDragPosition(grid: Vec2): void {
+        const currentCoord = { ...grid };
         this.topLeftCorner.x = this.topLeftCornerInit.x + currentCoord.x - this.initial.x + this.offset.x;
         this.topLeftCorner.y = this.topLeftCornerInit.y + currentCoord.y - this.initial.y + this.offset.y;
         this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y + 'px';
