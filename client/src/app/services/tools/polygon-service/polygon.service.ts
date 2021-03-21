@@ -119,6 +119,7 @@ export class PolygonService extends Tool {
         if (ctx === this.drawingService.previewCtx) {
             this.drawPreview(ctx, finalGrid);
         }
+        ctx.setLineDash([]);
     }
 
     private drawFilled(ctx: CanvasRenderingContext2D, primaryColor: string, firstGrid: Vec2, finalGrid: Vec2, numberOfSides: number): void {
@@ -144,6 +145,7 @@ export class PolygonService extends Tool {
         if (ctx === this.drawingService.previewCtx) {
             this.drawPreview(ctx, finalGrid);
         }
+        ctx.setLineDash([]);
     }
 
     private drawFilledOutLine(
@@ -177,6 +179,7 @@ export class PolygonService extends Tool {
         if (ctx === this.drawingService.previewCtx) {
             this.drawPreview(ctx, finalGrid);
         }
+        ctx.setLineDash([]);
     }
 
     private drawPolygon(
