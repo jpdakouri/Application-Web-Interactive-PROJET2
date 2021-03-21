@@ -29,7 +29,6 @@ describe('LineService', () => {
 
         service = TestBed.inject(LineService);
 
-        // Configuration du spy du service
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;

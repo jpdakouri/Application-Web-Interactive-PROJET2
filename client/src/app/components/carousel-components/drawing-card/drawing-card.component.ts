@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CardStyle } from '@app/utils/interfaces/card-style';
 import { DrawingData } from '@common/communication/drawing-data';
@@ -9,8 +9,6 @@ import { DrawingData } from '@common/communication/drawing-data';
     styleUrls: ['./drawing-card.component.scss'],
 })
 export class DrawingCardComponent implements OnInit {
-    @ViewChild('cardcontainer') cardcontainer: HTMLElement;
-
     @Input() positionCaracteristics: CardStyle;
     @Input() infoDrawing: DrawingData;
     @Output() toOpen: EventEmitter<boolean>;

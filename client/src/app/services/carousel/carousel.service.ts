@@ -85,21 +85,16 @@ export class CarouselService {
     }
 
     async deleteDrawing(id: string): Promise<string> {
-        const promise = new Promise<string>((resolve, reject) => {
-            this.httpService.deleteDrawing(id).subscribe({
-                next: (result) => {
-                    setTimeout(() => {
+        const promise = new Promise<string>((resolve) => {
+            setTimeout(() => {
+                this.httpService.deleteDrawing(id).subscribe({
+                    next: (result) => {
                         if (result) {
-                            resolve('Le dessin est supprimé !');
+                            resolve('Le dessin a été supprimé');
                         }
-                    }, 200);
-                },
-                error: (err) => {
-                    console.log('Une erreur est survenue lors de la requête DELETE !');
-                    console.error(err);
-                    reject(err);
-                },
-            });
+                    },
+                });
+            }, 200);
         });
         return promise;
     }

@@ -5,6 +5,12 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDialogRef } from '@angular/material/dialog';
 import { SaveDrawingService } from '@app/services/save-drawing/save-drawing.service';
 import { FILE_NAME_REGEX, TAG_NAME_REGEX } from '@app/services/services-constants';
+import {
+    INVALIDE_TAG_NAME_ERROR_MESSAGE,
+    INVALID_FILE_NAME_ERROR_MESSAGE,
+    NO_ERROR_MESSAGE,
+    REQUIRED_FILE_NAME_ERROR_MESSAGE,
+} from '@app/services/tools/tools-constants';
 import { ImageFormat } from '@app/utils/enums/image-format.enum';
 import { Tag } from '@app/utils/interfaces/tag';
 
@@ -48,13 +54,13 @@ export class SaveDrawingComponent implements AfterViewInit {
 
     getErrorMessageName(): string {
         if (this.fileName.hasError('required')) {
-            return 'Vous devez entrer un nom';
+            return REQUIRED_FILE_NAME_ERROR_MESSAGE;
         }
-        return this.fileName.invalid ? 'Nom de fichier invalide' : '';
+        return this.fileName.invalid ? INVALID_FILE_NAME_ERROR_MESSAGE : NO_ERROR_MESSAGE;
     }
 
-    getErrorMessageLabel(): string {
-        return this.fileName.invalid ? 'Peut seulement être composé de chiffres, lettres et espaces' : '';
+    getErrorMessageTag(): string {
+        return this.tagName.invalid ? INVALIDE_TAG_NAME_ERROR_MESSAGE : NO_ERROR_MESSAGE;
     }
 
     updateService(): void {
@@ -74,7 +80,6 @@ export class SaveDrawingComponent implements AfterViewInit {
     // Code for chips inspired by Angular material site
     remove(labelToRemove: Tag): void {
         const indexToRemove = this.tags.indexOf(labelToRemove);
-
         if (indexToRemove >= 0) this.tags.splice(indexToRemove, 1);
     }
 

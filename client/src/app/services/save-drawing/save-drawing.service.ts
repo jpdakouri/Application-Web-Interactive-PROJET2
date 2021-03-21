@@ -50,12 +50,8 @@ export class SaveDrawingService {
         );
 
         this.httpService.insertDrawing(drawingToSend).subscribe({
-            next: (result) => {
+            next: () => {
                 console.log("La requête POST s'est bien déroulée !");
-            },
-            error: (err) => {
-                console.error('Une erreur est survenue dans lors de la requête POST');
-                console.error(err);
             },
         });
     }
