@@ -237,43 +237,6 @@ describe('DatabaseController', () => {
             });
     });
 
-    // it('GET request to /drawings should call #getImagesFromDisk from ImageDataService with correct parameter', async () => {
-    //     const getResults: DrawingData[] = [];
-    //     const dataURL = 'dataURLStub';
-    //     for (let i = 0; i < 5; i++) {
-    //         getResults.push(new DrawingData(new ObjectId().toString(), `titleStub${i}`, [`tagStub1${i}`, `tagStub2${i}`], dataURL, 100, 100));
-    //     }
-    //     databaseService.getAllDrawings.resolves(getResults);
-    //     const spy = chai.spy.on(imageDataService, 'getImagesFromDisk');
-    //     return supertest(app)
-    //         .get('/api/drawings')
-    //         .expect(HTTP_STATUS_OK)
-    //         .then((response: any) => {
-    //             expect(spy).to.have.been.called.with(getResults);
-    //         });
-    // });
-
-    // it('GET request to /drawings should respond a HTTP_STATUS_NOT_FOUND and string message if no drawings are found', async () => {
-    //     const getResults: DrawingData[] = [];
-    //     databaseService.getAllDrawings.resolves(getResults);
-    //     return supertest(app)
-    //         .get('/api/drawings')
-    //         .expect(HTTP_STATUS_NOT_FOUND)
-    //         .then((response: any) => {
-    //             expect(response.text).to.equal('Aucun dessin trouvé !');
-    //         });
-    // });
-
-    // it('GET request to /drawings should respond a HTTP_STATUS_ERROR and string message if database error', async () => {
-    //     databaseService.getAllDrawings.rejects();
-    //     return supertest(app)
-    //         .get('/api/drawings')
-    //         .expect(HTTP_STATUS_ERROR)
-    //         .then((response: any) => {
-    //             expect(response.text).to.equal("Erreur d'opération dans le serveur !");
-    //         });
-    // });
-
     it('DELETE request to /drawings should respond a HTTP_STATUS_OK and correct message', async () => {
         const id = new ObjectId().toString();
         const metadata = new Metadata(id, 'stubTitle', ['stubTag1', 'stubTag2'], 100, 100);

@@ -12,7 +12,6 @@ const HTTP_STATUS_OK = 200;
 const HTTP_STATUS_ERROR = 500;
 const HTTP_STATUS_BAD_REQUEST = 400;
 const HTTP_STATUS_NOT_FOUND = 404;
-// const HTTP_STATUS_NO_CONTENT = 204;
 @injectable()
 export class DatabaseController {
     router: Router;
@@ -34,9 +33,6 @@ export class DatabaseController {
 
     private configureRouter(): void {
         this.router = Router();
-
-        // TODO
-        // TESTS
 
         this.router.post('/', (req: Request, res: Response, next: NextFunction) => {
             const drawingData = req.body as DrawingData;
