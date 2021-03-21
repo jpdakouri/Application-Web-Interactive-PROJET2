@@ -3,10 +3,9 @@ import { Tool } from '@app/classes/tool';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ALPHA_INDEX, DEFAULT_CANVAS_RGB, DEFAULT_CANVAS_RGBA } from '@app/services/services-constants';
-import { OUT_OF_BOUND_COLOR_RGBA, PREVIEW_SIZE } from '@app/services/tools/tools-constants';
+import { OUT_OF_BOUND_COLOR_RGBA, PREVIEW_HALF_SIZE } from '@app/services/tools/tools-constants';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { RgbSettings } from '@app/utils/enums/rgb-settings';
-import { ToolCommand } from '@app/utils/interfaces/tool-command';
 
 @Injectable({
     providedIn: 'root',
@@ -28,19 +27,27 @@ export class PipetteService extends Tool {
     }
 
     onMouseMove(event: MouseEvent): void {
+        if (this.isCursorOnCanvas) this.drawPreview(event);
+    }
+
+    private drawPreview(event: MouseEvent): void {
         const canvasWidth = this.drawingService.canvas.width;
         const canvasHeight = this.drawingService.canvas.height;
         this.previewColors = [];
-        for (let i = -PREVIEW_SIZE / 2; i < PREVIEW_SIZE / 2 + 1; i++) {
+        for (let i = -PREVIEW_HALF_SIZE + event.clientY; i < PREVIEW_HALF_SIZE + 1 + event.clientY; i++) {
             const currentRow: string[] = [];
-            for (let j = -PREVIEW_SIZE / 2; j < PREVIEW_SIZE / 2 + 1; j++) {
-                if (0 <= i && 0 <= j && canvasHeight > i && canvasWidth > j) {
+            for (let j = -PREVIEW_HALF_SIZE + event.offsetX; j < PREVIEW_HALF_SIZE + 1 + event.offsetX; j++) {
+                if (0 <= i && 0 <= j && canvasHeight > i && canvasWidth > j && this.isInPreviewCenter(j - event.offsetX, i - event.clientY)) {
                     if (this.getAlphaAtPosition(j, i) !== '0') currentRow.push(this.getRgbaAtPosition(j, i));
                     else currentRow.push(DEFAULT_CANVAS_RGBA);
                 } else currentRow.push(OUT_OF_BOUND_COLOR_RGBA);
             }
             this.previewColors.push(currentRow);
         }
+    }
+
+    private isInPreviewCenter(x: number, y: number): boolean {
+        return x * x + y * y <= PREVIEW_HALF_SIZE * PREVIEW_HALF_SIZE;
     }
 
     onMouseEnter(): void {
@@ -84,7 +91,7 @@ export class PipetteService extends Tool {
         return imageData[ALPHA_INDEX].toString();
     }
 
-    executeCommand(command: ToolCommand): void {
+    executeCommand(): void {
         // Pipette has no command to undo/redo
         return;
     }

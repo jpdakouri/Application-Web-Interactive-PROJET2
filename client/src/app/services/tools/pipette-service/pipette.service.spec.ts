@@ -2,6 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { DEFAULT_CANVAS_RGBA } from '@app/services/services-constants';
+import { OUT_OF_BOUND_COLOR_RGBA } from '@app/services/tools/tools-constants';
 
 import { PipetteService } from './pipette.service';
 
@@ -19,6 +21,7 @@ describe('PipetteService', () => {
 
         baseCanvasContext = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         drawingService.baseCtx = baseCanvasContext;
+        drawingService.canvas = canvasTestHelper.canvas;
     });
 
     it('should be created', () => {
@@ -53,5 +56,38 @@ describe('PipetteService', () => {
         const leftClickEvent = new MouseEvent('mousedown', { clientX: 0, clientY: 0, button: 0 });
         service.onMouseDown(leftClickEvent);
         expect(currentColorService.setPrimaryColorRgb).toHaveBeenCalledWith('255,255,255');
+    });
+
+    it('onMouseEnter sets isCursorOnCanvas to true, onMouseLeave sets it to false', () => {
+        service.onMouseEnter();
+        expect(service.getIsCursorOnCanvas()).toBeTrue();
+        service.onMouseLeave();
+        expect(service.getIsCursorOnCanvas()).toBeFalse();
+    });
+
+    it('onMouseMove returns OUT_OF_BOUND_COLOR_RGBA if pixel is not on canvas or not in the preview center, returns DEFAULT_CANVAS_RGBA if pixel on blank canvas', () => {
+        const mouseEvent = new MouseEvent('mousemove', { clientX: 0, clientY: 0 });
+        service.onMouseMove(mouseEvent);
+        expect(service.getPreviewColors()[0][0]).toBe(OUT_OF_BOUND_COLOR_RGBA);
+        const middleOfArrayIndex = 7;
+        expect(service.getPreviewColors()[middleOfArrayIndex][middleOfArrayIndex]).toBe(DEFAULT_CANVAS_RGBA);
+        const endOfArrayIndex = 14;
+        expect(service.getPreviewColors()[endOfArrayIndex][endOfArrayIndex]).toBe(OUT_OF_BOUND_COLOR_RGBA);
+    });
+    it('onMouseMove returns color of pixel if the pixel is not blank', () => {
+        const stubRgbValue = 1;
+        const stubRgbArray = new Uint8ClampedArray([stubRgbValue, stubRgbValue, stubRgbValue, stubRgbValue]);
+        const stubImageData = new ImageData(stubRgbArray, 1);
+        spyOn(baseCanvasContext, 'getImageData').and.returnValue(stubImageData);
+
+        const mouseEvent = new MouseEvent('mousemove', { clientX: 0, clientY: 0 });
+        service.onMouseMove(mouseEvent);
+
+        const middleOfArrayIndex = 7;
+        expect(service.getPreviewColors()[middleOfArrayIndex][middleOfArrayIndex]).toBe('rgba(1,1,1,1)');
+    });
+
+    it('executeCommand does nothing and returns nothing', () => {
+        expect(service.executeCommand()).toBeUndefined();
     });
 });
