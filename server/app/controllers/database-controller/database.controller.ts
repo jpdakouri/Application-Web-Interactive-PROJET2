@@ -12,7 +12,6 @@ const HTTP_STATUS_OK = 200;
 const HTTP_STATUS_ERROR = 500;
 const HTTP_STATUS_BAD_REQUEST = 400;
 const HTTP_STATUS_NOT_FOUND = 404;
-// const HTTP_STATUS_NO_CONTENT = 204;
 @injectable()
 export class DatabaseController {
     router: Router;
@@ -24,7 +23,7 @@ export class DatabaseController {
         this.databaseService.startDB(this.databaseService.databaseURI, this.databaseService.options).then(() => {
             this.databaseService.getAllDrawings().then((result) => {
                 if (result.length > 0) {
-                    this.imageDataService.populateArray(result);
+                    this.imageDataService.populateArray(result, false);
                 }
             });
         });
@@ -35,15 +34,12 @@ export class DatabaseController {
     private configureRouter(): void {
         this.router = Router();
 
-        // TODO
-        // TESTS
-
         this.router.post('/', (req: Request, res: Response, next: NextFunction) => {
             const drawingData = req.body as DrawingData;
             const newMetadata = new Metadata(undefined, drawingData.title, drawingData.tags, drawingData.width, drawingData.height);
             if (!this.imageDataService.insertNameCheckUp(drawingData)) res.status(HTTP_STATUS_BAD_REQUEST).send('Message du serveur: Nom Invalide !');
             if (!this.imageDataService.insertTagsCheckUp(drawingData))
-                res.status(HTTP_STATUS_BAD_REQUEST).send('Message du serveur: Étiquette Invalide!');
+                res.status(HTTP_STATUS_BAD_REQUEST).send('Message du serveur: Étiquette Invalide !');
             else
                 this.databaseService
                     .insertDrawing(newMetadata)
@@ -57,18 +53,47 @@ export class DatabaseController {
                         }
                     })
                     .catch((err) => {
-                        console.log(err);
-                        res.status(HTTP_STATUS_ERROR).send("Erreur d'opération dans le serveur!");
+                        console.error(err);
+                        res.status(HTTP_STATUS_ERROR).send("Erreur d'opération dans le serveur !");
                     });
         });
 
-        this.router.get('/:index', (req: Request, res: Response, next: NextFunction) => {
-            const drawing = this.imageDataService.getOneDrawing(+req.params.index);
-            if (drawing) {
-                res.status(HTTP_STATUS_OK).json(drawing);
+        this.router.get('/length/:tagFlag', (req: Request, res: Response, next: NextFunction) => {
+            const tagFlag = req.params.tagFlag === 'true';
+            if (tagFlag) {
+                res.status(HTTP_STATUS_OK).json(this.imageDataService.filteredDrawingData.length);
             } else {
-                res.status(HTTP_STATUS_NOT_FOUND).send('Aucun dessin trouvé !');
+                res.status(HTTP_STATUS_OK).json(this.imageDataService.drawingData.length);
             }
+        });
+        this.router.get('/single', (req: Request, res: Response, next: NextFunction) => {
+            const index = req.query.index;
+            const tagFlag = req.query.tagFlag === 'true';
+            if (index) {
+                const drawing = this.imageDataService.getOneImageFromDisk(+index, tagFlag);
+                if (drawing) {
+                    res.status(HTTP_STATUS_OK).json(drawing);
+                } else {
+                    res.status(HTTP_STATUS_NOT_FOUND).send('Aucun dessin trouvé !');
+                }
+            }
+        });
+
+        this.router.post('/tags', (req: Request, res: Response, next: NextFunction) => {
+            const tags = req.body as string[];
+            this.databaseService
+                .getDrawingsByTags(tags)
+                .then((results) => {
+                    if (results.length > 0) {
+                        this.imageDataService.populateArray(results, true);
+                        res.status(HTTP_STATUS_OK).json('Tags bien reçus');
+                    } else {
+                        res.status(HTTP_STATUS_NOT_FOUND).json('Aucun dessin trouvé !');
+                    }
+                })
+                .catch(() => {
+                    res.status(HTTP_STATUS_ERROR).send("Erreur d'opération dans le serveur !");
+                });
         });
 
         this.router.delete('/:id', (req: Request, res: Response, next: NextFunction) => {

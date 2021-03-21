@@ -5,6 +5,6 @@ import { LineCommand } from './line-command';
 describe('LineCommand', () => {
     it('should create an instance', () => {
         const tool = TestBed.inject(LineService);
-        expect(new LineCommand(tool, 'rgba(0,0,0,1)', 'rgba(0,0,0,1)', 1, 1, [])).toBeTruthy();
+        expect(new LineCommand(tool, 'rgba(0,0,0,1)', 'rgba(0,0,0,1)', 1, 1, [], false)).toBeTruthy();
     });
 });

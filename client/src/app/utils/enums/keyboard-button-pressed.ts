@@ -16,4 +16,5 @@ export enum KeyboardButtons {
     Right = 'ArrowRight',
     Export = 'e',
     Save = 's',
+    Carousel = 'g',
 }

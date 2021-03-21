@@ -11,6 +11,7 @@ import { ToolsNames } from '@app/utils/enums/tools-names';
 export class ToolbarComponent {
     @Output() exportButtonClicked: EventEmitter<boolean>;
     @Output() saveButtonClicked: EventEmitter<boolean>;
+    @Output() carouselClicked: EventEmitter<boolean>;
 
     toolsNames: typeof ToolsNames = ToolsNames;
     toolManagerService: ToolManagerService;
@@ -21,6 +22,7 @@ export class ToolbarComponent {
         this.drawingService = drawingService;
         this.exportButtonClicked = new EventEmitter<boolean>();
         this.saveButtonClicked = new EventEmitter<boolean>();
+        this.carouselClicked = new EventEmitter<boolean>();
     }
 
     setCurrentTool(toolName: ToolsNames): void {
@@ -41,5 +43,9 @@ export class ToolbarComponent {
 
     saveDrawing(): void {
         this.saveButtonClicked.emit(true);
+    }
+
+    openCarousel(): void {
+        this.carouselClicked.emit(true);
     }
 }

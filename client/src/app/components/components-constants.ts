@@ -54,8 +54,18 @@ export const MINIMUM_HEIGHT = 250;
 export const LOWER_BOUND_WIDTH = 500;
 export const LOWER_BOUND_HEIGHT = 500;
 
-export const SIDEBAR_WIDTH = 465;
+export const SIDEBAR_WIDTH = 335;
 
 export const WORKING_ZONE_VISIBLE_PORTION = 100;
 
 export const DEFAULT_WHITE = '#fff';
+
+/***********************/
+/***CAROUSEL CONSTANT***/
+/***********************/
+export const MAX_WIDTH_SIDE_CARD = '20vw';
+export const MAX_HEIGHT_SIDE_CARD = '40vh';
+export const MAX_WIDTH_MAIN_CARD = '25vw';
+export const MAX_HEIGHT_MAIN_CARD = '50vh';
+
+export const NOT_IN_ARRAY = -1;

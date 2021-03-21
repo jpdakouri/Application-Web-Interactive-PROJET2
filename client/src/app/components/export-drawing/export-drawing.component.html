@@ -1,16 +1,19 @@
-<div style="margin: auto">
+<div class="export-modal-container">
   <img #previewImage
        [ngStyle]="{filter: selectedFilterValue}"
        [src]="imageSource"
        title="vignette de prévisualisation de l'image à exporter"
        class="preview-image"
-       alt="Impossible d'afficher l'aperçu"
+       alt="Impossible d'afficher l'aperçu de l'image"
   >
   <canvas #downloadProcessingCanvas hidden></canvas>
   <a #link hidden></a>
-<!--  pattern="[a-zA-Z0-9-_]*"-->
+
   <div class="export-options">
-    <mat-form-field hintLabel="Max 25 caractères" appearance="fill">
+    <mat-form-field
+        appearance="fill"
+        hintLabel="Max 25 caractères : lettres, chiffres, underscore et tiret"
+        hideRequiredMarker="false">
       <mat-label>Nom du fichier</mat-label>
       <input matInput
              #input

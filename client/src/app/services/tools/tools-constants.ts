@@ -54,3 +54,11 @@ export const MS_PER_S = 1000;
 
 export const DEFAULT_NUMBER_OF_SIDE = 3;
 export const LINE_DASH = 5;
+
+/***************************/
+/* ERROR MESSAGE CONSTANT***/
+/***************************/
+export const INVALID_FILE_NAME_ERROR_MESSAGE = 'Nom de fichier invalide';
+export const REQUIRED_FILE_NAME_ERROR_MESSAGE = 'Vous devez entrer un nom';
+export const NO_ERROR_MESSAGE = '';
+export const INVALIDE_TAG_NAME_ERROR_MESSAGE = 'Peut seulement être composé de chiffres, lettres et espaces';

@@ -20,21 +20,26 @@ export class UndoRedoService {
     }
 
     saveInitialState(): void {
-        const canvasWidth = this.drawingService.canvas.width;
-        const canvasHeight = this.drawingService.canvas.height;
-        this.initialCanvasColors = [];
-        for (let i = 0; i < canvasHeight; i++) {
-            const currentRow: string[] = [];
-            for (let j = 0; j < canvasWidth; j++) {
-                if (this.getRgbaAtPosition(j, i) === EMPTY_SQUARE_RGBA) currentRow.push(DEFAULT_CANVAS_RGBA);
-                else currentRow.push(this.getRgbaAtPosition(j, i));
+        if (false) {
+            const canvasWidth = this.drawingService.canvas.width;
+            const canvasHeight = this.drawingService.canvas.height;
+            this.initialCanvasColors = [];
+            for (let i = 0; i < canvasHeight; i++) {
+                const currentRow: string[] = [];
+                for (let j = 0; j < canvasWidth; j++) {
+                    if (this.getRgbaAtPosition(j, i) === EMPTY_SQUARE_RGBA) currentRow.push(DEFAULT_CANVAS_RGBA);
+                    else currentRow.push(this.getRgbaAtPosition(j, i));
+                }
+                this.initialCanvasColors.push(currentRow);
             }
-            this.initialCanvasColors.push(currentRow);
         }
+        this.commands = [];
+        this.undoneCommands = [];
     }
 
     addCommand(command: ToolCommand): void {
         this.commands.push(command);
+        this.undoneCommands = [];
     }
 
     undo(): void {

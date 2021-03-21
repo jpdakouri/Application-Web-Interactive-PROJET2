@@ -11,13 +11,23 @@ export class LineCommand implements ToolCommand {
     readonly dotThickness: number;
     readonly dotShown: boolean;
     readonly strokePath: Vec2[];
+    readonly isClosedLoop: boolean;
 
-    constructor(tool: LineService, primaryColor: string, secondaryColor: string, strokeThickness: number, dotThickness: number, strokePath: Vec2[]) {
+    constructor(
+        tool: LineService,
+        primaryColor: string,
+        secondaryColor: string,
+        strokeThickness: number,
+        dotThickness: number,
+        strokePath: Vec2[],
+        isClosedLoop: boolean,
+    ) {
         this.tool = tool;
         this.primaryColor = primaryColor;
         this.secondaryColor = secondaryColor;
         this.strokeThickness = strokeThickness;
         this.dotThickness = dotThickness;
         this.strokePath = strokePath;
+        this.isClosedLoop = isClosedLoop;
     }
 }
