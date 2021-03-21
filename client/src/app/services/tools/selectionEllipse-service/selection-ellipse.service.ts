@@ -295,7 +295,7 @@ export class SelectionEllipseService extends Tool {
         if (firstGrid.x < this.topLeftCorner.x || firstGrid.x > this.topLeftCorner.x + this.width) {
             return false;
         }
-        if (firstGrid.y <= this.topLeftCorner.y || firstGrid.y >= this.topLeftCorner.y + this.height) {
+        if (firstGrid.y < this.topLeftCorner.y || firstGrid.y > this.topLeftCorner.y + this.height) {
             return false;
         }
         return true;
