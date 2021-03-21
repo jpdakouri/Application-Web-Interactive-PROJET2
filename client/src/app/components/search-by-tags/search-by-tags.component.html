@@ -23,5 +23,5 @@
             <mat-error *ngIf="tagName.invalid">{{ getErrorMessageLabel() }}</mat-error>
         </mat-chip-list>
     </mat-form-field>
-    <button (click)="getDrawingsByTags()" mat-raised-button color="primary">Recherche de dessins</button>
+    <button (click)="sendTags()" mat-raised-button color="primary">Recherche de dessins</button>
 </mat-expansion-panel>

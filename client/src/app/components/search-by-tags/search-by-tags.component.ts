@@ -26,7 +26,7 @@ export class SearchByTagsComponent {
         this.tags = [];
     }
 
-    add(event: MatChipInputEvent): void {
+    addChip(event: MatChipInputEvent): void {
         const input = event.input;
         const value = event.value;
         if ((value || '').trim() && TAG_NAME_REGEX.test(value)) {
@@ -42,7 +42,7 @@ export class SearchByTagsComponent {
         if (indexToRemove >= 0) this.tags.splice(indexToRemove, 1);
     }
 
-    getErrorMessageLabel(): string {
+    getErrorMessageTag(): string {
         return this.tagName.invalid ? 'Peut seulement être composé de chiffres, lettres et espaces' : '';
     }
 
@@ -53,7 +53,7 @@ export class SearchByTagsComponent {
         return tempArray;
     }
 
-    getDrawingsByTags(): void {
+    sendTags(): void {
         let tags = this.toStringArray(this.tags);
         tags = this.tags != undefined ? tags : ['none'];
         this.httpService.sendTags(tags).subscribe((result) => {
