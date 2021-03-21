@@ -88,7 +88,6 @@ export class CarouselService {
         const promise = new Promise<string>((resolve, reject) => {
             this.httpService.deleteDrawing(id).subscribe({
                 next: (result) => {
-                    this.sizeOfArray = this.sizeOfArray - 1;
                     setTimeout(() => {
                         if (result) {
                             resolve('Le dessin est supprimé !');

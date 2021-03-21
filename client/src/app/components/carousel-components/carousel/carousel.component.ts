@@ -72,9 +72,14 @@ export class CarouselComponent implements OnInit {
     }
 
     deleteDrawing(id: string | undefined): void {
-        this.carouselService.deleteDrawing(id as string).catch((err) => {
-            console.error(err);
-        });
+        this.carouselService
+            .deleteDrawing(id as string)
+            .then(() => {
+                this.initCarousel();
+            })
+            .catch((err) => {
+                console.error(err);
+            });
     }
 
     shiftLeft(): void {
