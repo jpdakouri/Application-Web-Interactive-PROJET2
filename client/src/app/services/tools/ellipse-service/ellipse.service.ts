@@ -254,7 +254,7 @@ export class EllipseService extends Tool {
         this.drawEllipse(
             this.drawingService.previewCtx,
             this.firstGrid,
-            this.mouseDownCoord,
+            currentCoord,
             this.currentColourService.getPrimaryColorRgba(),
             this.currentColourService.getSecondaryColorRgba(),
             this.lineThickness || DEFAULT_MIN_THICKNESS,
