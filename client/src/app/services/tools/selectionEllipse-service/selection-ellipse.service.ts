@@ -72,9 +72,7 @@ export class SelectionEllipseService extends Tool {
                     this.drawingService.selectedAreaCtx.stroke();
                     const imageData = this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
                     createImageBitmap(imageData).then((imgBitmap) => {
-                        // this.clipArea(this.drawingService.baseCtx, this.end);
-                        this.drawingService.baseCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
-                        // this.drawingService.baseCtx.restore();
+                        this.drawingService.baseCtx.drawImage(imgBitmap, this.topLeftCorner.x + 1, this.topLeftCorner.y + 1);
                     });
                     console.log('click dehors');
                 }

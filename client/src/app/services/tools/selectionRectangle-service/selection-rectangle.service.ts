@@ -16,8 +16,7 @@ import { ToolCommand } from '@app/utils/interfaces/tool-command';
 // import { ShapeStyle } from '@app/utils/enums/shape-style';
 
 // constante temporaire simplement pour facilier le merge
-const numberFive = 5;
-const numberFifteen = 15;
+
 @Injectable({
     providedIn: 'root',
 })
@@ -70,7 +69,7 @@ export class SelectionRectangleService extends Tool {
                     this.selectionActive = false;
                     const imageData = this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
                     createImageBitmap(imageData).then((imgBitmap) => {
-                        this.drawingService.baseCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
+                        this.drawingService.baseCtx.drawImage(imgBitmap, this.topLeftCorner.x + 1, this.topLeftCorner.y + 1);
                     });
                     this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
                 }
@@ -183,7 +182,6 @@ export class SelectionRectangleService extends Tool {
 
     private drawRectanglePerimeter(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.strokeStyle = 'blue';
-        ctx.setLineDash([numberFive, numberFifteen]);
 
         const startCoord = { ...this.firstGrid };
         const width = Math.abs(finalGrid.x);

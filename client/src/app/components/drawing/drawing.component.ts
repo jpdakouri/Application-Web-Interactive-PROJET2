@@ -7,6 +7,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SaveDrawingService } from '@app/services/save-drawing/save-drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { SelectionEllipseService } from '@app/services/tools/selectionEllipse-service/selection-ellipse.service';
+import { SelectionRectangleService } from '@app/services/tools/selectionRectangle-service/selection-rectangle.service';
 import { MIN_ERASER_THICKNESS } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { Status } from '@app/utils/enums/canvas-resizer-status';
@@ -47,6 +48,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     toolManagerService: ToolManagerService;
     canvasResizerService: CanvasResizerService;
     selectionEllipseService: SelectionEllipseService;
+    selectionRectangleService: SelectionRectangleService;
     toolsNames: typeof ToolsNames = ToolsNames;
     selectedAreaCtx: CanvasRenderingContext2D;
 
@@ -56,11 +58,13 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         canvasResizerService: CanvasResizerService,
         private undoRedo: UndoRedoService,
         selectionEllipseService: SelectionEllipseService,
+        selectionRectangleService: SelectionRectangleService,
         private saveDrawingService: SaveDrawingService,
     ) {
         this.toolManagerService = toolManagerService;
         this.canvasResizerService = canvasResizerService;
         this.selectionEllipseService = selectionEllipseService;
+        this.selectionRectangleService = selectionRectangleService;
     }
 
     ngOnInit(): void {
@@ -240,5 +244,13 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     getTopLeftCorner(): Vec2 {
         return { x: this.selectionEllipseService.topLeftCorner.x, y: this.selectionEllipseService.topLeftCorner.y };
+    }
+
+    getSelectedAreaSizeRectangle(): Vec2 {
+        return { x: this.selectionRectangleService.width, y: this.selectionRectangleService.height };
+    }
+
+    getTopLeftCornerRectangle(): Vec2 {
+        return { x: this.selectionRectangleService.topLeftCorner.x, y: this.selectionRectangleService.topLeftCorner.y };
     }
 }

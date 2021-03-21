@@ -127,4 +127,85 @@
         }"
         *ngIf="selectionEllipseService.selectionActive"
     ></div>
+
+    <!-- black squares for rectangle -->
+    <div
+        class="resizer selection-box-middle-right"
+        [ngStyle]="{
+            left: getSelectedAreaSizeRectangle().x + 'px',
+            top: getSelectedAreaSizeRectangle().y / 2 - 2.5 + 'px',
+            transform: 'translate(' + getTopLeftCornerRectangle().x + 'px, ' + getTopLeftCornerRectangle().y + 'px)'
+        }"
+        *ngIf="selectionRectangleService.selectionActive"
+    ></div>
+
+    <div
+        class="resizer selection-box-bottom-right"
+        [ngStyle]="{
+            left: getSelectedAreaSizeRectangle().x + 'px',
+            top: getSelectedAreaSizeRectangle().y + 'px',
+            transform: 'translate(' + getTopLeftCornerRectangle().x + 'px, ' + getTopLeftCornerRectangle().y + 'px)'
+        }"
+        *ngIf="selectionRectangleService.selectionActive"
+    ></div>
+
+    <div
+        class="resizer selection-box-middle-bottom"
+        [ngStyle]="{
+            left: getSelectedAreaSizeRectangle().x / 2 - 2 + 'px',
+            top: getSelectedAreaSizeRectangle().y + 'px',
+            transform: 'translate(' + getTopLeftCornerRectangle().x + 'px, ' + getTopLeftCornerRectangle().y + 'px)'
+        }"
+        *ngIf="selectionRectangleService.selectionActive"
+    ></div>
+
+    <div
+        class="resizer selection-box-top-left"
+        [ngStyle]="{
+            left: -2 + 'px',
+            top: -2 + 'px',
+            transform: 'translate(' + getTopLeftCornerRectangle().x + 'px, ' + getTopLeftCornerRectangle().y + 'px)'
+        }"
+        *ngIf="selectionRectangleService.selectionActive"
+    ></div>
+
+    <div
+        class="resizer selection-box-top-middle"
+        [ngStyle]="{
+            left: getSelectedAreaSizeRectangle().x / 2 - 2 + 'px',
+            top: -2 + 'px',
+            transform: 'translate(' + getTopLeftCornerRectangle().x + 'px, ' + getTopLeftCornerRectangle().y + 'px)'
+        }"
+        *ngIf="selectionRectangleService.selectionActive"
+    ></div>
+
+    <div
+        class="resizer selection-box-top-right"
+        [ngStyle]="{
+            left: getSelectedAreaSizeRectangle().x - 2 + 'px',
+            top: -2 + 'px',
+            transform: 'translate(' + getTopLeftCornerRectangle().x + 'px, ' + getTopLeftCornerRectangle().y + 'px)'
+        }"
+        *ngIf="selectionRectangleService.selectionActive"
+    ></div>
+
+    <div
+        class="resizer selection-box-middle-left"
+        [ngStyle]="{
+            left: -2 + 'px',
+            top: getSelectedAreaSizeRectangle().y / 2 + 2 + 'px',
+            transform: 'translate(' + getTopLeftCornerRectangle().x + 'px, ' + getTopLeftCornerRectangle().y + 'px)'
+        }"
+        *ngIf="selectionRectangleService.selectionActive"
+    ></div>
+
+    <div
+        class="resizer selection-box-bottom-left"
+        [ngStyle]="{
+            left: -2 + 'px',
+            top: getSelectedAreaSizeRectangle().y - 2 + 'px',
+            transform: 'translate(' + getTopLeftCornerRectangle().x + 'px, ' + getTopLeftCornerRectangle().y + 'px)'
+        }"
+        *ngIf="selectionRectangleService.selectionActive"
+    ></div>
 </div>
