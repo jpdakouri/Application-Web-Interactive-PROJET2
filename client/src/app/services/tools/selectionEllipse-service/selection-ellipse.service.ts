@@ -3,6 +3,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ALPHA_POS, BLUE_POS, GREEN_POS, MAX_BYTE_VALUE, RED_POS } from '@app/services/services-constants';
 import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
 import { PIXELS_ARROW_STEPS } from '@app/services/tools/tools-constants';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
@@ -29,6 +30,7 @@ export class SelectionEllipseService extends Tool {
     width: number;
     private initial: Vec2;
     private topLeftCornerInit: Vec2;
+    private offset: Vec2;
 
     rectangleService: RectangleService;
     currentColourService: CurrentColourService;
@@ -37,6 +39,8 @@ export class SelectionEllipseService extends Tool {
         super(drawingService, currentColourService);
         this.currentColourService = currentColourService;
         this.topLeftCorner = { x: 0, y: 0 };
+        this.offset = { x: 0, y: 0 };
+
         this.selectionActive = false;
         this.dragActive = false;
 
@@ -57,15 +61,22 @@ export class SelectionEllipseService extends Tool {
             } else {
                 if (this.isClickIn(this.firstGrid)) {
                     this.initial = this.topLeftCornerInit = this.getPositionFromMouse(event);
+                    this.offset.x = this.topLeftCorner.x - this.initial.x;
+                    this.offset.y = this.topLeftCorner.y - this.initial.y;
                     this.dragActive = true;
                     console.log('click dedans');
                 } else {
                     this.selectionActive = false;
-                    // const imageData = this.drawingService.baseCtx.getImageData(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
-                    // createImageBitmap(imageData).then((imgBitmap) => {
-                    //     this.clipArea(this.drawingService.baseCtx, this.end);
-                    //     this.drawingService.baseCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
-                    // });
+                    this.drawEllipse(this.drawingService.selectedAreaCtx, this.mouseDownCoord);
+                    this.drawingService.selectedAreaCtx.strokeStyle = 'rgba(255, 255, 255, 0)';
+                    this.drawingService.selectedAreaCtx.setLineDash([]);
+                    this.drawingService.selectedAreaCtx.stroke();
+                    const imageData = this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
+                    createImageBitmap(imageData).then((imgBitmap) => {
+                        // this.clipArea(this.drawingService.baseCtx, this.end);
+                        this.drawingService.baseCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
+                        // this.drawingService.baseCtx.restore();
+                    });
                     console.log('click dehors');
                 }
             }
@@ -95,8 +106,8 @@ export class SelectionEllipseService extends Tool {
             this.selectEllipse(this.drawingService.selectedAreaCtx, this.mouseDownCoord);
             this.drawEllipse(this.drawingService.selectedAreaCtx, this.mouseDownCoord);
             this.drawingService.selectedAreaCtx.stroke();
-            // this.drawingService.selectedAreaCtx.setLineDash([]);
-            // this.drawFramingRectangle(this.drawingService.selectedAreaCtx, this.mouseDownCoord);
+            this.drawingService.previewCtx.setLineDash([]);
+            this.drawingService.baseCtx.setLineDash([]);
         }
         this.mouseDown = false;
         this.dragActive = false;
@@ -258,6 +269,16 @@ export class SelectionEllipseService extends Tool {
         const imageData = this.drawingService.baseCtx.getImageData(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
         const bottomRightCorner: Vec2 = { x: imageData.width, y: imageData.height };
         // console.log(this.imageData.data);
+
+        // Remplace les pixels vierges du canvas par des pixels blancs
+        for (let i = 3; i < imageData.data.length; i += ALPHA_POS) {
+            if (imageData.data[i] === 0) {
+                imageData.data[i - RED_POS] = MAX_BYTE_VALUE;
+                imageData.data[i - GREEN_POS] = MAX_BYTE_VALUE;
+                imageData.data[i - BLUE_POS] = MAX_BYTE_VALUE;
+                imageData.data[i] = MAX_BYTE_VALUE;
+            }
+        }
         createImageBitmap(imageData).then((imgBitmap) => {
             this.clipArea(ctx, finalGrid);
             this.drawingService.selectedAreaCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
@@ -297,7 +318,7 @@ export class SelectionEllipseService extends Tool {
         if (firstGrid.x < this.topLeftCorner.x || firstGrid.x > this.topLeftCorner.x + this.width) {
             return false;
         }
-        if (firstGrid.y < this.topLeftCorner.y || firstGrid.y > this.topLeftCorner.y + this.height) {
+        if (firstGrid.y <= this.topLeftCorner.y || firstGrid.y >= this.topLeftCorner.y + this.height) {
             return false;
         }
         return true;
@@ -305,8 +326,8 @@ export class SelectionEllipseService extends Tool {
 
     private updateDragPosition(event: MouseEvent): void {
         const currentCoord = this.getPositionFromMouse(event);
-        this.topLeftCorner.x = this.topLeftCornerInit.x + currentCoord.x - this.initial.x - this.width / 2;
-        this.topLeftCorner.y = this.topLeftCornerInit.y + currentCoord.y - this.initial.y - this.height / 2;
+        this.topLeftCorner.x = this.topLeftCornerInit.x + currentCoord.x - this.initial.x + this.offset.x;
+        this.topLeftCorner.y = this.topLeftCornerInit.y + currentCoord.y - this.initial.y + this.offset.y;
         this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y + 'px';
         this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x + 'px';
     }
