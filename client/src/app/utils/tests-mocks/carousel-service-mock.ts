@@ -16,6 +16,7 @@ export class CarouselServiceMock {
         return of();
     }
 
+    // tslint:disable-next-line:no-empty
     openDrawing(drawing: DrawingDataMock): void {}
 
     async deleteDrawing(id: string): Promise<string> {

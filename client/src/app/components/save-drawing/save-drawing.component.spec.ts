@@ -20,6 +20,7 @@ import { DrawingDataMock } from '@app/utils/tests-mocks/drawing-data-mock';
 import { SaveDrawingComponent } from './save-drawing.component';
 
 const dialogMock = {
+    // tslint:disable:no-empty
     close: () => {},
 };
 
@@ -117,6 +118,7 @@ describe('SaveDrawingComponent', () => {
         component.tags.push({ name: 'tag3' } as Tag);
         fixture.detectChanges();
         component.remove({ name: 'tag4' } as Tag);
+        // tslint:disable-next-line:no-magic-numbers
         expect(component.tags.length).toEqual(3);
         component.remove(component.tags[0]);
         expect(component.tags.length).toEqual(2);

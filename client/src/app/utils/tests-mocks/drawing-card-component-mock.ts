@@ -3,6 +3,7 @@ import { Input } from '@angular/core';
 import { CardStyle } from '../interfaces/card-style';
 import { DrawingDataMock } from '../tests-mocks/drawing-data-mock';
 
+// tslint:disable:no-empty
 export class DrawingCardComponentMock {
     @Input() positionCaracteristics: CardStyle;
     @Input() infoDrawing: DrawingDataMock;

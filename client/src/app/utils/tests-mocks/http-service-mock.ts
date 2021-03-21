@@ -2,6 +2,7 @@ import { Observable, of } from 'rxjs';
 import { DrawingDataMock } from './drawing-data-mock';
 
 export class HttpServiceMock {
+    // tslint:disable-next-line:no-empty
     constructor() {}
 
     // private readonly BASE_URL: string = 'http://localhost:3000';

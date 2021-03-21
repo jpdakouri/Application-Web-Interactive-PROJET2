@@ -17,6 +17,7 @@ import { of } from 'rxjs';
 import { CarouselComponent } from './carousel.component';
 
 const dialogMock = {
+    // tslint:disable-next-line:no-empty
     close: () => {},
 };
 
@@ -67,6 +68,7 @@ describe('CarouselComponent', () => {
     });
 
     it('deleteDrawing sould remove one drawing from the list of drawing ', () => {
+        // tslint:disable-next-line:no-magic-numbers
         carouselServiceMock.initMock(3);
         component.deleteDrawing('1');
         expect(component.drawingArray.length).toEqual(2);

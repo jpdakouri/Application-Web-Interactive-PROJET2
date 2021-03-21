@@ -6,6 +6,7 @@ import { DrawingData } from '@common/communication/drawing-data';
 import { DrawingCardComponent } from './drawing-card.component';
 
 const snackBarMock = {
+    // tslint:disable-next-line:no-empty
     open: () => {},
 };
 describe('DrawingCardComponent', () => {

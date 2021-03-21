@@ -11,6 +11,8 @@ import { of } from 'rxjs';
 import { CarouselService } from './carousel.service';
 
 class DrawingServiceMock {
+    // tslint:disable:no-any
+    // tslint:disable-next-line:no-empty
     openDrawing(drawing: any): void {}
 }
 

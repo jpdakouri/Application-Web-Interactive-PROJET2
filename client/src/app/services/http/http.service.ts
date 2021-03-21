@@ -47,7 +47,8 @@ export class HttpService {
         return (error: HttpErrorResponse): Observable<T> => {
             if (error.status === HTTP_STATUS_NO_SERVER) this.openErrorDialog('Serveur Indisponible');
             else if (error.status === HTTP_STATUS_NOT_FOUND) {
-                if (request === 'DeleteDrawing') this.openErrorDialog('Impossible de supprimer le dessin, il ne fait plus parti de la base de données');
+                if (request === 'DeleteDrawing')
+                    this.openErrorDialog('Impossible de supprimer le dessin, il ne fait plus parti de la base de données');
                 else if (request === 'GetOne') this.openErrorDialog("Impossible d'ouvrir le dessin, il ne fait plus parti de la base de données");
             } else this.openErrorDialog(error.error);
             return of(result as T);
