@@ -2,12 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { async, TestBed } from '@angular/core/testing';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { CarouselComponent } from '@app/components/carousel-components/carousel/carousel.component';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HttpService } from '@app/services/http/http.service';
 import { DrawingDataMock } from '@app/utils/tests-mocks/drawing-data-mock';
 import { HttpServiceMock } from '@app/utils/tests-mocks/http-service-mock';
 import { DrawingData } from '@common/communication/drawing-data';
 import { of } from 'rxjs';
-import { DrawingService } from '../drawing/drawing.service';
 import { CarouselService } from './carousel.service';
 
 class DrawingServiceMock {
@@ -15,7 +15,7 @@ class DrawingServiceMock {
 }
 
 // tslint:disable:no-magic-numbers
-fdescribe('CarouselService', () => {
+describe('CarouselService', () => {
     let service: CarouselService;
     let httpServiceMock: HttpServiceMock;
     let drawingServiceMock: DrawingServiceMock;

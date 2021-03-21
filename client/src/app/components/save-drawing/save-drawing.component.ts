@@ -74,13 +74,13 @@ export class SaveDrawingComponent implements AfterViewInit {
     // Code for chips inspired by Angular material site
     remove(labelToRemove: Tag): void {
         const indexToRemove = this.tags.indexOf(labelToRemove);
-
         if (indexToRemove >= 0) this.tags.splice(indexToRemove, 1);
     }
 
     addChip(event: MatChipInputEvent): void {
         const input = event.input;
         const value = event.value;
+        console.log(event);
 
         if ((value || '').trim() && TAG_NAME_REGEX.test(value)) {
             this.tags.push({ name: value.trim() });
