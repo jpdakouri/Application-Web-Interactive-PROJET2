@@ -229,7 +229,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     subscribeToNewDrawing(): void {
         this.drawingService.newDrawing.subscribe((result: Vec2) => {
             this.canvasSize = result;
-            this.canvasResizerService.resizePreview(result);
+            this.canvasResizerService.resizeCanvas(result);
         });
     }
 }

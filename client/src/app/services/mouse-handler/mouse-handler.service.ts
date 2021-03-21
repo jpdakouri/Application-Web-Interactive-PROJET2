@@ -27,8 +27,8 @@ export class MouseHandlerService {
         this.endCoordinate = coordinate;
     }
 
-    onMouseMove(coordinateClick: Vec2): void {
-        this.currentCoordinate = coordinateClick;
+    onMouseMove(coordinate: Vec2): void {
+        this.currentCoordinate = coordinate;
     }
 
     calculateDeltaX(): number {

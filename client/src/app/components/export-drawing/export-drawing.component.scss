@@ -1,3 +1,6 @@
+.export-modal-container {
+  margin: auto;
+}
 .export-options .mat-form-field + .mat-form-field {
   margin-left: 8px;
   margin-top: 8px;
@@ -12,4 +15,9 @@
   width: auto;
   max-width: 620px;
   max-height: 450px;
+  background-color: white;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  will-change: filter; /* optimize filter changes */;
 }
