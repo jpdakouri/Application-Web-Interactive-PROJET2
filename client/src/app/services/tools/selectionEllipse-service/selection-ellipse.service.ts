@@ -27,6 +27,8 @@ export class SelectionEllipseService extends Tool {
     selectionActive: boolean;
     height: number;
     width: number;
+    private initial: Vec2;
+    private topLeftCornerInit: Vec2;
 
     rectangleService: RectangleService;
     currentColourService: CurrentColourService;
@@ -43,17 +45,18 @@ export class SelectionEllipseService extends Tool {
 
     onMouseDown(event: MouseEvent): void {
         this.clearPath();
-        this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
         this.mouseDown = event.button === MouseButtons.Left;
         this.firstGrid = this.getPositionFromMouse(event);
         this.mouseMoved = false;
         if (this.mouseDown) {
             if (!this.selectionActive) {
+                this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
                 this.begin = this.getPositionFromMouse(event);
                 this.updatePreview();
                 this.selectionActive = true;
             } else {
                 if (this.isClickIn(this.firstGrid)) {
+                    this.initial = this.topLeftCornerInit = this.getPositionFromMouse(event);
                     this.dragActive = true;
                     console.log('click dedans');
                 } else {
@@ -75,6 +78,8 @@ export class SelectionEllipseService extends Tool {
             this.mouseDownCoord.x = this.getPositionFromMouse(event).x - this.firstGrid.x;
             this.mouseDownCoord.y = this.getPositionFromMouse(event).y - this.firstGrid.y;
             this.updatePreview();
+        } else if (this.mouseDown && this.selectionActive && this.dragActive) {
+            this.updateDragPosition(event);
         }
     }
 
@@ -296,6 +301,14 @@ export class SelectionEllipseService extends Tool {
             return false;
         }
         return true;
+    }
+
+    private updateDragPosition(event: MouseEvent): void {
+        const currentCoord = this.getPositionFromMouse(event);
+        this.topLeftCorner.x = this.topLeftCornerInit.x + currentCoord.x - this.initial.x - this.width / 2;
+        this.topLeftCorner.y = this.topLeftCornerInit.y + currentCoord.y - this.initial.y - this.height / 2;
+        this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y + 'px';
+        this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x + 'px';
     }
 
     private clearPath(): void {
