@@ -39,6 +39,7 @@ export class SaveDrawingService {
     }
 
     addDrawing(): void {
+        console.log('1');
         const labels = this.toStringArray(this.labelsChecked);
         const drawingToSend = new DrawingData(
             undefined,
@@ -48,18 +49,14 @@ export class SaveDrawingService {
             this.originalCanvas.width,
             this.originalCanvas.height,
         );
-        console.log(drawingToSend.width, drawingToSend.height);
+        console.log('12');
 
         this.httpService.insertDrawing(drawingToSend).subscribe({
-            next: (result) => {
+            next: () => {
                 console.log("La requête POST s'est bien déroulée !");
-                console.log(result);
-            },
-            error: (err) => {
-                console.error('Une erreur est survenue dans lors de la requête POST');
-                console.error(err);
             },
         });
+        console.log('132');
     }
 
     toStringArray(labels: Tag[]): string[] {

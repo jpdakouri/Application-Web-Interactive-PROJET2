@@ -34,18 +34,10 @@ class SaveDrawingServiceMock {
 
     constructor() {}
 
-    getDataURLFromCanvas(): string {
-        return '';
-    }
-
     addDrawing(): void {}
-
-    toStringArray(labels: Tag[]): string[] {
-        return new Array<string>();
-    }
 }
 
-fdescribe('SaveDrawingComponent', () => {
+describe('SaveDrawingComponent', () => {
     let component: SaveDrawingComponent;
     let fixture: ComponentFixture<SaveDrawingComponent>;
     let saveDrawingServiceMock: SaveDrawingServiceMock;

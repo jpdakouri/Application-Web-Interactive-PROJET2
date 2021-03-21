@@ -15,7 +15,7 @@ export class HttpServiceMock {
         return of();
     }
 
-    insertDrawing(newDrawing: DrawingDataMock): Observable<string> {
+    insertDrawing(): Observable<string> {
         return of();
     }
 
