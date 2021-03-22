@@ -1,10 +1,11 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { MatDialogModule } from '@angular/material/dialog';
+import { DrawingDataMock } from '@app/utils/tests-mocks/drawing-data-mock';
 import { DrawingData } from '@common/communication/drawing-data';
 import { HttpService } from './http.service';
 
-describe('HttpService', () => {
+fdescribe('HttpService', () => {
     let service: HttpService;
     let httpMock: HttpTestingController;
     let baseUrl: string;
@@ -45,6 +46,26 @@ describe('HttpService', () => {
         const req = httpMock.expectOne(baseUrl + '/api/drawings');
         expect(req.request.method).toBe('POST');
         const response = 'this is the mongo generated ID';
+        req.flush(response);
+    });
+
+    it('getArraySizeOfDrawing hould send correct request', () => {
+        service.getLengthOfDrawings(true).subscribe((result) => {
+            expect(result).toEqual(response);
+        });
+        const req = httpMock.expectOne(baseUrl + '/api/drawings/length/true');
+        expect(req.request.method).toBe('GET');
+        const response = 1;
+        req.flush(response);
+    });
+
+    it('getOneDrawing should send correct request', () => {
+        service.getOneDrawing(1, true).subscribe((result) => {
+            expect(result).toEqual(response);
+        });
+        const req = httpMock.expectOne(baseUrl + '/api/drawings/single?index=1&tagFlag=true');
+        expect(req.request.method).toBe('GET');
+        const response = new DrawingDataMock('1');
         req.flush(response);
     });
 });

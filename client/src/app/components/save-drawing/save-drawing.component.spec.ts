@@ -1,6 +1,6 @@
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -48,6 +48,8 @@ describe('SaveDrawingComponent', () => {
                 MatFormFieldModule,
                 MatInputModule,
                 MatSelectModule,
+                FormsModule,
+                ReactiveFormsModule,
                 BrowserAnimationsModule,
                 MatChipsModule,
                 MatIconModule,

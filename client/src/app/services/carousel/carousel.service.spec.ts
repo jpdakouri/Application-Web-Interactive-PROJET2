@@ -42,8 +42,6 @@ describe('CarouselService', () => {
         expect(service).toBeTruthy();
     });
 
-    // it('getArraySizeOfDrawing should call drawing from server', async(() => {}));
-
     it('getArraySizeOfDrawing should return un observable with the new size', async(() => {
         spyOn(httpServiceMock, 'getLengthOfDrawings').and.returnValue(of(1));
         service.getArraySizeOfDrawing(false).subscribe((result) => {

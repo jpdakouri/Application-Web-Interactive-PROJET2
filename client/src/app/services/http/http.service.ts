@@ -14,7 +14,8 @@ const HTTP_STATUS_NO_SERVER = 0;
     providedIn: 'root',
 })
 export class HttpService {
-    constructor(private http: HttpClient, public dialog: MatDialog) {}
+    private dialog: MatDialog;
+    constructor(private http: HttpClient) {}
 
     private readonly BASE_URL: string = 'http://localhost:3000';
 

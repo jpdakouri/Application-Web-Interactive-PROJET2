@@ -28,14 +28,12 @@ export class MainPageComponent {
             title: 'Hello from the client',
             body: 'Time is : ' + new Date().toString(),
         };
-        // Important de ne pas oublier "subscribe" ou l'appel ne sera jamais lancé puisque personne l'observe
         this.basicService.basicPost(newTimeMessage).subscribe();
     }
 
     getMessagesFromServer(): void {
         this.basicService
             .basicGet()
-            // Cette étape transforme le Message en un seul string
             .pipe(
                 map((message: Message) => {
                     return `${message.title} ${message.body}`;
