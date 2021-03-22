@@ -66,9 +66,10 @@ describe('MainPageComponent', () => {
         expect(drawingServiceSpy.createNewDrawing).toHaveBeenCalled();
     });
 
-    it('should call onCreateNewDrawing when openCarousel is called', () => {
+    it('should call openDialog when openCarousel is called', () => {
         spyOn(component, 'onCreateNewDrawing').and.stub();
+        spyOn(component['dialogControllerService'], 'openDialog').and.stub();
         component.openCarousel();
-        expect(drawingServiceSpy.createNewDrawing).toHaveBeenCalled();
+        expect(component['dialogControllerService'].openDialog).toHaveBeenCalled();
     });
 });

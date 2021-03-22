@@ -75,4 +75,10 @@ describe('ToolbarComponent', () => {
         component.onExport();
         expect(component.exportButtonClicked.emit).toHaveBeenCalledWith(true);
     });
+
+    it('selectedAll should be emitted when selectAll is called', () => {
+        spyOn(component.selectedAll, 'emit');
+        component.selectAll();
+        expect(component.selectedAll.emit).toHaveBeenCalledWith(true);
+    });
 });

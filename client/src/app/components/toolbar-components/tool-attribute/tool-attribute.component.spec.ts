@@ -219,4 +219,8 @@ describe('ToolAttributeBarComponent', () => {
         expect(component.isChecked(ShapeStyle.Outline)).toEqual(true);
         expect(component.isChecked(ShapeStyle.Filled)).toEqual(false);
     });
+    it('onNumberOfSidesChange should call setCurrentNumberOfSides from toolManagerService', () => {
+        component.onNumberOfSidesChange({} as MatSliderChange);
+        expect(toolManagerServiceSpy.setCurrentNumberOfSides).toHaveBeenCalled();
+    });
 });
