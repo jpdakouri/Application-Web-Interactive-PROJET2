@@ -28,9 +28,9 @@ export class SaveDrawingComponent implements AfterViewInit {
     tags: Tag[];
     originalCanvas: HTMLCanvasElement;
     imageSource: string;
-    readonly separatorKeysCodes: number[] = [ENTER];
     waitingForServer: boolean = false;
     currentIndex: number = 0;
+    readonly separatorKeysCodes: number[] = [ENTER];
 
     constructor(private saveDrawingService: SaveDrawingService, public dialogRef: MatDialogRef<SaveDrawingComponent>) {
         this.fileName = new FormControl('', [Validators.required, Validators.pattern(FILE_NAME_REGEX)]);

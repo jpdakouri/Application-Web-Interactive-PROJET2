@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DrawingDataMock } from '@app/utils/tests-mocks/drawing-data-mock';
 import { DrawingData } from '@common/communication/drawing-data';
@@ -17,7 +19,7 @@ describe('DrawingCardComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [DrawingCardComponent],
-            imports: [MatCardModule],
+            imports: [MatCardModule, MatChipsModule, MatIconModule],
             providers: [{ provide: MatSnackBar, useValue: snackBarMock }],
         }).compileComponents();
     });

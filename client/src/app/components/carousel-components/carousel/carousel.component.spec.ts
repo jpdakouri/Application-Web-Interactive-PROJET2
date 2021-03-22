@@ -1,17 +1,22 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { DrawingCardComponent } from '@app/components/carousel-components/drawing-card/drawing-card.component';
+import { SearchByTagsComponent } from '@app/components/search-by-tags/search-by-tags.component';
 import { CarouselService } from '@app/services/carousel/carousel.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { CarouselServiceMock } from '@app/utils/tests-mocks/carousel-service-mock';
-import { DrawingCardComponentMock } from '@app/utils/tests-mocks/drawing-card-component-mock';
 import { DrawingDataMock } from '@app/utils/tests-mocks/drawing-data-mock';
 import { of } from 'rxjs';
 import { CarouselComponent } from './carousel.component';
@@ -20,23 +25,25 @@ const dialogMock = {
     // tslint:disable-next-line:no-empty
     close: () => {},
 };
+const snackBarMock = {
+    // tslint:disable-next-line:no-empty
+    open: () => {},
+};
 
 describe('CarouselComponent', () => {
     let component: CarouselComponent;
     let fixture: ComponentFixture<CarouselComponent>;
     let carouselServiceMock: CarouselServiceMock;
-    let drawingCardComponentMock: DrawingCardComponentMock;
 
     beforeEach(async () => {
         carouselServiceMock = new CarouselServiceMock();
-        drawingCardComponentMock = new DrawingCardComponentMock();
         await TestBed.configureTestingModule({
-            declarations: [CarouselComponent],
+            declarations: [CarouselComponent, SearchByTagsComponent],
             providers: [
                 { provide: MatDialogRef, useValue: dialogMock },
                 { provide: MAT_DIALOG_DATA, useValue: [] },
                 { provide: CarouselService, useValue: carouselServiceMock },
-                { provide: DrawingCardComponent, useValue: drawingCardComponentMock },
+                { provide: MatSnackBar, useValue: snackBarMock },
             ],
             imports: [
                 MatDialogModule,
@@ -45,6 +52,11 @@ describe('CarouselComponent', () => {
                 MatOptionModule,
                 MatSelectModule,
                 MatInputModule,
+                MatChipsModule,
+                MatExpansionModule,
+                MatToolbarModule,
+                MatIconModule,
+                MatCardModule,
                 MatFormFieldModule,
                 ReactiveFormsModule,
             ],
