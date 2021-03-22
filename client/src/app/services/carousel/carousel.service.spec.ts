@@ -44,9 +44,8 @@ describe('CarouselService', () => {
 
     it('getArraySizeOfDrawing should return un observable with the new size', async(() => {
         spyOn(httpServiceMock, 'getLengthOfDrawings').and.returnValue(of(1));
-        service.getArraySizeOfDrawing(false).subscribe((result) => {
-            expect(result).toEqual(1);
-        });
+        service.getArraySizeOfDrawing(false);
+        expect(service.sizeOfArray).toEqual(1);
     }));
 
     it('getDrawing should be called with the right index depending which side we are shifting', async(() => {
@@ -69,8 +68,9 @@ describe('CarouselService', () => {
 
     it('deleteDrawing should retrun a promise', async(() => {
         spyOn(httpServiceMock, 'deleteDrawing').and.returnValue(of(''));
-        service.deleteDrawing('id').then((result) => {
-            expect(result).toEqual('Le dessin a été supprimé');
-        });
+        service.deleteDrawing('1');
+        setTimeout(() => {
+            expect(httpServiceMock.deleteDrawing).toHaveBeenCalled();
+        }, 200);
     }));
 });
