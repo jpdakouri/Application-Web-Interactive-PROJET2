@@ -58,7 +58,10 @@ export class EditorComponent implements AfterViewInit {
                     event.preventDefault();
                     this.openSaveDrawingModal();
                 }
-                if (event.key === KeyboardButtons.SelectAll) this.selectAll();
+                if (event.key === KeyboardButtons.SelectAll) {
+                    event.preventDefault();
+                    this.selectAll();
+                }
             }
 
             if (!event.shiftKey && !event.ctrlKey) {

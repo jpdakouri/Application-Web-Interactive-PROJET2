@@ -164,6 +164,13 @@ describe('EditorComponent', () => {
         expect(component.openSaveDrawingModal).toHaveBeenCalled();
     });
 
+    it(' #onKeyDown should call selectAll if input is valid ', () => {
+        const event = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.SelectAll, ctrlKey: true });
+        spyOn(component, 'selectAll').and.stub();
+        component.onKeyDown(event);
+        expect(component.selectAll).toHaveBeenCalled();
+    });
+
     it(' #onKeyDown should call openExportDrawingModal if input is valid ', () => {
         const event = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Export, ctrlKey: true });
         spyOn(component, 'openExportDrawingModal').and.stub();
