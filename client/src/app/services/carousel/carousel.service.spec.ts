@@ -17,7 +17,7 @@ class DrawingServiceMock {
 }
 
 // tslint:disable:no-magic-numbers
-describe('CarouselService', () => {
+fdescribe('CarouselService', () => {
     let service: CarouselService;
     let httpServiceMock: HttpServiceMock;
     let drawingServiceMock: DrawingServiceMock;
@@ -41,6 +41,8 @@ describe('CarouselService', () => {
     it('should be created', () => {
         expect(service).toBeTruthy();
     });
+
+    // it('getArraySizeOfDrawing should call drawing from server', async(() => {}));
 
     it('getArraySizeOfDrawing should return un observable with the new size', async(() => {
         spyOn(httpServiceMock, 'getLengthOfDrawings').and.returnValue(of(1));

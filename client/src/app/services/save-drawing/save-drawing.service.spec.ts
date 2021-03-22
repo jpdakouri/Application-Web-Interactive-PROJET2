@@ -15,7 +15,7 @@ import { of } from 'rxjs';
 import { SaveDrawingService } from './save-drawing.service';
 
 // tslint:disable:no-magic-numbers
-fdescribe('SaveDrawingService', () => {
+describe('SaveDrawingService', () => {
     let service: SaveDrawingService;
     let httpServiceMock: HttpServiceMock;
     let canvasTestHelper: CanvasTestHelper;
