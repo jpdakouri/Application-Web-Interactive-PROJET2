@@ -17,7 +17,7 @@ class DrawingServiceMock {
 }
 
 // tslint:disable:no-magic-numbers
-fdescribe('CarouselService', () => {
+describe('CarouselService', () => {
     let service: CarouselService;
     let httpServiceMock: HttpServiceMock;
     let drawingServiceMock: DrawingServiceMock;
@@ -70,7 +70,7 @@ fdescribe('CarouselService', () => {
     });
 
     it('deleteDrawing should retrun a promise', async(() => {
-        spyOn(httpServiceMock, 'getOneDrawing').and.returnValue(of(new DrawingDataMock('1')));
+        spyOn(httpServiceMock, 'deleteDrawing').and.returnValue(of(''));
         service.deleteDrawing('id').then((result) => {
             expect(result).toEqual('Le dessin a été supprimé');
         });

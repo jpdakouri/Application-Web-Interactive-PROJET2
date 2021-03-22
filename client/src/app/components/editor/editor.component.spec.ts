@@ -26,8 +26,8 @@ import { ToolbarComponent } from '@app/components/toolbar-components/toolbar/too
 import { DialogControllerService } from '@app/services/dialog-controller/dialog-controller.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
-import { ToolManagerServiceMock } from '@app/tests-mocks/tool-manager-mock';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
+import { ToolManagerServiceMock } from '@app/utils/tests-mocks/tool-manager-mock';
 import { DrawingData } from '@common/communication/drawing-data';
 import { EditorComponent } from './editor.component';
 
@@ -97,7 +97,6 @@ describe('EditorComponent', () => {
             providers: [
                 { provide: ToolManagerService, useValue: toolManagerServiceMock },
                 { provide: DrawingService, useValue: drawingServiceSpy },
-                // { provide: MatDialogRef, useValue: {} },
                 { provide: CarouselComponent, useValue: {} },
                 { provide: DialogControllerService, useValue: dialogServiceMock },
             ],

@@ -85,7 +85,6 @@ describe('SaveDrawingService', () => {
     it('getDataURLFromCanvas should return a string url', () => {
         service.originalCanvas = canvasTestHelper.canvas;
         spyOn(service.originalCanvas, 'getContext').and.returnValue(null);
-        // service.originalCanvas.getContext('2d') = null;
         const result = service.getDataURLFromCanvas();
         expect(result).toEqual('');
     });

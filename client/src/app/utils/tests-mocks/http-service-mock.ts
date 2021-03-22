@@ -5,13 +5,6 @@ export class HttpServiceMock {
     // tslint:disable-next-line:no-empty
     constructor() {}
 
-    // private readonly BASE_URL: string = 'http://localhost:3000';
-
-    // For later !
-    // getDrawingsByTags(): Observable<Metadata[]> {
-    //     return this.http.get<Metadata[]>(this.BASE_URL + '/api/drawings');
-    // }
-
     deleteDrawing(drawingID: string): Observable<string> {
         return of();
     }
@@ -31,10 +24,4 @@ export class HttpServiceMock {
     sendTags(tags: string[]): Observable<string> {
         return of();
     }
-
-    // getDrawingsByTags(tags: string[]): Observable<DrawingDataMock[]> {}
-
-    // private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {}
-
-    // openErrorDialog(message: string): void {}
 }

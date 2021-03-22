@@ -1,22 +1,29 @@
 import { Input } from '@angular/core';
-// tslint:disable:no-relative-imports
-import { CardStyle } from '../interfaces/card-style';
-import { DrawingDataMock } from '../tests-mocks/drawing-data-mock';
+import { CardStyle } from '@app/utils/interfaces/card-style';
+import { DrawingDataMock } from '@app/utils/tests-mocks/drawing-data-mock';
 
-// tslint:disable:no-empty
 export class DrawingCardComponentMock {
     @Input() positionCaracteristics: CardStyle;
     @Input() infoDrawing: DrawingDataMock;
     imageSize: CardStyle;
 
-    constructor() {}
+    constructor() {
+        return;
+    }
 
-    open(): void {}
+    open(): void {
+        return;
+    }
 
-    deleteDrawing(): void {}
+    deleteDrawing(): void {
+        return;
+    }
 
-    // tslint:disable-next-line:no-any
-    set drawingData(dd: any) {}
+    set drawingData(dd: DrawingDataMock) {
+        return;
+    }
 
-    adjustSizeOfImage(): void {}
+    adjustSizeOfImage(): void {
+        return;
+    }
 }
