@@ -1,10 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
+import { DrawingData } from '@common/communication/drawing-data';
 import { DrawingService } from './drawing.service';
 
 describe('DrawingService', () => {
     let service: DrawingService;
     let canvasTestHelper: CanvasTestHelper;
+
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(DrawingService);
@@ -119,6 +121,19 @@ describe('DrawingService', () => {
         expect(sessionStorageClearSpy).not.toHaveBeenCalled();
     });
 
+    it('isCanvasBlank should true if baseCanva is undefined', () => {
+        service.baseCtx = (null as unknown) as CanvasRenderingContext2D;
+        const returnValue = service.isCanvasBlank();
+        expect(returnValue).toBe(true);
+    });
+
+    it('restoreCanvas shouldnt drawImage if there is no image', () => {
+        spyOn(sessionStorage, 'getItem').and.returnValue(null);
+        spyOn(service.baseCtx, 'drawImage').and.stub();
+        service.restoreCanvas();
+        expect(service.baseCtx.drawImage).not.toHaveBeenCalled();
+    });
+
     it('should do nothing when canvas is blank on create new drawing', () => {
         spyOn(window, 'confirm').and.returnValue(false);
         const clearCanvasStub = spyOn(service, 'clearCanvas').and.callThrough();
@@ -138,5 +153,45 @@ describe('DrawingService', () => {
 
         expect(window.confirm).toHaveBeenCalledWith("Le canvas n'est pas vide! Voulez-vous procéder tout de même?");
         expect(sessionStorageClearSpy).toHaveBeenCalled();
+    });
+
+    it('#createNewDrawing should call #emitCreateNewDrawing if canvas is not blank', () => {
+        const emitSpy = spyOn(service, 'emitCreateNewDrawing').and.callThrough();
+        const rectangleWidth = 10;
+        const rectangleHeight = 10;
+
+        service.baseCtx.fillRect(0, 0, rectangleWidth, rectangleHeight);
+        service.saveCanvas();
+
+        spyOn(window, 'confirm').and.returnValue(true);
+
+        service.createNewDrawing();
+
+        expect(window.confirm).toHaveBeenCalledWith("Le canvas n'est pas vide! Voulez-vous procéder tout de même?");
+        expect(emitSpy).toHaveBeenCalled();
+    });
+
+    it('openDrawing should call save canva', () => {
+        spyOn(service, 'createNewDrawing').and.stub();
+        spyOn(service, 'saveCanvas').and.stub();
+        const newDrawing = {
+            width: 100,
+            height: 100,
+        } as DrawingData;
+        service.openDrawing(newDrawing);
+        expect(service.saveCanvas).toHaveBeenCalled();
+    });
+
+    it('openDrawing should draw an image', () => {
+        spyOn(service, 'createNewDrawing').and.stub();
+        spyOn(service, 'saveCanvas').and.stub();
+        const canva = canvasTestHelper.canvas.toDataURL('image/png');
+        const newDrawing = {
+            width: 100,
+            height: 100,
+            dataURL: canva,
+        } as DrawingData;
+        service.openDrawing(newDrawing);
+        expect(service.saveCanvas).toHaveBeenCalled();
     });
 });

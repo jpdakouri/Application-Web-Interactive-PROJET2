@@ -1,6 +1,5 @@
-// tslint:disable:no-relative-imports
+import { DrawingDataMock } from '@app/utils/tests-mocks/drawing-data-mock';
 import { Observable, of } from 'rxjs';
-import { DrawingDataMock } from './drawing-data-mock';
 
 export class CarouselServiceMock {
     drawingArrayMock: DrawingDataMock[] = [];
@@ -16,8 +15,9 @@ export class CarouselServiceMock {
         return of();
     }
 
-    // tslint:disable-next-line:no-empty
-    openDrawing(drawing: DrawingDataMock): void {}
+    openDrawing(drawing: DrawingDataMock): void {
+        return;
+    }
 
     async deleteDrawing(id: string): Promise<string> {
         return new Promise<string>((resolve) => {

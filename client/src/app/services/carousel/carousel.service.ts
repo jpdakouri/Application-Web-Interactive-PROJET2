@@ -85,7 +85,7 @@ export class CarouselService {
     }
 
     async deleteDrawing(id: string): Promise<string> {
-        const promise = new Promise<string>((resolve) => {
+        return new Promise<string>((resolve) => {
             setTimeout(() => {
                 this.httpService.deleteDrawing(id).subscribe({
                     next: (result) => {
@@ -96,6 +96,5 @@ export class CarouselService {
                 });
             }, 200);
         });
-        return promise;
     }
 }

@@ -168,6 +168,15 @@ describe('CanvasResizerService', () => {
         expect(service.canvasPreviewHeight).toEqual(expectedHeight);
     });
 
+    it('#updatePreviewCanvasSize should update previewCanvas size', () => {
+        const mockCanvasSize = { x: 350, y: 300 } as Vec2;
+
+        service.updatePreviewCanvasSize(mockCanvasSize);
+
+        expect(service.canvasPreviewWidth).toEqual(mockCanvasSize.x);
+        expect(service.canvasPreviewHeight).toEqual(mockCanvasSize.y);
+    });
+
     it('should be able to calculate previewCanvas width and height on bottom right resize', () => {
         service.setStatus(Status.BOTTOM_RIGHT_RESIZE);
         service.resizePreviewCanvas();

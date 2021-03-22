@@ -10,6 +10,7 @@ export enum KeyboardButtons {
     Aerosol = 'a',
     InvalidInput = 'h',
     NewDrawing = '0',
+    SelectAll = 'a',
     Up = 'ArrowUp',
     Down = 'ArrowDown',
     Left = 'ArrowLeft',
@@ -17,4 +18,7 @@ export enum KeyboardButtons {
     Export = 'e',
     Save = 's',
     Carousel = 'g',
+    SelectionRectangle = 'r',
+    SelectionEllipse = 's',
+    Polygon = '3',
 }

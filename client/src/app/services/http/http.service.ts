@@ -6,15 +6,13 @@ import { DrawingData } from '@common/communication/drawing-data';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
-// const HTTP_STATUS_ERROR = 500;
-// const HTTP_STATUS_BAD_REQUEST = 400;
 const HTTP_STATUS_NOT_FOUND = 404;
 const HTTP_STATUS_NO_SERVER = 0;
 @Injectable({
     providedIn: 'root',
 })
 export class HttpService {
-    constructor(private http: HttpClient, public dialog: MatDialog) {}
+    constructor(private http: HttpClient, private dialog: MatDialog) {}
 
     private readonly BASE_URL: string = 'http://localhost:3000';
 
@@ -49,7 +47,8 @@ export class HttpService {
             else if (error.status === HTTP_STATUS_NOT_FOUND) {
                 if (request === 'DeleteDrawing')
                     this.openErrorDialog('Impossible de supprimer le dessin, il ne fait plus parti de la base de données');
-                else if (request === 'GetOne') this.openErrorDialog("Impossible d'ouvrir le dessin, il ne fait plus parti de la base de données");
+                else if (request === 'GetOneDrawing')
+                    this.openErrorDialog("Impossible d'ouvrir le dessin, il ne fait plus parti de la base de données");
             } else this.openErrorDialog(error.error);
             return of(result as T);
         };

@@ -1,3 +1,4 @@
+import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -5,6 +6,9 @@ import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpService } from '@app/services/http/http.service';
 import { INVALIDE_TAG_NAME_ERROR_MESSAGE, NO_ERROR_MESSAGE } from '@app/services/tools/tools-constants';
@@ -33,6 +37,16 @@ describe('SearchByTagsComponent', () => {
                 MatFormFieldModule,
                 FormsModule,
                 ReactiveFormsModule,
+                HttpClientModule,
+                MatFormFieldModule,
+                MatInputModule,
+                MatSelectModule,
+                FormsModule,
+                ReactiveFormsModule,
+                BrowserAnimationsModule,
+                MatChipsModule,
+                MatIconModule,
+                MatExpansionModule,
             ],
         }).compileComponents();
     }));
@@ -73,10 +87,13 @@ describe('SearchByTagsComponent', () => {
 
     it('addChip should add a tag to the array if the input condition are respected', () => {
         const valideChipInput = ({ input: '', value: 'inputedValue' } as unknown) as MatChipInputEvent;
-        const invalideChipInput = ({ input: '', value: '' } as unknown) as MatChipInputEvent;
+        const inputV = document.getElementById('tagValue');
+        component = fixture.componentInstance;
+        const invalideChipInput = ({ input: inputV, value: '' } as unknown) as MatChipInputEvent;
+
         component.addChip(valideChipInput);
-        component.addChip(invalideChipInput);
         expect(component.tags[0].name).toEqual('inputedValue');
+        component.addChip(invalideChipInput);
         expect(component.tags.length).toEqual(1);
     });
 

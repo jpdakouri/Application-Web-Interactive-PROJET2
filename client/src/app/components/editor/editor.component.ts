@@ -3,6 +3,7 @@ import { ToolbarComponent } from '@app/components/toolbar-components/toolbar/too
 import { DialogControllerService } from '@app/services/dialog-controller/dialog-controller.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
+import { SelectionEllipseService } from '@app/services/tools/selectionEllipse-service/selection-ellipse.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 
@@ -23,6 +24,7 @@ export class EditorComponent implements AfterViewInit {
         private toolManagerService: ToolManagerService,
         private drawingService: DrawingService,
         private dialogControllerService: DialogControllerService,
+        private selectionEllipseService: SelectionEllipseService,
     ) {
         this.toolFinder = new Map<KeyboardButtons, ToolsNames>();
         this.toolFinder
@@ -32,7 +34,10 @@ export class EditorComponent implements AfterViewInit {
             .set(KeyboardButtons.Eraser, ToolsNames.Eraser)
             .set(KeyboardButtons.Ellipse, ToolsNames.Ellipse)
             .set(KeyboardButtons.Pencil, ToolsNames.Pencil)
-            .set(KeyboardButtons.Aerosol, ToolsNames.Aerosol);
+            .set(KeyboardButtons.Aerosol, ToolsNames.Aerosol)
+            .set(KeyboardButtons.SelectionRectangle, ToolsNames.SelectBox)
+            .set(KeyboardButtons.SelectionEllipse, ToolsNames.SelectEllipse)
+            .set(KeyboardButtons.Polygon, ToolsNames.Polygon);
     }
 
     ngAfterViewInit(): void {
@@ -52,6 +57,10 @@ export class EditorComponent implements AfterViewInit {
                 if (event.key === KeyboardButtons.Save) {
                     event.preventDefault();
                     this.openSaveDrawingModal();
+                }
+                if (event.key === KeyboardButtons.SelectAll) {
+                    event.preventDefault();
+                    this.selectAll();
                 }
             }
 
@@ -91,5 +100,9 @@ export class EditorComponent implements AfterViewInit {
 
     openCarouselModal(): void {
         this.dialogControllerService.openDialog('carousel');
+    }
+
+    selectAll(): void {
+        this.selectionEllipseService.selectAll();
     }
 }

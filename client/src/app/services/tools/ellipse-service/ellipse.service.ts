@@ -4,11 +4,11 @@ import { ShapeCommand } from '@app/classes/tool-commands/shape-command';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MousePositionHandlerService } from '@app/services/tools/mousePositionHandler-service/mouse-position-handler.service';
 import { DEFAULT_MIN_THICKNESS } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
-import { Sign } from '@app/utils/enums/rgb-settings';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 
 @Injectable({
@@ -18,12 +18,19 @@ export class EllipseService extends Tool {
     private firstGrid: Vec2;
     private shiftDown: boolean;
     private undoRedo: UndoRedoService;
+    private mousePositionHandler: MousePositionHandlerService;
     currentColourService: CurrentColourService;
 
-    constructor(drawingService: DrawingService, currentColourService: CurrentColourService, undoRedo: UndoRedoService) {
+    constructor(
+        drawingService: DrawingService,
+        currentColourService: CurrentColourService,
+        undoRedo: UndoRedoService,
+        mousePositionHandler: MousePositionHandlerService,
+    ) {
         super(drawingService, currentColourService);
         this.currentColourService = currentColourService;
         this.undoRedo = undoRedo;
+        this.mousePositionHandler = mousePositionHandler;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -47,7 +54,7 @@ export class EllipseService extends Tool {
         if (this.mouseDown) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             if (this.shiftDown) {
-                this.drawCircle(this.mouseDownCoord);
+                this.mousePositionHandler.makeCircle(this.mouseDownCoord, this.mouseDownCoord);
             }
             this.drawEllipse(
                 this.drawingService.baseCtx,
@@ -125,8 +132,6 @@ export class EllipseService extends Tool {
         ctx.fillStyle = primaryColor;
         ctx.strokeStyle = primaryColor;
         ctx.lineWidth = DEFAULT_MIN_THICKNESS;
-        // ctx.lineWidth = strokethickness;
-        // strokethickness peut surement etre enlevé de cette fonction car pas utile
         const startCoord = { ...firstGrid };
         const width = finalGrid.x;
         const height = finalGrid.y;
@@ -169,52 +174,6 @@ export class EllipseService extends Tool {
         ctx.stroke();
     }
 
-    private isMouseInFirstQuadrant(): boolean {
-        //  mouse is in first quadrant (+/+)
-        return Math.sign(this.mouseDownCoord.x) === Sign.Positive && Math.sign(this.mouseDownCoord.y) === Sign.Positive;
-    }
-
-    private isMouseInSecondQuadrant(): boolean {
-        // mouse is in third quadrant (-/-)
-        return Math.sign(this.mouseDownCoord.x) === Sign.Negative && Math.sign(this.mouseDownCoord.y) === Sign.Negative;
-    }
-
-    private isMouseInThirdQuadrant(): boolean {
-        // mouse is in fourth quadrant (-/+)
-        return Math.sign(this.mouseDownCoord.x) === Sign.Negative && Math.sign(this.mouseDownCoord.y) === Sign.Positive;
-    }
-
-    private isMouseInFourthQuadrant(): boolean {
-        // mouse is in second quadrant (+/-)
-        return Math.sign(this.mouseDownCoord.x) === Sign.Positive && Math.sign(this.mouseDownCoord.y) === Sign.Negative;
-    }
-
-    private isXGreaterThanY(): boolean {
-        return Math.abs(this.mouseDownCoord.x) > Math.abs(this.mouseDownCoord.y);
-    }
-
-    private isYGreaterThanX(): boolean {
-        return Math.abs(this.mouseDownCoord.y) > Math.abs(this.mouseDownCoord.x);
-    }
-
-    private drawCircle(grid: Vec2): void {
-        if (this.isMouseInFirstQuadrant()) {
-            grid.x = grid.y = Math.min(this.mouseDownCoord.x, this.mouseDownCoord.y);
-        }
-
-        if (this.isMouseInSecondQuadrant()) {
-            grid.x = grid.y = Math.max(this.mouseDownCoord.x, this.mouseDownCoord.y);
-        }
-
-        if (this.isMouseInThirdQuadrant()) {
-            this.isXGreaterThanY() ? (grid.x = -grid.y) : (grid.y = -grid.x);
-        }
-
-        if (this.isMouseInFourthQuadrant()) {
-            this.isYGreaterThanX() ? (grid.y = -grid.x) : (grid.x = -grid.y);
-        }
-    }
-
     private drawEllipse(
         ctx: CanvasRenderingContext2D,
         firstGrid: Vec2,
@@ -249,7 +208,7 @@ export class EllipseService extends Tool {
         this.drawingService.previewCtx.beginPath();
         this.drawPerimeter(this.drawingService.previewCtx, currentCoord);
         if (this.shiftDown) {
-            this.drawCircle(currentCoord);
+            this.mousePositionHandler.makeCircle(this.mouseDownCoord, currentCoord);
         }
         this.drawEllipse(
             this.drawingService.previewCtx,
@@ -277,6 +236,5 @@ export class EllipseService extends Tool {
             command.strokeThickness,
             command.shapeStyle,
         );
-        return;
     }
 }

@@ -26,6 +26,11 @@ canvas {
     z-index: 100;
 }
 
+#selectedArea {
+    position: relative;
+
+    z-index: 500;
+}
 .resizer {
     width: 5px;
     height: 5px;

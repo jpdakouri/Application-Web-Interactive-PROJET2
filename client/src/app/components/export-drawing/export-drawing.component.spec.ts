@@ -3,6 +3,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -10,9 +11,9 @@ import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ExportDrawingService } from '@app/services/export-drawing/export-drawing.service';
 import { INVALID_FILE_NAME_ERROR_MESSAGE, NO_ERROR_MESSAGE, REQUIRED_FILE_NAME_ERROR_MESSAGE } from '@app/services/services-constants';
-import { ExportDrawingServiceMock } from '@app/tests-mocks/export-drawing-service-mock';
 import { ImageFilter } from '@app/utils/enums/image-filter.enum';
 import { ImageFormat } from '@app/utils/enums/image-format.enum';
+import { ExportDrawingServiceMock } from '@app/utils/tests-mocks/export-drawing-service-mock';
 import { ExportDrawingComponent } from './export-drawing.component';
 
 describe('ExportDrawingComponent', () => {
@@ -41,6 +42,7 @@ describe('ExportDrawingComponent', () => {
                 BrowserAnimationsModule,
                 MatOptionModule,
                 MatSelectModule,
+                MatIconModule,
                 MatDialogModule,
                 MatInputModule,
                 MatFormFieldModule,
@@ -60,6 +62,24 @@ describe('ExportDrawingComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
+
+    it("should subscribe to ExportDrawingService's current filter", async(() => {
+        const mockFilter = 'sepia(100%)';
+        exportDrawingMock.currentFilter.next(mockFilter);
+        exportDrawingMock.currentFilter.subscribe((res: string) => {
+            expect(res).toBe(mockFilter);
+        });
+        exportDrawingMock.currentFilter.complete();
+    }));
+
+    it("should subscribe to ExportDrawingService's current format", async(() => {
+        const mockFormat = ImageFormat.PNG;
+        exportDrawingMock.currentFormat.next(mockFormat);
+        exportDrawingMock.currentFormat.subscribe((res: string) => {
+            expect(res).toBe(mockFormat);
+        });
+        exportDrawingMock.currentFormat.complete();
+    }));
 
     it('#dialogClose should close the dialog', () => {
         // tslint:disable:no-any

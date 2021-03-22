@@ -12,6 +12,7 @@ import { ColourPaletteSelectorComponent } from '@app/components/colour-component
 import { ColourSelectorComponent } from '@app/components/colour-components/colour-selector/colour-selector.component';
 import { CurrentColourComponent } from '@app/components/colour-components/current-color/current-colour.component';
 import { HueSelectorComponent } from '@app/components/colour-components/hue-selector/hue-selector.component';
+import { PipettePreviewComponent } from '@app/components/pipette-preview/pipette-preview.component';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { ToolAttributeComponent } from './tool-attribute.component';
@@ -49,6 +50,7 @@ describe('ToolAttributeBarComponent', () => {
                 CurrentColourComponent,
                 ColourPaletteSelectorComponent,
                 HueSelectorComponent,
+                PipettePreviewComponent,
             ],
             providers: [{ provide: ToolManagerService, useValue: toolManagerServiceSpy }],
             imports: [
@@ -214,5 +216,9 @@ describe('ToolAttributeBarComponent', () => {
         toolManagerServiceSpy.getCurrentShapeStyle.and.returnValue(ShapeStyle.Outline);
         expect(component.isChecked(ShapeStyle.Outline)).toEqual(true);
         expect(component.isChecked(ShapeStyle.Filled)).toEqual(false);
+    });
+    it('onNumberOfSidesChange should call setCurrentNumberOfSides from toolManagerService', () => {
+        component.onNumberOfSidesChange({} as MatSliderChange);
+        expect(toolManagerServiceSpy.setCurrentNumberOfSides).toHaveBeenCalled();
     });
 });

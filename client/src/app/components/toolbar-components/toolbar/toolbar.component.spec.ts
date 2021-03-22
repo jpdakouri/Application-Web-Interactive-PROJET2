@@ -49,12 +49,36 @@ describe('ToolbarComponent', () => {
         component.isSelected(ToolsNames.Pencil);
         expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(0)).toEqual([ToolsNames.Pencil]);
         expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(2)).toEqual([ToolsNames.Eraser]);
-        expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(4)).toEqual([ToolsNames.SelectBox]);
+        expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(4)).toEqual([ToolsNames.Polygon]);
         expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(6)).toEqual([ToolsNames.SelectEllipse]);
     });
 
     it('should create new drawing when new drawing button is clicked', () => {
         component.onCreateNewDrawing();
         expect(drawingServiceSpy.createNewDrawing).toHaveBeenCalled();
+    });
+
+    it('carouselClicked should be emitted when openCarousel is called', () => {
+        spyOn(component.carouselClicked, 'emit');
+        component.openCarousel();
+        expect(component.carouselClicked.emit).toHaveBeenCalledWith(true);
+    });
+
+    it('saveButtonClicked should be emitted when saveDrawing is called', () => {
+        spyOn(component.saveButtonClicked, 'emit');
+        component.saveDrawing();
+        expect(component.saveButtonClicked.emit).toHaveBeenCalledWith(true);
+    });
+
+    it('exportButtonClicked should be emitted when onExport is called', () => {
+        spyOn(component.exportButtonClicked, 'emit');
+        component.onExport();
+        expect(component.exportButtonClicked.emit).toHaveBeenCalledWith(true);
+    });
+
+    it('selectedAll should be emitted when selectAll is called', () => {
+        spyOn(component.selectedAll, 'emit');
+        component.selectAll();
+        expect(component.selectedAll.emit).toHaveBeenCalledWith(true);
     });
 });

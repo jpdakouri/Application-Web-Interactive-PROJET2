@@ -50,6 +50,11 @@ describe('CarouselComponent', () => {
                 MatOptionModule,
                 MatSelectModule,
                 MatInputModule,
+                MatChipsModule,
+                MatExpansionModule,
+                MatToolbarModule,
+                MatIconModule,
+                MatCardModule,
                 MatFormFieldModule,
                 ReactiveFormsModule,
                 MatToolbarModule,
@@ -135,4 +140,10 @@ describe('CarouselComponent', () => {
         fixture.detectChanges();
         expect(component.drawingArray).toEqual([response]);
     }));
+
+    it('toggleTagFlag should call initcarousel', () => {
+        spyOn(component, 'initCarousel').and.stub();
+        component.toggleTagFlag(true);
+        expect(component.initCarousel).toHaveBeenCalled();
+    });
 });

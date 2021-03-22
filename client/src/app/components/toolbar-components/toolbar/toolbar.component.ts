@@ -12,6 +12,7 @@ export class ToolbarComponent {
     @Output() exportButtonClicked: EventEmitter<boolean>;
     @Output() saveButtonClicked: EventEmitter<boolean>;
     @Output() carouselClicked: EventEmitter<boolean>;
+    @Output() selectedAll: EventEmitter<boolean>;
 
     toolsNames: typeof ToolsNames = ToolsNames;
     toolManagerService: ToolManagerService;
@@ -23,6 +24,7 @@ export class ToolbarComponent {
         this.exportButtonClicked = new EventEmitter<boolean>();
         this.saveButtonClicked = new EventEmitter<boolean>();
         this.carouselClicked = new EventEmitter<boolean>();
+        this.selectedAll = new EventEmitter<boolean>();
     }
 
     setCurrentTool(toolName: ToolsNames): void {
@@ -47,5 +49,9 @@ export class ToolbarComponent {
 
     openCarousel(): void {
         this.carouselClicked.emit(true);
+    }
+
+    selectAll(): void {
+        this.selectedAll.emit(true);
     }
 }

@@ -1,6 +1,7 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatTooltipModule } from '@angular/material/tooltip';
+// import { Vec2 } from '@app/classes/vec2';
 import { CanvasResizerService, Status } from '@app/services/canvas-resizer/canvas-resizer.service';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -9,6 +10,7 @@ import { SaveDrawingService } from '@app/services/save-drawing/save-drawing.serv
 import { SIDEBAR_WIDTH } from '@app/services/services-constants';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { PencilService } from '@app/services/tools/pencil-service/pencil.service';
+import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 import { ToolManagerServiceMock } from '@app/utils/tests-mocks/tool-manager-mock';
 import { ToolStub } from '@app/utils/tests-mocks/tool-stub';
@@ -68,10 +70,29 @@ describe('DrawingComponent', () => {
         expect(component.currentTool).toEqual(toolManagerServiceMock.currentTool);
     });
 
-    it('#subscribeToToolChange should subscribe to tool change emitter and call #updateCurrentTool on emission', () => {
+    it(' #subscribeToToolChange should subscribe to tool change emitter and call #updateCurrentTool on emission', () => {
         spyOn(component, 'updateCurrentTool').and.callThrough();
         toolManagerServiceMock.toolChangeEmitter.emit();
         expect(component.updateCurrentTool).toHaveBeenCalled();
+    });
+
+    it(" #should subscribe to DrawingService's subscribeToCreateNewDrawingEmitter", () => {
+        spyOn(component, 'subscribeToCreateNewDrawingEmitter').and.stub();
+        spyOn(canvasResizerStub, 'calculateCanvasSize').and.stub();
+        spyOn(canvasResizerStub, 'updatePreviewCanvasSize').and.stub();
+
+        drawingStub.createNewDrawingEmitter.emit();
+        expect(canvasResizerStub.calculateCanvasSize).toHaveBeenCalled();
+        expect(canvasResizerStub.updatePreviewCanvasSize).toHaveBeenCalled();
+    });
+
+    it(" #should subscribe to DrawingService's subscribeToNewDrawing", () => {
+        spyOn(component, 'subscribeToNewDrawing').and.stub();
+        spyOn(canvasResizerStub, 'updatePreviewCanvasSize').and.stub();
+
+        drawingStub.newDrawing.emit();
+
+        expect(canvasResizerStub.updatePreviewCanvasSize).toHaveBeenCalled();
     });
 
     it("#ngAfterViewInit should call darwingService's #restoreCanvas", () => {
@@ -122,9 +143,11 @@ describe('DrawingComponent', () => {
         expect(mouseEventSpy).toHaveBeenCalled();
     });
 
-    it('onContextMenu returns false if right clicked while pipette is in use', () => {
+    it('onContextMenu returns true if right clicked while any other tool is in use', () => {
         component.toolManagerService.currentTool = ToolsNames.Pipette;
         expect(component.onContextMenu()).toBeFalse();
+        component.toolManagerService.currentTool = ToolsNames.Line;
+        expect(component.onContextMenu()).toBeTrue();
     });
 
     it('should resize the canvas on mouseUp when status is resizing', () => {
@@ -190,6 +213,27 @@ describe('DrawingComponent', () => {
         const mouseEventSpy = spyOn(toolStub, 'onMouseLeave');
         component.onMouseLeave(event);
         expect(mouseEventSpy).toHaveBeenCalled();
+    });
+
+    it(' onMouseMove should call resizing if canva is resizing', () => {
+        const event = {} as MouseEvent;
+        spyOn(canvasResizerStub, 'onMouseMove').and.stub();
+        spyOn(canvasResizerStub, 'isResizing').and.returnValue(true);
+        component.onMouseLeave(event);
+        expect(canvasResizerStub.onMouseMove).toHaveBeenCalled();
+    });
+
+    it(' onMouseEnter should call onMouseEnter from tool', () => {
+        const event = {} as MouseEvent;
+        spyOn(component.currentTool, 'onMouseEnter').and.stub();
+        component.onMouseEnter(event);
+        expect(component.currentTool.onMouseEnter).toHaveBeenCalled();
+    });
+
+    it(' onDrag should prevent default', () => {
+        const event = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: MouseButtons.Left });
+        component.onDrag(event);
+        expect(event.preventDefault).toHaveBeenCalled();
     });
 
     it('#emitEditorMinWidth should call #computeEditorMinWidth', () => {
