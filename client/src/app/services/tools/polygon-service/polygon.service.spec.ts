@@ -265,4 +265,17 @@ describe('PolygonService', () => {
         // tslint:disable-next-line:no-magic-numbers
         expect(lineToSpy).toHaveBeenCalledTimes(2);
     });
+
+    it(' onMouseLeave should set mouseOut at true', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.onMouseLeave(mouseEvent);
+        expect(service['mouseOut']).toEqual(true);
+    });
+
+    it(' onMouseEnter should set mouseOut at false', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service['mouseOut'] = true;
+        service.onMouseEnter(mouseEvent);
+        expect(service['mouseOut']).toEqual(false);
+    });
 });
