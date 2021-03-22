@@ -17,7 +17,7 @@
     </div>
     <div *ngIf="showShapeStyle()">
         <div class="rectangle-ellipse-type">
-            <h3 class="attribute-title">Type d{{ showEllipseTitle() ? "'ellipse:" : 'e rectangle:' }}</h3>
+            <h3 class="attribute-title">Type d{{ shapeStyleTitle() }}</h3>
             <mat-button-toggle-group (change)="onShapeStyleChange($event)" name="ShapeStyle" aria-label="Shape Style">
                 <mat-button-toggle [checked]="isChecked(shapeStyle.Outline)" value="Outline">Contour</mat-button-toggle>
                 <mat-button-toggle [checked]="isChecked(shapeStyle.Filled)" value="Filled">Plein</mat-button-toggle>

@@ -56,6 +56,7 @@ export class SearchByTagsComponent {
     sendTags(): void {
         let tags = this.toStringArray(this.tags);
         tags = this.tags != undefined ? tags : ['none'];
+        console.log(tags);
         this.httpService.sendTags(tags).subscribe((result) => {
             this.tagFlag.emit(true);
         });

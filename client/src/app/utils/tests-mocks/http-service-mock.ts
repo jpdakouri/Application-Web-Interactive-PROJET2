@@ -1,5 +1,5 @@
+import { DrawingData } from '@common/communication/drawing-data';
 import { Observable, of } from 'rxjs';
-import { DrawingDataMock } from './drawing-data-mock';
 
 export class HttpServiceMock {
     // tslint:disable-next-line:no-empty
@@ -13,19 +13,20 @@ export class HttpServiceMock {
     // }
 
     deleteDrawing(drawingID: string): Observable<string> {
-        return of();
+        return of('something');
     }
 
     insertDrawing(): Observable<string> {
         return of();
     }
 
-    getOneDrawing(index: number, tag: boolean): Observable<DrawingDataMock> {
-        return of();
+    getOneDrawing(index: number, tag: boolean): Observable<DrawingData> {
+        const drawing = new DrawingData('id', 'title', ['tags'], 'url', 100, 100);
+        return of(drawing);
     }
 
     getLengthOfDrawings(): Observable<number> {
-        return of();
+        return of(1234);
     }
 
     sendTags(tags: string[]): Observable<string> {
