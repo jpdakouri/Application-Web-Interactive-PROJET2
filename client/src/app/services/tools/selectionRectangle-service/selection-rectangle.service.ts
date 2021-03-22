@@ -78,20 +78,18 @@ export class SelectionRectangleService extends Tool {
                     this.dragActive = true;
                 } else {
                     this.selectionActive = false;
-                    console.log(this.width, this.height);
                     const imageData = this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
-                    console.log(this.topLeftCorner.x + 1, this.topLeftCorner.y + 1);
                     createImageBitmap(imageData).then((imgBitmap) => {
                         this.drawingService.baseCtx.drawImage(imgBitmap, this.topLeftCorner.x + 1, this.topLeftCorner.y + 1);
                     });
-                    // this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
-                    this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
+                    // this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
                     this.isSelectionDone = false;
                     const command = new SelectionCommand(
                         this,
                         this.initialTopLeftCorner,
                         { ...this.topLeftCorner },
                         { x: this.width, y: this.height },
+                        imageData,
                     );
                     this.undoRedo.addCommand(command);
                 }
@@ -265,7 +263,6 @@ export class SelectionRectangleService extends Tool {
     }
 
     private selectionRectangle(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
-        console.log(this.topLeftCorner, this.firstGrid, finalGrid);
         this.initialTopLeftCorner = { ...this.topLeftCorner };
         // Prendre la region de pixel
         this.drawingService.clearCanvas(ctx);
@@ -323,18 +320,16 @@ export class SelectionRectangleService extends Tool {
     private clearPath(): void {
         this.firstGrid = this.mouseDownCoord = { x: 0, y: 0 };
     }
+
     executeCommand(command: SelectionCommand): void {
-        this.firstGrid = command.initialTopLeftCorner;
-        this.topLeftCorner = command.initialTopLeftCorner;
-        this.selectionRectangle(this.drawingService.selectedAreaCtx, command.selectionSize);
-
-        console.log(this.width, this.height);
-        const imageData = this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
-
-        console.log(command.finalTopLeftCorner.x + 1, command.finalTopLeftCorner.y + 1);
+        this.drawingService.selectedAreaCtx.canvas.style.top = command.finalTopLeftCorner.y + 'px';
+        this.drawingService.selectedAreaCtx.canvas.style.left = command.finalTopLeftCorner.x + 'px';
+        this.drawingService.baseCtx.fillStyle = 'white';
+        this.drawingService.baseCtx.fillRect(command.initialTopLeftCorner.x, command.initialTopLeftCorner.y, this.width, this.height);
+        const imageData = command.imageData;
         createImageBitmap(imageData).then((imgBitmap) => {
-            this.drawingService.baseCtx.drawImage(imgBitmap, command.finalTopLeftCorner.x + 1, command.finalTopLeftCorner.y + 1);
+            this.drawingService.baseCtx.drawImage(imgBitmap, command.finalTopLeftCorner.x, command.finalTopLeftCorner.y);
         });
-        // this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
+        this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
     }
 }
