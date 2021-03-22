@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
+import { LineCommand } from '@app/classes/tool-commands/line-command';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
@@ -291,5 +292,23 @@ describe('LineService', () => {
             key: KeyboardButtons.InvalidInput,
         } as KeyboardEvent);
         expect(previewUpdateSpy).not.toHaveBeenCalled();
+    });
+
+    it('executeCommand draws a line for each point in path', () => {
+        const command = new LineCommand(
+            service,
+            '255,255,255,1',
+            '0,0,0,1',
+            1,
+            2,
+            [
+                { x: 0, y: 0 },
+                { x: 2, y: 2 },
+            ],
+            false,
+        );
+        spyOn(TestBed.inject(DrawingService).baseCtx, 'lineTo');
+        service.executeCommand(command);
+        expect(TestBed.inject(DrawingService).baseCtx.lineTo).toHaveBeenCalledTimes(2);
     });
 });
