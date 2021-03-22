@@ -30,6 +30,7 @@ import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { ExportDrawingComponent } from './components/export-drawing/export-drawing.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
+import { PipettePreviewComponent } from './components/pipette-preview/pipette-preview.component';
 import { SaveDrawingComponent } from './components/save-drawing/save-drawing.component';
 import { SearchByTagsComponent } from './components/search-by-tags/search-by-tags.component';
 import { ServerErrorMessageComponent } from './components/server-error-message/server-error-message.component';
@@ -50,6 +51,7 @@ import { ServerErrorMessageComponent } from './components/server-error-message/s
         ExportDrawingComponent,
         SaveDrawingComponent,
         ServerErrorMessageComponent,
+        PipettePreviewComponent,
         SearchByTagsComponent,
         CarouselComponent,
         DrawingCardComponent,

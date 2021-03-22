@@ -20,4 +20,5 @@ export enum KeyboardButtons {
     Carousel = 'g',
     SelectionRectangle = 'r',
     SelectionEllipse = 's',
+    Polygon = '3',
 }

@@ -86,12 +86,9 @@ describe('SelectionEllipseService', () => {
         service.selectionActive = true;
         // tslint:disable:no-magic-numbers
         service.height = service.width = 100;
-
         service.topLeftCorner = { x: 200, y: 200 };
         service.mouseDownCoord = { x: 30, y: 30 };
-
         const grid = service.mouseDownCoord;
-
         const mouseEventLClick = {
             button: MouseButtons.Left,
         } as MouseEvent;
@@ -317,7 +314,6 @@ describe('SelectionEllipseService', () => {
         service.mouseDown = service.selectionActive = service.mouseMoved = true;
         service['dragActive'] = false;
         service.mouseDownCoord = { x: 100, y: 100 };
-        // const grid = service.mouseDownCoord;
         service['firstGrid'] = { x: 100, y: 100 };
         service['begin'] = { x: 200, y: 200 };
         service['end'] = { x: 100, y: 100 };

@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
+import { ShapeCommand } from '@app/classes/tool-commands/shape-command';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EllipseService } from '@app/services/tools/ellipse-service/ellipse.service';
@@ -225,5 +226,19 @@ describe('EllipseService', () => {
         const drawPerimeterSpy = spyOn<any>(service, 'drawPerimeter').and.callThrough();
         service['drawPerimeter'](contextSpyObj, finalGrid);
         expect(drawPerimeterSpy).toHaveBeenCalledWith(contextSpyObj, finalGrid);
+    });
+
+    it('executeCommand calls drawEllipse with proper parameters', () => {
+        const command = new ShapeCommand(service, '0,0,0,1', '255,255,255,1', 1, { x: 0, y: 0 }, { x: 2, y: 2 }, ShapeStyle.FilledOutline);
+        spyOn(service, 'drawFilledOutline');
+        service.executeCommand(command);
+        expect(service.drawFilledOutline).toHaveBeenCalledWith(
+            TestBed.inject(DrawingService).baseCtx,
+            { x: 0, y: 0 },
+            { x: 2, y: 2 },
+            '0,0,0,1',
+            '255,255,255,1',
+            1,
+        );
     });
 });

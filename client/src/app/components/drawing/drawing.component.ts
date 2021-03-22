@@ -74,6 +74,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.setCanvasSize();
         this.subscribeToToolChange();
         this.subscribeToNewDrawing();
+        this.subscribeToCreateNewDrawingEmitter();
     }
 
     ngAfterViewInit(): void {
@@ -101,8 +102,22 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     }
 
     subscribeToToolChange(): void {
-        this.toolManagerService.toolChangeEmitter.subscribe((toolName: ToolsNames) => {
+        this.toolManagerService.toolChangeEmitter.subscribe(() => {
             this.updateCurrentTool();
+        });
+    }
+
+    subscribeToCreateNewDrawingEmitter(): void {
+        this.drawingService.createNewDrawingEmitter.subscribe(() => {
+            this.canvasSize = this.canvasResizerService.calculateCanvasSize();
+            this.canvasResizerService.updatePreviewCanvasSize(this.canvasSize);
+        });
+    }
+
+    subscribeToNewDrawing(): void {
+        this.drawingService.newDrawing.subscribe((result: Vec2) => {
+            this.canvasSize = result;
+            this.canvasResizerService.updatePreviewCanvasSize(result);
         });
     }
 
@@ -159,7 +174,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         event.preventDefault();
     }
 
-    @HostListener('mouseup', ['$event'])
+    @HostListener('window:mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
         if (this.canvasResizerService.isResizing()) {
             this.canvasResizerService.onMouseUp(event);
@@ -260,12 +275,5 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     getTopLeftCornerRectangle(): Vec2 {
         return { x: this.selectionRectangleService.topLeftCorner.x, y: this.selectionRectangleService.topLeftCorner.y };
-    }
-
-    subscribeToNewDrawing(): void {
-        this.drawingService.newDrawing.subscribe((result: Vec2) => {
-            this.canvasSize = result;
-            this.canvasResizerService.resizeCanvas(result);
-        });
     }
 }

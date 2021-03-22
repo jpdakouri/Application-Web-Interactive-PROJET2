@@ -21,6 +21,7 @@ export class PolygonService extends Tool {
     visualisationEllipse: EllipseService;
     private undoRedo: UndoRedoService;
     private mousePositionHandler: MousePositionHandlerService;
+    private mouseOut: boolean;
 
     constructor(
         drawingService: DrawingService,
@@ -36,6 +37,7 @@ export class PolygonService extends Tool {
         this.mousePositionHandler = mousePositionHandler;
 
         this.clearPath();
+        this.mouseOut = false;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -61,13 +63,17 @@ export class PolygonService extends Tool {
                 this.lineThickness || DEFAULT_MIN_THICKNESS,
                 this.shapeStyle,
             );
+            this.drawPreview(this.drawingService.previewCtx, this.mouseDownCoord);
+            this.drawingService.previewCtx.setLineDash([]);
         }
     }
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
-            this.mouseDownCoord.x = this.getPositionFromMouse(event).x - this.firstGrid.x;
-            this.mouseDownCoord.y = this.getPositionFromMouse(event).y - this.firstGrid.y;
+            if (!this.mouseOut) {
+                this.mouseDownCoord.x = this.getPositionFromMouse(event).x - this.firstGrid.x;
+                this.mouseDownCoord.y = this.getPositionFromMouse(event).y - this.firstGrid.y;
+            }
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawPolygon(
                 this.drawingService.baseCtx,
@@ -95,6 +101,14 @@ export class PolygonService extends Tool {
         this.mouseDown = false;
     }
 
+    onMouseLeave(event: MouseEvent): void {
+        this.mouseOut = true;
+    }
+
+    onMouseEnter(event: MouseEvent): void {
+        this.mouseOut = false;
+    }
+
     private drawOutLine(
         ctx: CanvasRenderingContext2D,
         secondaryColor: string,
@@ -120,10 +134,6 @@ export class PolygonService extends Tool {
         }
         ctx.closePath();
         ctx.stroke();
-        if (ctx === this.drawingService.previewCtx) {
-            this.drawPreview(ctx, finalGrid);
-        }
-        ctx.setLineDash([]);
     }
 
     private drawFilled(ctx: CanvasRenderingContext2D, primaryColor: string, firstGrid: Vec2, finalGrid: Vec2, numberOfSides: number): void {
@@ -146,10 +156,6 @@ export class PolygonService extends Tool {
         ctx.closePath();
         ctx.fill();
         ctx.stroke();
-        if (ctx === this.drawingService.previewCtx) {
-            this.drawPreview(ctx, finalGrid);
-        }
-        ctx.setLineDash([]);
     }
 
     private drawFilledOutLine(
@@ -180,10 +186,6 @@ export class PolygonService extends Tool {
         ctx.closePath();
         ctx.fill();
         ctx.stroke();
-        if (ctx === this.drawingService.previewCtx) {
-            this.drawPreview(ctx, finalGrid);
-        }
-        ctx.setLineDash([]);
     }
 
     private drawPolygon(
@@ -219,31 +221,31 @@ export class PolygonService extends Tool {
     private drawPreview(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.setLineDash([LINE_DASH, LINE_DASH]);
         this.mousePositionHandler.makeCircle(this.mouseDownCoord, finalGrid);
-        let test: Vec2 = this.firstGrid;
+        let firstGrid: Vec2 = this.firstGrid;
         if (this.mousePositionHandler.isMouseInFirstQuadrant(this.mouseDownCoord)) {
             finalGrid.x += ctx.lineWidth;
             finalGrid.y += ctx.lineWidth;
-            test = { x: this.firstGrid.x - ctx.lineWidth / 2, y: this.firstGrid.y - ctx.lineWidth / 2 };
+            firstGrid = { x: this.firstGrid.x - ctx.lineWidth / 2, y: this.firstGrid.y - ctx.lineWidth / 2 };
         }
 
         if (this.mousePositionHandler.isMouseInSecondQuadrant(this.mouseDownCoord)) {
             finalGrid.x -= ctx.lineWidth;
             finalGrid.y -= ctx.lineWidth;
-            test = { x: this.firstGrid.x + ctx.lineWidth / 2, y: this.firstGrid.y + ctx.lineWidth / 2 };
+            firstGrid = { x: this.firstGrid.x + ctx.lineWidth / 2, y: this.firstGrid.y + ctx.lineWidth / 2 };
         }
 
         if (this.mousePositionHandler.isMouseInThirdQuadrant(this.mouseDownCoord)) {
             finalGrid.x -= ctx.lineWidth;
             finalGrid.y += ctx.lineWidth;
-            test = { x: this.firstGrid.x + ctx.lineWidth / 2, y: this.firstGrid.y - ctx.lineWidth / 2 };
+            firstGrid = { x: this.firstGrid.x + ctx.lineWidth / 2, y: this.firstGrid.y - ctx.lineWidth / 2 };
         }
 
         if (this.mousePositionHandler.isMouseInFourthQuadrant(this.mouseDownCoord)) {
             finalGrid.x += ctx.lineWidth;
             finalGrid.y -= ctx.lineWidth;
-            test = { x: this.firstGrid.x - ctx.lineWidth / 2, y: this.firstGrid.y + ctx.lineWidth / 2 };
+            firstGrid = { x: this.firstGrid.x - ctx.lineWidth / 2, y: this.firstGrid.y + ctx.lineWidth / 2 };
         }
-        this.visualisationEllipse.drawOutline(this.drawingService.previewCtx, test, finalGrid, 'blue', 1);
+        this.visualisationEllipse.drawOutline(this.drawingService.previewCtx, firstGrid, finalGrid, 'blue', 1);
     }
 
     private clearPath(): void {

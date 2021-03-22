@@ -28,6 +28,10 @@ export class HttpServiceMock {
         return of();
     }
 
+    sendTags(tags: string[]): Observable<string> {
+        return of();
+    }
+
     // getDrawingsByTags(tags: string[]): Observable<DrawingDataMock[]> {}
 
     // private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {}

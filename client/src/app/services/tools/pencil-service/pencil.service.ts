@@ -95,7 +95,7 @@ export class PencilService extends Tool {
             this.pathData.push(mousePosition);
             this.commandPathData.push(this.pathData);
             this.drawLine(
-                this.drawingService.previewCtx,
+                this.drawingService.baseCtx,
                 this.pathData,
                 this.lineThickness || DEFAULT_MIN_THICKNESS,
                 this.currentColourService.getPrimaryColorRgba(),

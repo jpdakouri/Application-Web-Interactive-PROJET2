@@ -6,7 +6,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ALPHA_POS, BLUE_POS, GREEN_POS, MAX_BYTE_VALUE, RED_POS } from '@app/services/services-constants';
 import { MousePositionHandlerService } from '@app/services/tools/mousePositionHandler-service/mouse-position-handler.service';
 import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
-import { PIXELS_ARROW_STEPS } from '@app/services/tools/tools-constants';
+import { LINE_DASH, PIXELS_ARROW_STEPS } from '@app/services/tools/tools-constants';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
@@ -204,9 +204,9 @@ export class SelectionEllipseService extends Tool {
 
     private drawEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.beginPath();
-        ctx.setLineDash([5, 15]);
+        ctx.setLineDash([LINE_DASH, LINE_DASH]);
         ctx.strokeStyle = 'blue';
-        ctx.lineWidth = this.lineThickness = 0.5;
+        ctx.lineWidth = 1;
         const startCoord = { ...this.firstGrid };
         const width = finalGrid.x;
         const height = finalGrid.y;
