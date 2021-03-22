@@ -20,6 +20,7 @@ export class PolygonService extends Tool {
     currentColourService: CurrentColourService;
     visualisationEllipse: EllipseService;
     private undoRedo: UndoRedoService;
+    private mouseOut: boolean;
 
     constructor(
         drawingService: DrawingService,
@@ -32,6 +33,7 @@ export class PolygonService extends Tool {
         this.visualisationEllipse = visualisationEllipse;
         this.undoRedo = undoRedo;
         this.clearPath();
+        this.mouseOut = false;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -64,8 +66,10 @@ export class PolygonService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
-            this.mouseDownCoord.x = this.getPositionFromMouse(event).x - this.firstGrid.x;
-            this.mouseDownCoord.y = this.getPositionFromMouse(event).y - this.firstGrid.y;
+            if (!this.mouseOut) {
+                this.mouseDownCoord.x = this.getPositionFromMouse(event).x - this.firstGrid.x;
+                this.mouseDownCoord.y = this.getPositionFromMouse(event).y - this.firstGrid.y;
+            }
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawPolygon(
                 this.drawingService.baseCtx,
@@ -91,6 +95,14 @@ export class PolygonService extends Tool {
             this.clearPath();
         }
         this.mouseDown = false;
+    }
+
+    onMouseLeave(event: MouseEvent): void {
+        this.mouseOut = true;
+    }
+
+    onMouseEnter(event: MouseEvent): void {
+        this.mouseOut = false;
     }
 
     private drawOutLine(

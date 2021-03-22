@@ -17,4 +17,5 @@ export enum KeyboardButtons {
     Export = 'e',
     Save = 's',
     Carousel = 'g',
+    Polygon = '3',
 }

@@ -32,7 +32,8 @@ export class EditorComponent implements AfterViewInit {
             .set(KeyboardButtons.Eraser, ToolsNames.Eraser)
             .set(KeyboardButtons.Ellipse, ToolsNames.Ellipse)
             .set(KeyboardButtons.Pencil, ToolsNames.Pencil)
-            .set(KeyboardButtons.Aerosol, ToolsNames.Aerosol);
+            .set(KeyboardButtons.Aerosol, ToolsNames.Aerosol)
+            .set(KeyboardButtons.Polygon, ToolsNames.Polygon);
     }
 
     ngAfterViewInit(): void {

@@ -267,6 +267,19 @@ describe('PolygonService', () => {
         expect(lineToSpy).toHaveBeenCalledTimes(2);
     });
 
+    it(' onMouseLeave should set mouseOut at true', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.onMouseLeave(mouseEvent);
+        expect(service['mouseOut']).toEqual(true);
+    });
+
+    it(' onMouseEnter should set mouseOut at false', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service['mouseOut'] = true;
+        service.onMouseEnter(mouseEvent);
+        expect(service['mouseOut']).toEqual(false);
+    });
+
     it('executeCommand draws a line for each side of the polygon except the first one', () => {
         const numberOfSides = 3;
         const command = new PolygonCommand(
