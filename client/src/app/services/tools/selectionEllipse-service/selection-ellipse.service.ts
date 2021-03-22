@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import { SelectionCommand } from '@app/classes/tool-commands/selection-command';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -10,6 +11,7 @@ import { LINE_DASH, PIXELS_ARROW_STEPS } from '@app/services/tools/tools-constan
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
+import { UndoRedoService } from '../undo-redo-service/undo-redo.service';
 
 // import { ShapeStyle } from '@app/utils/enums/shape-style';
 
@@ -40,7 +42,12 @@ export class SelectionEllipseService extends Tool {
     rectangleService: RectangleService;
     currentColourService: CurrentColourService;
 
-    constructor(drawingService: DrawingService, currentColourService: CurrentColourService, mousePositionHandler: MousePositionHandlerService) {
+    constructor(
+        drawingService: DrawingService,
+        currentColourService: CurrentColourService,
+        mousePositionHandler: MousePositionHandlerService,
+        private undoRedo: UndoRedoService,
+    ) {
         super(drawingService, currentColourService);
         this.currentColourService = currentColourService;
         this.topLeftCorner = { x: 0, y: 0 };
@@ -79,6 +86,9 @@ export class SelectionEllipseService extends Tool {
                     });
                     this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
                     this.isSelectionDone = false;
+                    const commandDisplacement: Vec2 = { x: this.firstGrid.x - this.begin.x, y: this.firstGrid.y - this.begin.y };
+                    const command = new SelectionCommand(this, this.begin, this.end, commandDisplacement);
+                    this.undoRedo.addCommand(command);
                 }
             }
         }
