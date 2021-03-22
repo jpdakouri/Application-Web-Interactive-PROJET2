@@ -52,8 +52,14 @@ describe('DialogControllerService', () => {
         expect(service.dialog.open).toHaveBeenCalledWith(CarouselComponent, {});
     });
 
-    it('openDialog not should open if the input is invalid or another dialog is opened', () => {
+    it('openDialog not should open if the input is invalid ', () => {
         service.openDialog('notValide');
+        expect(service.dialog.open).not.toHaveBeenCalled();
+    });
+
+    it('openDialog not should open if another dialog is opened', () => {
+        service.noDialogOpened = false;
+        service.openDialog('carousel');
         expect(service.dialog.open).not.toHaveBeenCalled();
     });
 });
