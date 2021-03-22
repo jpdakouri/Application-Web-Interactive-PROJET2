@@ -5,11 +5,11 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
-
 import { PolygonService } from './polygon.service';
 
 describe('PolygonService', () => {
     let service: PolygonService;
+
     let mouseEvent: MouseEvent;
     let canvasTestHelper: CanvasTestHelper;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
@@ -133,50 +133,6 @@ describe('PolygonService', () => {
         service.onMouseDown(mouseEvent);
         service.onMouseUp(mouseEvent);
         expect(drawFilledOutlineSpy).toHaveBeenCalled();
-    });
-
-    it('should draw a circle in the first quadrant', () => {
-        service.mouseDownCoord = { x: 300, y: 200 };
-        const expected = { x: 200, y: 200 } as Vec2;
-        const val = service.mouseDownCoord;
-        service['drawCircle'](val);
-        expect(val).toEqual(expected);
-    });
-
-    it('should draw a circle in the third quadrant', () => {
-        service.mouseDownCoord = { x: -300, y: 200 };
-        const expected = { x: -200, y: 200 } as Vec2;
-        const value = service.mouseDownCoord;
-        service['drawCircle'](value);
-        expect(service['drawCircle'](service.mouseDownCoord));
-        expect(value).toEqual(expected);
-    });
-
-    it(' should draw a circle in the fourth quadrant ', () => {
-        service.mouseDownCoord = { x: 300, y: -200 };
-        const expected = { x: 200, y: -200 } as Vec2;
-        const value = service.mouseDownCoord;
-        service['drawCircle'](value);
-        expect(service['drawCircle'](service.mouseDownCoord));
-        expect(value).toEqual(expected);
-    });
-
-    it(' should draw a circle in the second quadrant ', () => {
-        service.mouseDownCoord = { x: -300, y: -200 };
-        const expected = { x: -200, y: -200 } as Vec2;
-        const value = service.mouseDownCoord;
-        service['drawCircle'](value);
-        expect(service['drawCircle'](service.mouseDownCoord));
-        expect(value).toEqual(expected);
-    });
-
-    it(' should draw a large (height > width) ellipse/circle in the fourth quadrant ', () => {
-        service.mouseDownCoord = { x: 200, y: -300 };
-        const expected = { x: 200, y: -200 } as Vec2;
-        const value = service.mouseDownCoord;
-        service['drawCircle'](value);
-        expect(service['drawCircle'](service.mouseDownCoord));
-        expect(value).toEqual(expected);
     });
 
     it(' drawPerimeter works even when there is a negative coordinate in x', () => {
