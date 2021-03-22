@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { HttpService } from '@app/services/http/http.service';
 import { Tag } from '@app/utils/interfaces/tag';
 import { HttpServiceMock } from '@app/utils/tests-mocks/http-service-mock';
@@ -17,13 +18,16 @@ import { SaveDrawingService } from './save-drawing.service';
 describe('SaveDrawingService', () => {
     let service: SaveDrawingService;
     let httpServiceMock: HttpServiceMock;
+    let canvasTestHelper: CanvasTestHelper;
 
     beforeEach(() => {
         httpServiceMock = new HttpServiceMock();
+        canvasTestHelper = new CanvasTestHelper();
         TestBed.configureTestingModule({
             providers: [
                 { provide: MatDialogRef, useValue: {} },
                 { provide: HttpService, useValue: httpServiceMock },
+                { provide: HTMLCanvasElement, useValue: canvasTestHelper },
             ],
             imports: [
                 MatDialogModule,
@@ -57,5 +61,31 @@ describe('SaveDrawingService', () => {
 
         service.addDrawing();
         expect(httpServiceMock.insertDrawing).toHaveBeenCalled();
+    });
+
+    it('getDataURLFromCanvas should return a string url', () => {
+        service.originalCanvas = canvasTestHelper.canvas;
+        const context = service.originalCanvas.getContext('2d') as CanvasRenderingContext2D;
+        const width = service.originalCanvas.width;
+        const height = service.originalCanvas.height;
+        let dataURL = '';
+        const data = context?.getImageData(0, 0, width, height) as ImageData;
+        const compositeOperation = context?.globalCompositeOperation;
+        context.globalCompositeOperation = 'destination-over';
+        context.fillStyle = '#ffffff';
+        context?.fillRect(0, 0, width, height);
+        dataURL = service.originalCanvas.toDataURL('image/png');
+        context?.clearRect(0, 0, width, height);
+        context?.putImageData(data, 0, 0);
+        context.globalCompositeOperation = compositeOperation as string;
+        const result = service.getDataURLFromCanvas();
+        expect(result).toEqual(dataURL);
+    });
+
+    it('getDataURLFromCanvas should return a string url', () => {
+        service.originalCanvas = canvasTestHelper.canvas;
+        spyOn(service.originalCanvas, 'getContext').and.returnValue(null);
+        const result = service.getDataURLFromCanvas();
+        expect(result).toEqual('');
     });
 });

@@ -1,5 +1,4 @@
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { ElementRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
@@ -8,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { SaveDrawingService } from '@app/services/save-drawing/save-drawing.service';
 import {
     INVALIDE_TAG_NAME_ERROR_MESSAGE,
@@ -16,7 +16,7 @@ import {
     REQUIRED_FILE_NAME_ERROR_MESSAGE,
 } from '@app/services/tools/tools-constants';
 import { Tag } from '@app/utils/interfaces/tag';
-import { DrawingDataMock } from '@app/utils/tests-mocks/drawing-data-mock';
+import { SaveDrawingServiceMock } from '@app/utils/tests-mocks/save-drawing-mock';
 import { SaveDrawingComponent } from './save-drawing.component';
 
 const dialogMock = {
@@ -24,26 +24,14 @@ const dialogMock = {
     close: () => {},
 };
 
-class SaveDrawingServiceMock {
-    originalCanvas: HTMLCanvasElement;
-    id: number;
-    image: ElementRef<HTMLImageElement>;
-    fileName: string;
-
-    drawing: DrawingDataMock;
-    labelsChecked: Tag[];
-
-    constructor() {}
-
-    addDrawing(): void {}
-}
-
 describe('SaveDrawingComponent', () => {
     let component: SaveDrawingComponent;
     let fixture: ComponentFixture<SaveDrawingComponent>;
     let saveDrawingServiceMock: SaveDrawingServiceMock;
+    let canvasTestHelper: CanvasTestHelper;
 
     beforeEach(async () => {
+        canvasTestHelper = new CanvasTestHelper();
         saveDrawingServiceMock = new SaveDrawingServiceMock();
         await TestBed.configureTestingModule({
             declarations: [SaveDrawingComponent],
@@ -51,6 +39,7 @@ describe('SaveDrawingComponent', () => {
                 { provide: MatDialogRef, useValue: dialogMock },
                 { provide: HttpClient, useValue: {} },
                 { provide: SaveDrawingService, useValue: saveDrawingServiceMock },
+                { provide: HTMLCanvasElement, useValue: canvasTestHelper },
             ],
             imports: [MatDialogModule, HttpClientModule, MatFormFieldModule, MatInputModule, MatSelectModule, BrowserAnimationsModule],
         }).compileComponents();
@@ -116,6 +105,7 @@ describe('SaveDrawingComponent', () => {
         component.tags.push({ name: 'tag1' } as Tag);
         component.tags.push({ name: 'tag2' } as Tag);
         component.tags.push({ name: 'tag3' } as Tag);
+        component.originalCanvas = canvasTestHelper.canvas;
         fixture.detectChanges();
         component.remove({ name: 'tag4' } as Tag);
         // tslint:disable-next-line:no-magic-numbers
@@ -126,10 +116,13 @@ describe('SaveDrawingComponent', () => {
 
     it('addChip should add a tag to the array if the input condition are respected', () => {
         const valideChipInput = ({ input: '', value: 'inputedValue' } as unknown) as MatChipInputEvent;
-        const invalideChipInput = ({ input: '', value: '' } as unknown) as MatChipInputEvent;
+        const inputV = document.getElementById('tagValue');
+        component = fixture.componentInstance;
+        const invalideChipInput = ({ input: inputV, value: '' } as unknown) as MatChipInputEvent;
+
         component.addChip(valideChipInput);
-        component.addChip(invalideChipInput);
         expect(component.tags[0].name).toEqual('inputedValue');
+        component.addChip(invalideChipInput);
         expect(component.tags.length).toEqual(1);
     });
 });

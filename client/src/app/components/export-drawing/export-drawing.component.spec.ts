@@ -10,9 +10,9 @@ import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ExportDrawingService } from '@app/services/export-drawing/export-drawing.service';
 import { INVALID_FILE_NAME_ERROR_MESSAGE, NO_ERROR_MESSAGE, REQUIRED_FILE_NAME_ERROR_MESSAGE } from '@app/services/services-constants';
-import { ExportDrawingServiceMock } from '@app/tests-mocks/export-drawing-service-mock';
 import { ImageFilter } from '@app/utils/enums/image-filter.enum';
 import { ImageFormat } from '@app/utils/enums/image-format.enum';
+import { ExportDrawingServiceMock } from '@app/utils/tests-mocks/export-drawing-service-mock';
 import { ExportDrawingComponent } from './export-drawing.component';
 
 describe('ExportDrawingComponent', () => {

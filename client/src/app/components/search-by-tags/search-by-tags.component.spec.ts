@@ -60,10 +60,13 @@ describe('SearchByTagsComponent', () => {
 
     it('addChip should add a tag to the array if the input condition are respected', () => {
         const valideChipInput = ({ input: '', value: 'inputedValue' } as unknown) as MatChipInputEvent;
-        const invalideChipInput = ({ input: '', value: '' } as unknown) as MatChipInputEvent;
+        const inputV = document.getElementById('tagValue');
+        component = fixture.componentInstance;
+        const invalideChipInput = ({ input: inputV, value: '' } as unknown) as MatChipInputEvent;
+
         component.addChip(valideChipInput);
-        component.addChip(invalideChipInput);
         expect(component.tags[0].name).toEqual('inputedValue');
+        component.addChip(invalideChipInput);
         expect(component.tags.length).toEqual(1);
     });
 

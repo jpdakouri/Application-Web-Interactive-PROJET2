@@ -19,20 +19,26 @@ export class DialogControllerService {
                 case 'carousel':
                     this.dialogRef = this.dialog.open(CarouselComponent, {});
                     this.noDialogOpened = false;
+                    this.dialogRef.afterClosed().subscribe(() => {
+                        this.noDialogOpened = true;
+                    });
                     break;
                 case 'export':
                     this.dialogRef = this.dialog.open(ExportDrawingComponent, {});
                     this.noDialogOpened = false;
+                    this.dialogRef.afterClosed().subscribe(() => {
+                        this.noDialogOpened = true;
+                    });
                     break;
                 case 'save':
                     this.dialogRef = this.dialog.open(SaveDrawingComponent, {});
                     this.noDialogOpened = false;
+                    this.dialogRef.afterClosed().subscribe(() => {
+                        this.noDialogOpened = true;
+                    });
                     break;
                 default:
                     break;
             }
-        this.dialogRef.afterClosed().subscribe(() => {
-            this.noDialogOpened = true;
-        });
     }
 }

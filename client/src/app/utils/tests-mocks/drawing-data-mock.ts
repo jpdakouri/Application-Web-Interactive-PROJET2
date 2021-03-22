@@ -1,3 +1,5 @@
+const WIDTH = 300;
+const HEIGHT = 300;
 export class DrawingDataMock {
     id: string | undefined;
     title: string;
@@ -6,7 +8,6 @@ export class DrawingDataMock {
     width: number;
     height: number;
     constructor(id: string) {
-        // tslint:disable:no-magic-numbers
-        (this.id = id), (this.title = 'testDrawing'), (this.tags = ['ugly']), (this.dataURL = 'url'), (this.width = 300), (this.height = 300);
+        (this.id = id), (this.title = 'testDrawing'), (this.tags = ['ugly']), (this.dataURL = 'url'), (this.width = WIDTH), (this.height = HEIGHT);
     }
 }

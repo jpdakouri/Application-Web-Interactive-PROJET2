@@ -9,6 +9,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServerErrorMessageComponent } from './server-error-message.component';
 
+const dialogMock = {
+    // tslint:disable:no-empty
+    close: () => {},
+};
 describe('ServerErrorMessageComponent', () => {
     let component: ServerErrorMessageComponent;
     let fixture: ComponentFixture<ServerErrorMessageComponent>;
@@ -16,8 +20,8 @@ describe('ServerErrorMessageComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             providers: [
-                { provide: MatDialogRef, useValue: {} },
                 { provide: MAT_DIALOG_DATA, useValue: {} },
+                { provide: MatDialogRef, useValue: dialogMock },
             ],
             imports: [
                 HttpClientTestingModule,
@@ -41,5 +45,11 @@ describe('ServerErrorMessageComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('should close dialog', () => {
+        spyOn(dialogMock, 'close').and.callThrough();
+        component.close();
+        expect(dialogMock.close).toHaveBeenCalled();
     });
 });

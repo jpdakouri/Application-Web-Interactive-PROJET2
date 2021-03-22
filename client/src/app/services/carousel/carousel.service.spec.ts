@@ -42,6 +42,8 @@ describe('CarouselService', () => {
         expect(service).toBeTruthy();
     });
 
+    // it('getArraySizeOfDrawing should call drawing from server', async(() => {}));
+
     it('getArraySizeOfDrawing should return un observable with the new size', async(() => {
         spyOn(httpServiceMock, 'getLengthOfDrawings').and.returnValue(of(1));
         service.getArraySizeOfDrawing(false).subscribe((result) => {
@@ -68,7 +70,7 @@ describe('CarouselService', () => {
     });
 
     it('deleteDrawing should retrun a promise', async(() => {
-        spyOn(httpServiceMock, 'getOneDrawing').and.returnValue(of(new DrawingDataMock('1')));
+        spyOn(httpServiceMock, 'deleteDrawing').and.returnValue(of(''));
         service.deleteDrawing('id').then((result) => {
             expect(result).toEqual('Le dessin a été supprimé');
         });
