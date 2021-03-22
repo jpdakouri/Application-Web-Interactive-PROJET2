@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
+import { AerosolCommand } from '@app/classes/tool-commands/aerosol-command';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { AerosolService } from '@app/services/tools/aerosol-service/aerosol.service';
@@ -129,5 +130,21 @@ describe('AerosolService', () => {
         service['generateSprayParticles']();
         expect(drawSprayParticleSpy).toHaveBeenCalled();
         expect(getRandomOffsetSpy).toHaveBeenCalled();
+    });
+
+    it('executeCommand draws a particle for each sprayed dot', () => {
+        const command = new AerosolCommand(
+            service,
+            '0,0,0,1',
+            [
+                { x: 0, y: 0 },
+                { x: 2, y: 2 },
+            ],
+            1,
+        );
+        spyOn(TestBed.inject(DrawingService).baseCtx, 'fillRect');
+        service.executeCommand(command);
+        expect(TestBed.inject(DrawingService).baseCtx.fillRect).toHaveBeenCalledWith(0, 0, 1, 1);
+        expect(TestBed.inject(DrawingService).baseCtx.fillRect).toHaveBeenCalledWith(2, 2, 1, 1);
     });
 });
