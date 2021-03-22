@@ -125,8 +125,6 @@ export class EllipseService extends Tool {
         ctx.fillStyle = primaryColor;
         ctx.strokeStyle = primaryColor;
         ctx.lineWidth = DEFAULT_MIN_THICKNESS;
-        // ctx.lineWidth = strokethickness;
-        // strokethickness peut surement etre enlevé de cette fonction car pas utile
         const startCoord = { ...firstGrid };
         const width = finalGrid.x;
         const height = finalGrid.y;
@@ -277,6 +275,5 @@ export class EllipseService extends Tool {
             command.strokeThickness,
             command.shapeStyle,
         );
-        return;
     }
 }
