@@ -1,7 +1,15 @@
+import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatChipInputEvent } from '@angular/material/chips';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpService } from '@app/services/http/http.service';
 import { INVALIDE_TAG_NAME_ERROR_MESSAGE, NO_ERROR_MESSAGE } from '@app/services/tools/tools-constants';
 import { Tag } from '@app/utils/interfaces/tag';
@@ -20,7 +28,20 @@ describe('SearchByTagsComponent', () => {
         TestBed.configureTestingModule({
             providers: [{ provide: HttpService, useValue: httpServiceMock }],
             declarations: [SearchByTagsComponent],
-            imports: [HttpClientTestingModule, MatDialogModule],
+            imports: [
+                HttpClientTestingModule,
+                MatDialogModule,
+                HttpClientModule,
+                MatFormFieldModule,
+                MatInputModule,
+                MatSelectModule,
+                FormsModule,
+                ReactiveFormsModule,
+                BrowserAnimationsModule,
+                MatChipsModule,
+                MatIconModule,
+                MatExpansionModule,
+            ],
         }).compileComponents();
     }));
 

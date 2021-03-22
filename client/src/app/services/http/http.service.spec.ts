@@ -12,7 +12,7 @@ import { HttpService } from './http.service';
 const dialogMock = {
     open: (compent: any, data: any) => {},
 };
-fdescribe('HttpService', () => {
+describe('HttpService', () => {
     let service: HttpService;
     let httpMock: HttpTestingController;
     let baseUrl: string;
