@@ -11,10 +11,6 @@ import { Tag } from '@app/utils/interfaces/tag';
     templateUrl: './search-by-tags.component.html',
     styleUrls: ['./search-by-tags.component.scss'],
 })
-
-/*********************************/
-/************TODO: TESTS**********/
-/*********************************/
 export class SearchByTagsComponent {
     tagName: FormControl;
     tags: Tag[];
