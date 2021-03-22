@@ -53,14 +53,14 @@ export class AerosolService extends Tool {
         if (this.mouseDown) {
             window.clearInterval(this.intervalID);
             this.mouseDown = false;
+            const command = new AerosolCommand(
+                this,
+                this.currentColourService.getPrimaryColorRgba(),
+                this.commandSprayLocations,
+                this.dropletDiameter || MIN_DROPLET_DIAMETER,
+            );
+            this.undoRedo.addCommand(command);
         }
-        const command = new AerosolCommand(
-            this,
-            this.currentColourService.getPrimaryColorRgba(),
-            this.commandSprayLocations,
-            this.dropletDiameter || MIN_DROPLET_DIAMETER,
-        );
-        this.undoRedo.addCommand(command);
     }
 
     onMouseMove(event: MouseEvent): void {
