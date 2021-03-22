@@ -31,7 +31,6 @@ describe('PipettePreviewComponent', () => {
         baseCanvasContext = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         drawingService.baseCtx = baseCanvasContext;
         drawingService.canvas = canvasTestHelper.canvas;
-        component.pipettePreviewCanvas = new ElementRef<HTMLCanvasElement>(canvasTestHelper.canvas);
     });
 
     it('should create', () => {
@@ -61,8 +60,17 @@ describe('PipettePreviewComponent', () => {
         spyOn(service, 'getPreviewColors').and.returnValue(previewColors);
         spyOn(drawingService.baseCtx, 'fillRect');
         const expectedCallTimes = PREVIEW_SIZE * PREVIEW_SIZE;
+        component.pipettePreviewCanvas = new ElementRef<HTMLCanvasElement>(canvasTestHelper.canvas);
         component.onMouseMove();
         expect(service.getPreviewColors).toHaveBeenCalled();
         expect(drawingService.baseCtx.fillRect).toHaveBeenCalledTimes(expectedCallTimes);
+    });
+
+    it('onMouseMove doesnt draw the preview if the canvas or its context is undefined or null', () => {
+        const service = TestBed.inject(PipetteService);
+        spyOn(service, 'getIsCursorOnCanvas').and.returnValue(true);
+        spyOn(drawingService.baseCtx, 'fillRect');
+        component.onMouseMove();
+        expect(drawingService.baseCtx.fillRect).toHaveBeenCalledTimes(0);
     });
 });

@@ -89,6 +89,19 @@ describe('PipetteService', () => {
         expect(service.getPreviewColors()[middleOfArrayIndex][middleOfArrayIndex]).toBe('rgba(1,1,1,1)');
     });
 
+    it('onMouseMove does not generate a preview if the cursor is not on the canvas', () => {
+        const stubRgbValue = 1;
+        const stubRgbArray = new Uint8ClampedArray([stubRgbValue, stubRgbValue, stubRgbValue, stubRgbValue]);
+        const stubImageData = new ImageData(stubRgbArray, 1);
+        spyOn(baseCanvasContext, 'getImageData').and.returnValue(stubImageData);
+
+        const mouseEvent = new MouseEvent('mousemove', { clientX: 0, clientY: 0 });
+        service.onMouseLeave();
+        service.onMouseMove(mouseEvent);
+
+        expect(service.getPreviewColors()).toBeUndefined();
+    });
+
     it('executeCommand does nothing and returns nothing', () => {
         expect(service.executeCommand()).toBeUndefined();
     });
