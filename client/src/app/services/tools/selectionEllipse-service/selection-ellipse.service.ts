@@ -107,6 +107,7 @@ export class SelectionEllipseService extends Tool {
             this.selectEllipse(this.drawingService.selectedAreaCtx, this.mouseDownCoord);
             this.drawEllipse(this.drawingService.selectedAreaCtx, this.mouseDownCoord);
             this.drawingService.selectedAreaCtx.stroke();
+            this.drawingService.selectedAreaCtx.setLineDash([]);
             this.drawingService.previewCtx.setLineDash([]);
             this.drawingService.baseCtx.setLineDash([]);
         }
@@ -235,6 +236,7 @@ export class SelectionEllipseService extends Tool {
             }
         }
         createImageBitmap(imageData).then((imgBitmap) => {
+            ctx.setLineDash([]);
             this.clipArea(ctx, finalGrid);
             this.drawingService.selectedAreaCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
             ctx.restore();
