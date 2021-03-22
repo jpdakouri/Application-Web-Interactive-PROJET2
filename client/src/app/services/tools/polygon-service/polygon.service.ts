@@ -15,7 +15,7 @@ import { ShapeStyle } from '@app/utils/enums/shape-style';
     providedIn: 'root',
 })
 export class PolygonService extends Tool {
-    private firstGrid: Vec2;
+    firstGrid: Vec2;
     numberOfSides: number;
     currentColourService: CurrentColourService;
     visualisationEllipse: EllipseService;
@@ -57,6 +57,8 @@ export class PolygonService extends Tool {
                 this.lineThickness || DEFAULT_MIN_THICKNESS,
                 this.shapeStyle,
             );
+            this.drawPreview(this.drawingService.previewCtx, this.mouseDownCoord);
+            this.drawingService.previewCtx.setLineDash([]);
         }
     }
 
@@ -116,10 +118,6 @@ export class PolygonService extends Tool {
         }
         ctx.closePath();
         ctx.stroke();
-        if (ctx === this.drawingService.previewCtx) {
-            this.drawPreview(ctx, finalGrid);
-        }
-        ctx.setLineDash([]);
     }
 
     private drawFilled(ctx: CanvasRenderingContext2D, primaryColor: string, firstGrid: Vec2, finalGrid: Vec2, numberOfSides: number): void {
@@ -142,10 +140,6 @@ export class PolygonService extends Tool {
         ctx.closePath();
         ctx.fill();
         ctx.stroke();
-        if (ctx === this.drawingService.previewCtx) {
-            this.drawPreview(ctx, finalGrid);
-        }
-        ctx.setLineDash([]);
     }
 
     private drawFilledOutLine(
@@ -176,10 +170,6 @@ export class PolygonService extends Tool {
         ctx.closePath();
         ctx.fill();
         ctx.stroke();
-        if (ctx === this.drawingService.previewCtx) {
-            this.drawPreview(ctx, finalGrid);
-        }
-        ctx.setLineDash([]);
     }
 
     private drawPolygon(
@@ -215,31 +205,31 @@ export class PolygonService extends Tool {
     private drawPreview(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.setLineDash([LINE_DASH, LINE_DASH]);
         this.drawCircle(finalGrid);
-        let test: Vec2 = this.firstGrid;
+        let firstGrid: Vec2 = this.firstGrid;
         if (this.isMouseInFirstQuadrant()) {
             finalGrid.x += ctx.lineWidth;
             finalGrid.y += ctx.lineWidth;
-            test = { x: this.firstGrid.x - ctx.lineWidth / 2, y: this.firstGrid.y - ctx.lineWidth / 2 };
+            firstGrid = { x: this.firstGrid.x - ctx.lineWidth / 2, y: this.firstGrid.y - ctx.lineWidth / 2 };
         }
 
         if (this.isMouseInSecondQuadrant()) {
             finalGrid.x -= ctx.lineWidth;
             finalGrid.y -= ctx.lineWidth;
-            test = { x: this.firstGrid.x + ctx.lineWidth / 2, y: this.firstGrid.y + ctx.lineWidth / 2 };
+            firstGrid = { x: this.firstGrid.x + ctx.lineWidth / 2, y: this.firstGrid.y + ctx.lineWidth / 2 };
         }
 
         if (this.isMouseInThirdQuadrant()) {
             finalGrid.x -= ctx.lineWidth;
             finalGrid.y += ctx.lineWidth;
-            test = { x: this.firstGrid.x + ctx.lineWidth / 2, y: this.firstGrid.y - ctx.lineWidth / 2 };
+            firstGrid = { x: this.firstGrid.x + ctx.lineWidth / 2, y: this.firstGrid.y - ctx.lineWidth / 2 };
         }
 
         if (this.isMouseInFourthQuadrant()) {
             finalGrid.x += ctx.lineWidth;
             finalGrid.y -= ctx.lineWidth;
-            test = { x: this.firstGrid.x - ctx.lineWidth / 2, y: this.firstGrid.y + ctx.lineWidth / 2 };
+            firstGrid = { x: this.firstGrid.x - ctx.lineWidth / 2, y: this.firstGrid.y + ctx.lineWidth / 2 };
         }
-        this.visualisationEllipse.drawOutline(this.drawingService.previewCtx, test, finalGrid, 'blue', 1);
+        this.visualisationEllipse.drawOutline(this.drawingService.previewCtx, firstGrid, finalGrid, 'blue', 1);
     }
 
     private isMouseInFirstQuadrant(): boolean {
