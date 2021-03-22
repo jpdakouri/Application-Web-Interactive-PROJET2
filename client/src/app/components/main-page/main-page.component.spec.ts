@@ -65,4 +65,10 @@ describe('MainPageComponent', () => {
         component.onCreateNewDrawing();
         expect(drawingServiceSpy.createNewDrawing).toHaveBeenCalled();
     });
+
+    it('should call onCreateNewDrawing when openCarousel is called', () => {
+        spyOn(component, 'onCreateNewDrawing').and.stub();
+        component.openCarousel();
+        expect(drawingServiceSpy.createNewDrawing).toHaveBeenCalled();
+    });
 });
