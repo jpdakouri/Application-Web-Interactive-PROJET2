@@ -135,9 +135,7 @@ describe('DrawingService', () => {
         service.saveCanvas();
         spyOn(window, 'confirm').and.returnValue(true);
         service.createNewDrawing();
-        // const isCanvasBlank = service.isCanvasBlank();
 
-        // expect(isCanvasBlank).toBeFalse();
         expect(window.confirm).toHaveBeenCalledWith("Le canvas n'est pas vide! Voulez-vous procéder tout de même?");
         expect(sessionStorageClearSpy).toHaveBeenCalled();
     });

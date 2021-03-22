@@ -113,7 +113,6 @@ export class CanvasResizerService {
                 this.canvasPreviewHeight = this.mouseService.currentCoordinate.y;
                 break;
         }
-
         if (this.canvasPreviewWidth < MINIMUM_WIDTH) this.canvasPreviewWidth = MINIMUM_WIDTH;
         if (this.canvasPreviewHeight < MINIMUM_HEIGHT) this.canvasPreviewHeight = MINIMUM_HEIGHT;
     }
@@ -121,5 +120,10 @@ export class CanvasResizerService {
     executeCommand(command: ToolCommand): void {
         // TODO
         return;
+    }
+
+    resizeCanvas(coord: Vec2): void {
+        this.canvasPreviewHeight = coord.y;
+        this.canvasPreviewWidth = coord.x;
     }
 }

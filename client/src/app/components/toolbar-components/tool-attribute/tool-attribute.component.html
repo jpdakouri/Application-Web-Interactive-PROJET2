@@ -1,8 +1,7 @@
 <div class="attribute-toolbar">
     <div *ngIf="showLineThickness()">
-        <mat-divider></mat-divider>
         <div class="line-thickness">
-            <h2 class="attribute-title">Épaisseur du trait: {{ this.getCurrentLineThickness() }}px</h2>
+            <h3 class="attribute-title">Épaisseur du trait: {{ this.getCurrentLineThickness() }}px</h3>
             <mat-slider
                 [value]="this.getCurrentLineThickness()"
                 #thicknessSlider
@@ -22,11 +21,11 @@
     </div>
     <div *ngIf="showShapeStyle()">
         <div class="rectangle-ellipse-type">
-            <h2 class="attribute-title">Type d{{ showEllipseTitle() ? "'ellipse:" : 'e rectangle:' }}</h2>
+            <h3 class="attribute-title">Type d{{ showEllipseTitle() ? "'ellipse:" : 'e rectangle:' }}</h3>
             <mat-button-toggle-group (change)="onShapeStyleChange($event)" name="ShapeStyle" aria-label="Shape Style">
                 <mat-button-toggle [checked]="isChecked(shapeStyle.Outline)" value="Outline">Contour</mat-button-toggle>
                 <mat-button-toggle [checked]="isChecked(shapeStyle.Filled)" value="Filled">Plein</mat-button-toggle>
-                <mat-button-toggle [checked]="isChecked(shapeStyle.FilledOutline)" value="FilledOutline">Plein avec contour</mat-button-toggle>
+                <mat-button-toggle [checked]="isChecked(shapeStyle.FilledOutline)" value="FilledOutline">Plein & contour</mat-button-toggle>
             </mat-button-toggle-group>
         </div>
         <mat-divider></mat-divider>
@@ -34,7 +33,7 @@
 
     <div *ngIf="showLineAttributes()">
         <div class="dot-radius">
-            <h2 class="attribute-title">Rayon du point: {{ this.getCurrentDotRadius() }}px</h2>
+            <h3 class="attribute-title">Rayon du point: {{ this.getCurrentDotRadius() }}px</h3>
             <mat-slider
                 [value]="this.getCurrentDotRadius()"
                 #dotRadiusSlider
@@ -48,16 +47,15 @@
         </div>
         <mat-divider></mat-divider>
         <div class="show-dots">
-            <mat-checkbox (change)="onShowDotChange($event)"><h2 class="show-dots-title">Voir les points</h2></mat-checkbox>
+            <mat-checkbox (change)="onShowDotChange($event)">Voir les points</mat-checkbox>
         </div>
         <mat-divider></mat-divider>
     </div>
 
     <div class="aerosol-attributes" *ngIf="showAerosolAttributes()">
         <div>
-            <mat-divider></mat-divider>
             <div class="aerosol-emission-flow">
-                <h2 class="attribute-title">Débit du jet: {{ getCurrentFrequency() }} particules/s</h2>
+                <h3 class="attribute-title">Débit du jet: {{ getCurrentFrequency() }} particules/s</h3>
                 <mat-slider
                     [value]="getCurrentFrequency()"
                     #flowSlider
@@ -72,9 +70,8 @@
         </div>
 
         <div>
-            <mat-divider></mat-divider>
             <div class="aerosol-jet-diameter">
-                <h2 class="attribute-title">Diamètre du jet: {{ getCurrentJetDiameter() }}px</h2>
+                <h3 class="attribute-title">Diamètre du jet: {{ getCurrentJetDiameter() }}px</h3>
                 <mat-slider
                     [value]="getCurrentJetDiameter()"
                     #flowSlider
@@ -89,9 +86,8 @@
         </div>
 
         <div>
-            <mat-divider></mat-divider>
             <div class="aerosol-droplet-jet">
-                <h2 class="attribute-title">Diamètre des goutelettes: {{ getCurrentDropletDiameter() }}px</h2>
+                <h3 class="attribute-title">Diamètre des goutelettes: {{ getCurrentDropletDiameter() }}px</h3>
                 <mat-slider
                     [value]="getCurrentDropletDiameter()"
                     #flowSlider
@@ -108,7 +104,7 @@
 
     <div *ngIf="showPolygonAttributes()">
         <div class="number-of-sides">
-            <h2 class="attribute-title">Nombres de côtés: {{ this.getCurrentNumberOfSides() }}</h2>
+            <h3 class="attribute-title">Nombres de côtés: {{ this.getCurrentNumberOfSides() }}</h3>
             <mat-slider
                 [value]="this.getCurrentNumberOfSides()"
                 #numberOfSideSlider
@@ -122,9 +118,10 @@
         </div>
         <mat-divider></mat-divider>
         <div class="show-dots">
-            <mat-checkbox (change)="onShowDotChange($event)"><h2 class="show-dots-title">Voir les points</h2></mat-checkbox>
+            <mat-checkbox (change)="onShowDotChange($event)">Voir les points</mat-checkbox>
         </div>
         <mat-divider></mat-divider>
     </div>
-  <app-colour-selector></app-colour-selector>
+    <app-colour-selector></app-colour-selector>
+    <mat-divider></mat-divider>
 </div>

@@ -1,8 +1,14 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ExportDrawingService } from '@app/services/export-drawing/export-drawing.service';
-import { FILE_NAME_REGEX } from '@app/services/services-constants';
+import {
+    FILE_NAME_REGEX,
+    INVALID_FILE_NAME_ERROR_MESSAGE,
+    NO_ERROR_MESSAGE,
+    REQUIRED_FILE_NAME_ERROR_MESSAGE,
+} from '@app/services/services-constants';
 import { ImageFilter } from '@app/utils/enums/image-filter.enum';
 import { ImageFormat } from '@app/utils/enums/image-format.enum';
 
@@ -20,19 +26,23 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
     formats: string[];
     selectedFormat: string;
     selectedFilter: string;
+    selectedFilterValue: string;
     fileName: FormControl;
     imageSource: string;
     originalCanvas: HTMLCanvasElement;
-    selectedFilterValue: string;
 
-    constructor(private exportDrawingService: ExportDrawingService, public dialogRef: MatDialogRef<ExportDrawingComponent>) {
+    constructor(
+        private exportDrawingService: ExportDrawingService,
+        private drawingService: DrawingService,
+        public dialogRef: MatDialogRef<ExportDrawingComponent>,
+    ) {
         this.filters = Object.values(ImageFilter);
         this.formats = Object.values(ImageFormat);
         this.selectedFormat = ImageFormat.PNG;
         this.selectedFilter = ImageFilter.None;
+        this.selectedFilterValue = this.exportDrawingService.imageFilters.get(ImageFilter.None) as string;
         this.fileName = new FormControl('', [Validators.required, Validators.pattern(FILE_NAME_REGEX)]);
         this.imageSource = '';
-        this.selectedFilterValue = 'none';
     }
 
     ngOnInit(): void {
@@ -46,50 +56,47 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
     }
 
     ngAfterViewInit(): void {
-        this.originalCanvas = document.getElementById('canvas') as HTMLCanvasElement;
+        this.originalCanvas = this.drawingService.canvas;
         this.exportDrawingService.canvas = this.downloadProcessingCanvas.nativeElement as HTMLCanvasElement;
         this.exportDrawingService.link = this.link.nativeElement as HTMLAnchorElement;
         setTimeout(() => {
-            if (this.originalCanvas) {
-                this.imageSource = this.originalCanvas.toDataURL('image/png') as string;
-            }
+            this.imageSource = this.originalCanvas.toDataURL('image/png') as string;
         });
     }
 
     ngOnDestroy(): void {
         this.exportDrawingService.currentFilter.next(ImageFilter.None);
-        this.exportDrawingService.currentFormat.complete();
         this.exportDrawingService.currentFilter.complete();
+        this.exportDrawingService.currentFormat.complete();
     }
 
     getErrorMessage(): string {
         if (this.fileName.hasError('required')) {
-            return 'Vous devez entrer un nom';
+            return REQUIRED_FILE_NAME_ERROR_MESSAGE;
         }
-        return this.fileName.invalid ? 'Nom de fichier invalide' : '';
+        return this.fileName.invalid ? INVALID_FILE_NAME_ERROR_MESSAGE : NO_ERROR_MESSAGE;
     }
 
     onDialogClose(): void {
+        this.closeDialog();
+    }
+
+    closeDialog(): void {
         this.dialogRef.close();
     }
 
     onFormatChange(selectedFormat: string): void {
-        if (selectedFormat !== null) {
-            this.exportDrawingService.currentFormat.next(selectedFormat);
-        }
+        this.exportDrawingService.currentFormat.next(selectedFormat);
     }
 
     onFilterChange(selectedFilter: string): void {
-        if (selectedFilter !== null) {
-            this.exportDrawingService.currentFilter.next(selectedFilter);
-            this.selectedFilterValue = this.exportDrawingService.imageFilters.get(selectedFilter) as string;
-        }
+        this.exportDrawingService.currentFilter.next(selectedFilter);
+        this.selectedFilterValue = this.exportDrawingService.imageFilters.get(selectedFilter) as string;
     }
 
     onDownload(): void {
-        this.exportDrawingService.image = this.previewImage;
         this.exportDrawingService.imageSource = this.imageSource;
-        this.exportDrawingService.downloadImage(this.fileName.value, this.selectedFormat);
+        this.exportDrawingService.downloadDrawingAsImage(this.fileName.value, this.selectedFormat);
         this.dialogRef.close();
     }
 }

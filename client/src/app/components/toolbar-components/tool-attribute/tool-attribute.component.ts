@@ -15,11 +15,11 @@ import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 
 @Component({
-    selector: 'app-tool-attribute-bar',
-    templateUrl: './tool-attribute-bar.component.html',
-    styleUrls: ['./tool-attribute-bar.component.scss'],
+    selector: 'app-tool-attribute',
+    templateUrl: './tool-attribute.component.html',
+    styleUrls: ['./tool-attribute.component.scss'],
 })
-export class ToolAttributeBarComponent {
+export class ToolAttributeComponent {
     readonly MIN_FREQUENCY: number = MIN_FREQUENCY;
     readonly MIN_JET_DIAMETER: number = MIN_JET_DIAMETER;
     readonly MIN_DROPLET_DIAMETER: number = MIN_DROPLET_DIAMETER;

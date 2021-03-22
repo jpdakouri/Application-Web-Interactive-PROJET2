@@ -15,13 +15,13 @@ import { HueSelectorComponent } from '@app/components/colour-components/hue-sele
 import { PipettePreviewComponent } from '@app/components/pipette-preview/pipette-preview.component';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
-import { ToolAttributeBarComponent } from './tool-attribute-bar.component';
+import { ToolAttributeComponent } from './tool-attribute.component';
 
 import SpyObj = jasmine.SpyObj;
 
 describe('ToolAttributeBarComponent', () => {
-    let component: ToolAttributeBarComponent;
-    let fixture: ComponentFixture<ToolAttributeBarComponent>;
+    let component: ToolAttributeComponent;
+    let fixture: ComponentFixture<ToolAttributeComponent>;
     let toolManagerServiceSpy: SpyObj<ToolManagerService>;
 
     beforeEach(async(() => {
@@ -44,7 +44,7 @@ describe('ToolAttributeBarComponent', () => {
         ]);
         TestBed.configureTestingModule({
             declarations: [
-                ToolAttributeBarComponent,
+                ToolAttributeComponent,
                 ColourSelectorComponent,
                 ColourHistoryComponent,
                 CurrentColourComponent,
@@ -67,7 +67,7 @@ describe('ToolAttributeBarComponent', () => {
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(ToolAttributeBarComponent);
+        fixture = TestBed.createComponent(ToolAttributeComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
