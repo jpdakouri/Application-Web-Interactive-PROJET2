@@ -144,8 +144,8 @@ export class SelectionEllipseService extends Tool {
             }
             case KeyboardButtons.Escape: {
                 this.clearPath();
-                this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                this.topLeftCorner = { x: 0, y: 0 };
+                this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
+                this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
             }
         }
         this.updateArrowPosition();
@@ -347,6 +347,17 @@ export class SelectionEllipseService extends Tool {
         }
         this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y + 'px';
         this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x + 'px';
+    }
+
+    selectAll(): void {
+        this.clearPath();
+        const grid: Vec2 = { x: this.drawingService.baseCtx.canvas.width, y: this.drawingService.baseCtx.canvas.height };
+        this.selectEllipse(this.drawingService.selectedAreaCtx, grid);
+        // this.drawingService.selectedAreaCtx.canvas.style.top = 0 + 'px';
+        // this.drawingService.selectedAreaCtx.canvas.style.left = 0 + 'px';
+        // this.drawingService.selectedAreaCtx.canvas.style.width = this.drawingService.baseCtx.canvas.width + 'px';
+        // this.drawingService.selectedAreaCtx.canvas.style.height = this.drawingService.baseCtx.canvas.height + 'px';
+        console.log('test');
     }
 
     private clearPath(): void {
