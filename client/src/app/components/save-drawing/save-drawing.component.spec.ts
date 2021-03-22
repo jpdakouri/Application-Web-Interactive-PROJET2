@@ -43,9 +43,7 @@ describe('SaveDrawingComponent', () => {
                 { provide: HTMLCanvasElement, useValue: canvasTestHelper },
             ],
             imports: [
-                MatDialogModule,
                 HttpClientModule,
-                MatFormFieldModule,
                 MatInputModule,
                 MatSelectModule,
                 FormsModule,
@@ -53,6 +51,8 @@ describe('SaveDrawingComponent', () => {
                 BrowserAnimationsModule,
                 MatChipsModule,
                 MatIconModule,
+                MatDialogModule,
+                MatFormFieldModule,
             ],
         }).compileComponents();
     });

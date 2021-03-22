@@ -4,7 +4,7 @@ import { CarouselComponent } from '@app/components/carousel-components/carousel/
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HttpService } from '@app/services/http/http.service';
 import { DrawingData } from '@common/communication/drawing-data';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -17,10 +17,9 @@ export class CarouselService {
 
     constructor(private httpService: HttpService, public drawingService: DrawingService) {}
 
-    // tslint:disable:no-magic-numbers
     initCarousel(tagFlag: boolean): Observable<DrawingData[]> {
         this.drawingsToShow = [];
-        const subject = new Subject<DrawingData[]>();
+        const subject = new BehaviorSubject<DrawingData[]>(this.drawingsToShow);
         this.courrentIndex = 0;
 
         this.getArraySizeOfDrawing(tagFlag).subscribe((size) => {
@@ -53,7 +52,7 @@ export class CarouselService {
     }
 
     getArraySizeOfDrawing(tagFlag: boolean): Observable<number> {
-        const subject = new Subject<number>();
+        const subject = new BehaviorSubject<number>(0);
         this.httpService.getLengthOfDrawings(tagFlag).subscribe({
             next: (results) => {
                 this.sizeOfArray = results as number;

@@ -31,6 +31,12 @@ describe('SearchByTagsComponent', () => {
             imports: [
                 HttpClientTestingModule,
                 MatDialogModule,
+                MatExpansionModule,
+                MatChipsModule,
+                BrowserAnimationsModule,
+                MatFormFieldModule,
+                FormsModule,
+                ReactiveFormsModule,
                 HttpClientModule,
                 MatFormFieldModule,
                 MatInputModule,
