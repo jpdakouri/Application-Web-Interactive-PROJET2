@@ -68,6 +68,7 @@ describe('MainPageComponent', () => {
 
     it('should call openDialog when openCarousel is called', () => {
         spyOn(component, 'onCreateNewDrawing').and.stub();
+        // tslint:disable:no-string-literal
         spyOn(component['dialogControllerService'], 'openDialog').and.stub();
         component.openCarousel();
         expect(component['dialogControllerService'].openDialog).toHaveBeenCalled();
