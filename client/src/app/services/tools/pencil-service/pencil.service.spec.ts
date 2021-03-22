@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
+import { PencilCommand } from '@app/classes/tool-commands/pencil-command';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
@@ -138,5 +139,24 @@ describe('PencilService', () => {
 
         service.onMouseLeave(mouseEvent);
         expect(drawLineSpy).toHaveBeenCalled();
+    });
+
+    it('executeCommand draws a line for each point in path', () => {
+        const command = new PencilCommand(service, '0,0,0,1', 2, [
+            [
+                { x: 0, y: 0 },
+                { x: 2, y: 2 },
+            ],
+        ]);
+        spyOn(TestBed.inject(DrawingService).baseCtx, 'lineTo');
+        service.executeCommand(command);
+        expect(TestBed.inject(DrawingService).baseCtx.lineTo).toHaveBeenCalledTimes(2);
+    });
+
+    it('executeCommand draws a dot if a dot was previously drawn', () => {
+        const command = new PencilCommand(service, '0,0,0,1', 2, [[{ x: 0, y: 0 }]]);
+        spyOn(TestBed.inject(DrawingService).baseCtx, 'arc');
+        service.executeCommand(command);
+        expect(TestBed.inject(DrawingService).baseCtx.arc).toHaveBeenCalledTimes(1);
     });
 });

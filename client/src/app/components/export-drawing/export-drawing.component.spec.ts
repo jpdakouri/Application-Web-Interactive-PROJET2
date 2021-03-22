@@ -61,6 +61,24 @@ describe('ExportDrawingComponent', () => {
         expect(component).toBeTruthy();
     });
 
+    it("should subscribe to ExportDrawingService's current filter", async(() => {
+        const mockFilter = 'sepia(100%)';
+        exportDrawingMock.currentFilter.next(mockFilter);
+        exportDrawingMock.currentFilter.subscribe((res: string) => {
+            expect(res).toBe(mockFilter);
+        });
+        exportDrawingMock.currentFilter.complete();
+    }));
+
+    it("should subscribe to ExportDrawingService's current format", async(() => {
+        const mockFormat = ImageFormat.PNG;
+        exportDrawingMock.currentFormat.next(mockFormat);
+        exportDrawingMock.currentFormat.subscribe((res: string) => {
+            expect(res).toBe(mockFormat);
+        });
+        exportDrawingMock.currentFormat.complete();
+    }));
+
     it('#dialogClose should close the dialog', () => {
         // tslint:disable:no-any
         const closeSpy = spyOn<any>(component.dialogRef, 'close').and.callThrough();

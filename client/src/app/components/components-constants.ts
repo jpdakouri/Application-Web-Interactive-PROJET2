@@ -60,6 +60,11 @@ export const WORKING_ZONE_VISIBLE_PORTION = 100;
 
 export const DEFAULT_WHITE = '#fff';
 
+/****************************/
+/***GLOBAL PIPETTE PREVIEW CONSTANTS***/
+/****************************/
+export const PREVIEW_NUMBER_OF_SQUARES_PER_SIDE = 15;
+
 /***********************/
 /***CAROUSEL CONSTANT***/
 /***********************/

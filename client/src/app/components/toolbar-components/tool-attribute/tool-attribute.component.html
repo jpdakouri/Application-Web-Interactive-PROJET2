@@ -15,6 +15,10 @@
         </div>
         <mat-divider></mat-divider>
     </div>
+    <div *ngIf="showPipettePreview()">
+        <app-pipette-preview></app-pipette-preview>
+        <mat-divider></mat-divider>
+    </div>
     <div *ngIf="showShapeStyle()">
         <div class="rectangle-ellipse-type">
             <h3 class="attribute-title">Type d{{ showEllipseTitle() ? "'ellipse:" : 'e rectangle:' }}</h3>

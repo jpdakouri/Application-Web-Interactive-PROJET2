@@ -10,6 +10,7 @@ export class DrawingService {
     previewCtx: CanvasRenderingContext2D;
     canvas: HTMLCanvasElement;
     @Output() newDrawing: EventEmitter<Vec2> = new EventEmitter();
+    @Output() createNewDrawingEmitter: EventEmitter<boolean> = new EventEmitter();
 
     saveCanvas(): void {
         sessionStorage.setItem('canvasBuffer', this.canvas.toDataURL());
@@ -38,16 +39,6 @@ export class DrawingService {
         return !hasSomeColoredPixels;
     }
 
-    createNewDrawing(): void {
-        if (sessionStorage.getItem('canvasBuffer') && !this.isCanvasBlank()) {
-            if (confirm("Le canvas n'est pas vide! Voulez-vous procéder tout de même?")) {
-                this.clearCanvas(this.previewCtx);
-                this.clearCanvas(this.baseCtx);
-                sessionStorage.clear();
-            }
-        }
-    }
-
     openDrawing(drawing: DrawingData): void {
         this.createNewDrawing();
         this.canvas.width = drawing.width;
@@ -61,5 +52,20 @@ export class DrawingService {
         img.src = drawing.dataURL as string;
         this.newDrawing.emit({ x: drawing.width, y: drawing.height } as Vec2);
         this.saveCanvas();
+    }
+
+    createNewDrawing(): void {
+        if (sessionStorage.getItem('canvasBuffer') && !this.isCanvasBlank()) {
+            if (confirm("Le canvas n'est pas vide! Voulez-vous procéder tout de même?")) {
+                this.clearCanvas(this.previewCtx);
+                this.clearCanvas(this.baseCtx);
+                this.emitCreateNewDrawing();
+                sessionStorage.clear();
+            }
+        }
+    }
+
+    emitCreateNewDrawing(): void {
+        this.createNewDrawingEmitter.emit(true);
     }
 }

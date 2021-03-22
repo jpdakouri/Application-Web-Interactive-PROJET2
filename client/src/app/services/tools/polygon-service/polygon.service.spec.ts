@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
+import { PolygonCommand } from '@app/classes/tool-commands/polygon-command';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
@@ -264,5 +265,35 @@ describe('PolygonService', () => {
         service.onMouseMove(mouseEvent);
         // tslint:disable-next-line:no-magic-numbers
         expect(lineToSpy).toHaveBeenCalledTimes(2);
+    });
+
+    it(' onMouseLeave should set mouseOut at true', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.onMouseLeave(mouseEvent);
+        expect(service['mouseOut']).toEqual(true);
+    });
+
+    it(' onMouseEnter should set mouseOut at false', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service['mouseOut'] = true;
+        service.onMouseEnter(mouseEvent);
+        expect(service['mouseOut']).toEqual(false);
+    });
+
+    it('executeCommand draws a line for each side of the polygon except the first one', () => {
+        const numberOfSides = 3;
+        const command = new PolygonCommand(
+            service,
+            '0,0,0,1',
+            '255,255,255,1',
+            { x: 0, y: 0 },
+            { x: 2, y: 2 },
+            numberOfSides,
+            2,
+            ShapeStyle.FilledOutline,
+        );
+        spyOn(TestBed.inject(DrawingService).baseCtx, 'lineTo');
+        service.executeCommand(command);
+        expect(TestBed.inject(DrawingService).baseCtx.lineTo).toHaveBeenCalledTimes(2);
     });
 });
