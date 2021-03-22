@@ -24,15 +24,17 @@ export class SelectionEllipseService extends Tool {
     private end: Vec2;
     private shiftDown: boolean;
     private dragActive: boolean;
-    topLeftCorner: Vec2;
-    selectionActive: boolean;
-    height: number;
-    width: number;
     private offset: Vec2;
     private upPressed: boolean;
     private downPressed: boolean;
     private leftPressed: boolean;
     private rightPressed: boolean;
+
+    topLeftCorner: Vec2;
+    selectionActive: boolean;
+    isSelectionDone: boolean;
+    height: number;
+    width: number;
 
     rectangleService: RectangleService;
     currentColourService: CurrentColourService;
@@ -63,7 +65,6 @@ export class SelectionEllipseService extends Tool {
                     this.offset.x = this.topLeftCorner.x - initial.x;
                     this.offset.y = this.topLeftCorner.y - initial.y;
                     this.dragActive = true;
-                    console.log('click dedans');
                 } else {
                     this.selectionActive = false;
                     this.drawEllipse(this.drawingService.selectedAreaCtx, this.mouseDownCoord);
@@ -74,7 +75,8 @@ export class SelectionEllipseService extends Tool {
                     createImageBitmap(imageData).then((imgBitmap) => {
                         this.drawingService.baseCtx.drawImage(imgBitmap, this.topLeftCorner.x + 1, this.topLeftCorner.y + 1);
                     });
-                    console.log('click dehors');
+                    this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
+                    this.isSelectionDone = false;
                 }
             }
         }
@@ -93,6 +95,7 @@ export class SelectionEllipseService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown && this.selectionActive && !this.dragActive && this.mouseMoved) {
+            this.isSelectionDone = true;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.end = this.getPositionFromMouse(event);
             this.updateTopLeftCorner();

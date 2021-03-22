@@ -72,6 +72,7 @@ export class SelectionRectangleService extends Tool {
                         this.drawingService.baseCtx.drawImage(imgBitmap, this.topLeftCorner.x + 1, this.topLeftCorner.y + 1);
                     });
                     this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
+                    this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
                 }
             }
         }

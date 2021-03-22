@@ -18,7 +18,7 @@ export const MINIMUM_HEIGHT = 250;
 export const LOWER_BOUND_WIDTH = 500;
 export const LOWER_BOUND_HEIGHT = 500;
 
-export const SIDEBAR_WIDTH = 465;
+export const SIDEBAR_WIDTH = 335;
 
 export const WORKING_ZONE_VISIBLE_PORTION = 100;
 
@@ -30,6 +30,11 @@ export const DEFAULT_WHITE = '#fff';
 export const FILE_NAME_REGEX = /^[a-zA-Z0-9-]*$/;
 export const LABEL_NAME_REGEX = /^[a-zA-Z0-9 ]*$/;
 
+export const TAG_NAME_REGEX = /^[a-zA-Z0-9 ]*$/;
+
+export const INVALID_FILE_NAME_ERROR_MESSAGE = 'Nom de fichier invalide';
+export const REQUIRED_FILE_NAME_ERROR_MESSAGE = 'Vous devez entrer un nom';
+export const NO_ERROR_MESSAGE = '';
 /****************************/
 /***SELECTION CONSTANTS*/
 /****************************/

@@ -123,8 +123,10 @@ export class EllipseService extends Tool {
     drawFilled(ctx: CanvasRenderingContext2D, firstGrid: Vec2, finalGrid: Vec2, primaryColor: string, strokethickness: number): void {
         ctx.beginPath();
         ctx.fillStyle = primaryColor;
-        ctx.lineWidth = strokethickness;
-
+        ctx.strokeStyle = primaryColor;
+        ctx.lineWidth = DEFAULT_MIN_THICKNESS;
+        // ctx.lineWidth = strokethickness;
+        // strokethickness peut surement etre enlevé de cette fonction car pas utile
         const startCoord = { ...firstGrid };
         const width = finalGrid.x;
         const height = finalGrid.y;
@@ -252,7 +254,7 @@ export class EllipseService extends Tool {
         this.drawEllipse(
             this.drawingService.previewCtx,
             this.firstGrid,
-            this.mouseDownCoord,
+            currentCoord,
             this.currentColourService.getPrimaryColorRgba(),
             this.currentColourService.getSecondaryColorRgba(),
             this.lineThickness || DEFAULT_MIN_THICKNESS,

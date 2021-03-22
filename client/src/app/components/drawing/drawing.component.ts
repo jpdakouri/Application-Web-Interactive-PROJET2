@@ -29,6 +29,12 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
+    private cursorHeight: number;
+    eraserActive: boolean = false;
+    currentTool: Tool;
+    toolManagerService: ToolManagerService;
+    canvasResizerService: CanvasResizerService;
+    toolsNames: typeof ToolsNames = ToolsNames;
 
     eraserCursor: EraserCursor = {
         cursor: 'none',
@@ -42,14 +48,9 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         transform: 'translate(-50%, -50%)',
         zIndex: '3',
     };
-    private cursorHeight: number;
-    eraserActive: boolean = false;
-    currentTool: Tool;
-    toolManagerService: ToolManagerService;
-    canvasResizerService: CanvasResizerService;
     selectionEllipseService: SelectionEllipseService;
     selectionRectangleService: SelectionRectangleService;
-    toolsNames: typeof ToolsNames = ToolsNames;
+
     selectedAreaCtx: CanvasRenderingContext2D;
 
     constructor(
@@ -60,6 +61,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         selectionEllipseService: SelectionEllipseService,
         selectionRectangleService: SelectionRectangleService,
         private saveDrawingService: SaveDrawingService,
+        public saveService: SaveDrawingService,
     ) {
         this.toolManagerService = toolManagerService;
         this.canvasResizerService = canvasResizerService;
@@ -71,6 +73,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.updateCurrentTool();
         this.setCanvasSize();
         this.subscribeToToolChange();
+        this.subscribeToNewDrawing();
     }
 
     ngAfterViewInit(): void {
@@ -82,6 +85,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.drawingService.selectedAreaCtx = this.selectedAreaCtx;
         this.drawingService.canvas = this.saveDrawingService.originalCanvas = this.baseCanvas.nativeElement;
         // this.drawingService.selectedAreaCanvas = this.selectedArea.nativeElement;
+        this.drawingService.canvas = this.saveService.originalCanvas = this.baseCanvas.nativeElement;
         this.drawingService.canvas.style.backgroundColor = DEFAULT_WHITE;
         this.canvasResizerService.canvasPreviewWidth = this.canvasSize.x;
         this.canvasResizerService.canvasPreviewHeight = this.canvasSize.y;
@@ -90,6 +94,9 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         setTimeout(() => {
             this.selectionEllipseService.height = this.drawingService.canvas.height;
             this.selectionEllipseService.width = this.drawingService.canvas.width;
+        });
+        setTimeout(() => {
+            this.undoRedo.saveInitialState();
         });
     }
 
@@ -198,7 +205,8 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     @HostListener('contextmenu', ['$event'])
     onContextMenu(): boolean {
-        return false; // disables the standard chrome menu
+        if (this.toolManagerService.currentTool === this.toolsNames.Pipette) return false; // disables the standard chrome menu
+        return true;
     }
 
     onMiddleRightResizerClick(): void {
@@ -252,5 +260,12 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     getTopLeftCornerRectangle(): Vec2 {
         return { x: this.selectionRectangleService.topLeftCorner.x, y: this.selectionRectangleService.topLeftCorner.y };
+    }
+
+    subscribeToNewDrawing(): void {
+        this.drawingService.newDrawing.subscribe((result: Vec2) => {
+            this.canvasSize = result;
+            this.canvasResizerService.resizeCanvas(result);
+        });
     }
 }
