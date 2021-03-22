@@ -1,5 +1,6 @@
 import { Component, HostListener, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { DrawingCardComponent } from '@app/components/carousel-components/drawing-card/drawing-card.component';
 import { MAX_HEIGHT_MAIN_CARD, MAX_HEIGHT_SIDE_CARD, MAX_WIDTH_MAIN_CARD, MAX_WIDTH_SIDE_CARD } from '@app/components/components-constants';
 import { CarouselService } from '@app/services/carousel/carousel.service';
@@ -27,7 +28,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
     tagFlag: boolean = false;
     drawingArray: DrawingData[] = [];
 
-    constructor(public dialogRef: MatDialogRef<CarouselComponent>, public carouselService: CarouselService) {
+    constructor(public dialogRef: MatDialogRef<CarouselComponent>, public carouselService: CarouselService, public snackBar: MatSnackBar) {
         this.sideCard = {
             width: MAX_WIDTH_SIDE_CARD,
             height: MAX_HEIGHT_SIDE_CARD,
@@ -75,8 +76,22 @@ export class CarouselComponent implements OnInit, OnDestroy {
     }
 
     openDrawing(): void {
-        this.carouselService.openDrawing(this.drawingArray[this.middle]);
-        this.onDialogClose();
+        this.carouselService.courrentIndex -= 2;
+        this.subscribeGet = this.carouselService.getDrawing(true, this.tagFlag).subscribe((result) => {
+            if (result === undefined || result.id !== this.drawingArray[this.middle].id) {
+                this.cantOpenDrawing();
+                this.initCarousel();
+            } else {
+                this.carouselService.openDrawing(this.drawingArray[this.middle]);
+                this.onDialogClose();
+            }
+        });
+    }
+
+    cantOpenDrawing(): void {
+        this.snackBar.open('Le dessin a été supprimé par un autre client. Veuillez en choisir un autre', 'Fermer', {
+            duration: 5000,
+        });
     }
 
     deleteDrawing(id: string | undefined): void {

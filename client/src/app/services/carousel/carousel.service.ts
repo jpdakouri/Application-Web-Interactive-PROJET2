@@ -6,6 +6,8 @@ import { HttpService } from '@app/services/http/http.service';
 import { DrawingData } from '@common/communication/drawing-data';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
+const LAST_INDEX = -1;
+const WAIT_FOR_CONFIRMATION = 200;
 @Injectable({
     providedIn: 'root',
 })
@@ -17,14 +19,14 @@ export class CarouselService {
 
     constructor(private httpService: HttpService, public drawingService: DrawingService) {}
 
-    // tslint:disable:no-magic-numbers
     initCarousel(tagFlag: boolean): Observable<DrawingData[]> {
         this.drawingsToShow = [];
         const subject = new BehaviorSubject<DrawingData[]>(this.drawingsToShow);
+        this.courrentIndex = 0;
 
         this.getArraySizeOfDrawing(tagFlag).subscribe((size) => {
             if (size > 0) {
-                this.httpService.getOneDrawing(-1, tagFlag).subscribe({
+                this.httpService.getOneDrawing(LAST_INDEX, tagFlag).subscribe({
                     next: (resultFirst) => {
                         this.drawingsToShow.push(resultFirst);
                         if (this.sizeOfArray > 1) {
@@ -94,7 +96,7 @@ export class CarouselService {
                         }
                     },
                 });
-            }, 200);
+            }, WAIT_FOR_CONFIRMATION);
         });
     }
 }

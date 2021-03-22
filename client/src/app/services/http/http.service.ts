@@ -47,8 +47,7 @@ export class HttpService {
             else if (error.status === HTTP_STATUS_NOT_FOUND) {
                 if (request === 'DeleteDrawing')
                     this.openErrorDialog('Impossible de supprimer le dessin, il ne fait plus parti de la base de données');
-                else if (request === 'GetOneDrawing')
-                    this.openErrorDialog("Impossible d'ouvrir le dessin, il ne fait plus parti de la base de données");
+                else if (request === 'GetOneDrawing') return of(result as T);
             } else this.openErrorDialog(error.error);
             return of(result as T);
         };
