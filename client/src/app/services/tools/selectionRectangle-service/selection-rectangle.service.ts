@@ -36,6 +36,7 @@ export class SelectionRectangleService extends Tool {
     private rightPressed: boolean;
     private mousePositionHandler: MousePositionHandlerService;
     private initialTopLeftCorner: Vec2;
+    private commandFirstGrid: Vec2;
 
     height: number;
     width: number;
@@ -119,6 +120,8 @@ export class SelectionRectangleService extends Tool {
             if (this.shiftDown) {
                 this.mousePositionHandler.makeSquare(this.mouseDownCoord, this.mouseDownCoord);
             }
+            this.initialTopLeftCorner = { ...this.topLeftCorner };
+            this.commandFirstGrid = { ...this.firstGrid };
             this.selectionRectangle(this.drawingService.selectedAreaCtx, this.mouseDownCoord);
         }
         this.mouseDown = this.dragActive = this.mouseMoved = false;
