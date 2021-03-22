@@ -10,11 +10,10 @@ import { PipetteService } from '@app/services/tools/pipette-service/pipette.serv
 })
 export class PipettePreviewComponent {
     @ViewChild('pipettePreviewCanvas', { static: false }) pipettePreviewCanvas: ElementRef<HTMLCanvasElement>;
-
-    constructor(public pipette: PipetteService) {}
+    constructor(private pipette: PipetteService) {}
 
     @HostListener('window:mousemove', [])
-    onMouseMouse(): void {
+    onMouseMove(): void {
         if (this.pipette.getIsCursorOnCanvas()) this.drawPreview();
     }
 

@@ -67,6 +67,7 @@ describe('PipetteService', () => {
 
     it('onMouseMove returns OUT_OF_BOUND_COLOR_RGBA if pixel is not on canvas or not in the preview center, returns DEFAULT_CANVAS_RGBA if pixel on blank canvas', () => {
         const mouseEvent = new MouseEvent('mousemove', { clientX: 0, clientY: 0 });
+        service.onMouseEnter();
         service.onMouseMove(mouseEvent);
         expect(service.getPreviewColors()[0][0]).toBe(OUT_OF_BOUND_COLOR_RGBA);
         const middleOfArrayIndex = 7;
@@ -81,6 +82,7 @@ describe('PipetteService', () => {
         spyOn(baseCanvasContext, 'getImageData').and.returnValue(stubImageData);
 
         const mouseEvent = new MouseEvent('mousemove', { clientX: 0, clientY: 0 });
+        service.onMouseEnter();
         service.onMouseMove(mouseEvent);
 
         const middleOfArrayIndex = 7;
