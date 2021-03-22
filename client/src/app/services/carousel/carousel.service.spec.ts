@@ -46,7 +46,7 @@ describe('CarouselService', () => {
         spyOn(httpServiceMock, 'getLengthOfDrawings').and.returnValue(of(1));
         service.getArraySizeOfDrawing(false);
         expect(service.sizeOfArray).toEqual(1);
-    }));
+    });
 
     it('initCarousel should call #getArraySizeOfDrawing and return of([]) if size of array < 1', () => {
         spyOn(service, 'getArraySizeOfDrawing').and.returnValue(of(0));
