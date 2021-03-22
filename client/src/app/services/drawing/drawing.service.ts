@@ -9,6 +9,8 @@ export class DrawingService {
     baseCtx: CanvasRenderingContext2D;
     previewCtx: CanvasRenderingContext2D;
     canvas: HTMLCanvasElement;
+    selectedAreaCtx: CanvasRenderingContext2D;
+    selectedAreaCanvas: HTMLCanvasElement;
     @Output() newDrawing: EventEmitter<Vec2> = new EventEmitter();
     @Output() createNewDrawingEmitter: EventEmitter<boolean> = new EventEmitter();
 

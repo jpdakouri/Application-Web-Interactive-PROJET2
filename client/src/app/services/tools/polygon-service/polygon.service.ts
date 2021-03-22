@@ -5,10 +5,10 @@ import { Vec2 } from '@app/classes/vec2';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EllipseService } from '@app/services/tools/ellipse-service/ellipse.service';
+import { MousePositionHandlerService } from '@app/services/tools/mousePositionHandler-service/mouse-position-handler.service';
 import { DEFAULT_MIN_THICKNESS, DEFAULT_NUMBER_OF_SIDE, LINE_DASH } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
-import { Sign } from '@app/utils/enums/rgb-settings';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 
 @Injectable({
@@ -20,6 +20,7 @@ export class PolygonService extends Tool {
     currentColourService: CurrentColourService;
     visualisationEllipse: EllipseService;
     private undoRedo: UndoRedoService;
+    private mousePositionHandler: MousePositionHandlerService;
     private mouseOut: boolean;
 
     constructor(
@@ -27,11 +28,14 @@ export class PolygonService extends Tool {
         currentColourService: CurrentColourService,
         visualisationEllipse: EllipseService,
         undoRedo: UndoRedoService,
+        mousePositionHandler: MousePositionHandlerService,
     ) {
         super(drawingService, currentColourService);
         this.currentColourService = currentColourService;
         this.visualisationEllipse = visualisationEllipse;
         this.undoRedo = undoRedo;
+        this.mousePositionHandler = mousePositionHandler;
+
         this.clearPath();
         this.mouseOut = false;
     }
@@ -114,7 +118,7 @@ export class PolygonService extends Tool {
         numberOfSides: number,
         strokeThickness: number,
     ): void {
-        this.drawCircle(finalGrid);
+        this.mousePositionHandler.makeCircle(this.mouseDownCoord, finalGrid);
         const startCoord = { ...firstGrid };
         const width = finalGrid.x;
         const height = finalGrid.y;
@@ -134,7 +138,7 @@ export class PolygonService extends Tool {
     }
 
     private drawFilled(ctx: CanvasRenderingContext2D, primaryColor: string, firstGrid: Vec2, finalGrid: Vec2, numberOfSides: number): void {
-        this.drawCircle(finalGrid);
+        this.mousePositionHandler.makeCircle(this.mouseDownCoord, finalGrid);
         const startCoord = { ...firstGrid };
         const width = finalGrid.x;
         const height = finalGrid.y;
@@ -164,7 +168,7 @@ export class PolygonService extends Tool {
         numberOfSides: number,
         strokeThickness: number,
     ): void {
-        this.drawCircle(finalGrid);
+        this.mousePositionHandler.makeCircle(this.mouseDownCoord, finalGrid);
         ctx.lineWidth = strokeThickness;
         const startCoord = { ...firstGrid };
         const width = finalGrid.x;
@@ -217,78 +221,32 @@ export class PolygonService extends Tool {
 
     private drawPreview(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.setLineDash([LINE_DASH, LINE_DASH]);
-        this.drawCircle(finalGrid);
+        this.mousePositionHandler.makeCircle(this.mouseDownCoord, finalGrid);
         let firstGrid: Vec2 = this.firstGrid;
-        if (this.isMouseInFirstQuadrant()) {
+        if (this.mousePositionHandler.isMouseInFirstQuadrant(this.mouseDownCoord)) {
             finalGrid.x += ctx.lineWidth;
             finalGrid.y += ctx.lineWidth;
             firstGrid = { x: this.firstGrid.x - ctx.lineWidth / 2, y: this.firstGrid.y - ctx.lineWidth / 2 };
         }
 
-        if (this.isMouseInSecondQuadrant()) {
+        if (this.mousePositionHandler.isMouseInSecondQuadrant(this.mouseDownCoord)) {
             finalGrid.x -= ctx.lineWidth;
             finalGrid.y -= ctx.lineWidth;
             firstGrid = { x: this.firstGrid.x + ctx.lineWidth / 2, y: this.firstGrid.y + ctx.lineWidth / 2 };
         }
 
-        if (this.isMouseInThirdQuadrant()) {
+        if (this.mousePositionHandler.isMouseInThirdQuadrant(this.mouseDownCoord)) {
             finalGrid.x -= ctx.lineWidth;
             finalGrid.y += ctx.lineWidth;
             firstGrid = { x: this.firstGrid.x + ctx.lineWidth / 2, y: this.firstGrid.y - ctx.lineWidth / 2 };
         }
 
-        if (this.isMouseInFourthQuadrant()) {
+        if (this.mousePositionHandler.isMouseInFourthQuadrant(this.mouseDownCoord)) {
             finalGrid.x += ctx.lineWidth;
             finalGrid.y -= ctx.lineWidth;
             firstGrid = { x: this.firstGrid.x - ctx.lineWidth / 2, y: this.firstGrid.y + ctx.lineWidth / 2 };
         }
         this.visualisationEllipse.drawOutline(this.drawingService.previewCtx, firstGrid, finalGrid, 'blue', 1);
-    }
-
-    private isMouseInFirstQuadrant(): boolean {
-        //  mouse is in first quadrant (+/+)
-        return Math.sign(this.mouseDownCoord.x) === Sign.Positive && Math.sign(this.mouseDownCoord.y) === Sign.Positive;
-    }
-
-    private isMouseInSecondQuadrant(): boolean {
-        // mouse is in third quadrant (-/-)
-        return Math.sign(this.mouseDownCoord.x) === Sign.Negative && Math.sign(this.mouseDownCoord.y) === Sign.Negative;
-    }
-
-    private isMouseInThirdQuadrant(): boolean {
-        // mouse is in fourth quadrant (-/+)
-        return Math.sign(this.mouseDownCoord.x) === Sign.Negative && Math.sign(this.mouseDownCoord.y) === Sign.Positive;
-    }
-
-    private isMouseInFourthQuadrant(): boolean {
-        // mouse is in second quadrant (+/-)
-        return Math.sign(this.mouseDownCoord.x) === Sign.Positive && Math.sign(this.mouseDownCoord.y) === Sign.Negative;
-    }
-
-    private isXGreaterThanY(): boolean {
-        return Math.abs(this.mouseDownCoord.x) > Math.abs(this.mouseDownCoord.y);
-    }
-
-    private isYGreaterThanX(): boolean {
-        return Math.abs(this.mouseDownCoord.y) > Math.abs(this.mouseDownCoord.x);
-    }
-
-    private drawCircle(grid: Vec2): void {
-        if (this.isMouseInFirstQuadrant()) {
-            grid.x = grid.y = Math.min(this.mouseDownCoord.x, this.mouseDownCoord.y);
-        }
-
-        if (this.isMouseInSecondQuadrant()) {
-            grid.x = grid.y = Math.max(this.mouseDownCoord.x, this.mouseDownCoord.y);
-        }
-
-        if (this.isMouseInThirdQuadrant()) {
-            this.isXGreaterThanY() ? (grid.x = -grid.y) : (grid.y = -grid.x);
-        }
-
-        if (this.isMouseInFourthQuadrant()) {
-            this.isYGreaterThanX() ? (grid.y = -grid.x) : (grid.x = -grid.y);
-        }
     }
 
     private clearPath(): void {

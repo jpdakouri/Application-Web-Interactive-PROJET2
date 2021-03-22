@@ -70,17 +70,6 @@
     </div>
     <div class="flex-item">
         <button
-            aria-label='Selection rectangle "i"'
-            title='Selection rectangle "i"'
-            [color]="isSelected(this.toolsNames.SelectBox) ? 'accent' : 'primary'"
-            (click)="setCurrentTool(this.toolsNames.SelectBox)"
-            mat-mini-fab
-        >
-            <mat-icon>crop</mat-icon>
-        </button>
-    </div>
-    <div class="flex-item">
-        <button
             aria-label="Polygonne"
             title="Polygonne"
             [color]="isSelected(this.toolsNames.Polygon) ? 'accent' : 'primary'"
@@ -93,12 +82,22 @@
 
     <div class="flex-item">
         <button
+            aria-label='Selection rectangle "i"'
+            title='Selection rectangle "i"'
+            [color]="isSelected(this.toolsNames.SelectBox) ? 'accent' : 'primary'"
+            (click)="setCurrentTool(this.toolsNames.SelectBox)"
+            mat-mini-fab
+        >
+            <mat-icon>crop</mat-icon>
+        </button>
+    </div>
+    <div class="flex-item">
+        <button
             aria-label='Selection ellipse "i"'
             title='Selection ellipse "i"'
             [color]="isSelected(this.toolsNames.SelectEllipse) ? 'accent' : 'primary'"
             (click)="setCurrentTool(this.toolsNames.SelectEllipse)"
             mat-mini-fab
-            disabled
         >
             <mat-icon>all_out</mat-icon>
         </button>
