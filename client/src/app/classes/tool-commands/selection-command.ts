@@ -5,18 +5,18 @@ import { ToolCommand } from '@app/utils/interfaces/tool-command';
 
 export class SelectionCommand implements ToolCommand {
     readonly tool: SelectionRectangleService | SelectionEllipseService;
-    readonly selectionInitialPosition: Vec2;
-    readonly selectionFinalPosition: Vec2;
-    readonly displacement: Vec2;
+    readonly initialTopLeftCorner: Vec2;
+    readonly finalTopLeftCorner: Vec2;
+    readonly selectionSize: Vec2;
     constructor(
         tool: SelectionRectangleService | SelectionEllipseService,
-        selectionInitialPosition: Vec2,
-        selectionFinalPosition: Vec2,
-        displacement: Vec2,
+        initialTopLeftCorner: Vec2,
+        finalTopLeftCorner: Vec2,
+        selectionSize: Vec2,
     ) {
         this.tool = tool;
-        this.selectionInitialPosition = selectionInitialPosition;
-        this.selectionFinalPosition = selectionFinalPosition;
-        this.displacement = displacement;
+        this.initialTopLeftCorner = initialTopLeftCorner;
+        this.finalTopLeftCorner = finalTopLeftCorner;
+        this.selectionSize = selectionSize;
     }
 }
