@@ -1,6 +1,7 @@
 import { DrawingData } from '@common/communication/drawing-data';
 import { Observable, of } from 'rxjs';
-
+const WIDTH = 100;
+const HEIGHT = 100;
 export class HttpServiceMock {
     // tslint:disable-next-line:no-empty
     constructor() {}
@@ -14,12 +15,12 @@ export class HttpServiceMock {
     }
 
     getOneDrawing(index: number, tag: boolean): Observable<DrawingData> {
-        const drawing = new DrawingData('id', 'title', ['tags'], 'url', 100, 100);
+        const drawing = new DrawingData('id', 'title', ['tags'], 'url', WIDTH, HEIGHT);
         return of(drawing);
     }
 
     getLengthOfDrawings(): Observable<number> {
-        return of(1234);
+        return of();
     }
 
     sendTags(tags: string[]): Observable<string> {
