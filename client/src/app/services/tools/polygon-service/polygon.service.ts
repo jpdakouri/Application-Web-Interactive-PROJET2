@@ -15,7 +15,7 @@ import { ShapeStyle } from '@app/utils/enums/shape-style';
     providedIn: 'root',
 })
 export class PolygonService extends Tool {
-    firstGrid: Vec2;
+    private firstGrid: Vec2;
     numberOfSides: number;
     currentColourService: CurrentColourService;
     visualisationEllipse: EllipseService;
