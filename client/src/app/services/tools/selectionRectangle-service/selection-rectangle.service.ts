@@ -84,7 +84,7 @@ export class SelectionRectangleService extends Tool {
                     // this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
                     this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
                     this.isSelectionDone = false;
-                    const commandDisplacement: Vec2 = { x: this.firstGrid.x - this.begin.x, y: this.firstGrid.y - this.begin.y };
+                    const commandDisplacement: Vec2 = { x: this.topLeftCorner.x - this.begin.x, y: this.topLeftCorner.y - this.begin.y };
                     const command = new SelectionCommand(this, this.begin, this.end, commandDisplacement);
                     this.undoRedo.addCommand(command);
                 }
@@ -101,7 +101,6 @@ export class SelectionRectangleService extends Tool {
         } else if (this.mouseDown && this.selectionActive && this.dragActive) {
             this.updateDragPosition(this.getPositionFromMouse(event));
         }
-        console.log(event.offsetX, event.offsetY, this.begin, this.end, this.firstGrid);
     }
 
     onMouseUp(event: MouseEvent): void {

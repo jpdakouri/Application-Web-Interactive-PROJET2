@@ -8,10 +8,10 @@ import { ALPHA_POS, BLUE_POS, GREEN_POS, MAX_BYTE_VALUE, RED_POS } from '@app/se
 import { MousePositionHandlerService } from '@app/services/tools/mousePositionHandler-service/mouse-position-handler.service';
 import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
 import { LINE_DASH, PIXELS_ARROW_STEPS } from '@app/services/tools/tools-constants';
+import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
-import { UndoRedoService } from '../undo-redo-service/undo-redo.service';
 
 // import { ShapeStyle } from '@app/utils/enums/shape-style';
 
@@ -86,7 +86,7 @@ export class SelectionEllipseService extends Tool {
                     });
                     this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
                     this.isSelectionDone = false;
-                    const commandDisplacement: Vec2 = { x: this.firstGrid.x - this.begin.x, y: this.firstGrid.y - this.begin.y };
+                    const commandDisplacement: Vec2 = { x: this.topLeftCorner.x - this.begin.x, y: this.topLeftCorner.y - this.begin.y };
                     const command = new SelectionCommand(this, this.begin, this.end, commandDisplacement);
                     this.undoRedo.addCommand(command);
                 }
