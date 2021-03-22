@@ -28,7 +28,6 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { ToolManagerServiceMock } from '@app/utils/tests-mocks/tool-manager-mock';
-import { DrawingData } from '@common/communication/drawing-data';
 import { EditorComponent } from './editor.component';
 
 class DrawingServiceMock {

@@ -1,5 +1,5 @@
 import { ElementRef } from '@angular/core';
-import { Tag } from '../interfaces/tag';
+import { Tag } from '@app/utils/interfaces/tag';
 import { DrawingDataMock } from './drawing-data-mock';
 
 export class SaveDrawingServiceMock {

@@ -11,6 +11,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -62,6 +63,7 @@ import { ServerErrorMessageComponent } from './components/server-error-message/s
         MatChipsModule,
         HttpClientModule,
         MatExpansionModule,
+        MatToolbarModule,
         AppRoutingModule,
         MatSnackBarModule,
         BrowserAnimationsModule,
