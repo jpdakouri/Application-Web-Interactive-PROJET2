@@ -87,8 +87,9 @@ export class PolygonService extends Tool {
             );
             this.undoRedo.addCommand(command);
             this.clearPath();
+
+            this.mouseDown = false;
         }
-        this.mouseDown = false;
     }
 
     private drawOutLine(
