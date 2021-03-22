@@ -113,12 +113,27 @@ describe('CarouselComponent', () => {
         expect(shiftRightSpy).not.toHaveBeenCalled();
     });
 
-    it('openDrawing should call openDrawing from carouselService', () => {
+    it('openDrawing should call openDrawing from carouselService if drawing is stil avaible', async(() => {
+        const expectedValue = new DrawingDataMock('1');
+        component.drawingArray.push(expectedValue);
+        component.drawingArray.push(expectedValue);
+        spyOn(carouselServiceMock, 'getDrawing').and.returnValue(of(expectedValue));
         const openDrawingStub = spyOn(carouselServiceMock, 'openDrawing').and.stub();
-        fixture.detectChanges();
         component.openDrawing();
+        fixture.detectChanges();
         expect(openDrawingStub).toHaveBeenCalled();
-    });
+    }));
+
+    it('openDrawing should call openDrawing from carouselService if drawing is stil avaible', async(() => {
+        const expectedValue = new DrawingDataMock('1');
+        component.drawingArray.push(expectedValue);
+        component.drawingArray.push(expectedValue);
+        spyOn(carouselServiceMock, 'getDrawing').and.returnValue(of((undefined as unknown) as DrawingDataMock));
+        const openDrawingStub = spyOn(carouselServiceMock, 'openDrawing').and.stub();
+        component.openDrawing();
+        fixture.detectChanges();
+        expect(openDrawingStub).not.toHaveBeenCalled();
+    }));
 
     it('shift left should get the next drawing provided by the service', async(() => {
         const response: DrawingDataMock = new DrawingDataMock('1');
@@ -140,5 +155,11 @@ describe('CarouselComponent', () => {
         spyOn(component, 'initCarousel').and.stub();
         component.toggleTagFlag(true);
         expect(component.initCarousel).toHaveBeenCalled();
+    });
+
+    it('cantOpenDrawing should open the snackbar', () => {
+        spyOn(component.snackBar, 'open').and.stub();
+        component.cantOpenDrawing();
+        expect(component.snackBar.open).toHaveBeenCalled();
     });
 });

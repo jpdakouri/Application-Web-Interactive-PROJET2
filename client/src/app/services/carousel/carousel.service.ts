@@ -21,6 +21,7 @@ export class CarouselService {
     initCarousel(tagFlag: boolean): Observable<DrawingData[]> {
         this.drawingsToShow = [];
         const subject = new Subject<DrawingData[]>();
+        this.courrentIndex = 0;
 
         this.getArraySizeOfDrawing(tagFlag).subscribe((size) => {
             if (size > 0) {
