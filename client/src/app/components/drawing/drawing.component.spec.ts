@@ -1,6 +1,7 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatTooltipModule } from '@angular/material/tooltip';
+// import { Vec2 } from '@app/classes/vec2';
 import { CanvasResizerService, Status } from '@app/services/canvas-resizer/canvas-resizer.service';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -68,10 +69,29 @@ describe('DrawingComponent', () => {
         expect(component.currentTool).toEqual(toolManagerServiceMock.currentTool);
     });
 
-    it('#subscribeToToolChange should subscribe to tool change emitter and call #updateCurrentTool on emission', () => {
+    it(' #subscribeToToolChange should subscribe to tool change emitter and call #updateCurrentTool on emission', () => {
         spyOn(component, 'updateCurrentTool').and.callThrough();
         toolManagerServiceMock.toolChangeEmitter.emit();
         expect(component.updateCurrentTool).toHaveBeenCalled();
+    });
+
+    it(" #should subscribe to DrawingService's subscribeToCreateNewDrawingEmitter", () => {
+        spyOn(component, 'subscribeToCreateNewDrawingEmitter').and.stub();
+        spyOn(canvasResizerStub, 'calculateCanvasSize').and.stub();
+        spyOn(canvasResizerStub, 'updatePreviewCanvasSize').and.stub();
+
+        drawingStub.createNewDrawingEmitter.emit();
+        expect(canvasResizerStub.calculateCanvasSize).toHaveBeenCalled();
+        expect(canvasResizerStub.updatePreviewCanvasSize).toHaveBeenCalled();
+    });
+
+    it(" #should subscribe to DrawingService's subscribeToNewDrawing", () => {
+        spyOn(component, 'subscribeToNewDrawing').and.stub();
+        spyOn(canvasResizerStub, 'updatePreviewCanvasSize').and.stub();
+
+        drawingStub.newDrawing.emit();
+
+        expect(canvasResizerStub.updatePreviewCanvasSize).toHaveBeenCalled();
     });
 
     it("#ngAfterViewInit should call darwingService's #restoreCanvas", () => {

@@ -79,7 +79,7 @@ export class AerosolService extends Tool {
         }
     }
 
-    private async spray(): Promise<void> {
+    private spray(): void {
         window.clearInterval(this.intervalID);
         this.intervalID = window.setInterval(() => {
             this.generateSprayParticles();
