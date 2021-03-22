@@ -35,6 +35,7 @@ export class SelectionRectangleService extends Tool {
     private leftPressed: boolean;
     private rightPressed: boolean;
     private mousePositionHandler: MousePositionHandlerService;
+    private initialTopLeftCorner: Vec2;
 
     height: number;
     width: number;
@@ -77,15 +78,21 @@ export class SelectionRectangleService extends Tool {
                     this.dragActive = true;
                 } else {
                     this.selectionActive = false;
+                    console.log(this.width, this.height);
                     const imageData = this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
+                    console.log(this.topLeftCorner.x + 1, this.topLeftCorner.y + 1);
                     createImageBitmap(imageData).then((imgBitmap) => {
                         this.drawingService.baseCtx.drawImage(imgBitmap, this.topLeftCorner.x + 1, this.topLeftCorner.y + 1);
                     });
                     // this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
                     this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
                     this.isSelectionDone = false;
-                    const commandDisplacement: Vec2 = { x: this.topLeftCorner.x - this.begin.x, y: this.topLeftCorner.y - this.begin.y };
-                    const command = new SelectionCommand(this, this.begin, this.end, commandDisplacement);
+                    const command = new SelectionCommand(
+                        this,
+                        this.initialTopLeftCorner,
+                        { ...this.topLeftCorner },
+                        { x: this.width, y: this.height },
+                    );
                     this.undoRedo.addCommand(command);
                 }
             }
@@ -258,6 +265,8 @@ export class SelectionRectangleService extends Tool {
     }
 
     private selectionRectangle(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+        console.log(this.topLeftCorner, this.firstGrid, finalGrid);
+        this.initialTopLeftCorner = { ...this.topLeftCorner };
         // Prendre la region de pixel
         this.drawingService.clearCanvas(ctx);
         const imageData = this.drawingService.baseCtx.getImageData(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
@@ -315,6 +324,17 @@ export class SelectionRectangleService extends Tool {
         this.firstGrid = this.mouseDownCoord = { x: 0, y: 0 };
     }
     executeCommand(command: SelectionCommand): void {
-        throw new Error('Method not implemented.');
+        this.firstGrid = command.initialTopLeftCorner;
+        this.topLeftCorner = command.initialTopLeftCorner;
+        this.selectionRectangle(this.drawingService.selectedAreaCtx, command.selectionSize);
+
+        console.log(this.width, this.height);
+        const imageData = this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
+
+        console.log(command.finalTopLeftCorner.x + 1, command.finalTopLeftCorner.y + 1);
+        createImageBitmap(imageData).then((imgBitmap) => {
+            this.drawingService.baseCtx.drawImage(imgBitmap, command.finalTopLeftCorner.x + 1, command.finalTopLeftCorner.y + 1);
+        });
+        // this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
     }
 }
