@@ -51,7 +51,7 @@
         #selectedArea
         [attr.width]="width"
         [attr.height]="height"
-        [ngStyle]="{ border: selectionEllipseService.selectionActive ? '1px solid' : 'none' }"
+        [ngStyle]="{ border: selectionEllipseService.selectionActive || selectionRectangleService.selectionActive ? '1px solid' : 'none' }"
     >
     </canvas>
     <div
@@ -145,7 +145,7 @@
     <!-- black squares for rectangle -->
     <div
         class="resizer selection-box-middle-right"
-        [hidden]="!selectionEllipseService.isSelectionDone"
+        [hidden]="!selectionRectangleService.isSelectionDone"
         [ngStyle]="{
             left: getSelectedAreaSizeRectangle().x + 'px',
             top: getSelectedAreaSizeRectangle().y / 2 - 2.5 + 'px',
@@ -156,7 +156,7 @@
 
     <div
         class="resizer selection-box-bottom-right"
-        [hidden]="!selectionEllipseService.isSelectionDone"
+        [hidden]="!selectionRectangleService.isSelectionDone"
         [ngStyle]="{
             left: getSelectedAreaSizeRectangle().x + 'px',
             top: getSelectedAreaSizeRectangle().y + 'px',
@@ -167,7 +167,7 @@
 
     <div
         class="resizer selection-box-middle-bottom"
-        [hidden]="!selectionEllipseService.isSelectionDone"
+        [hidden]="!selectionRectangleService.isSelectionDone"
         [ngStyle]="{
             left: getSelectedAreaSizeRectangle().x / 2 - 2 + 'px',
             top: getSelectedAreaSizeRectangle().y + 'px',
@@ -178,7 +178,7 @@
 
     <div
         class="resizer selection-box-top-left"
-        [hidden]="!selectionEllipseService.isSelectionDone"
+        [hidden]="!selectionRectangleService.isSelectionDone"
         [ngStyle]="{
             left: -2 + 'px',
             top: -2 + 'px',
@@ -189,7 +189,7 @@
 
     <div
         class="resizer selection-box-top-middle"
-        [hidden]="!selectionEllipseService.isSelectionDone"
+        [hidden]="!selectionRectangleService.isSelectionDone"
         [ngStyle]="{
             left: getSelectedAreaSizeRectangle().x / 2 - 2 + 'px',
             top: -2 + 'px',
@@ -200,7 +200,7 @@
 
     <div
         class="resizer selection-box-top-right"
-        [hidden]="!selectionEllipseService.isSelectionDone"
+        [hidden]="!selectionRectangleService.isSelectionDone"
         [ngStyle]="{
             left: getSelectedAreaSizeRectangle().x - 2 + 'px',
             top: -2 + 'px',
@@ -211,7 +211,7 @@
 
     <div
         class="resizer selection-box-middle-left"
-        [hidden]="!selectionEllipseService.isSelectionDone"
+        [hidden]="!selectionRectangleService.isSelectionDone"
         [ngStyle]="{
             left: -2 + 'px',
             top: getSelectedAreaSizeRectangle().y / 2 + 2 + 'px',
@@ -222,7 +222,7 @@
 
     <div
         class="resizer selection-box-bottom-left"
-        [hidden]="!selectionEllipseService.isSelectionDone"
+        [hidden]="!selectionRectangleService.isSelectionDone"
         [ngStyle]="{
             left: -2 + 'px',
             top: getSelectedAreaSizeRectangle().y - 2 + 'px',

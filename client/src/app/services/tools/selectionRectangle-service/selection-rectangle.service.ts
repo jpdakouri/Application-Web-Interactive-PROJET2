@@ -5,11 +5,11 @@ import { CurrentColourService } from '@app/services/current-colour/current-colou
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ALPHA_POS, BLUE_POS, GREEN_POS, MAX_BYTE_VALUE, RED_POS } from '@app/services/services-constants';
 // import { Sign } from '@app/services/services-constants';
+import { MousePositionHandlerService } from '@app/services/tools/mousePositionHandler-service/mouse-position-handler.service';
 import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
 import { PIXELS_ARROW_STEPS } from '@app/services/tools/tools-constants';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
-import { Sign } from '@app/utils/enums/rgb-settings';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
 // import { KeyboardButtons, MouseButtons } from '@app/utils/enums/list-boutton-pressed';
 
@@ -33,19 +33,23 @@ export class SelectionRectangleService extends Tool {
     private downPressed: boolean;
     private leftPressed: boolean;
     private rightPressed: boolean;
+    private mousePositionHandler: MousePositionHandlerService;
+
     height: number;
     width: number;
+    isSelectionDone: boolean;
 
     rectangleService: RectangleService;
     currentColourService: CurrentColourService;
 
-    constructor(drawingService: DrawingService, currentColourService: CurrentColourService) {
+    constructor(drawingService: DrawingService, currentColourService: CurrentColourService, mousePositionHandler: MousePositionHandlerService) {
         super(drawingService, currentColourService);
         this.currentColourService = currentColourService;
         this.topLeftCorner = { x: 0, y: 0 };
         this.offset = { x: 0, y: 0 };
         this.selectionActive = this.dragActive = false;
         this.drawingService.selectedAreaCtx = this.drawingService.baseCtx;
+        this.mousePositionHandler = mousePositionHandler;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -71,8 +75,9 @@ export class SelectionRectangleService extends Tool {
                     createImageBitmap(imageData).then((imgBitmap) => {
                         this.drawingService.baseCtx.drawImage(imgBitmap, this.topLeftCorner.x + 1, this.topLeftCorner.y + 1);
                     });
-                    this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
+                    // this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
                     this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
+                    this.isSelectionDone = false;
                 }
             }
         }
@@ -91,12 +96,14 @@ export class SelectionRectangleService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown && this.selectionActive && !this.dragActive && this.mouseMoved) {
+            this.isSelectionDone = true;
+
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.end = this.getPositionFromMouse(event);
             this.updateTopLeftCorner();
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             if (this.shiftDown) {
-                this.makeSquare(this.mouseDownCoord);
+                this.mousePositionHandler.makeSquare(this.mouseDownCoord, this.mouseDownCoord);
             }
             this.selectionRectangle(this.drawingService.selectedAreaCtx, this.mouseDownCoord);
         }
@@ -197,52 +204,6 @@ export class SelectionRectangleService extends Tool {
         ctx.strokeRect(startCoord.x, startCoord.y, width, height);
     }
 
-    private isMouseInFirstQuadrant(): boolean {
-        //  mouse is in first quadrant (+/+)
-        return Math.sign(this.mouseDownCoord.x) === Sign.Positive && Math.sign(this.mouseDownCoord.y) === Sign.Positive;
-    }
-
-    private isMouseInSecondQuadrant(): boolean {
-        // mouse is in third quadrant (-/-)
-        return Math.sign(this.mouseDownCoord.x) === Sign.Negative && Math.sign(this.mouseDownCoord.y) === Sign.Negative;
-    }
-
-    private isMouseInThirdQuadrant(): boolean {
-        // mouse is in fourth quadrant (-/+)
-        return Math.sign(this.mouseDownCoord.x) === Sign.Negative && Math.sign(this.mouseDownCoord.y) === Sign.Positive;
-    }
-
-    private isMouseInFourthQuadrant(): boolean {
-        // mouse is in second quadrant (+/-)
-        return Math.sign(this.mouseDownCoord.x) === Sign.Positive && Math.sign(this.mouseDownCoord.y) === Sign.Negative;
-    }
-
-    private isXGreaterThanY(): boolean {
-        return Math.abs(this.mouseDownCoord.x) > Math.abs(this.mouseDownCoord.y);
-    }
-
-    private isYGreaterThanX(): boolean {
-        return Math.abs(this.mouseDownCoord.y) > Math.abs(this.mouseDownCoord.x);
-    }
-
-    private makeSquare(grid: Vec2): void {
-        if (this.isMouseInFirstQuadrant()) {
-            grid.x = grid.y = Math.min(this.mouseDownCoord.x, this.mouseDownCoord.y);
-        }
-
-        if (this.isMouseInSecondQuadrant()) {
-            grid.x = grid.y = Math.max(this.mouseDownCoord.x, this.mouseDownCoord.y);
-        }
-
-        if (this.isMouseInThirdQuadrant()) {
-            this.isXGreaterThanY() ? (grid.x = -grid.y) : (grid.y = -grid.x);
-        }
-
-        if (this.isMouseInFourthQuadrant()) {
-            this.isYGreaterThanX() ? (grid.y = -grid.x) : (grid.x = -grid.y);
-        }
-    }
-
     private updateTopLeftCorner(): void {
         if (this.begin.x > this.end.x) {
             this.topLeftCorner.x = this.end.x;
@@ -318,10 +279,6 @@ export class SelectionRectangleService extends Tool {
         // Mettre le backround white
         this.drawingService.baseCtx.fillStyle = 'white';
         this.drawingService.baseCtx.fillRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
-
-        // Print rectangle de selection
-        // ctx.setLineDash([numberFive, numberFifteen]);
-        // ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
     }
 
     private updatePreview(): void {
@@ -329,7 +286,7 @@ export class SelectionRectangleService extends Tool {
         const currentCoord = { ...this.mouseDownCoord };
         this.drawingService.previewCtx.beginPath();
         if (this.shiftDown) {
-            this.makeSquare(currentCoord);
+            this.mousePositionHandler.makeSquare(this.mouseDownCoord, currentCoord);
         }
         this.drawRectanglePerimeter(this.drawingService.previewCtx, currentCoord);
         this.drawingService.previewCtx.closePath();

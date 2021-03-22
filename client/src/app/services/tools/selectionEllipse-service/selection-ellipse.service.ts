@@ -4,11 +4,11 @@ import { Vec2 } from '@app/classes/vec2';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ALPHA_POS, BLUE_POS, GREEN_POS, MAX_BYTE_VALUE, RED_POS } from '@app/services/services-constants';
+import { MousePositionHandlerService } from '@app/services/tools/mousePositionHandler-service/mouse-position-handler.service';
 import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
 import { PIXELS_ARROW_STEPS } from '@app/services/tools/tools-constants';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
-import { Sign } from '@app/utils/enums/rgb-settings';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
 
 // import { ShapeStyle } from '@app/utils/enums/shape-style';
@@ -29,6 +29,7 @@ export class SelectionEllipseService extends Tool {
     private downPressed: boolean;
     private leftPressed: boolean;
     private rightPressed: boolean;
+    private mousePositionHandler: MousePositionHandlerService;
 
     topLeftCorner: Vec2;
     selectionActive: boolean;
@@ -39,13 +40,14 @@ export class SelectionEllipseService extends Tool {
     rectangleService: RectangleService;
     currentColourService: CurrentColourService;
 
-    constructor(drawingService: DrawingService, currentColourService: CurrentColourService) {
+    constructor(drawingService: DrawingService, currentColourService: CurrentColourService, mousePositionHandler: MousePositionHandlerService) {
         super(drawingService, currentColourService);
         this.currentColourService = currentColourService;
         this.topLeftCorner = { x: 0, y: 0 };
         this.offset = { x: 0, y: 0 };
         this.selectionActive = this.dragActive = false;
         this.drawingService.selectedAreaCtx = this.drawingService.baseCtx;
+        this.mousePositionHandler = mousePositionHandler;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -100,7 +102,7 @@ export class SelectionEllipseService extends Tool {
             this.end = this.getPositionFromMouse(event);
             this.updateTopLeftCorner();
             if (this.shiftDown) {
-                this.makeCircle(this.mouseDownCoord);
+                this.mousePositionHandler.makeCircle(this.mouseDownCoord, this.mouseDownCoord);
             }
             this.selectEllipse(this.drawingService.selectedAreaCtx, this.mouseDownCoord);
             this.drawEllipse(this.drawingService.selectedAreaCtx, this.mouseDownCoord);
@@ -185,52 +187,6 @@ export class SelectionEllipseService extends Tool {
         }
     }
 
-    private isMouseInFirstQuadrant(): boolean {
-        //  mouse is in first quadrant (+/+)
-        return Math.sign(this.mouseDownCoord.x) === Sign.Positive && Math.sign(this.mouseDownCoord.y) === Sign.Positive;
-    }
-
-    private isMouseInSecondQuadrant(): boolean {
-        // mouse is in third quadrant (-/-)
-        return Math.sign(this.mouseDownCoord.x) === Sign.Negative && Math.sign(this.mouseDownCoord.y) === Sign.Negative;
-    }
-
-    private isMouseInThirdQuadrant(): boolean {
-        // mouse is in fourth quadrant (-/+)
-        return Math.sign(this.mouseDownCoord.x) === Sign.Negative && Math.sign(this.mouseDownCoord.y) === Sign.Positive;
-    }
-
-    private isMouseInFourthQuadrant(): boolean {
-        // mouse is in second quadrant (+/-)
-        return Math.sign(this.mouseDownCoord.x) === Sign.Positive && Math.sign(this.mouseDownCoord.y) === Sign.Negative;
-    }
-
-    private isXGreaterThanY(): boolean {
-        return Math.abs(this.mouseDownCoord.x) > Math.abs(this.mouseDownCoord.y);
-    }
-
-    private isYGreaterThanX(): boolean {
-        return Math.abs(this.mouseDownCoord.y) > Math.abs(this.mouseDownCoord.x);
-    }
-
-    private makeCircle(grid: Vec2): void {
-        if (this.isMouseInFirstQuadrant()) {
-            grid.x = grid.y = Math.min(this.mouseDownCoord.x, this.mouseDownCoord.y);
-        }
-
-        if (this.isMouseInSecondQuadrant()) {
-            grid.x = grid.y = Math.max(this.mouseDownCoord.x, this.mouseDownCoord.y);
-        }
-
-        if (this.isMouseInThirdQuadrant()) {
-            this.isXGreaterThanY() ? (grid.x = -grid.y) : (grid.y = -grid.x);
-        }
-
-        if (this.isMouseInFourthQuadrant()) {
-            this.isYGreaterThanX() ? (grid.y = -grid.x) : (grid.x = -grid.y);
-        }
-    }
-
     private updateTopLeftCorner(): void {
         if (this.begin.x > this.end.x) {
             this.topLeftCorner.x = this.end.x;
@@ -304,7 +260,7 @@ export class SelectionEllipseService extends Tool {
         const currentCoord = { ...this.mouseDownCoord };
         this.drawingService.previewCtx.beginPath();
         if (this.shiftDown) {
-            this.makeCircle(currentCoord);
+            this.mousePositionHandler.makeCircle(this.mouseDownCoord, currentCoord);
         }
         this.drawEllipse(this.drawingService.previewCtx, currentCoord);
         this.drawingService.previewCtx.stroke();
@@ -353,10 +309,6 @@ export class SelectionEllipseService extends Tool {
         this.clearPath();
         const grid: Vec2 = { x: this.drawingService.baseCtx.canvas.width, y: this.drawingService.baseCtx.canvas.height };
         this.selectEllipse(this.drawingService.selectedAreaCtx, grid);
-        // this.drawingService.selectedAreaCtx.canvas.style.top = 0 + 'px';
-        // this.drawingService.selectedAreaCtx.canvas.style.left = 0 + 'px';
-        // this.drawingService.selectedAreaCtx.canvas.style.width = this.drawingService.baseCtx.canvas.width + 'px';
-        // this.drawingService.selectedAreaCtx.canvas.style.height = this.drawingService.baseCtx.canvas.height + 'px';
         console.log('test');
     }
 

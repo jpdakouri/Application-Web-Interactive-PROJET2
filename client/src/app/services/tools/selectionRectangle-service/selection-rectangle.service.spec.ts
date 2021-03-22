@@ -1,13 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
-import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MousePositionHandlerService } from '@app/services/tools/mousePositionHandler-service/mouse-position-handler.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { SelectionRectangleService } from './selection-rectangle.service';
 
 describe('SelectionRectangleService', () => {
     let service: SelectionRectangleService;
+    let serviceMousePositionHandler: MousePositionHandlerService;
     let mouseEvent: MouseEvent;
     let canvasTestHelper: CanvasTestHelper;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
@@ -28,6 +29,7 @@ describe('SelectionRectangleService', () => {
         selectedAreaCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
 
         service = TestBed.inject(SelectionRectangleService);
+        serviceMousePositionHandler = TestBed.inject(MousePositionHandlerService);
 
         // tslint:disable-next-line:no-any
         spyOn<any>(service, 'getPositionFromMouse').and.returnValue({ x: 100, y: 100 });
@@ -143,15 +145,15 @@ describe('SelectionRectangleService', () => {
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
     });
 
-    it('Shift key should call makeCircle when pressed', () => {
+    it('Shift key should call makeSquare when pressed', () => {
         service.onMouseDown(mouseEvent);
-        const makeCircleSpy = spyOn<any>(service, 'makeSquare').and.callThrough();
+        const makeSquareSpy = spyOn<any>(serviceMousePositionHandler, 'makeSquare').and.callThrough();
         service['shiftDown'] = false;
         service.onKeyDown({
             key: KeyboardButtons.Shift,
         } as KeyboardEvent);
         expect(service['shiftDown']).toBeTrue();
-        expect(makeCircleSpy).toHaveBeenCalled();
+        expect(makeSquareSpy).toHaveBeenCalled();
     });
 
     it('upPressed should be false when the up key is not pressed', () => {
@@ -336,50 +338,5 @@ describe('SelectionRectangleService', () => {
         service.mouseDownCoord = { x: 300, y: 100 };
         const grid = service.mouseDownCoord;
         expect(service['isClickIn'](grid)).toEqual(false);
-    });
-
-    it('should draw rectangle/square in the first quadrant (+/+)', () => {
-        service.mouseDownCoord = { x: 300, y: 200 };
-        service['shiftDown'] = true;
-        const expected = { x: 200, y: 200 } as Vec2;
-        const val = service.mouseDownCoord;
-        service['makeSquare'](val);
-        expect(val).toEqual(expected);
-    });
-
-    it('should draw a wide (height < width) rectangle/square in the third quadrant (-/+)', () => {
-        service.mouseDownCoord = { x: -300, y: 200 };
-        const expected = { x: -200, y: 200 } as Vec2;
-        const value = service.mouseDownCoord;
-        service['makeSquare'](value);
-        expect(service['makeSquare'](service.mouseDownCoord));
-        expect(value).toEqual(expected);
-    });
-
-    it(' should draw a wide (height < width) rectangle/square in the fourth quadrant (+/-) ', () => {
-        service.mouseDownCoord = { x: 300, y: -200 };
-        const expected = { x: 200, y: -200 } as Vec2;
-        const value = service.mouseDownCoord;
-        service['makeSquare'](value);
-        expect(service['makeSquare'](service.mouseDownCoord));
-        expect(value).toEqual(expected);
-    });
-
-    it(' should draw a wide (height < width) rectangle/square in the second quadrant (-/-)', () => {
-        service.mouseDownCoord = { x: -300, y: -200 };
-        const expected = { x: -200, y: -200 } as Vec2;
-        const value = service.mouseDownCoord;
-        service['makeSquare'](value);
-        expect(service['makeSquare'](service.mouseDownCoord));
-        expect(value).toEqual(expected);
-    });
-
-    it(' should draw a large (height > width) rectangle/square in the fourth quadrant (+/-)', () => {
-        service.mouseDownCoord = { x: 200, y: -300 };
-        const expected = { x: 200, y: -200 } as Vec2;
-        const value = service.mouseDownCoord;
-        service['makeSquare'](value);
-        expect(service['makeSquare'](service.mouseDownCoord));
-        expect(value).toEqual(expected);
     });
 });

@@ -3,6 +3,7 @@ import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EllipseService } from '@app/services/tools/ellipse-service/ellipse.service';
+import { MousePositionHandlerService } from '@app/services/tools/mousePositionHandler-service/mouse-position-handler.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
@@ -10,6 +11,8 @@ import { ShapeStyle } from '@app/utils/enums/shape-style';
 describe('EllipseService', () => {
     let service: EllipseService;
     let mouseEvent: MouseEvent;
+    let serviceMousePositionHandler: MousePositionHandlerService;
+
     let canvasTestHelper: CanvasTestHelper;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
@@ -28,6 +31,7 @@ describe('EllipseService', () => {
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
 
         service = TestBed.inject(EllipseService);
+        serviceMousePositionHandler = TestBed.inject(MousePositionHandlerService);
 
         spyOn<any>(service, 'getPositionFromMouse').and.returnValue({ x: 100, y: 100 });
 
@@ -81,7 +85,7 @@ describe('EllipseService', () => {
 
     it(' onMouseUp should call drawCircle if shift is down', () => {
         service['shiftDown'] = true;
-        const drawCircleSpy = spyOn<any>(service, 'drawCircle').and.callThrough();
+        const drawCircleSpy = spyOn<any>(serviceMousePositionHandler, 'makeCircle').and.callThrough();
         service.onMouseDown(mouseEvent);
         service.onMouseUp(mouseEvent);
         expect(drawCircleSpy).toHaveBeenCalled();
@@ -89,7 +93,7 @@ describe('EllipseService', () => {
 
     it(' onMouseUp should not call drawCircle if shift is not down', () => {
         service['shiftDown'] = false;
-        const drawCircleSpy = spyOn<any>(service, 'drawCircle').and.callThrough();
+        const drawCircleSpy = spyOn<any>(serviceMousePositionHandler, 'makeCircle').and.callThrough();
         service.onMouseUp(mouseEvent);
         expect(drawCircleSpy).not.toHaveBeenCalled();
     });
@@ -107,7 +111,7 @@ describe('EllipseService', () => {
         } as KeyboardEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
 
-        const drawCircleSpy = spyOn<any>(service, 'drawCircle').and.callThrough();
+        const drawCircleSpy = spyOn<any>(serviceMousePositionHandler, 'makeCircle').and.callThrough();
         service['shiftDown'] = false;
         service.onKeyDown({
             key: KeyboardButtons.Shift,
@@ -151,7 +155,7 @@ describe('EllipseService', () => {
     it('drawCircle should be called when shiftDown is true', () => {
         service.mouseDown = true;
         service['shiftDown'] = true;
-        const drawCircleSpy = spyOn<any>(service, 'drawCircle').and.callThrough();
+        const drawCircleSpy = spyOn<any>(serviceMousePositionHandler, 'makeCircle').and.callThrough();
 
         service.onMouseDown(mouseEvent);
         service.onMouseMove(mouseEvent);
@@ -161,7 +165,7 @@ describe('EllipseService', () => {
     it('drawCircle should not be called when shiftDown is false ', () => {
         service.mouseDown = true;
         service['shiftDown'] = false;
-        const drawCircleSpy = spyOn<any>(service, 'drawCircle').and.callThrough();
+        const drawCircleSpy = spyOn<any>(serviceMousePositionHandler, 'makeCircle').and.callThrough();
 
         service.onMouseDown(mouseEvent);
         service.onMouseMove(mouseEvent);
@@ -205,51 +209,6 @@ describe('EllipseService', () => {
         service.onMouseDown(mouseEvent);
         service.onMouseUp(mouseEvent);
         expect(drawFilledOutlineSpy).toHaveBeenCalled();
-    });
-
-    it('should draw ellipse/circle in the first quadrant', () => {
-        service.mouseDownCoord = { x: 300, y: 200 };
-        service['shiftDown'] = true;
-        const expected = { x: 200, y: 200 } as Vec2;
-        const val = service.mouseDownCoord;
-        service['drawCircle'](val);
-        expect(val).toEqual(expected);
-    });
-
-    it('should draw a wide (height < width) ellipse/circle in the third quadrant', () => {
-        service.mouseDownCoord = { x: -300, y: 200 };
-        const expected = { x: -200, y: 200 } as Vec2;
-        const value = service.mouseDownCoord;
-        service['drawCircle'](value);
-        expect(service['drawCircle'](service.mouseDownCoord));
-        expect(value).toEqual(expected);
-    });
-
-    it(' should draw a wide (height < width) ellipse/circle in the fourth quadrant ', () => {
-        service.mouseDownCoord = { x: 300, y: -200 };
-        const expected = { x: 200, y: -200 } as Vec2;
-        const value = service.mouseDownCoord;
-        service['drawCircle'](value);
-        expect(service['drawCircle'](service.mouseDownCoord));
-        expect(value).toEqual(expected);
-    });
-
-    it(' should draw a wid (height < width) ellipse/circle in the second quadrant ', () => {
-        service.mouseDownCoord = { x: -300, y: -200 };
-        const expected = { x: -200, y: -200 } as Vec2;
-        const value = service.mouseDownCoord;
-        service['drawCircle'](value);
-        expect(service['drawCircle'](service.mouseDownCoord));
-        expect(value).toEqual(expected);
-    });
-
-    it(' should draw a large (height > width) ellipse/circle in the fourth quadrant ', () => {
-        service.mouseDownCoord = { x: 200, y: -300 };
-        const expected = { x: 200, y: -200 } as Vec2;
-        const value = service.mouseDownCoord;
-        service['drawCircle'](value);
-        expect(service['drawCircle'](service.mouseDownCoord));
-        expect(value).toEqual(expected);
     });
 
     it(' drawPerimeter works even when there is a negative coordinate in x', () => {
