@@ -44,7 +44,6 @@ describe('ExportDrawingService', () => {
         const whiteColor = '#ffffff' as string;
 
         service['drawImageOnCanvas'](image, service.canvas);
-
         expect(context.fillStyle).toBe(whiteColor);
         expect(drawImageSpy).toHaveBeenCalled();
     });

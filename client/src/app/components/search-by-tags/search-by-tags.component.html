@@ -17,11 +17,11 @@
                 [matChipInputFor]="chipList"
                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                 [matChipInputAddOnBlur]="true"
-                (matChipInputTokenEnd)="add($event)"
+                (matChipInputTokenEnd)="addChip($event)"
             />
             <mat-hint align="end">{{ tagValue.value?.length || 0 }}/25</mat-hint>
-            <mat-error *ngIf="tagName.invalid">{{ getErrorMessageLabel() }}</mat-error>
+            <mat-error *ngIf="tagName.invalid">{{ getErrorMessageTag() }}</mat-error>
         </mat-chip-list>
     </mat-form-field>
-    <button (click)="getDrawingsByTags()" mat-raised-button color="primary">Recherche de dessins</button>
+    <button (click)="sendTags()" mat-raised-button color="primary">Recherche de dessins</button>
 </mat-expansion-panel>

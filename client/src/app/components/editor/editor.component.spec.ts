@@ -21,6 +21,7 @@ import { CurrentColourComponent } from '@app/components/colour-components/curren
 import { HueSelectorComponent } from '@app/components/colour-components/hue-selector/hue-selector.component';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { ExportDrawingComponent } from '@app/components/export-drawing/export-drawing.component';
+import { PipettePreviewComponent } from '@app/components/pipette-preview/pipette-preview.component';
 import { ToolAttributeComponent } from '@app/components/toolbar-components/tool-attribute/tool-attribute.component';
 import { ToolbarComponent } from '@app/components/toolbar-components/toolbar/toolbar.component';
 import { DialogControllerService } from '@app/services/dialog-controller/dialog-controller.service';
@@ -28,18 +29,18 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { ToolManagerServiceMock } from '@app/tests-mocks/tool-manager-mock';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
-import { DrawingData } from '@common/communication/drawing-data';
 import { EditorComponent } from './editor.component';
 
 class DrawingServiceMock {
     // tslint:disable:no-empty
     newDrawing: EventEmitter<Vec2> = new EventEmitter<Vec2>();
+    createNewDrawingEmitter: EventEmitter<boolean> = new EventEmitter();
 
     saveCanvas(): void {}
 
     restoreCanvas(): void {}
 
-    clearCanvas(context: CanvasRenderingContext2D): void {}
+    clearCanvas(): void {}
 
     isCanvasBlank(): boolean {
         return true;
@@ -47,13 +48,13 @@ class DrawingServiceMock {
 
     createNewDrawing(): void {}
 
-    openDrawing(drawing: DrawingData): void {}
+    openDrawing(): void {}
 }
 
 // tslint:disable-next-line:max-classes-per-file
 class DialogServiceMock {
     noDialogOpened: boolean = true;
-    openDialog(component: string): void {}
+    openDialog(): void {}
 }
 
 describe('EditorComponent', () => {
@@ -79,6 +80,7 @@ describe('EditorComponent', () => {
                 CurrentColourComponent,
                 HueSelectorComponent,
                 ExportDrawingComponent,
+                PipettePreviewComponent,
             ],
             imports: [
                 MatCheckboxModule,
