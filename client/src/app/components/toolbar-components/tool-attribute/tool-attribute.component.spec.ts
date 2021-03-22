@@ -198,9 +198,7 @@ describe('ToolAttributeBarComponent', () => {
     });
     it("#showEllipseTitle should return true only if toolManagerService's #isCurrentTool returns true", () => {
         toolManagerServiceSpy.isCurrentTool.and.returnValue(true);
-        expect(component.showEllipseTitle()).toEqual(true);
-        toolManagerServiceSpy.isCurrentTool.and.returnValue(false);
-        expect(component.showEllipseTitle()).toEqual(false);
+        expect(component.shapeStyleTitle()).toEqual("'ellipse");
     });
     it("#showLineAttributes should return true only if toolManagerService's #isCurrentTool returns true", () => {
         toolManagerServiceSpy.isCurrentTool.and.returnValue(true);

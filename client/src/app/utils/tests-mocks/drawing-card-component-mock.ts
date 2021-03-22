@@ -1,10 +1,17 @@
-import { Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
+// tslint:disable:no-relative-imports
 import { CardStyle } from '@app/utils/interfaces/card-style';
 import { DrawingDataMock } from '@app/utils/tests-mocks/drawing-data-mock';
 
-export class DrawingCardComponentMock {
+// tslint:disable:no-empty
+
+@Component({
+    selector: 'app-drawing-card',
+    template: '<p>Mock Product Settings Component</p>',
+})
+export class MockDrawingCardComponent {
     @Input() positionCaracteristics: CardStyle;
-    @Input() infoDrawing: DrawingDataMock;
+    @Input() infoDrawing: DrawingDataMock = new DrawingDataMock('id');
     imageSize: CardStyle;
 
     constructor() {

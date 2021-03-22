@@ -11,15 +11,6 @@ const dialogMock = {
         return;
     },
 };
-
-// const dialogRefMock = {
-//     close: () => {
-//         return;
-//     },
-//     afterClosed(): Observable<any> {
-//         return of();
-//     },
-// };
 describe('DialogControllerService', () => {
     let service: DialogControllerService;
     beforeEach(() => {
