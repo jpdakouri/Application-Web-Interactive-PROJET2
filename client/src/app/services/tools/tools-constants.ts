@@ -55,6 +55,12 @@ export const MS_PER_S = 1000;
 export const DEFAULT_NUMBER_OF_SIDE = 3;
 export const LINE_DASH = 5;
 
+/***********************/
+/***PIPETTE CONSTANTS**/
+/***********************/
+export const PREVIEW_SIZE = 15;
+export const PREVIEW_HALF_SIZE = (PREVIEW_SIZE - 1) / 2; // 7
+export const OUT_OF_BOUND_COLOR_RGBA = 'rgba(100,100,100,1)';
 /***************************/
 /* ERROR MESSAGE CONSTANT***/
 /***************************/

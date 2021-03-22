@@ -74,6 +74,11 @@ export class ToolAttributeComponent {
         return this.toolManagerService.isCurrentTool(ToolsNames.Polygon);
     }
 
+    showPipettePreview(): boolean {
+        // TODO: changer pour visible seulement si pipette active
+        return this.toolManagerService.isCurrentTool(ToolsNames.Pipette);
+    }
+
     isChecked(shapeStyle: ShapeStyle): boolean {
         return this.getCurrentShapeStyle() === shapeStyle;
     }
