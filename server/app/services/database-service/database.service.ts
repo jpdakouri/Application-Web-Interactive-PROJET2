@@ -31,25 +31,17 @@ export class DatabaseService {
         return await this.collection.insertOne(metadata);
     }
 
-    async getAllDrawings(): Promise<Metadata[]> {
-        return await this.collection.find({}).toArray();
-    }
-
     async deleteDrawing(id: string): Promise<FindAndModifyWriteOpResultObject<Metadata>> {
         return await this.collection.findOneAndDelete({ _id: new ObjectId(id) });
     }
 
     async getDrawingsByTags(tags: string[]): Promise<Metadata[]> {
-        if (Array.isArray(tags)) {
+        if (Array.isArray(tags) && tags.length > 0) {
             return this.collection.find({ tags: { $in: tags } }).toArray();
-        } else if (tags) {
+        } else if (tags && tags.length > 0) {
             return this.collection.find({ tags: { $in: [tags] } }).toArray();
         } else {
             return this.collection.find({}).toArray();
         }
-    }
-    async updateDrawing(drawing: Metadata): Promise<FindAndModifyWriteOpResultObject<Metadata>> {
-        const newValues = { $set: { title: drawing.title, tags: drawing.tags } };
-        return await this.collection.findOneAndUpdate({ _id: new ObjectId(drawing._id) }, newValues);
     }
 }

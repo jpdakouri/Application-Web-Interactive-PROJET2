@@ -43,36 +43,14 @@ describe('ImageDataService', () => {
         expect(service.writeDrawingToDisk(drawingData)).to.be.false;
     });
 
-    it('#updateDrawing should update drawingData array and call fs.writeFileSync and return true', () => {
-        const writeStub = sinon.stub(fs, 'writeFileSync');
-        const writeSpy = chai.spy.on(fs, 'writeFileSync');
-        const dataURL = 'partToRemove,dataURLStub';
-        const buf = Buffer.from('updatedDataURLStub', 'base64');
-
-        for (let i = 0; i < 5; i++) {
-            const drawingData = new DrawingData(i.toString(), `title${i}`, [`tag${i}`, `tag${i}`], dataURL, 100, 100);
-            service.drawingData.push(drawingData);
-        }
-        const updatedDataURL = 'partToRemove,updatedDataURLStub';
-        const updatedDrawingData = new DrawingData('3', 'updated', ['updated', 'updated'], updatedDataURL, 200, 200);
-        expect(service.updateDrawing(updatedDrawingData)).to.equal(true);
-        expect(writeSpy).to.have.been.called.with('./app/drawings/3.png', buf, { flag: 'w' });
-        expect(service.drawingData[3]).to.deep.equal(updatedDrawingData);
+    it('#writeDrawingToDisk should return false and log error if writingFileSync fails', () => {
+        const writeStub = sinon.stub(fs, 'writeFileSync').throws("Erreur d'écriture");
+        const spy = sinon.spy(console, 'error');
+        const drawing = new DrawingData('id', 'title', ['tag1', 'tag2'], 'partToRemove,dataURL', 100, 100);
+        expect(service.writeDrawingToDisk(drawing)).to.equal(false);
+        expect(spy.callCount).to.equal(2);
         writeStub.restore();
-    });
-
-    it('#updateDrawing should return false if no drawing was found', () => {
-        const writeStub = sinon.stub(fs, 'writeFileSync');
-
-        const dataURL = 'dataURLStub';
-        for (let i = 0; i < 5; i++) {
-            const drawingData = new DrawingData(i.toString(), `title${i}`, [`tag${i}`, `tag${i}`], dataURL, 100, 100);
-            service.drawingData.push(drawingData);
-        }
-        const updatedDataURL = 'updatedDataURLStub';
-        const updatedDrawingData = new DrawingData('10', 'updated', ['updated', 'updated'], updatedDataURL, 200, 200);
-        expect(service.updateDrawing(updatedDrawingData)).to.equal(false);
-        writeStub.restore();
+        spy.restore();
     });
 
     it('#getOneImageFromDisk should call fs.readFileSync with correct parameter and return drawing', () => {
@@ -137,27 +115,6 @@ describe('ImageDataService', () => {
         const inValideTags = { tags: ['aaa! 111'] } as DrawingData;
         expect(service.insertTagsCheckUp(valideTags)).to.equal(true);
         expect(service.insertTagsCheckUp(inValideTags)).to.equal(false);
-    });
-
-    it('#updateDrawing should return false and log error if writingFileSync fails', () => {
-        const writeStub = sinon.stub(fs, 'writeFileSync').throws("Erreur d'écriture");
-        const spy = sinon.spy(console, 'error');
-        const drawing = new DrawingData('id', 'title', ['tag1', 'tag2'], 'partToRemove,dataURL', 100, 100);
-        service.drawingData.push(drawing);
-        expect(service.updateDrawing(drawing)).to.equal(false);
-        expect(spy.callCount).to.equal(2);
-        writeStub.restore();
-        spy.restore();
-    });
-
-    it('#writeDrawingToDisk should return false and log error if writingFileSync fails', () => {
-        const writeStub = sinon.stub(fs, 'writeFileSync').throws("Erreur d'écriture");
-        const spy = sinon.spy(console, 'error');
-        const drawing = new DrawingData('id', 'title', ['tag1', 'tag2'], 'partToRemove,dataURL', 100, 100);
-        expect(service.writeDrawingToDisk(drawing)).to.equal(false);
-        expect(spy.callCount).to.equal(2);
-        writeStub.restore();
-        spy.restore();
     });
 
     it('#populateArray should populate array with drawings found on disk', () => {

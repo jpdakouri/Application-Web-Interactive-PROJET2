@@ -123,7 +123,7 @@ describe('DatabaseController', () => {
             });
     });
 
-    it('GET request to /drawings/single/:index should respond a HTTP_STATUS_OK and a DrawingData', async () => {
+    it('GET request to /drawings/single should respond a HTTP_STATUS_OK and a DrawingData', async () => {
         const dataURL = 'dataURLStub';
         const drawing = new DrawingData('id', 'title', ['tag1', 'tag2'], dataURL, 100, 100);
         imageDataService.getOneImageFromDisk.returns(drawing);
@@ -136,7 +136,7 @@ describe('DatabaseController', () => {
             });
     });
 
-    it('GET request to /drawings/single/:index should respond a HTTP_STATUS_NOT_FOUND and corresponding message if no drawing found', async () => {
+    it('GET request to /drawings/single should respond a HTTP_STATUS_NOT_FOUND and corresponding message if no drawing found', async () => {
         imageDataService.getOneImageFromDisk.returns(undefined);
         return supertest(app)
             .get('/api/drawings/single')
@@ -147,7 +147,7 @@ describe('DatabaseController', () => {
             });
     });
 
-    it('GET request to /drawings/single/:index should call #getOneImageFromDisk from imageDataService with correct parameter ', async () => {
+    it('GET request to /drawings/single should call #getOneImageFromDisk from imageDataService with correct parameter ', async () => {
         const dataURL = 'dataURLStub';
         const drawing = new DrawingData('id', 'title', ['tag1', 'tag2'], dataURL, 100, 100);
         imageDataService.getOneImageFromDisk.returns(drawing);
@@ -161,7 +161,7 @@ describe('DatabaseController', () => {
             });
     });
 
-    it('POST request to /drawings/by-tags should respond HTTP_STATUS_OK and drawing array ', async () => {
+    it('POST request to /drawings/tags should respond HTTP_STATUS_OK and drawing array ', async () => {
         const drawingDatas: DrawingData[] = [];
         const metadatas: Metadata[] = [];
         const uri = 'uriStub';
@@ -181,7 +181,7 @@ describe('DatabaseController', () => {
                 expect(spy).to.have.been.called();
             });
     });
-    it('POST request to /drawings/by-tags should respond HTTP_STATUS_NOT_FOUND and message if no drawings are found in database ', async () => {
+    it('POST request to /drawings/tags should respond HTTP_STATUS_NOT_FOUND and message if no drawings are found in database ', async () => {
         databaseService.getDrawingsByTags.resolves([]);
         return supertest(app)
             .post('/api/drawings/tags')
@@ -192,7 +192,7 @@ describe('DatabaseController', () => {
             });
     });
 
-    it('POST request to /drawings/by-tags should respond a HTTP_STATUS_ERROR and message if error in database', async () => {
+    it('POST request to /drawings/tags should respond a HTTP_STATUS_ERROR and message if error in database', async () => {
         databaseService.getDrawingsByTags.rejects(new MongoError('Test error !'));
         return supertest(app)
             .post('/api/drawings/tags')
@@ -204,7 +204,7 @@ describe('DatabaseController', () => {
             });
     });
 
-    it('POST request to /drawings/by-tags should call getDrawingsByTags from databaseService with correct parameter', async () => {
+    it('POST request to /drawings/tags should call getDrawingsByTags from databaseService with correct parameter', async () => {
         databaseService.getDrawingsByTags.resolves([]);
         const spy = chai.spy.on(databaseService, 'getDrawingsByTags');
         return supertest(app)
@@ -216,7 +216,7 @@ describe('DatabaseController', () => {
             });
     });
 
-    it('GET request to /drawings/by-tags should respond a HTTP_STATUS_ERROR and string message if server error', async () => {
+    it('POST request to /drawings/tags should respond a HTTP_STATUS_ERROR and string message if server error', async () => {
         const databaseResults: Metadata[] = [];
         const serverResponse: DrawingData[] = [];
         const uri = 'uriStub';
@@ -294,82 +294,6 @@ describe('DatabaseController', () => {
             .expect(HTTP_STATUS_OK)
             .then((response: any) => {
                 expect(spy).to.have.been.called.with(id);
-            });
-    });
-    it('PUT request to /drawings should respond a HTTP_STATUS_OK and correct message if drawing is updated', async () => {
-        const id = new ObjectId().toString();
-        const dataURL = 'dataURLStub';
-        const drawingData = new DrawingData(id, 'titleStub', ['tagStub1', 'tagStub2'], dataURL, 100, 100);
-        const metadata = new Metadata(id, drawingData.title, drawingData.tags, 100, 100);
-        const updateResult = ({ ok: 1, value: metadata } as unknown) as FindAndModifyWriteOpResultObject<Metadata>;
-        databaseService.updateDrawing.resolves(updateResult);
-        const spy = chai.spy.on(databaseService, 'updateDrawing');
-        return supertest(app)
-            .put(`/api/drawings/${id}`)
-            .send(drawingData)
-            .expect(HTTP_STATUS_OK)
-            .then((response: any) => {
-                expect(response.text).to.equal('"Dessin mis à jour !"');
-                expect(spy).to.have.been.called.with(metadata);
-            });
-    });
-
-    it('PUT request to /drawings should respond a HTTP_STATUS_NOT_FOUND and correct message if drawing not found', async () => {
-        const id = new ObjectId().toString();
-        const updateResult = ({ ok: 0, value: null } as unknown) as FindAndModifyWriteOpResultObject<Metadata>;
-        databaseService.updateDrawing.resolves(updateResult);
-        const dataURL = 'dataURLStub';
-        const drawingData = new DrawingData(id, 'titleStub', ['tagStub1', 'tagStub2'], dataURL, 100, 100);
-        return supertest(app)
-            .put(`/api/drawings/${id}`)
-            .send(drawingData)
-            .expect(HTTP_STATUS_NOT_FOUND)
-            .then((response: any) => {
-                expect(response.text).to.equal('Aucun dessin trouvé !');
-            });
-    });
-
-    it('PUT request to /drawings should respond a HTTP_STATUS_ERROR and correct message if server or database error', async () => {
-        const id = new ObjectId().toString();
-        const dataURL = 'dataURLStub';
-        const drawingData = new DrawingData(id, 'titleStub', ['tagStub1', 'tagStub2'], dataURL, 100, 100);
-        databaseService.updateDrawing.rejects();
-        return supertest(app)
-            .put(`/api/drawings/${id}`)
-            .send(drawingData)
-            .expect(HTTP_STATUS_ERROR)
-            .then((response: any) => {
-                expect(response.text).to.equal("Erreur d'opération dans le serveur !");
-            });
-    });
-
-    it('PUT request to /drawings should respond a HTTP_STATUS_BAD_REQUEST and correct message if invalid ID', async () => {
-        const id = 'invalidID';
-        const dataURL = 'dataURLStub';
-        const drawingData = new DrawingData(id, 'titleStub', ['tagStub1', 'tagStub2'], dataURL, 100, 100);
-        return supertest(app)
-            .put(`/api/drawings/${id}`)
-            .send(drawingData)
-            .expect(HTTP_STATUS_BAD_REQUEST)
-            .then((response: any) => {
-                expect(response.text).to.equal('ID invalide !');
-            });
-    });
-
-    it('PUT request to /drawings should call #updateDrawing from imageDataService with correct parameter', async () => {
-        const id = new ObjectId().toString();
-        const dataURL = 'dataURLStub';
-        const drawingData = new DrawingData(id, 'titleStub', ['tagStub1', 'tagStub2'], dataURL, 100, 100);
-        const metadata = new Metadata(id, drawingData.title, drawingData.tags, 100, 100);
-        const updateResult = ({ ok: 1, value: metadata } as unknown) as FindAndModifyWriteOpResultObject<Metadata>;
-        databaseService.updateDrawing.resolves(updateResult);
-        const spy = chai.spy.on(imageDataService, 'updateDrawing');
-        return supertest(app)
-            .put(`/api/drawings/${id}`)
-            .send(drawingData)
-            .expect(HTTP_STATUS_OK)
-            .then((response: any) => {
-                expect(spy).to.have.been.called.with(drawingData);
             });
     });
 });

@@ -21,7 +21,7 @@ export class DatabaseController {
         @inject(TYPES.ImageDataService) private imageDataService: ImageDataService,
     ) {
         this.databaseService.startDB(this.databaseService.databaseURI, this.databaseService.options).then(() => {
-            this.databaseService.getAllDrawings().then((result) => {
+            this.databaseService.getDrawingsByTags([]).then((result) => {
                 if (result.length > 0) {
                     this.imageDataService.populateArray(result, false);
                 }
@@ -81,6 +81,7 @@ export class DatabaseController {
 
         this.router.post('/tags', (req: Request, res: Response, next: NextFunction) => {
             const tags = req.body as string[];
+            console.log(tags);
             this.databaseService
                 .getDrawingsByTags(tags)
                 .then((results) => {
@@ -88,6 +89,7 @@ export class DatabaseController {
                         this.imageDataService.populateArray(results, true);
                         res.status(HTTP_STATUS_OK).json('Tags bien reçus');
                     } else {
+                        this.imageDataService.populateArray(results, true);
                         res.status(HTTP_STATUS_NOT_FOUND).json('Aucun dessin trouvé !');
                     }
                 })
@@ -105,29 +107,6 @@ export class DatabaseController {
                         if (result.ok && result.value) {
                             this.imageDataService.removeID(req.params.id as string);
                             res.status(HTTP_STATUS_OK).json('Dessin supprimé !');
-                        } else {
-                            res.status(HTTP_STATUS_NOT_FOUND).send('Aucun dessin trouvé !');
-                        }
-                    })
-                    .catch((err) => {
-                        res.status(HTTP_STATUS_ERROR).send("Erreur d'opération dans le serveur !");
-                    });
-            } else {
-                res.status(HTTP_STATUS_BAD_REQUEST).send('ID invalide !');
-            }
-        });
-
-        this.router.put('/:id', (req: Request, res: Response, next: NextFunction) => {
-            const isValid = ObjectId.isValid(req.params.id);
-            if (isValid) {
-                const drawingData = req.body as DrawingData;
-                const updatedMetadata = new Metadata(drawingData.id, drawingData.title, drawingData.tags, drawingData.width, drawingData.width);
-                this.databaseService
-                    .updateDrawing(updatedMetadata)
-                    .then((updateResult) => {
-                        if (updateResult.ok && updateResult.value) {
-                            this.imageDataService.updateDrawing(drawingData);
-                            res.status(HTTP_STATUS_OK).json('Dessin mis à jour !');
                         } else {
                             res.status(HTTP_STATUS_NOT_FOUND).send('Aucun dessin trouvé !');
                         }

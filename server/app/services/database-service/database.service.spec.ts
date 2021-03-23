@@ -137,33 +137,4 @@ describe('DatabaseService', () => {
             expect(element.tags).to.deep.equal(newDrawings[index].tags);
         });
     });
-
-    it('updateDrawing() should update the drawing in DB', async () => {
-        const spy = chai.spy.on(databaseService.collection, 'findOneAndUpdate');
-        const id = new ObjectId().toString();
-        const updatedDrawing: Metadata = { _id: id, title: 'test1', tags: ['tag1.1', 'tag1.2'], width: 100, height: 100 };
-        const newValues = { $set: { title: updatedDrawing.title, tags: updatedDrawing.tags } };
-        const toUpdate = { _id: new ObjectId(id) };
-        await databaseService.updateDrawing(updatedDrawing);
-        expect(spy).to.have.been.called.with(toUpdate, newValues);
-    });
-
-    it('getAllDrawing() should return all the drawings in DB', async () => {
-        const newDrawing1: Metadata = { _id: undefined, title: 'test1', tags: ['tag1.1', 'tag1.2'], width: 100, height: 100 };
-        const newDrawing2: Metadata = { _id: undefined, title: 'test2', tags: ['tag2.1', 'tag2.2'], width: 100, height: 100 };
-        const newDrawing3: Metadata = { _id: undefined, title: 'test3', tags: ['tag3.1', 'tag3.2'], width: 100, height: 100 };
-        const newDrawings: Metadata[] = [];
-        newDrawings.push(newDrawing1);
-        newDrawings.push(newDrawing2);
-        newDrawings.push(newDrawing3);
-        await databaseService.insertDrawing(newDrawing1);
-        await databaseService.insertDrawing(newDrawing2);
-        await databaseService.insertDrawing(newDrawing3);
-        const drawings = await databaseService.getAllDrawings();
-        expect(drawings.length).to.equal(3);
-        drawings.forEach((element, index) => {
-            expect(element.title).to.equal(newDrawings[index].title);
-            expect(element.tags).to.deep.equal(newDrawings[index].tags);
-        });
-    });
 });

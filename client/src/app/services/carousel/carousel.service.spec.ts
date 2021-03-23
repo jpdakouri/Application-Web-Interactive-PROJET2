@@ -71,11 +71,6 @@ describe('CarouselService', () => {
     });
 
     it('initCarousel should call #getArraySizeOfDrawing and call getOneDrawing from httpService 3 times if sizeOfArray > 1 ', () => {
-        const drawing = new DrawingData('id', 'title', ['tags'], 'url', 100, 100);
-        const array: DrawingData[] = [];
-        array.push(drawing);
-        array.push(drawing);
-        array.push(drawing);
         spyOn(httpServiceMock, 'getLengthOfDrawings').and.returnValue(of(2));
         spyOn(service, 'getArraySizeOfDrawing').and.returnValue(of(2));
         spyOn(httpServiceMock, 'getOneDrawing').and.callThrough();
