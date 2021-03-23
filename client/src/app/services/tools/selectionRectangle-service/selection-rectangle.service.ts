@@ -1,22 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import { SelectionCommand } from '@app/classes/tool-commands/selection-command';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ALPHA_POS, BLUE_POS, GREEN_POS, MAX_BYTE_VALUE, RED_POS } from '@app/services/services-constants';
-// import { Sign } from '@app/services/services-constants';
 import { MousePositionHandlerService } from '@app/services/tools/mousePositionHandler-service/mouse-position-handler.service';
 import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
 import { PIXELS_ARROW_STEPS } from '@app/services/tools/tools-constants';
+import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { Sign } from '@app/utils/enums/rgb-settings';
-import { ToolCommand } from '@app/utils/interfaces/tool-command';
-// import { KeyboardButtons, MouseButtons } from '@app/utils/enums/list-boutton-pressed';
-
-// import { ShapeStyle } from '@app/utils/enums/shape-style';
-
-// constante temporaire simplement pour facilier le merge
 
 @Injectable({
     providedIn: 'root',
@@ -35,6 +30,7 @@ export class SelectionRectangleService extends Tool {
     private leftPressed: boolean;
     private rightPressed: boolean;
     private mousePositionHandler: MousePositionHandlerService;
+    private initialTopLeftCorner: Vec2;
 
     height: number;
     width: number;
@@ -43,7 +39,12 @@ export class SelectionRectangleService extends Tool {
     rectangleService: RectangleService;
     currentColourService: CurrentColourService;
 
-    constructor(drawingService: DrawingService, currentColourService: CurrentColourService, mousePositionHandler: MousePositionHandlerService) {
+    constructor(
+        drawingService: DrawingService,
+        currentColourService: CurrentColourService,
+        mousePositionHandler: MousePositionHandlerService,
+        private undoRedo: UndoRedoService,
+    ) {
         super(drawingService, currentColourService);
         this.currentColourService = currentColourService;
         this.topLeftCorner = { x: 0, y: 0 };
@@ -74,11 +75,18 @@ export class SelectionRectangleService extends Tool {
                     this.selectionActive = false;
                     const imageData = this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
                     createImageBitmap(imageData).then((imgBitmap) => {
-                        this.drawingService.baseCtx.drawImage(imgBitmap, this.topLeftCorner.x + 1, this.topLeftCorner.y + 1);
+                        this.drawingService.baseCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
                     });
-                    // this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
                     this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
                     this.isSelectionDone = false;
+                    const command = new SelectionCommand(
+                        this,
+                        this.initialTopLeftCorner,
+                        { ...this.topLeftCorner },
+                        { x: this.width, y: this.height },
+                        imageData,
+                    );
+                    this.undoRedo.addCommand(command);
                 }
             }
         }
@@ -106,6 +114,7 @@ export class SelectionRectangleService extends Tool {
             if (this.shiftDown) {
                 this.mousePositionHandler.makeSquare(this.mouseDownCoord, this.mouseDownCoord);
             }
+            this.initialTopLeftCorner = { ...this.topLeftCorner };
             this.selectionRectangle(this.drawingService.selectedAreaCtx, this.mouseDownCoord);
         }
         this.mouseDown = this.dragActive = this.mouseMoved = false;
@@ -225,8 +234,8 @@ export class SelectionRectangleService extends Tool {
         const currentCoord = { ...grid };
         this.topLeftCorner.x = currentCoord.x + this.offset.x;
         this.topLeftCorner.y = currentCoord.y + this.offset.y;
-        this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y + 'px';
-        this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x + 'px';
+        this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
+        this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
     }
 
     private updateArrowPosition(): void {
@@ -246,8 +255,8 @@ export class SelectionRectangleService extends Tool {
             this.topLeftCorner.x -= PIXELS_ARROW_STEPS;
             this.firstGrid.x -= PIXELS_ARROW_STEPS;
         }
-        this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y + 'px';
-        this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x + 'px';
+        this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
+        this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
     }
 
     private selectionRectangle(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
@@ -276,8 +285,8 @@ export class SelectionRectangleService extends Tool {
         // Move the result of the selection
         ctx.translate(-this.topLeftCorner.x, -this.topLeftCorner.y);
         // Replace the selection at the position of the mouse
-        ctx.canvas.style.top = this.topLeftCorner.y + 'px';
-        ctx.canvas.style.left = this.topLeftCorner.x + 'px';
+        ctx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
+        ctx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
         // Create a white backround
         this.drawingService.baseCtx.fillStyle = 'white';
         this.drawingService.baseCtx.fillRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
@@ -316,7 +325,13 @@ export class SelectionRectangleService extends Tool {
     private clearPath(): void {
         this.firstGrid = this.mouseDownCoord = { x: 0, y: 0 };
     }
-    executeCommand(command: ToolCommand): void {
-        throw new Error('Method not implemented.');
+
+    executeCommand(command: SelectionCommand): void {
+        this.drawingService.baseCtx.fillStyle = 'white';
+        this.drawingService.baseCtx.fillRect(command.initialTopLeftCorner.x, command.initialTopLeftCorner.y, this.width, this.height);
+        const imageData = command.imageData;
+        createImageBitmap(imageData).then((imgBitmap) => {
+            this.drawingService.baseCtx.drawImage(imgBitmap, command.finalTopLeftCorner.x, command.finalTopLeftCorner.y);
+        });
     }
 }

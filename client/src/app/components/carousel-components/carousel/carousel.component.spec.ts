@@ -1,17 +1,24 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { DrawingCardComponent } from '@app/components/carousel-components/drawing-card/drawing-card.component';
+import { SearchByTagsComponent } from '@app/components/search-by-tags/search-by-tags.component';
 import { CarouselService } from '@app/services/carousel/carousel.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { CarouselServiceMock } from '@app/utils/tests-mocks/carousel-service-mock';
-import { DrawingCardComponentMock } from '@app/utils/tests-mocks/drawing-card-component-mock';
+import { MockDrawingCardComponent } from '@app/utils/tests-mocks/drawing-card-component-mock';
 import { DrawingDataMock } from '@app/utils/tests-mocks/drawing-data-mock';
 import { of } from 'rxjs';
 import { CarouselComponent } from './carousel.component';
@@ -25,18 +32,17 @@ describe('CarouselComponent', () => {
     let component: CarouselComponent;
     let fixture: ComponentFixture<CarouselComponent>;
     let carouselServiceMock: CarouselServiceMock;
-    let drawingCardComponentMock: DrawingCardComponentMock;
+    // let drawingCardComponentMock: DrawingCardComponentMock;
 
     beforeEach(async () => {
         carouselServiceMock = new CarouselServiceMock();
-        drawingCardComponentMock = new DrawingCardComponentMock();
+        // drawingCardComponentMock = new DrawingCardComponentMock();
         await TestBed.configureTestingModule({
-            declarations: [CarouselComponent],
+            declarations: [CarouselComponent, SearchByTagsComponent, MockDrawingCardComponent],
             providers: [
                 { provide: MatDialogRef, useValue: dialogMock },
                 { provide: MAT_DIALOG_DATA, useValue: [] },
                 { provide: CarouselService, useValue: carouselServiceMock },
-                { provide: DrawingCardComponent, useValue: drawingCardComponentMock },
             ],
             imports: [
                 MatDialogModule,
@@ -44,9 +50,22 @@ describe('CarouselComponent', () => {
                 BrowserAnimationsModule,
                 MatOptionModule,
                 MatSelectModule,
+                MatProgressBarModule,
                 MatInputModule,
+                MatChipsModule,
+                MatExpansionModule,
+                MatToolbarModule,
+                MatIconModule,
+                MatCardModule,
                 MatFormFieldModule,
                 ReactiveFormsModule,
+                MatToolbarModule,
+                MatChipsModule,
+                MatExpansionModule,
+                MatSnackBarModule,
+                MatCardModule,
+                ReactiveFormsModule,
+                MatIconModule,
             ],
         }).compileComponents();
     });
@@ -101,12 +120,27 @@ describe('CarouselComponent', () => {
         expect(shiftRightSpy).not.toHaveBeenCalled();
     });
 
-    it('openDrawing should call openDrawing from carouselService', () => {
+    it('openDrawing should call openDrawing from carouselService if drawing is stil avaible', async(() => {
+        const expectedValue = new DrawingDataMock('1');
+        component.drawingArray.push(expectedValue);
+        component.drawingArray.push(expectedValue);
+        spyOn(carouselServiceMock, 'getDrawing').and.returnValue(of(expectedValue));
         const openDrawingStub = spyOn(carouselServiceMock, 'openDrawing').and.stub();
-        fixture.detectChanges();
         component.openDrawing();
+        fixture.detectChanges();
         expect(openDrawingStub).toHaveBeenCalled();
-    });
+    }));
+
+    it('openDrawing should call openDrawing from carouselService if drawing is stil avaible', async(() => {
+        const expectedValue = new DrawingDataMock('1');
+        component.drawingArray.push(expectedValue);
+        component.drawingArray.push(expectedValue);
+        spyOn(carouselServiceMock, 'getDrawing').and.returnValue(of((undefined as unknown) as DrawingDataMock));
+        const openDrawingStub = spyOn(carouselServiceMock, 'openDrawing').and.stub();
+        component.openDrawing();
+        fixture.detectChanges();
+        expect(openDrawingStub).not.toHaveBeenCalled();
+    }));
 
     it('shift left should get the next drawing provided by the service', async(() => {
         const response: DrawingDataMock = new DrawingDataMock('1');
@@ -128,5 +162,11 @@ describe('CarouselComponent', () => {
         spyOn(component, 'initCarousel').and.stub();
         component.toggleTagFlag(true);
         expect(component.initCarousel).toHaveBeenCalled();
+    });
+
+    it('cantOpenDrawing should open the snackbar', () => {
+        spyOn(component.snackBar, 'open').and.stub();
+        component.cantOpenDrawing();
+        expect(component.snackBar.open).toHaveBeenCalled();
     });
 });

@@ -61,7 +61,6 @@ export class EditorComponent implements AfterViewInit {
                 if (event.key === KeyboardButtons.SelectAll) {
                     event.preventDefault();
                     this.selectAll();
-                    console.log('caca');
                 }
             }
 
@@ -104,7 +103,6 @@ export class EditorComponent implements AfterViewInit {
     }
 
     selectAll(): void {
-        console.log('test1');
         this.selectionRectangleService.selectAll();
     }
 }

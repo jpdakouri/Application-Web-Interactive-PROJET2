@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import { SelectionCommand } from '@app/classes/tool-commands/selection-command';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -7,14 +8,9 @@ import { ALPHA_POS, BLUE_POS, GREEN_POS, MAX_BYTE_VALUE, RED_POS } from '@app/se
 import { MousePositionHandlerService } from '@app/services/tools/mousePositionHandler-service/mouse-position-handler.service';
 import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
 import { LINE_DASH, PIXELS_ARROW_STEPS } from '@app/services/tools/tools-constants';
+import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
-import { ToolCommand } from '@app/utils/interfaces/tool-command';
-
-// import { ShapeStyle } from '@app/utils/enums/shape-style';
-
-// constante temporaire simplement pour facilier le merge
-
 @Injectable({
     providedIn: 'root',
 })
@@ -30,17 +26,21 @@ export class SelectionEllipseService extends Tool {
     private leftPressed: boolean;
     private rightPressed: boolean;
     private mousePositionHandler: MousePositionHandlerService;
-
+    private initialTopLeftCorner: Vec2;
     topLeftCorner: Vec2;
     selectionActive: boolean;
     isSelectionDone: boolean;
     height: number;
     width: number;
-
     rectangleService: RectangleService;
     currentColourService: CurrentColourService;
 
-    constructor(drawingService: DrawingService, currentColourService: CurrentColourService, mousePositionHandler: MousePositionHandlerService) {
+    constructor(
+        drawingService: DrawingService,
+        currentColourService: CurrentColourService,
+        mousePositionHandler: MousePositionHandlerService,
+        private undoRedo: UndoRedoService,
+    ) {
         super(drawingService, currentColourService);
         this.currentColourService = currentColourService;
         this.topLeftCorner = { x: 0, y: 0 };
@@ -69,16 +69,20 @@ export class SelectionEllipseService extends Tool {
                     this.dragActive = true;
                 } else {
                     this.selectionActive = false;
-                    this.drawEllipse(this.drawingService.selectedAreaCtx, this.mouseDownCoord);
-                    this.drawingService.selectedAreaCtx.strokeStyle = 'rgba(255, 255, 255, 0)';
-                    this.drawingService.selectedAreaCtx.setLineDash([]);
-                    this.drawingService.selectedAreaCtx.stroke();
                     const imageData = this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
                     createImageBitmap(imageData).then((imgBitmap) => {
                         this.drawingService.baseCtx.drawImage(imgBitmap, this.topLeftCorner.x + 1, this.topLeftCorner.y + 1);
                     });
                     this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
                     this.isSelectionDone = false;
+                    const command = new SelectionCommand(
+                        this,
+                        this.initialTopLeftCorner,
+                        { ...this.topLeftCorner },
+                        { x: this.width, y: this.height },
+                        imageData,
+                    );
+                    this.undoRedo.addCommand(command);
                 }
             }
         }
@@ -102,7 +106,6 @@ export class SelectionEllipseService extends Tool {
             this.end = this.getPositionFromMouse(event);
             this.updateTopLeftCorner();
             this.drawingService.selectedAreaCtx.strokeStyle = 'white';
-            console.log('ca marche');
             if (this.shiftDown) {
                 this.mousePositionHandler.makeCircle(this.mouseDownCoord, this.mouseDownCoord);
             }
@@ -225,11 +228,10 @@ export class SelectionEllipseService extends Tool {
     }
 
     private selectEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+        this.initialTopLeftCorner = { ...this.topLeftCorner };
         this.drawingService.clearCanvas(ctx);
         const imageData = this.drawingService.baseCtx.getImageData(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
         const bottomRightCorner: Vec2 = { x: imageData.width, y: imageData.height };
-
-        // Remplace les pixels vierges du canvas par des pixels blancs
         for (let i = 3; i < imageData.data.length; i += ALPHA_POS) {
             if (imageData.data[i] === 0) {
                 imageData.data[i - RED_POS] = MAX_BYTE_VALUE;
@@ -246,15 +248,11 @@ export class SelectionEllipseService extends Tool {
         });
         this.height = imageData.height;
         this.width = imageData.width;
-        // Resize le selectedAreaCtx
         ctx.canvas.width = bottomRightCorner.x;
         ctx.canvas.height = bottomRightCorner.y;
-        // Deplacer le resultat de la selection topLeftCorner
         ctx.translate(-this.topLeftCorner.x, -this.topLeftCorner.y);
-        // Remettre la selection à la position de la souris
         ctx.canvas.style.top = this.topLeftCorner.y + 'px';
         ctx.canvas.style.left = this.topLeftCorner.x + 'px';
-        // Remplir de blanc
         this.drawingService.baseCtx.fillStyle = 'white';
         this.drawEllipse(this.drawingService.baseCtx, finalGrid);
         this.drawingService.baseCtx.fill();
@@ -314,7 +312,32 @@ export class SelectionEllipseService extends Tool {
         this.firstGrid = this.mouseDownCoord = { x: 0, y: 0 };
     }
 
-    executeCommand(command: ToolCommand): void {
-        throw new Error('Method not implemented.');
+    executeCommand(command: SelectionCommand): void {
+        this.drawingService.selectedAreaCtx.canvas.style.top = command.finalTopLeftCorner.y + 'px';
+        this.drawingService.selectedAreaCtx.canvas.style.left = command.finalTopLeftCorner.x + 'px';
+        this.drawingService.baseCtx.fillStyle = 'white';
+        this.drawingService.baseCtx.beginPath();
+        this.drawingService.baseCtx.strokeStyle = 'rgba(255, 255, 255, 1)';
+        this.drawingService.baseCtx.lineWidth = 1;
+        const startCoord = { ...command.initialTopLeftCorner };
+        const width = command.selectionSize.x;
+        const height = command.selectionSize.y;
+        this.drawingService.baseCtx.ellipse(
+            startCoord.x + width / 2,
+            startCoord.y + height / 2,
+            Math.abs(width / 2),
+            Math.abs(height / 2),
+            0,
+            0,
+            2 * Math.PI,
+            false,
+        );
+        this.drawingService.baseCtx.closePath();
+        this.drawingService.baseCtx.fill();
+        const imageData = command.imageData;
+        createImageBitmap(imageData).then((imgBitmap) => {
+            this.drawingService.baseCtx.drawImage(imgBitmap, command.finalTopLeftCorner.x, command.finalTopLeftCorner.y);
+        });
+        this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
     }
 }

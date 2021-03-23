@@ -52,12 +52,10 @@ export class ToolbarComponent {
     }
 
     selectAll(): void {
-        console.log('emit');
         this.selectedAll.emit(true);
     }
 
     onClickSelectedAll(): void {
-        console.log('test111');
         this.selectAll();
         this.setCurrentTool(this.toolsNames.SelectBox);
     }

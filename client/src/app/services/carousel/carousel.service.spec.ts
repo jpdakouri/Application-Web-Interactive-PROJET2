@@ -42,14 +42,44 @@ describe('CarouselService', () => {
         expect(service).toBeTruthy();
     });
 
-    // it('getArraySizeOfDrawing should call drawing from server', async(() => {}));
-
-    it('getArraySizeOfDrawing should return un observable with the new size', async(() => {
+    it('getArraySizeOfDrawing should return un observable with the new size', () => {
         spyOn(httpServiceMock, 'getLengthOfDrawings').and.returnValue(of(1));
-        service.getArraySizeOfDrawing(false).subscribe((result) => {
-            expect(result).toEqual(1);
+        service.getArraySizeOfDrawing(false);
+        expect(service.sizeOfArray).toEqual(1);
+    });
+
+    it('initCarousel should call #getArraySizeOfDrawing and return of([]) if size of array < 1', () => {
+        spyOn(service, 'getArraySizeOfDrawing').and.returnValue(of(0));
+        service.initCarousel(false).subscribe((result) => {
+            expect(result).toEqual([]);
         });
-    }));
+    });
+    it('initCarousel should call #getArraySizeOfDrawing and call getOneDrawing from httpService one time if sizeOfArray = 1 ', () => {
+        const drawing = new DrawingData('id', 'title', ['tags'], 'url', 100, 100);
+        const array: DrawingData[] = [];
+        array.push(drawing);
+        spyOn(httpServiceMock, 'getOneDrawing').and.callThrough();
+        spyOn(service, 'getArraySizeOfDrawing').and.returnValue(of(1));
+        service.initCarousel(false).subscribe((result) => {
+            expect(result).toEqual(array);
+            expect(httpServiceMock.getOneDrawing).toHaveBeenCalled();
+        });
+    });
+
+    it('initCarousel should call #getArraySizeOfDrawing and call getOneDrawing from httpService 3 times if sizeOfArray > 1 ', () => {
+        const drawing = new DrawingData('id', 'title', ['tags'], 'url', 100, 100);
+        const array: DrawingData[] = [];
+        array.push(drawing);
+        array.push(drawing);
+        array.push(drawing);
+        spyOn(service, 'getArraySizeOfDrawing').and.returnValue(of(2));
+        spyOn(httpServiceMock, 'getOneDrawing').and.callThrough();
+        service.sizeOfArray = 2;
+        service.initCarousel(false).subscribe((result) => {
+            expect(result).toEqual(array);
+            expect(httpServiceMock.getOneDrawing).toHaveBeenCalledTimes(3);
+        });
+    });
 
     it('getDrawing should be called with the right index depending which side we are shifting', async(() => {
         service.courrentIndex = 0;
@@ -71,8 +101,9 @@ describe('CarouselService', () => {
 
     it('deleteDrawing should retrun a promise', async(() => {
         spyOn(httpServiceMock, 'deleteDrawing').and.returnValue(of(''));
-        service.deleteDrawing('id').then((result) => {
-            expect(result).toEqual('Le dessin a été supprimé');
-        });
+        service.deleteDrawing('1');
+        setTimeout(() => {
+            expect(httpServiceMock.deleteDrawing).toHaveBeenCalled();
+        }, 200);
     }));
 });

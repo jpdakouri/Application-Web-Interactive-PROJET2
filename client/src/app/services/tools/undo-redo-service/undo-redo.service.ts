@@ -1,8 +1,5 @@
 import { Injectable } from '@angular/core';
-// import { CanvasOverwriterService } from '@app/services/canvas-overwriter/canvas-overwriter.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { ALPHA_INDEX, DEFAULT_CANVAS_RGBA, EMPTY_SQUARE_RGBA } from '@app/services/services-constants';
-import { RgbSettings } from '@app/utils/enums/rgb-settings';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
 
 @Injectable({
@@ -11,28 +8,20 @@ import { ToolCommand } from '@app/utils/interfaces/tool-command';
 export class UndoRedoService {
     private commands: ToolCommand[];
     private undoneCommands: ToolCommand[];
-    private initialCanvasColors: string[][];
+    private initialCanvasColors: ImageData;
 
     constructor(private drawingService: DrawingService) {
-        // , private overwriter: CanvasOverwriterService) {
         this.commands = [];
         this.undoneCommands = [];
     }
 
     saveInitialState(): void {
-        if (false) {
-            const canvasWidth = this.drawingService.canvas.width;
-            const canvasHeight = this.drawingService.canvas.height;
-            this.initialCanvasColors = [];
-            for (let i = 0; i < canvasHeight; i++) {
-                const currentRow: string[] = [];
-                for (let j = 0; j < canvasWidth; j++) {
-                    if (this.getRgbaAtPosition(j, i) === EMPTY_SQUARE_RGBA) currentRow.push(DEFAULT_CANVAS_RGBA);
-                    else currentRow.push(this.getRgbaAtPosition(j, i));
-                }
-                this.initialCanvasColors.push(currentRow);
-            }
-        }
+        this.initialCanvasColors = this.drawingService.baseCtx.getImageData(
+            0,
+            0,
+            this.drawingService.canvas.width,
+            this.drawingService.canvas.height,
+        );
         this.commands = [];
         this.undoneCommands = [];
     }
@@ -68,25 +57,11 @@ export class UndoRedoService {
 
     private redrawCanvas(): void {
         this.drawingService.clearCanvas(this.drawingService.baseCtx);
-        // this.overwriter.overwriteCanvasState(this.initialCanvasColors);
+        createImageBitmap(this.initialCanvasColors).then((imgBitmap) => {
+            this.drawingService.baseCtx.drawImage(imgBitmap, 0, 0);
+        });
         this.commands.forEach((command) => {
             command.tool.executeCommand(command);
         });
-    }
-
-    private getRgbaAtPosition(x: number, y: number): string {
-        const imageData = this.drawingService.baseCtx.getImageData(x, y, 1, 1).data;
-        const rgbaSeperator = ',';
-        return (
-            RgbSettings.RGBA_START +
-            imageData[0] +
-            rgbaSeperator +
-            imageData[1] +
-            rgbaSeperator +
-            imageData[2] +
-            rgbaSeperator +
-            imageData[ALPHA_INDEX] +
-            RgbSettings.RGB_RGBA_END
-        );
     }
 }

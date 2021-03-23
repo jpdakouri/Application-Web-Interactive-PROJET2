@@ -124,4 +124,28 @@ describe('EraserService', () => {
         service.executeCommand(command);
         expect(TestBed.inject(DrawingService).baseCtx.lineTo).toHaveBeenCalledTimes(2);
     });
+
+    it('onmouseup uses default thickness if thickness is undefined, but uses set thickness if defined', () => {
+        service['mouseDown'] = true;
+        service.lineThickness = undefined;
+        service.onMouseUp(new MouseEvent('mouseup', { clientX: 0, clientY: 0 }));
+        const expectedValue = 5;
+        expect(TestBed.inject(DrawingService).baseCtx.lineWidth).toBe(expectedValue);
+        const definedThickness = 10;
+        service.lineThickness = definedThickness;
+        service.onMouseUp(new MouseEvent('mouseup', { clientX: 0, clientY: 0 }));
+        expect(TestBed.inject(DrawingService).baseCtx.lineWidth).toBe(definedThickness / 2);
+    });
+
+    it('onmouseleave uses default thickness if thickness is undefined, but uses set thickness if defined', () => {
+        service['mouseDown'] = true;
+        service.lineThickness = undefined;
+        service.onMouseLeave(new MouseEvent('mousemove', { clientX: 0, clientY: 0 }));
+        const expectedValue = 5;
+        expect(TestBed.inject(DrawingService).baseCtx.lineWidth).toBe(expectedValue);
+        const definedThickness = 15;
+        service.lineThickness = definedThickness;
+        service.onMouseLeave(new MouseEvent('mousemove', { clientX: 0, clientY: 0 }));
+        expect(TestBed.inject(DrawingService).baseCtx.lineWidth).toBe(definedThickness);
+    });
 });

@@ -46,8 +46,14 @@ export class ToolAttributeComponent {
         );
     }
 
-    showEllipseTitle(): boolean {
-        return this.toolManagerService.isCurrentTool(ToolsNames.Ellipse);
+    shapeStyleTitle(): string | void {
+        if (this.toolManagerService.isCurrentTool(ToolsNames.Ellipse)) {
+            return "'ellipse";
+        } else if (this.toolManagerService.isCurrentTool(ToolsNames.Rectangle)) {
+            return 'e rectangle';
+        } else if (this.toolManagerService.isCurrentTool(ToolsNames.Polygon)) {
+            return 'e polygone';
+        }
     }
 
     showLineAttributes(): boolean {
