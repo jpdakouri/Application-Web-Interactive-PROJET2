@@ -220,9 +220,9 @@ describe('EditorComponent', () => {
         expect(component['dialogControllerService'].openDialog).toHaveBeenCalledWith('carousel');
     });
 
-    // it('selectAll from selectionEllipseService should be called with carousel when selectAll is called', () => {
-    //     spyOn(component['selectionRectangleService'], 'selectAll').and.stub();
-    //     component.selectAll();
-    //     expect(component['selectionRectangleService'].selectAll).toHaveBeenCalled();
-    // });
+    it('selectAll from selectionEllipseService should be called with carousel when selectAll is called', () => {
+        spyOn(component['selectionRectangleService'], 'selectAll').and.stub();
+        component.selectAll();
+        expect(component['selectionRectangleService'].selectAll).toHaveBeenCalled();
+    });
 });
