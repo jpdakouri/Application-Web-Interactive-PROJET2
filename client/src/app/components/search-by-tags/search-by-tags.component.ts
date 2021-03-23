@@ -33,8 +33,8 @@ export class SearchByTagsComponent {
         }
     }
 
-    remove(labelToRemove: Tag): void {
-        const indexToRemove = this.tags.indexOf(labelToRemove);
+    remove(tagToRemove: Tag): void {
+        const indexToRemove = this.tags.indexOf(tagToRemove);
         if (indexToRemove >= 0) this.tags.splice(indexToRemove, 1);
     }
 
@@ -42,17 +42,17 @@ export class SearchByTagsComponent {
         return this.tagName.invalid ? 'Peut seulement être composé de chiffres, lettres et espaces' : '';
     }
 
-    toStringArray(labels: Tag[]): string[] {
+    toStringArray(tags: Tag[]): string[] {
         const tempArray = new Array<string>();
         let i: number;
-        for (i = 0; i < labels.length; i++) tempArray.push(labels[i].name);
+        for (i = 0; i < tags.length; i++) tempArray.push(tags[i].name);
         return tempArray;
     }
 
     sendTags(): void {
         let tags = this.toStringArray(this.tags);
         tags = this.tags != undefined ? tags : ['none'];
-        this.httpService.sendTags(tags).subscribe((result) => {
+        this.httpService.sendTags(tags).subscribe(() => {
             this.tagFlag.emit(true);
         });
     }

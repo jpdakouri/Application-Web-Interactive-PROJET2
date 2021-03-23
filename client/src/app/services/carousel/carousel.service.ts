@@ -4,10 +4,8 @@ import { CarouselComponent } from '@app/components/carousel-components/carousel/
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HttpService } from '@app/services/http/http.service';
 import { DrawingData } from '@common/communication/drawing-data';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
-const LAST_INDEX = -1;
-const WAIT_FOR_CONFIRMATION = 200;
 @Injectable({
     providedIn: 'root',
 })
@@ -19,14 +17,15 @@ export class CarouselService {
 
     constructor(private httpService: HttpService, public drawingService: DrawingService) {}
 
+    // tslint:disable:no-magic-numbers
     initCarousel(tagFlag: boolean): Observable<DrawingData[]> {
         this.drawingsToShow = [];
-        const subject = new BehaviorSubject<DrawingData[]>(this.drawingsToShow);
-        this.courrentIndex = 0;
+        const subject = new Subject<DrawingData[]>();
 
         this.getArraySizeOfDrawing(tagFlag).subscribe((size) => {
+            subject.next(this.drawingsToShow);
             if (size > 0) {
-                this.httpService.getOneDrawing(LAST_INDEX, tagFlag).subscribe({
+                this.httpService.getOneDrawing(-1, tagFlag).subscribe({
                     next: (resultFirst) => {
                         this.drawingsToShow.push(resultFirst);
                         if (this.sizeOfArray > 1) {
@@ -54,7 +53,7 @@ export class CarouselService {
     }
 
     getArraySizeOfDrawing(tagFlag: boolean): Observable<number> {
-        const subject = new BehaviorSubject<number>(0);
+        const subject = new Subject<number>();
         this.httpService.getLengthOfDrawings(tagFlag).subscribe({
             next: (results) => {
                 this.sizeOfArray = results as number;
@@ -87,7 +86,7 @@ export class CarouselService {
     }
 
     async deleteDrawing(id: string): Promise<string> {
-        return new Promise<string>((resolve) => {
+        const promise = new Promise<string>((resolve) => {
             setTimeout(() => {
                 this.httpService.deleteDrawing(id).subscribe({
                     next: (result) => {
@@ -96,7 +95,8 @@ export class CarouselService {
                         }
                     },
                 });
-            }, WAIT_FOR_CONFIRMATION);
+            }, 200);
         });
+        return promise;
     }
 }
