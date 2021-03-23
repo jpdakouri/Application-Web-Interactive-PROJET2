@@ -156,11 +156,22 @@ describe('EditorComponent', () => {
         expect(drawingServiceSpy.createNewDrawing).not.toHaveBeenCalled();
     });
 
-    it(' #onKeyDown should call create new drawing if input is valid ', () => {
+    it(' #onKeyDown should call create new drawing if input is valid, and if successful, saves initial state ', () => {
         const goodInput = { key: KeyboardButtons.NewDrawing, ctrlKey: true } as KeyboardEvent;
-        const creatNewDrawing = spyOn(component, 'onCreateNewDrawing').and.stub();
+        const creatNewDrawing = spyOn(component, 'onCreateNewDrawing').and.stub().and.returnValue(true);
+        spyOn(TestBed.inject(UndoRedoService), 'saveInitialState');
         component.onKeyDown(goodInput);
         expect(creatNewDrawing).toHaveBeenCalled();
+        expect(TestBed.inject(UndoRedoService).saveInitialState).toHaveBeenCalled();
+    });
+
+    it(' #onKeyDown should call create new drawing if input is valid, and if unsuccessful, does not save initial state ', () => {
+        const goodInput = { key: KeyboardButtons.NewDrawing, ctrlKey: true } as KeyboardEvent;
+        const creatNewDrawing = spyOn(component, 'onCreateNewDrawing').and.stub().and.returnValue(false);
+        spyOn(TestBed.inject(UndoRedoService), 'saveInitialState');
+        component.onKeyDown(goodInput);
+        expect(creatNewDrawing).toHaveBeenCalled();
+        expect(TestBed.inject(UndoRedoService).saveInitialState).not.toHaveBeenCalled();
     });
 
     it(' #onKeyDown should call openSaveDrawingModal if input is valid ', () => {

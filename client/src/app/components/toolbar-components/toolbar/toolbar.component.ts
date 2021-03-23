@@ -36,7 +36,7 @@ export class ToolbarComponent {
     }
 
     onCreateNewDrawing(): void {
-        this.drawingService.createNewDrawing();
+        if (this.drawingService.createNewDrawing()) this.undoRedo.saveInitialState();
     }
 
     onExport(): void {

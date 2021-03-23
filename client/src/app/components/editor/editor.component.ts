@@ -51,7 +51,7 @@ export class EditorComponent implements AfterViewInit {
     onKeyDown(event: KeyboardEvent): void {
         if (this.dialogControllerService.noDialogOpened) {
             if (event.ctrlKey) {
-                if (event.key === KeyboardButtons.NewDrawing) this.onCreateNewDrawing();
+                if (event.key === KeyboardButtons.NewDrawing) if (this.onCreateNewDrawing()) this.undoRedo.saveInitialState();
                 if (event.key === KeyboardButtons.Carousel) this.openCarouselModal();
                 if (event.key === KeyboardButtons.Export) {
                     event.preventDefault();
@@ -91,8 +91,8 @@ export class EditorComponent implements AfterViewInit {
         this.editor.nativeElement.style.minWidth = this.editorMinWidth + 'px';
     }
 
-    onCreateNewDrawing(): void {
-        this.drawingService.createNewDrawing();
+    onCreateNewDrawing(): boolean {
+        return this.drawingService.createNewDrawing();
     }
 
     openSaveDrawingModal(): void {

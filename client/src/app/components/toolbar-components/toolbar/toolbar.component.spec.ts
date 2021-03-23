@@ -4,6 +4,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
+import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 import { ToolbarComponent } from './toolbar.component';
 
@@ -53,9 +54,17 @@ describe('ToolbarComponent', () => {
         expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(6)).toEqual([ToolsNames.SelectEllipse]);
     });
 
-    it('should create new drawing when new drawing button is clicked', () => {
+    it('should create new drawing when new drawing button is clicked with true if successful', () => {
+        spyOn(TestBed.inject(UndoRedoService), 'saveInitialState');
         component.onCreateNewDrawing();
-        expect(drawingServiceSpy.createNewDrawing).toHaveBeenCalled();
+        expect(drawingServiceSpy.createNewDrawing.and.returnValue(true)).toHaveBeenCalled();
+    });
+
+    it('should create new drawing when new drawing button is clicked, and if unsuccessful, does not save initial state for undo-redo', () => {
+        spyOn(TestBed.inject(UndoRedoService), 'saveInitialState');
+        component.onCreateNewDrawing();
+        expect(drawingServiceSpy.createNewDrawing.and.returnValue(false)).toHaveBeenCalled();
+        expect(TestBed.inject(UndoRedoService).saveInitialState).not.toHaveBeenCalled();
     });
 
     it('carouselClicked should be emitted when openCarousel is called', () => {

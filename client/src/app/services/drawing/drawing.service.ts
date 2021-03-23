@@ -56,15 +56,17 @@ export class DrawingService {
         this.saveCanvas();
     }
 
-    createNewDrawing(): void {
+    createNewDrawing(): boolean {
         if (sessionStorage.getItem('canvasBuffer') && !this.isCanvasBlank()) {
             if (confirm("Le canvas n'est pas vide! Voulez-vous procéder tout de même?")) {
                 this.clearCanvas(this.previewCtx);
                 this.clearCanvas(this.baseCtx);
                 this.emitCreateNewDrawing();
                 sessionStorage.clear();
+                return true;
             }
         }
+        return false;
     }
 
     emitCreateNewDrawing(): void {
