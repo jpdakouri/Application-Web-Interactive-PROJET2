@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
+import { SelectionCommand } from '@app/classes/tool-commands/selection-command';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MousePositionHandlerService } from '@app/services/tools/mousePositionHandler-service/mouse-position-handler.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
@@ -323,16 +324,6 @@ describe('SelectionEllipseService', () => {
         expect(service.topLeftCorner.x).toEqual(service['end'].y);
     });
 
-    // à revoir, le test le rentre pas dnas le if de shiftDown dans le mouseUp
-    xit('makeCircle() should be called when the Shift key is being pressed during a mouseUp event', () => {
-        service['shiftDown'] = service.mouseDown = service.selectionActive = service.mouseMoved = true;
-        service['dragActive'] = false;
-        const makeCircleSpy = spyOn<any>(service, 'makeCircle').and.callThrough();
-        service.onMouseDown(mouseEvent);
-        service.onMouseUp(mouseEvent);
-        expect(makeCircleSpy).toHaveBeenCalled();
-    });
-
     it(' isClickIn() should return false when coordinates on MouseDown are on the left side of the selected region', () => {
         service.topLeftCorner = { x: 200, y: 200 };
         service.mouseDownCoord = { x: 100, y: 100 };
@@ -345,5 +336,13 @@ describe('SelectionEllipseService', () => {
         service.mouseDownCoord = { x: 300, y: 100 };
         const grid = service.mouseDownCoord;
         expect(service['isClickIn'](grid)).toEqual(false);
+    });
+
+    it('executeCommand calls the ellipse function for clipping', () => {
+        spyOn(TestBed.inject(DrawingService).baseCtx, 'ellipse');
+        const data = new ImageData(1, 1);
+        const command = new SelectionCommand(service, { x: 0, y: 0 }, { x: 1, y: 1 }, { x: 2, y: 2 }, data);
+        service.executeCommand(command);
+        expect(TestBed.inject(DrawingService).baseCtx.ellipse).toHaveBeenCalledWith(1, 1, 1, 1, 0, 0, 2 * Math.PI, false);
     });
 });

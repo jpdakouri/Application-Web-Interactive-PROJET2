@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
+import { SelectionCommand } from '@app/classes/tool-commands/selection-command';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MousePositionHandlerService } from '@app/services/tools/mousePositionHandler-service/mouse-position-handler.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
@@ -339,4 +340,20 @@ describe('SelectionRectangleService', () => {
         const grid = service.mouseDownCoord;
         expect(service['isClickIn'](grid)).toEqual(false);
     });
+
+    it(' selectAll() should be called properly', () => {
+        service.topLeftCorner = { x: 200, y: 200 };
+        service.mouseDownCoord = { x: 300, y: 100 };
+        service.selectAll();
+        expect(service['selectionActive']).toBe(true);
+    });
+
+    it('executeCommand calls the rectangle function for clipping', () => {
+        spyOn(TestBed.inject(DrawingService).baseCtx, 'fillRect');
+        const data = new ImageData(1, 1);
+        const command = new SelectionCommand(service, { x: 0, y: 0 }, { x: 1, y: 1 }, { x: 2, y: 2 }, data);
+        service.executeCommand(command);
+        expect(TestBed.inject(DrawingService).baseCtx.fillRect).toHaveBeenCalled();
+    });
+    // tslint:disable-next-line:max-file-line-count
 });
