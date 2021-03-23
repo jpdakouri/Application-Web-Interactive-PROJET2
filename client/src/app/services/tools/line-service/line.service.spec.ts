@@ -311,4 +311,50 @@ describe('LineService', () => {
         service.executeCommand(command);
         expect(TestBed.inject(DrawingService).baseCtx.lineTo).toHaveBeenCalledTimes(2);
     });
+    it('onmouseup uses default dot radius and thickness if undefined', () => {
+        service.dotRadius = undefined;
+        service.lineThickness = undefined;
+        service.showDots = true;
+        spyOn(TestBed.inject(DrawingService).previewCtx, 'arc');
+        service.onMouseDown(mouseEvent);
+        service.onMouseUp(mouseEvent);
+        service.onMouseDown(mouseEvent);
+        service.onMouseUp(mouseEvent);
+        const expectedCoordinate = 100;
+        const expectedRadius = 5;
+
+        expect(TestBed.inject(DrawingService).previewCtx.arc).toHaveBeenCalledWith(
+            expectedCoordinate,
+            expectedCoordinate,
+            expectedRadius,
+            0,
+            2 * Math.PI,
+            true,
+        );
+        const expectedWidth = 1;
+        expect(TestBed.inject(DrawingService).previewCtx.lineWidth).toBe(expectedWidth);
+    });
+
+    it('onmouseleave uses default dot radius and thickness if undefined', () => {
+        service.dotRadius = undefined;
+        service.lineThickness = undefined;
+        service.showDots = true;
+        spyOn(TestBed.inject(DrawingService).previewCtx, 'arc');
+        service.onMouseDown(mouseEvent);
+        service.onMouseUp(mouseEvent);
+        service.onMouseLeave(mouseEvent);
+        const expectedCoordinate = 100;
+        const expectedRadius = 5;
+
+        expect(TestBed.inject(DrawingService).previewCtx.arc).toHaveBeenCalledWith(
+            expectedCoordinate,
+            expectedCoordinate,
+            expectedRadius,
+            0,
+            2 * Math.PI,
+            true,
+        );
+        const expectedWidth = 1;
+        expect(TestBed.inject(DrawingService).previewCtx.lineWidth).toBe(expectedWidth);
+    });
 });
