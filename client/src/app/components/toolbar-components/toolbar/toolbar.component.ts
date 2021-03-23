@@ -54,4 +54,9 @@ export class ToolbarComponent {
     selectAll(): void {
         this.selectedAll.emit(true);
     }
+
+    onClickSelectedAll(): void {
+        this.selectAll();
+        this.setCurrentTool(this.toolsNames.SelectBox);
+    }
 }

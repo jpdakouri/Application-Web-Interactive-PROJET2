@@ -105,12 +105,14 @@ export class SelectionEllipseService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.end = this.getPositionFromMouse(event);
             this.updateTopLeftCorner();
+            this.drawingService.selectedAreaCtx.strokeStyle = 'white';
             if (this.shiftDown) {
                 this.mousePositionHandler.makeCircle(this.mouseDownCoord, this.mouseDownCoord);
             }
             this.selectEllipse(this.drawingService.selectedAreaCtx, this.mouseDownCoord);
             this.drawEllipse(this.drawingService.selectedAreaCtx, this.mouseDownCoord);
             this.drawingService.selectedAreaCtx.stroke();
+            this.drawingService.selectedAreaCtx.setLineDash([]);
             this.drawingService.previewCtx.setLineDash([]);
             this.drawingService.baseCtx.setLineDash([]);
         }
@@ -214,6 +216,7 @@ export class SelectionEllipseService extends Tool {
         const startCoord = { ...this.firstGrid };
         const width = finalGrid.x;
         const height = finalGrid.y;
+
         ctx.ellipse(startCoord.x + width / 2, startCoord.y + height / 2, Math.abs(width / 2), Math.abs(height / 2), 0, 0, 2 * Math.PI, false);
         ctx.closePath();
     }
@@ -221,7 +224,7 @@ export class SelectionEllipseService extends Tool {
     private clipArea(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.save();
         this.drawEllipse(ctx, finalGrid);
-        ctx.clip('nonzero');
+        ctx.clip('evenodd');
     }
 
     private selectEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
@@ -238,6 +241,7 @@ export class SelectionEllipseService extends Tool {
             }
         }
         createImageBitmap(imageData).then((imgBitmap) => {
+            ctx.setLineDash([]);
             this.clipArea(ctx, finalGrid);
             this.drawingService.selectedAreaCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
             ctx.restore();
@@ -302,12 +306,6 @@ export class SelectionEllipseService extends Tool {
         }
         this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y + 'px';
         this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x + 'px';
-    }
-
-    selectAll(): void {
-        this.clearPath();
-        const grid: Vec2 = { x: this.drawingService.baseCtx.canvas.width, y: this.drawingService.baseCtx.canvas.height };
-        this.selectEllipse(this.drawingService.selectedAreaCtx, grid);
     }
 
     private clearPath(): void {

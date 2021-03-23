@@ -3,7 +3,7 @@ import { ToolbarComponent } from '@app/components/toolbar-components/toolbar/too
 import { DialogControllerService } from '@app/services/dialog-controller/dialog-controller.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
-import { SelectionEllipseService } from '@app/services/tools/selectionEllipse-service/selection-ellipse.service';
+import { SelectionRectangleService } from '@app/services/tools/selectionRectangle-service/selection-rectangle.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 
@@ -24,7 +24,7 @@ export class EditorComponent implements AfterViewInit {
         private toolManagerService: ToolManagerService,
         private drawingService: DrawingService,
         private dialogControllerService: DialogControllerService,
-        private selectionEllipseService: SelectionEllipseService,
+        private selectionRectangleService: SelectionRectangleService,
     ) {
         this.toolFinder = new Map<KeyboardButtons, ToolsNames>();
         this.toolFinder
@@ -103,6 +103,6 @@ export class EditorComponent implements AfterViewInit {
     }
 
     selectAll(): void {
-        this.selectionEllipseService.selectAll();
+        this.selectionRectangleService.selectAll();
     }
 }

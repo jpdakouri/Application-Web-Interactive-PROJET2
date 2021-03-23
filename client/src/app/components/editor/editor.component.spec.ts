@@ -225,8 +225,8 @@ describe('EditorComponent', () => {
     });
 
     it('selectAll from selectionEllipseService should be called with carousel when selectAll is called', () => {
-        spyOn(component['selectionEllipseService'], 'selectAll').and.stub();
+        spyOn(component['selectionRectangleService'], 'selectAll').and.stub();
         component.selectAll();
-        expect(component['selectionEllipseService'].selectAll).toHaveBeenCalled();
+        expect(component['selectionRectangleService'].selectAll).toHaveBeenCalled();
     });
 });
