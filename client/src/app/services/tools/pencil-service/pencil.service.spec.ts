@@ -159,4 +159,30 @@ describe('PencilService', () => {
         service.executeCommand(command);
         expect(TestBed.inject(DrawingService).baseCtx.arc).toHaveBeenCalledTimes(1);
     });
+
+    it('onMouseUp  uses defined thickness if defined', () => {
+        const definedValue = 10;
+        service.lineThickness = definedValue;
+        service.mouseDown = true;
+        spyOn(TestBed.inject(DrawingService).baseCtx, 'lineTo');
+        service.onMouseUp(mouseEvent);
+        expect(TestBed.inject(DrawingService).baseCtx.lineWidth).toBe(definedValue);
+    });
+    it('onMouseMove  uses default thickness if undefined', () => {
+        const definedValue = 1;
+        service.lineThickness = undefined;
+        service.mouseDown = true;
+        spyOn(TestBed.inject(DrawingService).baseCtx, 'lineTo');
+        service.onMouseMove(mouseEvent);
+        expect(TestBed.inject(DrawingService).baseCtx.lineWidth).toBe(definedValue);
+    });
+
+    it('onMouseleave uses default thickness if undefined', () => {
+        const definedValue = 1;
+        service.lineThickness = undefined;
+        service.mouseDown = true;
+        spyOn(TestBed.inject(DrawingService).baseCtx, 'lineTo');
+        service.onMouseLeave(mouseEvent);
+        expect(TestBed.inject(DrawingService).baseCtx.lineWidth).toBe(definedValue);
+    });
 });
