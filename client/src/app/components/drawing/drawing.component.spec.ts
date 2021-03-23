@@ -1,7 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatTooltipModule } from '@angular/material/tooltip';
-// import { Vec2 } from '@app/classes/vec2';
 import { CanvasResizerService, Status } from '@app/services/canvas-resizer/canvas-resizer.service';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -30,7 +29,7 @@ describe('DrawingComponent', () => {
         drawingStub = new DrawingService();
         toolManagerServiceMock = new ToolManagerServiceMock();
         mouseStub = new MouseHandlerService();
-        canvasResizerStub = new CanvasResizerService(drawingStub, mouseStub);
+        canvasResizerStub = new CanvasResizerService(mouseStub);
 
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],

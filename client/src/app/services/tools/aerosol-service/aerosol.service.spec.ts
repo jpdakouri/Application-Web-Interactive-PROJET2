@@ -45,36 +45,25 @@ describe('AerosolService', () => {
         expect(service).toBeTruthy();
     });
 
-    it('mouseDown should set mouseDown and isSpraying properties to true on left click', () => {
+    it('#onMouseDown should set mouseDown property to true on mouse left click', () => {
         service.onMouseDown(mouseEvent);
-        expect(service['isSpraying']).toBeTrue();
         expect(service.mouseDown).toBeTrue();
     });
 
-    it('mouseUp should set isSpraying property to false', () => {
-        service.onMouseUp(mouseEvent);
-        expect(service['isSpraying']).toBeFalse();
+    it('#onMouseDown should not set mouseDown property to true if mouse click is not left click', () => {
+        const mockMouseEvent = { button: MouseButtons.Right } as MouseEvent;
+        service.onMouseDown(mockMouseEvent);
+        expect(service.mouseDown).toBeFalse();
     });
 
-    it('should clear previewContext on mouse down', () => {
+    it('should clear previewContext on mouse down if mouse click is left click', () => {
         service.onMouseDown(mouseEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
     });
 
-    it('should spray on mouse down if mouse is down and isSpraying property is true', () => {
-        service['mouseDown'] = true;
-        service['isSpraying'] = true;
+    it('should spray on mouse down if mouseDown property is true', () => {
         // tslint:disable:no-any
-        const spraySpy = spyOn<any>(service, 'spray').and.callThrough();
-
-        service.onMouseDown(mouseEvent);
-
-        expect(spraySpy).toHaveBeenCalled();
-    });
-
-    it('should not spray on mouse down if mouse is down and isSpraying property is false', () => {
         service['mouseDown'] = true;
-        service['isSpraying'] = false;
         const spraySpy = spyOn<any>(service, 'spray').and.callThrough();
 
         service.onMouseDown(mouseEvent);
@@ -82,14 +71,23 @@ describe('AerosolService', () => {
         expect(spraySpy).toHaveBeenCalled();
     });
 
-    it('should clearInterval on mouse down and on mouse leave', () => {
+    it('#onMouseDown should not spray if mouse property is false', () => {
+        const mockMouseEvent = { button: MouseButtons.Right } as MouseEvent;
+        const spraySpy = spyOn<any>(service, 'spray').and.callThrough();
+
+        service.onMouseDown(mockMouseEvent);
+
+        expect(service['mouseDown']).toBeFalse();
+        expect(spraySpy).not.toHaveBeenCalled();
+    });
+
+    it('should clear spray intervalID on mouse down if mouse property is true', () => {
         service['mouseDown'] = true;
         const clearIntervalSpy = spyOn<any>(window, 'clearInterval').and.callThrough();
 
         service.onMouseUp(mouseEvent);
-        service.onMouseLeave(mouseEvent);
 
-        expect(clearIntervalSpy).toHaveBeenCalledTimes(2);
+        expect(clearIntervalSpy).toHaveBeenCalled();
     });
 
     it('#onMouseMove should set mouseCurrentPosition to correct position', () => {
@@ -100,14 +98,45 @@ describe('AerosolService', () => {
         expect(service['mouseCurrentPosition']).toEqual(expectedMouseCurrentPosition);
     });
 
-    it('#onMouseEnter should set isSpraying property to true and call #spray if mouse is already down', () => {
-        service['mouseDown'] = true;
+    it('should clearInterval on mouse leave', () => {
+        spyOn<any>(window, 'clearInterval').and.stub();
+        service.onMouseLeave(mouseEvent);
+        expect(window.clearInterval).toHaveBeenCalled();
+    });
+
+    it('#onMouseEnter should call #spray if mouse is already down', () => {
+        service['mouseDown'] = false;
         const spraySpy = spyOn<any>(service, 'spray').and.callThrough();
 
         service.onMouseEnter(mouseEvent);
+        expect(spraySpy).not.toHaveBeenCalled();
 
-        expect(service['isSpraying']).toBeTrue();
+        service['mouseDown'] = true;
+        service.onMouseEnter(mouseEvent);
+
         expect(spraySpy).toHaveBeenCalled();
+    });
+
+    it('#onMouseUp should call #clearInterval if mouse down property is false', () => {
+        service['mouseDown'] = false;
+        const spraySpy = spyOn<any>(service, 'spray').and.callThrough();
+
+        service.onMouseUp(mouseEvent);
+
+        expect(spraySpy).not.toHaveBeenCalled();
+    });
+
+    it('#spray should generate regulary spray particles', () => {
+        const clock = jasmine.clock();
+        const generateSprayParticlesSpy = spyOn<any>(service, 'generateSprayParticles').and.callThrough();
+        const millis = 100;
+
+        clock.install();
+        service['spray']();
+
+        clock.tick(millis);
+        expect(generateSprayParticlesSpy).toHaveBeenCalledTimes(2);
+        clock.uninstall();
     });
 
     it('#getRandomOffsetInRadius should be able to get a random offset in radius', () => {
@@ -153,9 +182,11 @@ describe('AerosolService', () => {
             ],
             1,
         );
-        spyOn(TestBed.inject(DrawingService).baseCtx, 'fillRect');
+        spyOn(drawServiceSpy.baseCtx, 'fillRect').and.stub();
+
         service.executeCommand(command);
-        expect(TestBed.inject(DrawingService).baseCtx.fillRect).toHaveBeenCalledWith(0, 0, 1, 1);
-        expect(TestBed.inject(DrawingService).baseCtx.fillRect).toHaveBeenCalledWith(2, 2, 1, 1);
+
+        expect(drawServiceSpy.baseCtx.fillRect).toHaveBeenCalledWith(0, 0, 1, 1);
+        expect(drawServiceSpy.baseCtx.fillRect).toHaveBeenCalledWith(2, 2, 1, 1);
     });
 });
