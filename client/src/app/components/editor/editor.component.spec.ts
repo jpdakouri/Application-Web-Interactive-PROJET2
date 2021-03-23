@@ -26,8 +26,10 @@ import { ExportDrawingComponent } from '@app/components/export-drawing/export-dr
 import { PipettePreviewComponent } from '@app/components/pipette-preview/pipette-preview.component';
 import { ToolAttributeComponent } from '@app/components/toolbar-components/tool-attribute/tool-attribute.component';
 import { ToolbarComponent } from '@app/components/toolbar-components/toolbar/toolbar.component';
+import { DialogControllerService } from '@app/services/dialog-controller/dialog-controller.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
+import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { ToolManagerServiceMock } from '@app/utils/tests-mocks/tool-manager-mock';
 import { EditorComponent } from './editor.component';
@@ -228,5 +230,19 @@ describe('EditorComponent', () => {
         spyOn(component['selectionRectangleService'], 'selectAll').and.stub();
         component.selectAll();
         expect(component['selectionRectangleService'].selectAll).toHaveBeenCalled();
+    });
+    it('should undo if ctrl + z is pressed', () => {
+        TestBed.inject(DialogControllerService).noDialogOpened = true;
+        const event = new KeyboardEvent('keydown', { key: 'z', ctrlKey: true });
+        spyOn(TestBed.inject(UndoRedoService), 'undo');
+        component.onKeyDown(event);
+        expect(TestBed.inject(UndoRedoService).undo).toHaveBeenCalled();
+    });
+    it('should redo if ctrl + shift + z is pressed', () => {
+        TestBed.inject(DialogControllerService).noDialogOpened = true;
+        const event = new KeyboardEvent('keydown', { key: 'Z', ctrlKey: true });
+        spyOn(TestBed.inject(UndoRedoService), 'redo');
+        component.onKeyDown(event);
+        expect(TestBed.inject(UndoRedoService).redo).toHaveBeenCalled();
     });
 });
