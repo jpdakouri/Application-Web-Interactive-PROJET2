@@ -50,7 +50,7 @@ describe('CarouselService', () => {
 
     it('initCarousel should call #getArraySizeOfDrawing and return of([]) if size of array < 1', () => {
         const drawing = new DrawingData('id', 'title', ['tags'], 'url', 100, 100);
-=        service.sizeOfArray = 0;
+        service.sizeOfArray = 0;
         spyOn(service, 'getArraySizeOfDrawing').and.returnValue(of(0));
         spyOn(httpServiceMock, 'getLengthOfDrawings').and.returnValue(of(0));
         spyOn(httpServiceMock, 'getOneDrawing').and.returnValue(of(drawing));
