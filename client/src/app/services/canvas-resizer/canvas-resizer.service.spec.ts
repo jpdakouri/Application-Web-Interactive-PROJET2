@@ -2,24 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { Vec2 } from '@app/classes/vec2';
 import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.service';
 import { Status } from '@app/utils/enums/canvas-resizer-status';
+import { MockMouseService } from '@app/utils/tests-mocks/mock-mouse-service';
 import { CanvasResizerService } from './canvas-resizer.service';
-
-class MockMouseService extends MouseHandlerService {
-    deltaX: number = 400;
-    deltaY: number = 300;
-
-    startCoordinate: Vec2 = { x: 400, y: 200 };
-    currentCoordinate: Vec2 = { x: 600, y: 450 };
-    endCoordinate: Vec2 = { x: 500, y: 400 };
-
-    calculateDeltaX = (): number => this.deltaX;
-    calculateDeltaY = (): number => this.deltaY;
-
-    // tslint:disable:no-empty
-    onMouseDown = (): void => {};
-    onMouseUp = (): void => {};
-    onMouseMove = (): void => {};
-}
 
 // tslint:disable:no-any
 describe('CanvasResizerService', () => {
@@ -28,10 +12,9 @@ describe('CanvasResizerService', () => {
     let mouseEvent: MouseEvent;
 
     beforeAll(() => {
-        // tslint:disable-next-line:typedef
+        // tslint:disable:typedef
         // @ts-ignore
         matchMedia(window);
-        // tslint:disable-next-line:typedef
         window.resizeTo = function resizeTo(width, height) {
             // tslint:disable:no-invalid-this
             Object.assign(this, {
@@ -199,7 +182,7 @@ describe('CanvasResizerService', () => {
         expect(calculatedCanvasSize.y).toBe(expectedCanvasSize.y);
     });
 
-    it('canvasSize should be 250x250 pixels when working zone size is lower than 250x250 pixels ', () => {
+    it('canvasSize should be 250x250 pixels when working zone size is lower than 500x500 pixels ', () => {
         const windowWidth = 500;
         const windowHeight = 400;
         const expectedCanvasSize = { x: 250, y: 250 };
