@@ -46,7 +46,7 @@ describe('PipettePreviewComponent', () => {
         expect(ctx.fillRect).not.toHaveBeenCalled();
     });
 
-    it('onMouseMove gets the preview colors and colors the canvas 225 times for each pixel', () => {
+    it('onMouseMove gets the preview colors, colors the canvas 225 times for each pixel and draws a square around the central pixel', () => {
         const service = TestBed.inject(PipetteService);
         spyOn(service, 'getIsCursorOnCanvas').and.returnValue(true);
         const previewColors: string[][] = [];
@@ -59,11 +59,13 @@ describe('PipettePreviewComponent', () => {
         }
         spyOn(service, 'getPreviewColors').and.returnValue(previewColors);
         spyOn(drawingService.baseCtx, 'fillRect');
+        spyOn(drawingService.baseCtx, 'strokeRect');
         const expectedCallTimes = PREVIEW_SIZE * PREVIEW_SIZE;
         component.pipettePreviewCanvas = new ElementRef<HTMLCanvasElement>(canvasTestHelper.canvas);
         component.onMouseMove();
         expect(service.getPreviewColors).toHaveBeenCalled();
         expect(drawingService.baseCtx.fillRect).toHaveBeenCalledTimes(expectedCallTimes);
+        expect(drawingService.baseCtx.strokeRect).toHaveBeenCalledTimes(1);
     });
 
     it('onMouseMove doesnt draw the preview if the canvas or its context is undefined or null', () => {

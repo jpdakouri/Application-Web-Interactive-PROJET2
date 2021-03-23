@@ -2,6 +2,7 @@ import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import { PREVIEW_NUMBER_OF_SQUARES_PER_SIDE } from '@app/components/components-constants';
 import { PipetteService } from '@app/services/tools/pipette-service/pipette.service';
+import { OUT_OF_BOUND_COLOR_RGBA, PREVIEW_HALF_SIZE } from '@app/services/tools/tools-constants';
 
 @Component({
     selector: 'app-pipette-preview',
@@ -35,8 +36,13 @@ export class PipettePreviewComponent {
         const pixelsOnPreviewPerPixel = this.pipettePreviewCanvas.nativeElement.width / PREVIEW_NUMBER_OF_SQUARES_PER_SIDE;
         ctx.beginPath();
         ctx.fillStyle = color;
+        ctx.strokeStyle = OUT_OF_BOUND_COLOR_RGBA;
+        ctx.lineWidth = 1;
         const initialPosition: Vec2 = { x: x * pixelsOnPreviewPerPixel, y: y * pixelsOnPreviewPerPixel };
         const finalPosition: Vec2 = { x: (x + 1) * pixelsOnPreviewPerPixel, y: (y + 1) * pixelsOnPreviewPerPixel };
         ctx.fillRect(initialPosition.x, initialPosition.y, finalPosition.x, finalPosition.y);
+        if (x === PREVIEW_HALF_SIZE && y === PREVIEW_HALF_SIZE) {
+            ctx.strokeRect(initialPosition.x, initialPosition.y, pixelsOnPreviewPerPixel, pixelsOnPreviewPerPixel);
+        }
     }
 }
