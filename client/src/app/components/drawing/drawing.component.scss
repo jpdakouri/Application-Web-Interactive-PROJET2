@@ -28,8 +28,7 @@ canvas {
 
 #selectedArea {
     position: relative;
-
-    z-index: 500;
+    z-index: 0;
 }
 .resizer {
     width: 5px;

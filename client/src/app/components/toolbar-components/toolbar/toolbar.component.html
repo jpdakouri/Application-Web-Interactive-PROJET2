@@ -70,8 +70,8 @@
     </div>
     <div class="flex-item">
         <button
-            aria-label="Polygonne"
-            title="Polygonne"
+            aria-label="Polygone"
+            title="Polygone"
             [color]="isSelected(this.toolsNames.Polygon) ? 'accent' : 'primary'"
             (click)="setCurrentTool(this.toolsNames.Polygon)"
             mat-mini-fab
@@ -82,8 +82,8 @@
 
     <div class="flex-item">
         <button
-            aria-label='Selection rectangle "i"'
-            title='Selection rectangle "i"'
+            aria-label='Selection rectangle "r"'
+            title='Selection rectangle "r"'
             [color]="isSelected(this.toolsNames.SelectBox) ? 'accent' : 'primary'"
             (click)="setCurrentTool(this.toolsNames.SelectBox)"
             mat-mini-fab
@@ -93,8 +93,8 @@
     </div>
     <div class="flex-item">
         <button
-            aria-label='Selection ellipse "i"'
-            title='Selection ellipse "i"'
+            aria-label='Selection ellipse "s"'
+            title='Selection ellipse "s"'
             [color]="isSelected(this.toolsNames.SelectEllipse) ? 'accent' : 'primary'"
             (click)="setCurrentTool(this.toolsNames.SelectEllipse)"
             mat-mini-fab
@@ -103,6 +103,11 @@
         </button>
     </div>
 
+    <div class="flex-item">
+        <button aria-label="Tout selectionner" title="Tout selectionner (Ctrl + A)" [color]="'primary'" (click)="onClickSelectedAll()" mat-mini-fab>
+            <mat-icon>crop_free</mat-icon>
+        </button>
+    </div>
     <div class="flex-item">
         <button
             (click)="setCurrentTool(this.toolsNames.Rectangle)"
@@ -173,19 +178,19 @@
     </div>
 
     <div class="flex-item">
-        <button color="primary" mat-mini-fab aria-label="Sauvegarder (Ctrl + s)" title="Sauvegarder (Ctrl + s)" (click)="saveDrawing()">
+        <button color="primary" mat-mini-fab aria-label="Sauvegarder (Ctrl + S)" title="Sauvegarder (Ctrl + S)" (click)="saveDrawing()">
             <mat-icon>save</mat-icon>
         </button>
     </div>
 
     <div class="flex-item">
-        <button color="primary" mat-mini-fab aria-label="Carroussel (Ctrl + g)" title="Carroussel (Ctrl + g)" (click)="openCarousel()">
+        <button color="primary" mat-mini-fab aria-label="Carroussel (Ctrl + G)" title="Carroussel (Ctrl + G)" (click)="openCarousel()">
             <mat-icon>view_carousel</mat-icon>
         </button>
     </div>
     <div class="flex-item">
-        <button color="primary" mat-mini-fab aria-label="Exporter (Ctrl + e)" title="Exporter (Ctrl + e)" (click)="onExport()">
-            <mat-icon>file_upload</mat-icon>
+        <button color="primary" mat-mini-fab aria-label="Exporter (Ctrl + E)" title="Exporter (Ctrl + E)" (click)="onExport()">
+            <mat-icon>import_export</mat-icon>
         </button>
     </div>
     <div class="flex-item">

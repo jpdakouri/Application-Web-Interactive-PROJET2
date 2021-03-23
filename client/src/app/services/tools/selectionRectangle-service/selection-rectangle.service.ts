@@ -10,6 +10,7 @@ import { RectangleService } from '@app/services/tools/rectangle-service/rectangl
 import { PIXELS_ARROW_STEPS } from '@app/services/tools/tools-constants';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
+import { Sign } from '@app/utils/enums/rgb-settings';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
 // import { KeyboardButtons, MouseButtons } from '@app/utils/enums/list-boutton-pressed';
 
@@ -190,6 +191,7 @@ export class SelectionRectangleService extends Tool {
 
     private drawRectanglePerimeter(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.strokeStyle = 'blue';
+        ctx.lineWidth = 1;
 
         const startCoord = { ...this.firstGrid };
         const width = Math.abs(finalGrid.x);
@@ -249,12 +251,12 @@ export class SelectionRectangleService extends Tool {
     }
 
     private selectionRectangle(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
-        // Prendre la region de pixel
+        // Take a pixel region
         this.drawingService.clearCanvas(ctx);
         const imageData = this.drawingService.baseCtx.getImageData(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
         const bottomRightCorner: Vec2 = { x: imageData.width, y: imageData.height };
 
-        // Remplace les pixels vierges du canvas par des pixels blancs
+        // Replace all empty pixels with white ones
         for (let i = 3; i < imageData.data.length; i += ALPHA_POS) {
             if (imageData.data[i] === 0) {
                 imageData.data[i - RED_POS] = MAX_BYTE_VALUE;
@@ -268,15 +270,15 @@ export class SelectionRectangleService extends Tool {
         });
         this.height = imageData.height;
         this.width = imageData.width;
-        // Resize le selectedAreaCtx
+        // Resize selectedAreaCtx
         ctx.canvas.width = bottomRightCorner.x;
         ctx.canvas.height = bottomRightCorner.y;
-        // Deplacer le resultat de la selection topLeftCorner
+        // Move the result of the selection
         ctx.translate(-this.topLeftCorner.x, -this.topLeftCorner.y);
-        // Remettre la selection à la position de la souris
+        // Replace the selection at the position of the mouse
         ctx.canvas.style.top = this.topLeftCorner.y + 'px';
         ctx.canvas.style.left = this.topLeftCorner.x + 'px';
-        // Mettre le backround white
+        // Create a white backround
         this.drawingService.baseCtx.fillStyle = 'white';
         this.drawingService.baseCtx.fillRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
     }
@@ -300,6 +302,15 @@ export class SelectionRectangleService extends Tool {
             return false;
         }
         return true;
+    }
+
+    selectAll(): void {
+        this.clearPath();
+        this.drawingService.selectedAreaCtx.canvas.style.top = Sign.Negative + 'px';
+        this.drawingService.selectedAreaCtx.canvas.style.left = Sign.Negative + 'px';
+        const grid: Vec2 = { x: this.drawingService.baseCtx.canvas.width, y: this.drawingService.baseCtx.canvas.height };
+        this.selectionRectangle(this.drawingService.selectedAreaCtx, grid);
+        this.selectionActive = true;
     }
 
     private clearPath(): void {
