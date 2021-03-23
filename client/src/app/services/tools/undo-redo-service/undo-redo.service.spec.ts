@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { PencilCommand } from '@app/classes/tool-commands/pencil-command';
-import { CanvasOverwriterService } from '@app/services/canvas-overwriter/canvas-overwriter.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PencilService } from '@app/services/tools/pencil-service/pencil.service';
 
@@ -18,14 +17,10 @@ describe('UndoRedoService', () => {
     it('should be created', () => {
         expect(service).toBeTruthy();
     });
-    xit('undo places a command on the undone command stack, redo does the opposite', () => {
+    it('undo places a command on the undone command stack, redo does the opposite', () => {
         const tool = TestBed.inject(PencilService);
         const position = { x: 1, y: 1 };
         const command = new PencilCommand(tool, 'rgba(0,0,0,1)', 1, [[position]]);
-        const overwriter = TestBed.inject(CanvasOverwriterService);
-        spyOn(overwriter, 'overwriteCanvasState').and.callFake(() => {
-            return;
-        });
         spyOn(tool, 'executeCommand').and.callFake(() => {
             return;
         });
@@ -43,29 +38,43 @@ describe('UndoRedoService', () => {
         expect(service.canRedoCommands()).toBeFalse();
     });
 
-    xit('save initial state saves the initial state of the canvas', () => {
+    it('save initial state saves the initial state of the canvas', () => {
         const drawing = TestBed.inject(DrawingService);
         const canvasTestHelper = TestBed.inject(CanvasTestHelper);
         drawing.canvas = canvasTestHelper.canvas;
         drawing.baseCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
+        spyOn(drawing.baseCtx, 'getImageData').and.returnValue(new ImageData(1, 1));
         service.saveInitialState();
-        const expectedColor = 'rgba(255,255,255,1)';
-        let goodColorCount = 0;
         // tslint:disable-next-line: no-string-literal
-        const initialState = service['initialCanvasColors'];
-        const dimension = 100;
-        for (let i = 0; i < dimension; i++) {
-            for (let j = 0; j < dimension; j++) {
-                if (initialState[j][i] === expectedColor) goodColorCount += 1;
-            }
-        }
-        expect(goodColorCount).toBe(dimension * dimension);
+        const state = service['initialCanvasColors'];
+        expect(state).not.toBeUndefined();
+        expect(drawing.baseCtx.getImageData).toHaveBeenCalled();
     });
     it('if a command cannot be undone or redone, the canvas is not redrawn', () => {
-        const overwriter = TestBed.inject(CanvasOverwriterService);
-        spyOn(overwriter, 'overwriteCanvasState');
+        const drawing = TestBed.inject(DrawingService);
+        const canvasTestHelper = TestBed.inject(CanvasTestHelper);
+        drawing.canvas = canvasTestHelper.canvas;
+        drawing.baseCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
+        spyOn(drawing.baseCtx, 'drawImage');
         service.undo();
         service.redo();
-        expect(overwriter.overwriteCanvasState).toHaveBeenCalledTimes(0);
+        expect(drawing.baseCtx.drawImage).toHaveBeenCalledTimes(0);
+    });
+    it('if a command can be done or undone, redrawCanvas is called, and all the commands that havent been done are executed', () => {
+        const pencil = TestBed.inject(PencilService);
+        const command = new PencilCommand(pencil, '0,0,0,1', 1, []);
+        service.addCommand(command);
+
+        const drawing = TestBed.inject(DrawingService);
+        const canvasTestHelper = TestBed.inject(CanvasTestHelper);
+        drawing.canvas = canvasTestHelper.canvas;
+        drawing.baseCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
+        spyOn(drawing, 'clearCanvas');
+        spyOn(pencil, 'executeCommand');
+        spyOn(drawing.baseCtx, 'getImageData').and.returnValue(new ImageData(1, 1));
+        service.undo();
+        service.redo();
+        expect(drawing.clearCanvas).toHaveBeenCalledTimes(2);
+        expect(pencil.executeCommand).toHaveBeenCalledTimes(1);
     });
 });
