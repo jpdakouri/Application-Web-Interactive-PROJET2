@@ -47,18 +47,6 @@ describe('CarouselService', () => {
         service.getArraySizeOfDrawing(false);
         expect(service.sizeOfArray).toEqual(1);
     });
-
-    it('initCarousel should call #getArraySizeOfDrawing and return of([]) if size of array < 1', () => {
-        const drawing = new DrawingData('id', 'title', ['tags'], 'url', 100, 100);
-        service.sizeOfArray = 0;
-        spyOn(service, 'getArraySizeOfDrawing').and.returnValue(of(0));
-        spyOn(httpServiceMock, 'getLengthOfDrawings').and.returnValue(of(0));
-        spyOn(httpServiceMock, 'getOneDrawing').and.returnValue(of(drawing));
-
-        service.initCarousel(false).subscribe((result) => {
-            expect(result).toEqual([]);
-        });
-    });
     it('initCarousel should call #getArraySizeOfDrawing and call getOneDrawing from httpService one time if sizeOfArray = 1 ', () => {
         const drawing = new DrawingData('id', 'title', ['tags'], 'url', 100, 100);
         const array: DrawingData[] = [];
@@ -67,10 +55,19 @@ describe('CarouselService', () => {
         spyOn(httpServiceMock, 'getLengthOfDrawings').and.returnValue(of(1));
         spyOn(httpServiceMock, 'getOneDrawing').and.returnValue(of(drawing));
 
-        service.initCarousel(false).subscribe((result) => {
-            expect(result).toEqual(array);
-            expect(httpServiceMock.getOneDrawing).toHaveBeenCalled();
-        });
+        service.initCarousel(false);
+        expect(httpServiceMock.getOneDrawing).toHaveBeenCalled();
+    });
+
+    it('initCarousel should call #getArraySizeOfDrawing and return of([]) if size of array < 1', () => {
+        const drawing = new DrawingData('id', 'title', ['tags'], 'url', 100, 100);
+        service.sizeOfArray = 0;
+        spyOn(service, 'getArraySizeOfDrawing').and.returnValue(of(0));
+        spyOn(httpServiceMock, 'getLengthOfDrawings').and.returnValue(of(0));
+        spyOn(httpServiceMock, 'getOneDrawing').and.returnValue(of(drawing));
+
+        service.initCarousel(false);
+        expect(httpServiceMock.getOneDrawing).not.toHaveBeenCalled();
     });
 
     it('initCarousel should call #getArraySizeOfDrawing and call getOneDrawing from httpService 3 times if sizeOfArray > 1 ', () => {
@@ -83,10 +80,8 @@ describe('CarouselService', () => {
         spyOn(service, 'getArraySizeOfDrawing').and.returnValue(of(2));
         spyOn(httpServiceMock, 'getOneDrawing').and.callThrough();
         service.sizeOfArray = 2;
-        service.initCarousel(false).subscribe((result) => {
-            expect(result).toEqual(array);
-            expect(httpServiceMock.getOneDrawing).toHaveBeenCalledTimes(3);
-        });
+        service.initCarousel(false);
+        expect(httpServiceMock.getOneDrawing).toHaveBeenCalledTimes(3);
     });
 
     it('getDrawing should be called with the right index depending which side we are shifting', async(() => {

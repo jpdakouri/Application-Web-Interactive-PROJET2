@@ -5,6 +5,8 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HttpService } from '@app/services/http/http.service';
 import { DrawingData } from '@common/communication/drawing-data';
 import { Observable, Subject } from 'rxjs';
+const WAIT_ANSWER_TIME = 200;
+const LAST_INDEX_OF_ARRAY = -1;
 
 @Injectable({
     providedIn: 'root',
@@ -17,15 +19,14 @@ export class CarouselService {
 
     constructor(private httpService: HttpService, public drawingService: DrawingService) {}
 
-    // tslint:disable:no-magic-numbers
     initCarousel(tagFlag: boolean): Observable<DrawingData[]> {
         this.drawingsToShow = [];
         const subject = new Subject<DrawingData[]>();
+        this.courrentIndex = 0;
 
         this.getArraySizeOfDrawing(tagFlag).subscribe((size) => {
-            subject.next(this.drawingsToShow);
             if (size > 0) {
-                this.httpService.getOneDrawing(-1, tagFlag).subscribe({
+                this.httpService.getOneDrawing(LAST_INDEX_OF_ARRAY, tagFlag).subscribe({
                     next: (resultFirst) => {
                         this.drawingsToShow.push(resultFirst);
                         if (this.sizeOfArray > 1) {
@@ -86,7 +87,7 @@ export class CarouselService {
     }
 
     async deleteDrawing(id: string): Promise<string> {
-        const promise = new Promise<string>((resolve) => {
+        return new Promise<string>((resolve) => {
             setTimeout(() => {
                 this.httpService.deleteDrawing(id).subscribe({
                     next: (result) => {
@@ -95,8 +96,7 @@ export class CarouselService {
                         }
                     },
                 });
-            }, 200);
+            }, WAIT_ANSWER_TIME);
         });
-        return promise;
     }
 }
