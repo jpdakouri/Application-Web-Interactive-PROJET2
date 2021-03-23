@@ -4,6 +4,7 @@ import { DialogControllerService } from '@app/services/dialog-controller/dialog-
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { SelectionRectangleService } from '@app/services/tools/selectionRectangle-service/selection-rectangle.service';
+import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 
@@ -25,6 +26,7 @@ export class EditorComponent implements AfterViewInit {
         private drawingService: DrawingService,
         private dialogControllerService: DialogControllerService,
         private selectionRectangleService: SelectionRectangleService,
+        private undoRedo: UndoRedoService,
     ) {
         this.toolFinder = new Map<KeyboardButtons, ToolsNames>();
         this.toolFinder
@@ -48,7 +50,7 @@ export class EditorComponent implements AfterViewInit {
     onKeyDown(event: KeyboardEvent): void {
         if (this.dialogControllerService.noDialogOpened) {
             if (event.ctrlKey) {
-                if (event.key === KeyboardButtons.NewDrawing) this.onCreateNewDrawing();
+                if (event.key === KeyboardButtons.NewDrawing) if (this.onCreateNewDrawing()) this.undoRedo.saveInitialState();
                 if (event.key === KeyboardButtons.Carousel) this.openCarouselModal();
                 if (event.key === KeyboardButtons.Export) {
                     event.preventDefault();
@@ -82,8 +84,8 @@ export class EditorComponent implements AfterViewInit {
         this.editor.nativeElement.style.minWidth = this.editorMinWidth + 'px';
     }
 
-    onCreateNewDrawing(): void {
-        this.drawingService.createNewDrawing();
+    onCreateNewDrawing(): boolean {
+        return this.drawingService.createNewDrawing();
     }
 
     openSaveDrawingModal(): void {

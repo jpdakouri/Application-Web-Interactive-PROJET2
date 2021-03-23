@@ -28,6 +28,7 @@ import { ToolAttributeComponent } from '@app/components/toolbar-components/tool-
 import { ToolbarComponent } from '@app/components/toolbar-components/toolbar/toolbar.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
+import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { ToolManagerServiceMock } from '@app/utils/tests-mocks/tool-manager-mock';
 import { EditorComponent } from './editor.component';
@@ -154,11 +155,22 @@ describe('EditorComponent', () => {
         expect(drawingServiceSpy.createNewDrawing).not.toHaveBeenCalled();
     });
 
-    it(' #onKeyDown should call create new drawing if input is valid ', () => {
+    it(' #onKeyDown should call create new drawing if input is valid, and if successful, saves initial state ', () => {
         const goodInput = { key: KeyboardButtons.NewDrawing, ctrlKey: true } as KeyboardEvent;
-        const creatNewDrawing = spyOn(component, 'onCreateNewDrawing').and.stub();
+        const creatNewDrawing = spyOn(component, 'onCreateNewDrawing').and.stub().and.returnValue(true);
+        spyOn(TestBed.inject(UndoRedoService), 'saveInitialState');
         component.onKeyDown(goodInput);
         expect(creatNewDrawing).toHaveBeenCalled();
+        expect(TestBed.inject(UndoRedoService).saveInitialState).toHaveBeenCalled();
+    });
+
+    it(' #onKeyDown should call create new drawing if input is valid, and if unsuccessful, does not save initial state ', () => {
+        const goodInput = { key: KeyboardButtons.NewDrawing, ctrlKey: true } as KeyboardEvent;
+        const creatNewDrawing = spyOn(component, 'onCreateNewDrawing').and.stub().and.returnValue(false);
+        spyOn(TestBed.inject(UndoRedoService), 'saveInitialState');
+        component.onKeyDown(goodInput);
+        expect(creatNewDrawing).toHaveBeenCalled();
+        expect(TestBed.inject(UndoRedoService).saveInitialState).not.toHaveBeenCalled();
     });
 
     it(' #onKeyDown should call openSaveDrawingModal if input is valid ', () => {
