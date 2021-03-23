@@ -4,6 +4,7 @@ import { DialogControllerService } from '@app/services/dialog-controller/dialog-
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { SelectionRectangleService } from '@app/services/tools/selectionRectangle-service/selection-rectangle.service';
+import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 
@@ -25,6 +26,7 @@ export class EditorComponent implements AfterViewInit {
         private drawingService: DrawingService,
         private dialogControllerService: DialogControllerService,
         private selectionRectangleService: SelectionRectangleService,
+        private undoRedo: UndoRedoService,
     ) {
         this.toolFinder = new Map<KeyboardButtons, ToolsNames>();
         this.toolFinder
@@ -37,7 +39,8 @@ export class EditorComponent implements AfterViewInit {
             .set(KeyboardButtons.Aerosol, ToolsNames.Aerosol)
             .set(KeyboardButtons.SelectionRectangle, ToolsNames.SelectBox)
             .set(KeyboardButtons.SelectionEllipse, ToolsNames.SelectEllipse)
-            .set(KeyboardButtons.Polygon, ToolsNames.Polygon);
+            .set(KeyboardButtons.Polygon, ToolsNames.Polygon)
+            .set(KeyboardButtons.Pipette, ToolsNames.Pipette);
     }
 
     ngAfterViewInit(): void {
@@ -61,6 +64,12 @@ export class EditorComponent implements AfterViewInit {
                 if (event.key === KeyboardButtons.SelectAll) {
                     event.preventDefault();
                     this.selectAll();
+                }
+                if (event.key === KeyboardButtons.Undo) {
+                    this.undoRedo.undo();
+                }
+                if (event.key === KeyboardButtons.Redo) {
+                    this.undoRedo.redo();
                 }
             }
 

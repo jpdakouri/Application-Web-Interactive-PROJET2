@@ -8,10 +8,21 @@ import { UndoRedoService } from './undo-redo.service';
 
 describe('UndoRedoService', () => {
     let service: UndoRedoService;
+    let baseCanvasContext: CanvasRenderingContext2D;
+    let canvasTestHelper: CanvasTestHelper;
+    let drawing: DrawingService;
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(UndoRedoService);
+
+        canvasTestHelper = TestBed.inject(CanvasTestHelper);
+        drawing = TestBed.inject(DrawingService);
+
+        baseCanvasContext = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
+        drawing.baseCtx = baseCanvasContext;
+        drawing.canvas = canvasTestHelper.canvas;
+        service.saveInitialState();
     });
 
     it('should be created', () => {
@@ -37,36 +48,19 @@ describe('UndoRedoService', () => {
         expect(service.canUndoCommands()).toBeTrue();
         expect(service.canRedoCommands()).toBeFalse();
     });
-
-    it('save initial state saves the initial state of the canvas', () => {
-        const drawing = TestBed.inject(DrawingService);
-        const canvasTestHelper = TestBed.inject(CanvasTestHelper);
-        drawing.canvas = canvasTestHelper.canvas;
-        drawing.baseCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
-        spyOn(drawing.baseCtx, 'getImageData').and.returnValue(new ImageData(1, 1));
-        service.saveInitialState();
-        // tslint:disable-next-line: no-string-literal
-        const state = service['initialCanvasColors'];
-        expect(state).not.toBeUndefined();
-        expect(drawing.baseCtx.getImageData).toHaveBeenCalled();
-    });
     it('if a command cannot be undone or redone, the canvas is not redrawn', () => {
-        const drawing = TestBed.inject(DrawingService);
-        const canvasTestHelper = TestBed.inject(CanvasTestHelper);
         drawing.canvas = canvasTestHelper.canvas;
         drawing.baseCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         spyOn(drawing.baseCtx, 'drawImage');
+
         service.undo();
         service.redo();
         expect(drawing.baseCtx.drawImage).toHaveBeenCalledTimes(0);
     });
-    it('if a command can be done or undone, redrawCanvas is called, and all the commands that havent been done are executed', () => {
+    it('if a command can be done or undone, redrawCanvas is called, and all the commands that havent been undone are executed', () => {
         const pencil = TestBed.inject(PencilService);
         const command = new PencilCommand(pencil, '0,0,0,1', 1, []);
         service.addCommand(command);
-
-        const drawing = TestBed.inject(DrawingService);
-        const canvasTestHelper = TestBed.inject(CanvasTestHelper);
         drawing.canvas = canvasTestHelper.canvas;
         drawing.baseCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         spyOn(drawing, 'clearCanvas');
