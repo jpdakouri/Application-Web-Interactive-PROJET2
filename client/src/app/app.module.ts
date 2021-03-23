@@ -1,18 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSliderModule } from '@angular/material/slider';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialogRef } from '@angular/material/dialog';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ColourHistoryComponent } from '@app/components/colour-components/colour-history/colour-history.component';
@@ -57,28 +46,7 @@ import { ServerErrorMessageComponent } from './components/server-error-message/s
         CarouselComponent,
         DrawingCardComponent,
     ],
-    imports: [
-        BrowserModule,
-        MatProgressBarModule,
-        MatChipsModule,
-        HttpClientModule,
-        MatExpansionModule,
-        MatToolbarModule,
-        AppRoutingModule,
-        MatSnackBarModule,
-        BrowserAnimationsModule,
-        AppMaterialModule,
-        MatTooltipModule,
-        FormsModule,
-        MatCardModule,
-        HttpClientModule,
-        MatDialogModule,
-        MatFormFieldModule,
-        MatCheckboxModule,
-        MatSelectModule,
-        ReactiveFormsModule,
-        MatSliderModule,
-    ],
+    imports: [BrowserModule, HttpClientModule, AppRoutingModule, BrowserAnimationsModule, AppMaterialModule, FormsModule, ReactiveFormsModule],
     providers: [
         {
             provide: MatDialogRef,

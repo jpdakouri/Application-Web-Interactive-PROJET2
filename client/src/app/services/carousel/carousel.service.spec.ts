@@ -49,7 +49,12 @@ describe('CarouselService', () => {
     });
 
     it('initCarousel should call #getArraySizeOfDrawing and return of([]) if size of array < 1', () => {
+        const drawing = new DrawingData('id', 'title', ['tags'], 'url', 100, 100);
+=        service.sizeOfArray = 0;
         spyOn(service, 'getArraySizeOfDrawing').and.returnValue(of(0));
+        spyOn(httpServiceMock, 'getLengthOfDrawings').and.returnValue(of(0));
+        spyOn(httpServiceMock, 'getOneDrawing').and.returnValue(of(drawing));
+
         service.initCarousel(false).subscribe((result) => {
             expect(result).toEqual([]);
         });
@@ -58,8 +63,10 @@ describe('CarouselService', () => {
         const drawing = new DrawingData('id', 'title', ['tags'], 'url', 100, 100);
         const array: DrawingData[] = [];
         array.push(drawing);
-        spyOn(httpServiceMock, 'getOneDrawing').and.callThrough();
         spyOn(service, 'getArraySizeOfDrawing').and.returnValue(of(1));
+        spyOn(httpServiceMock, 'getLengthOfDrawings').and.returnValue(of(1));
+        spyOn(httpServiceMock, 'getOneDrawing').and.returnValue(of(drawing));
+
         service.initCarousel(false).subscribe((result) => {
             expect(result).toEqual(array);
             expect(httpServiceMock.getOneDrawing).toHaveBeenCalled();
@@ -72,6 +79,7 @@ describe('CarouselService', () => {
         array.push(drawing);
         array.push(drawing);
         array.push(drawing);
+        spyOn(httpServiceMock, 'getLengthOfDrawings').and.returnValue(of(2));
         spyOn(service, 'getArraySizeOfDrawing').and.returnValue(of(2));
         spyOn(httpServiceMock, 'getOneDrawing').and.callThrough();
         service.sizeOfArray = 2;
