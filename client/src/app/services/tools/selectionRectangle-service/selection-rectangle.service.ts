@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import { SelectionCommand } from '@app/classes/tool-commands/selection-command';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -8,9 +9,9 @@ import { ALPHA_POS, BLUE_POS, GREEN_POS, MAX_BYTE_VALUE, RED_POS } from '@app/se
 import { MousePositionHandlerService } from '@app/services/tools/mousePositionHandler-service/mouse-position-handler.service';
 import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
 import { PIXELS_ARROW_STEPS } from '@app/services/tools/tools-constants';
+import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
-import { ToolCommand } from '@app/utils/interfaces/tool-command';
 // import { KeyboardButtons, MouseButtons } from '@app/utils/enums/list-boutton-pressed';
 
 // import { ShapeStyle } from '@app/utils/enums/shape-style';
@@ -34,6 +35,7 @@ export class SelectionRectangleService extends Tool {
     private leftPressed: boolean;
     private rightPressed: boolean;
     private mousePositionHandler: MousePositionHandlerService;
+    private initialTopLeftCorner: Vec2;
 
     height: number;
     width: number;
@@ -42,7 +44,12 @@ export class SelectionRectangleService extends Tool {
     rectangleService: RectangleService;
     currentColourService: CurrentColourService;
 
-    constructor(drawingService: DrawingService, currentColourService: CurrentColourService, mousePositionHandler: MousePositionHandlerService) {
+    constructor(
+        drawingService: DrawingService,
+        currentColourService: CurrentColourService,
+        mousePositionHandler: MousePositionHandlerService,
+        private undoRedo: UndoRedoService,
+    ) {
         super(drawingService, currentColourService);
         this.currentColourService = currentColourService;
         this.topLeftCorner = { x: 0, y: 0 };
@@ -75,9 +82,16 @@ export class SelectionRectangleService extends Tool {
                     createImageBitmap(imageData).then((imgBitmap) => {
                         this.drawingService.baseCtx.drawImage(imgBitmap, this.topLeftCorner.x + 1, this.topLeftCorner.y + 1);
                     });
-                    // this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
-                    this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
+                    // this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
                     this.isSelectionDone = false;
+                    const command = new SelectionCommand(
+                        this,
+                        this.initialTopLeftCorner,
+                        { ...this.topLeftCorner },
+                        { x: this.width, y: this.height },
+                        imageData,
+                    );
+                    this.undoRedo.addCommand(command);
                 }
             }
         }
@@ -105,6 +119,7 @@ export class SelectionRectangleService extends Tool {
             if (this.shiftDown) {
                 this.mousePositionHandler.makeSquare(this.mouseDownCoord, this.mouseDownCoord);
             }
+            this.initialTopLeftCorner = { ...this.topLeftCorner };
             this.selectionRectangle(this.drawingService.selectedAreaCtx, this.mouseDownCoord);
         }
         this.mouseDown = this.dragActive = this.mouseMoved = false;
@@ -249,6 +264,7 @@ export class SelectionRectangleService extends Tool {
     }
 
     private selectionRectangle(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+        this.initialTopLeftCorner = { ...this.topLeftCorner };
         // Prendre la region de pixel
         this.drawingService.clearCanvas(ctx);
         const imageData = this.drawingService.baseCtx.getImageData(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
@@ -305,7 +321,16 @@ export class SelectionRectangleService extends Tool {
     private clearPath(): void {
         this.firstGrid = this.mouseDownCoord = { x: 0, y: 0 };
     }
-    executeCommand(command: ToolCommand): void {
-        throw new Error('Method not implemented.');
+
+    executeCommand(command: SelectionCommand): void {
+        this.drawingService.selectedAreaCtx.canvas.style.top = command.finalTopLeftCorner.y + 'px';
+        this.drawingService.selectedAreaCtx.canvas.style.left = command.finalTopLeftCorner.x + 'px';
+        this.drawingService.baseCtx.fillStyle = 'white';
+        this.drawingService.baseCtx.fillRect(command.initialTopLeftCorner.x, command.initialTopLeftCorner.y, this.width, this.height);
+        const imageData = command.imageData;
+        createImageBitmap(imageData).then((imgBitmap) => {
+            this.drawingService.baseCtx.drawImage(imgBitmap, command.finalTopLeftCorner.x, command.finalTopLeftCorner.y);
+        });
+        this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
     }
 }
