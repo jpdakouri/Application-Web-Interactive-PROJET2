@@ -69,7 +69,6 @@ describe('SelectionEllipseService', () => {
     });
 
     it(' mouseDown should activate the selection when isClickIn is true', () => {
-        // service.mouseDown = true;
         service.selectionActive = true;
 
         service.topLeftCorner = { x: 20, y: 20 };

@@ -68,7 +68,6 @@ describe('SelectionRectangleService', () => {
     });
 
     it(' mouseDown should activate the selection when isClickIn is true', () => {
-        // service.mouseDown = true;
         service.selectionActive = true;
 
         service.topLeftCorner = { x: 20, y: 20 };
@@ -317,7 +316,6 @@ describe('SelectionRectangleService', () => {
         service.mouseDown = service.selectionActive = service.mouseMoved = true;
         service['dragActive'] = false;
         service.mouseDownCoord = { x: 100, y: 100 };
-        // const grid = service.mouseDownCoord;
         service['firstGrid'] = { x: 100, y: 100 };
         service['begin'] = { x: 200, y: 200 };
         service['end'] = { x: 100, y: 100 };
