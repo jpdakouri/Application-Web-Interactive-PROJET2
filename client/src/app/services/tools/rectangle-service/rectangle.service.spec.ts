@@ -3,7 +3,7 @@ import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { ShapeCommand } from '@app/classes/tool-commands/shape-command';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { MousePositionHandlerService } from '@app/services/tools/mousePositionHandler-service/mouse-position-handler.service';
+import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { ShapeStyle } from '@app/utils/enums/shape-style';

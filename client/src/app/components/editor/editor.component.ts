@@ -3,7 +3,7 @@ import { ToolbarComponent } from '@app/components/toolbar-components/toolbar/too
 import { DialogControllerService } from '@app/services/dialog-controller/dialog-controller.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
-import { SelectionRectangleService } from '@app/services/tools/selectionRectangle-service/selection-rectangle.service';
+import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { ToolsNames } from '@app/utils/enums/tools-names';

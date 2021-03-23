@@ -1,5 +1,5 @@
 //////////////////////////////////////
-//    Inspiré des notes de cours
+//    Taken from class notes
 /////////////////////////////////////
 
 import { Injectable } from '@angular/core';
