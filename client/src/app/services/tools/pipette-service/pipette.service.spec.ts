@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
-import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
+import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DEFAULT_CANVAS_RGBA } from '@app/services/services-constants';
 import { OUT_OF_BOUND_COLOR_RGBA } from '@app/services/tools/tools-constants';
@@ -34,7 +34,7 @@ describe('PipetteService', () => {
         const stubImageData = new ImageData(stubRgbArray, 1);
         spyOn(baseCanvasContext, 'getImageData').and.returnValue(stubImageData);
 
-        const currentColorService = TestBed.inject(CurrentColourService);
+        const currentColorService = TestBed.inject(CurrentColorService);
         spyOn(currentColorService, 'setPrimaryColorRgb');
         spyOn(currentColorService, 'setSecondaryColorRgb');
         const leftClickEvent = new MouseEvent('mousedown', { clientX: 0, clientY: 0, button: 0 });
@@ -51,7 +51,7 @@ describe('PipetteService', () => {
         const stubImageData = new ImageData(stubRgbArray, 1);
         spyOn(baseCanvasContext, 'getImageData').and.returnValue(stubImageData);
 
-        const currentColorService = TestBed.inject(CurrentColourService);
+        const currentColorService = TestBed.inject(CurrentColorService);
         spyOn(currentColorService, 'setPrimaryColorRgb');
         const leftClickEvent = new MouseEvent('mousedown', { clientX: 0, clientY: 0, button: 0 });
         service.onMouseDown(leftClickEvent);

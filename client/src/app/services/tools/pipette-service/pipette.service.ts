@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
-import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
+import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ALPHA_INDEX, DEFAULT_CANVAS_RGB, DEFAULT_CANVAS_RGBA } from '@app/services/services-constants';
 import { OUT_OF_BOUND_COLOR_RGBA, PREVIEW_HALF_SIZE } from '@app/services/tools/tools-constants';
@@ -13,17 +13,17 @@ import { RgbSettings } from '@app/utils/enums/rgb-settings';
 export class PipetteService extends Tool {
     private previewColors: string[][];
     private isCursorOnCanvas: boolean;
-    constructor(drawingService: DrawingService, currentColourService: CurrentColourService) {
-        super(drawingService, currentColourService);
-        this.currentColourService = currentColourService;
+    constructor(drawingService: DrawingService, currentColorService: CurrentColorService) {
+        super(drawingService, currentColorService);
+        this.currentColorService = currentColorService;
         this.isCursorOnCanvas = false;
     }
 
     onMouseDown(event: MouseEvent): void {
         let rgbAtPosition = this.getRgbAtPosition(event.offsetX, event.offsetY);
         if (this.getAlphaAtPosition(event.offsetX, event.offsetY) === '0') rgbAtPosition = DEFAULT_CANVAS_RGB;
-        if (event.button === MouseButtons.Left) this.currentColourService.setPrimaryColorRgb(rgbAtPosition);
-        else this.currentColourService.setSecondaryColorRgb(rgbAtPosition);
+        if (event.button === MouseButtons.Left) this.currentColorService.setPrimaryColorRgb(rgbAtPosition);
+        else this.currentColorService.setSecondaryColorRgb(rgbAtPosition);
     }
 
     onMouseMove(event: MouseEvent): void {
