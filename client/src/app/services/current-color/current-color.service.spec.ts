@@ -1,14 +1,14 @@
-import { ColourHistoryService } from '@app/services/colour-history/colour-history.service';
-import { CurrentColourService } from './current-colour.service';
+import { ColorHistoryService } from '@app/services/color-history/color-history.service';
+import { CurrentColorService } from './current-color.service';
 
-describe('CurrentColourService', () => {
-    let service: CurrentColourService;
+describe('CurrentColorService', () => {
+    let service: CurrentColorService;
 
-    let colourHistory: jasmine.SpyObj<ColourHistoryService>;
+    let colorHistory: jasmine.SpyObj<ColorHistoryService>;
 
     beforeEach(() => {
-        colourHistory = jasmine.createSpyObj('ColourHistoryService', ['pushColour']);
-        service = new CurrentColourService(colourHistory);
+        colorHistory = jasmine.createSpyObj('ColorHistoryService', ['pushColor']);
+        service = new CurrentColorService(colorHistory);
     });
 
     it('should be created', () => {
@@ -22,7 +22,7 @@ describe('CurrentColourService', () => {
         service.setSecondaryColorRgb(newSecondaryColor);
         expect(service.getPrimaryColorRgb()).toBe('rgb(1,1,1)');
         expect(service.getSecondaryColorRgb()).toBe('rgb(2,2,2)');
-        expect(colourHistory.pushColour).toHaveBeenCalledTimes(2);
+        expect(colorHistory.pushColor).toHaveBeenCalledTimes(2);
     });
 
     it("RGB setters and getters don't try to set the color if it's the same", () => {
@@ -30,7 +30,7 @@ describe('CurrentColourService', () => {
         const newSecondaryColor = '255,255,255';
         service.setPrimaryColorRgb(newPrimaryColor);
         service.setSecondaryColorRgb(newSecondaryColor);
-        expect(colourHistory.pushColour).toHaveBeenCalledTimes(0);
+        expect(colorHistory.pushColor).toHaveBeenCalledTimes(0);
     });
 
     it('RGBA setters and getters work properly', () => {
@@ -40,7 +40,7 @@ describe('CurrentColourService', () => {
         service.setSecondaryColorTransparency(newSecondaryTransparency);
         expect(service.getPrimaryColorRgba()).toBe('rgba(0,0,0,0.5)');
         expect(service.getSecondaryColorRgba()).toBe('rgba(255,255,255,0.3)');
-        expect(colourHistory.pushColour).toHaveBeenCalledTimes(0);
+        expect(colorHistory.pushColor).toHaveBeenCalledTimes(0);
     });
 
     it('swapColors only swaps RGB colors', () => {
@@ -51,6 +51,6 @@ describe('CurrentColourService', () => {
         service.swapColors();
         expect(service.getPrimaryColorRgba()).toBe('rgba(255,255,255,0.5)');
         expect(service.getSecondaryColorRgba()).toBe('rgba(0,0,0,0.3)');
-        expect(colourHistory.pushColour).toHaveBeenCalledTimes(0);
+        expect(colorHistory.pushColor).toHaveBeenCalledTimes(0);
     });
 });

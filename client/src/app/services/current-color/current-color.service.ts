@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
-import { ColourHistoryService } from '@app/services/colour-history/colour-history.service';
+import { ColorHistoryService } from '@app/services/color-history/color-history.service';
 import { RgbSettings } from '@app/utils/enums/rgb-settings';
 
 @Injectable({
     providedIn: 'root',
 })
-export class CurrentColourService {
+export class CurrentColorService {
     private primaryColorRgb: string;
     private secondaryColorRgb: string;
     private primaryColorTransparency: string;
     private secondaryColorTransparency: string;
 
-    constructor(private colorHistory: ColourHistoryService) {
+    constructor(private colorHistory: ColorHistoryService) {
         this.primaryColorRgb = RgbSettings.DEFAULT_PRIMARY_RGB;
         this.secondaryColorRgb = RgbSettings.DEFAULT_SECONDARY_RGB;
 
@@ -44,14 +44,14 @@ export class CurrentColourService {
     setPrimaryColorRgb(rgb: string): void {
         if (this.primaryColorRgb !== rgb) {
             this.primaryColorRgb = rgb;
-            this.colorHistory.pushColour(this.getPrimaryColorRgb());
+            this.colorHistory.pushColor(this.getPrimaryColorRgb());
         }
     }
 
     setSecondaryColorRgb(rgb: string): void {
         if (this.secondaryColorRgb !== rgb) {
             this.secondaryColorRgb = rgb;
-            this.colorHistory.pushColour(this.getSecondaryColorRgb());
+            this.colorHistory.pushColor(this.getSecondaryColorRgb());
         }
     }
 
@@ -70,12 +70,12 @@ export class CurrentColourService {
     }
 
     getPrimaryColorHex(): string {
-        const colorRGB = this.primaryColorRgb.split(RgbSettings.RGB_RGBA_SEPARATOR, RgbSettings.RGB_NUMBER_OF_COLOURS);
+        const colorRGB = this.primaryColorRgb.split(RgbSettings.RGB_RGBA_SEPARATOR, RgbSettings.RGB_NUMBER_OF_COLORS);
         return this.rgbToHex(parseInt(colorRGB[0], 10), parseInt(colorRGB[1], 10), parseInt(colorRGB[2], 10));
     }
 
     getSecondaryColorHex(): string {
-        const colorRGB = this.secondaryColorRgb.split(RgbSettings.RGB_RGBA_SEPARATOR, RgbSettings.RGB_NUMBER_OF_COLOURS);
+        const colorRGB = this.secondaryColorRgb.split(RgbSettings.RGB_RGBA_SEPARATOR, RgbSettings.RGB_NUMBER_OF_COLORS);
         return this.rgbToHex(parseInt(colorRGB[0], 10), parseInt(colorRGB[1], 10), parseInt(colorRGB[2], 10));
     }
 
