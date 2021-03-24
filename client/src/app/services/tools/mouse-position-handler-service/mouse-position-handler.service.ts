@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
-import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
+import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { Sign } from '@app/utils/enums/rgb-settings';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
@@ -10,8 +10,8 @@ import { ToolCommand } from '@app/utils/interfaces/tool-command';
     providedIn: 'root',
 })
 export class MousePositionHandlerService extends Tool {
-    constructor(drawingService: DrawingService, currentColourService: CurrentColourService) {
-        super(drawingService, currentColourService);
+    constructor(drawingService: DrawingService, currentColorService: CurrentColorService) {
+        super(drawingService, currentColorService);
     }
 
     isMouseInFirstQuadrant(mouseDownCoord: Vec2): boolean {

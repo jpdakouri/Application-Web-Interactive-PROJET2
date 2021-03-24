@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { SelectionCommand } from '@app/classes/tool-commands/selection-command';
 import { Vec2 } from '@app/classes/vec2';
-import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
+import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ALPHA_POS, BLUE_POS, GREEN_POS, MAX_BYTE_VALUE, RED_POS } from '@app/services/services-constants';
 import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
@@ -37,16 +37,16 @@ export class SelectionRectangleService extends Tool {
     isSelectionDone: boolean;
 
     rectangleService: RectangleService;
-    currentColourService: CurrentColourService;
+    currentColorService: CurrentColorService;
 
     constructor(
         drawingService: DrawingService,
-        currentColourService: CurrentColourService,
+        currentColorService: CurrentColorService,
         mousePositionHandler: MousePositionHandlerService,
         private undoRedo: UndoRedoService,
     ) {
-        super(drawingService, currentColourService);
-        this.currentColourService = currentColourService;
+        super(drawingService, currentColorService);
+        this.currentColorService = currentColorService;
         this.topLeftCorner = { x: 0, y: 0 };
         this.offset = { x: 0, y: 0 };
         this.selectionActive = this.dragActive = false;

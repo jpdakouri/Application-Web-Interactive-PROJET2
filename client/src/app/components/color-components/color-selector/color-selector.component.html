@@ -1,6 +1,6 @@
 <div class="color-wrapper">
     <app-hue-selector (color)="hue = $event"></app-hue-selector>
-    <app-colour-palette-selector [hue]="hue"></app-colour-palette-selector>
+    <app-color-palette-selector [hue]="hue"></app-color-palette-selector>
 </div>
 <mat-divider></mat-divider>
 
@@ -19,18 +19,18 @@
 <div class="alpha-input">
     <h3>Entrez l'opacité en % (1-100)</h3>
     <mat-form-field>
-        <input matInput placeholder="% couleur primaire" [(ngModel)]="primaryColourTransparency" (keyup)="onPrimaryColorTransparencyEntryChange()" />
+        <input matInput placeholder="% couleur primaire" [(ngModel)]="primaryColorTransparency" (keyup)="onPrimaryColorTransparencyEntryChange()" />
     </mat-form-field>
     <mat-form-field>
         <input
             matInput
             placeholder="% couleur secondaire"
-            [(ngModel)]="secondaryColourTransparency"
+            [(ngModel)]="secondaryColorTransparency"
             (keyup)="onSecondaryColorTransparencyEntryChange()"
         />
     </mat-form-field>
 </div>
 <mat-divider></mat-divider>
-<app-current-colour></app-current-colour>
+<app-current-color></app-current-color>
 <mat-divider></mat-divider>
-<app-colour-history></app-colour-history>
+<app-color-history></app-color-history>

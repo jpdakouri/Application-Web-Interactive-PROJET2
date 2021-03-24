@@ -2,7 +2,7 @@
     <h3>Historique des couleurs:</h3>
     <canvas
         *ngFor="let id of createArray(10); let i = index"
-        [style.background]="historyService.getColour(i)"
+        [style.background]="historyService.getColor(i)"
         width="15"
         height="15"
         (click)="selectPrimaryColor(i)"

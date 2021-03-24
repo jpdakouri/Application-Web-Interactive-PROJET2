@@ -1,13 +1,13 @@
 import { AfterViewInit, Component, ElementRef, HostListener, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
-import { Colours } from '@app/components/components-constants';
-import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
+import { Colors } from '@app/components/components-constants';
+import { CurrentColorService } from '@app/services/current-color/current-color.service';
 @Component({
-    selector: 'app-colour-palette-selector',
-    templateUrl: './colour-palette-selector.component.html',
-    styleUrls: ['./colour-palette-selector.component.scss'],
+    selector: 'app-color-palette-selector',
+    templateUrl: './color-palette-selector.component.html',
+    styleUrls: ['./color-palette-selector.component.scss'],
 })
-export class ColourPaletteSelectorComponent implements AfterViewInit, OnChanges {
+export class ColorPaletteSelectorComponent implements AfterViewInit, OnChanges {
     // Code inspiré par https://malcoded.com/posts/angular-color-picker/
 
     @Input() hue: string;
@@ -16,7 +16,7 @@ export class ColourPaletteSelectorComponent implements AfterViewInit, OnChanges 
     private mousedown: boolean = false;
     private selectedPosition: Vec2;
 
-    constructor(private currentColourService: CurrentColourService) {}
+    constructor(private currentColorService: CurrentColorService) {}
 
     ngAfterViewInit(): void {
         this.draw();
@@ -34,19 +34,19 @@ export class ColourPaletteSelectorComponent implements AfterViewInit, OnChanges 
             const width = this.paletteCanvas.nativeElement.width;
             const height = this.paletteCanvas.nativeElement.height;
 
-            this.canvasContext.fillStyle = this.hue || Colours.RGBA_WHITE;
+            this.canvasContext.fillStyle = this.hue || Colors.RGBA_WHITE;
             this.canvasContext.fillRect(0, 0, width, height);
 
             const whiteGrad = this.canvasContext.createLinearGradient(0, 0, width, 0);
-            whiteGrad.addColorStop(0, Colours.RGBA_WHITE);
-            whiteGrad.addColorStop(1, Colours.TRANSPARENT_RGBA_WHITE);
+            whiteGrad.addColorStop(0, Colors.RGBA_WHITE);
+            whiteGrad.addColorStop(1, Colors.TRANSPARENT_RGBA_WHITE);
 
             this.canvasContext.fillStyle = whiteGrad;
             this.canvasContext.fillRect(0, 0, width, height);
 
             const blackGrad = this.canvasContext.createLinearGradient(0, 0, 0, height);
-            blackGrad.addColorStop(0, Colours.TRANSPARENT_RGBA_BLACK);
-            blackGrad.addColorStop(1, Colours.RGBA_BLACK);
+            blackGrad.addColorStop(0, Colors.TRANSPARENT_RGBA_BLACK);
+            blackGrad.addColorStop(1, Colors.RGBA_BLACK);
 
             this.canvasContext.fillStyle = blackGrad;
             this.canvasContext.fillRect(0, 0, width, height);
@@ -79,8 +79,8 @@ export class ColourPaletteSelectorComponent implements AfterViewInit, OnChanges 
     @HostListener('mouseup', ['$event'])
     onMouseUp(mouseEvent: MouseEvent): void {
         this.mousedown = false;
-        if (mouseEvent.button === 0) this.currentColourService.setPrimaryColorRgb(this.getRgbAtPosition(mouseEvent.offsetX, mouseEvent.offsetY));
-        else this.currentColourService.setSecondaryColorRgb(this.getRgbAtPosition(mouseEvent.offsetX, mouseEvent.offsetY));
+        if (mouseEvent.button === 0) this.currentColorService.setPrimaryColorRgb(this.getRgbAtPosition(mouseEvent.offsetX, mouseEvent.offsetY));
+        else this.currentColorService.setSecondaryColorRgb(this.getRgbAtPosition(mouseEvent.offsetX, mouseEvent.offsetY));
     }
 
     onMouseDown(mouseEvent: MouseEvent): void {

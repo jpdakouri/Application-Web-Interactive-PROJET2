@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { PencilCommand } from '@app/classes/tool-commands/pencil-command';
 import { Vec2 } from '@app/classes/vec2';
-import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
+import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DEFAULT_MIN_THICKNESS } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
@@ -16,11 +16,11 @@ export class PencilService extends Tool {
     private commandPathData: Vec2[][];
     private radius: number;
     private undoRedo: UndoRedoService;
-    currentColourService: CurrentColourService;
+    currentColorService: CurrentColorService;
 
-    constructor(drawingService: DrawingService, currentColourService: CurrentColourService, undoRedo: UndoRedoService) {
-        super(drawingService, currentColourService);
-        this.currentColourService = currentColourService;
+    constructor(drawingService: DrawingService, currentColorService: CurrentColorService, undoRedo: UndoRedoService) {
+        super(drawingService, currentColorService);
+        this.currentColorService = currentColorService;
         this.radius = DEFAULT_MIN_THICKNESS;
         this.clearPath();
         this.undoRedo = undoRedo;
@@ -46,7 +46,7 @@ export class PencilService extends Tool {
             this.commandPathData.push(this.pathData);
             const commandLineThickness = this.lineThickness === undefined ? DEFAULT_MIN_THICKNESS : this.lineThickness;
             this.undoRedo.addCommand(
-                new PencilCommand(this, this.currentColourService.getPrimaryColorRgba(), commandLineThickness, this.commandPathData),
+                new PencilCommand(this, this.currentColorService.getPrimaryColorRgba(), commandLineThickness, this.commandPathData),
             );
 
             if (!this.mouseMoved) {
@@ -54,16 +54,16 @@ export class PencilService extends Tool {
                     this.drawingService.baseCtx,
                     this.pathData[0],
                     this.lineThickness || DEFAULT_MIN_THICKNESS,
-                    this.currentColourService.getPrimaryColorRgba(),
-                    this.currentColourService.getPrimaryColorRgba(),
+                    this.currentColorService.getPrimaryColorRgba(),
+                    this.currentColorService.getPrimaryColorRgba(),
                 );
             } else {
                 this.drawLine(
                     this.drawingService.baseCtx,
                     this.pathData,
                     this.lineThickness || DEFAULT_MIN_THICKNESS,
-                    this.currentColourService.getPrimaryColorRgba(),
-                    this.currentColourService.getPrimaryColorRgba(),
+                    this.currentColorService.getPrimaryColorRgba(),
+                    this.currentColorService.getPrimaryColorRgba(),
                 );
             }
         }
@@ -83,8 +83,8 @@ export class PencilService extends Tool {
                 this.drawingService.previewCtx,
                 this.pathData,
                 this.lineThickness || DEFAULT_MIN_THICKNESS,
-                this.currentColourService.getPrimaryColorRgba(),
-                this.currentColourService.getPrimaryColorRgba(),
+                this.currentColorService.getPrimaryColorRgba(),
+                this.currentColorService.getPrimaryColorRgba(),
             );
         }
     }
@@ -98,8 +98,8 @@ export class PencilService extends Tool {
                 this.drawingService.baseCtx,
                 this.pathData,
                 this.lineThickness || DEFAULT_MIN_THICKNESS,
-                this.currentColourService.getPrimaryColorRgba(),
-                this.currentColourService.getPrimaryColorRgba(),
+                this.currentColorService.getPrimaryColorRgba(),
+                this.currentColorService.getPrimaryColorRgba(),
             );
             this.clearPath();
             this.drawingService.previewCtx.beginPath();

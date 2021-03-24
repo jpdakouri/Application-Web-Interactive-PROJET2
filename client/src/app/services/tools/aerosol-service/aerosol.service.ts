@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { AerosolCommand } from '@app/classes/tool-commands/aerosol-command';
 import { Vec2 } from '@app/classes/vec2';
-import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
+import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DEFAULT_DROPLET_DIAMETER, DEFAULT_FREQUENCY, DEFAULT_JET_DIAMETER, DOTS_PER_SPRAY, MS_PER_S } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
@@ -17,8 +17,8 @@ export class AerosolService extends Tool {
     private commandSprayLocations: Vec2[];
     private undoRedo: UndoRedoService;
 
-    constructor(drawingService: DrawingService, currentColourService: CurrentColourService, undoRedo: UndoRedoService) {
-        super(drawingService, currentColourService);
+    constructor(drawingService: DrawingService, currentColorService: CurrentColorService, undoRedo: UndoRedoService) {
+        super(drawingService, currentColorService);
         this.frequency = DEFAULT_FREQUENCY;
         this.dropletDiameter = DEFAULT_DROPLET_DIAMETER;
         this.jetDiameter = DEFAULT_JET_DIAMETER;
@@ -42,7 +42,7 @@ export class AerosolService extends Tool {
             this.mouseDown = false;
             const command = new AerosolCommand(
                 this,
-                this.currentColourService.getPrimaryColorRgba(),
+                this.currentColorService.getPrimaryColorRgba(),
                 this.commandSprayLocations,
                 this.dropletDiameter as number,
             );
@@ -78,7 +78,7 @@ export class AerosolService extends Tool {
             const currentPosition = this.mouseCurrentPosition;
             const particlePosition = { x: currentPosition.x + offset.x, y: currentPosition.y + offset.y };
             this.commandSprayLocations.push(particlePosition);
-            this.drawSprayParticle(this.drawingService.baseCtx, particlePosition, this.currentColourService.getPrimaryColorRgba(), radius);
+            this.drawSprayParticle(this.drawingService.baseCtx, particlePosition, this.currentColorService.getPrimaryColorRgba(), radius);
         }
     }
 

@@ -3,7 +3,6 @@ import { Vec2 } from '@app/classes/vec2';
 import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.service';
 import { LOWER_BOUND_HEIGHT, LOWER_BOUND_WIDTH, MINIMUM_HEIGHT, MINIMUM_WIDTH, SIDEBAR_WIDTH } from '@app/services/services-constants';
 import { Status } from '@app/utils/enums/canvas-resizer-status';
-import { ToolCommand } from '@app/utils/interfaces/tool-command';
 export * from '@app/utils/enums/canvas-resizer-status';
 
 @Injectable({
@@ -119,10 +118,5 @@ export class CanvasResizerService {
     updatePreviewCanvasSize(newCoordinate: Vec2): void {
         this.canvasPreviewHeight = newCoordinate.y;
         this.canvasPreviewWidth = newCoordinate.x;
-    }
-
-    executeCommand(command: ToolCommand): void {
-        // TODO
-        return;
     }
 }

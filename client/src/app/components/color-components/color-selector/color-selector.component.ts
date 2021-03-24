@@ -8,47 +8,47 @@ import {
     PERCENTAGE_MAX,
     RGB_COMPONENTS,
 } from '@app/components/components-constants';
-import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
+import { CurrentColorService } from '@app/services/current-color/current-color.service';
 
 @Component({
-    selector: 'app-colour-selector',
-    templateUrl: './colour-selector.component.html',
-    styleUrls: ['./colour-selector.component.scss'],
+    selector: 'app-color-selector',
+    templateUrl: './color-selector.component.html',
+    styleUrls: ['./color-selector.component.scss'],
 })
-export class ColourSelectorComponent {
+export class ColorSelectorComponent {
     // Code inspiré par https://malcoded.com/posts/angular-color-picker/
     hue: string;
     selectedColor: string;
 
     rgbColor: string;
-    primaryColourTransparency: string;
-    secondaryColourTransparency: string;
+    primaryColorTransparency: string;
+    secondaryColorTransparency: string;
 
-    constructor(private currentColourService: CurrentColourService) {}
+    constructor(private currentColorService: CurrentColorService) {}
 
     setPrimaryColor(): void {
         const convertedColor = this.convertHexColorToDec();
-        this.currentColourService.setPrimaryColorRgb(convertedColor);
+        this.currentColorService.setPrimaryColorRgb(convertedColor);
         this.rgbColor = '';
     }
 
     setSecondaryColor(): void {
         const convertedColor = this.convertHexColorToDec();
-        this.currentColourService.setSecondaryColorRgb(convertedColor);
+        this.currentColorService.setSecondaryColorRgb(convertedColor);
         this.rgbColor = '';
     }
 
     onPrimaryColorTransparencyEntryChange(): void {
-        if (this.isValidTransparency(this.primaryColourTransparency)) {
-            const TRANSPARENCY_RGB = Number(this.primaryColourTransparency) / PERCENTAGE_MAX;
-            this.currentColourService.setPrimaryColorTransparency(TRANSPARENCY_RGB.toString());
+        if (this.isValidTransparency(this.primaryColorTransparency)) {
+            const TRANSPARENCY_RGB = Number(this.primaryColorTransparency) / PERCENTAGE_MAX;
+            this.currentColorService.setPrimaryColorTransparency(TRANSPARENCY_RGB.toString());
         }
     }
 
     onSecondaryColorTransparencyEntryChange(): void {
-        if (this.isValidTransparency(this.secondaryColourTransparency)) {
-            const TRANSPARENCY_RGB = Number(this.secondaryColourTransparency) / PERCENTAGE_MAX;
-            this.currentColourService.setSecondaryColorTransparency(TRANSPARENCY_RGB.toString());
+        if (this.isValidTransparency(this.secondaryColorTransparency)) {
+            const TRANSPARENCY_RGB = Number(this.secondaryColorTransparency) / PERCENTAGE_MAX;
+            this.currentColorService.setSecondaryColorTransparency(TRANSPARENCY_RGB.toString());
         }
     }
 

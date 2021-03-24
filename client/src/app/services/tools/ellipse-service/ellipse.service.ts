@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { ShapeCommand } from '@app/classes/tool-commands/shape-command';
 import { Vec2 } from '@app/classes/vec2';
-import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
+import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
 import { DEFAULT_MIN_THICKNESS } from '@app/services/tools/tools-constants';
@@ -19,16 +19,16 @@ export class EllipseService extends Tool {
     private shiftDown: boolean;
     private undoRedo: UndoRedoService;
     private mousePositionHandler: MousePositionHandlerService;
-    currentColourService: CurrentColourService;
+    currentColorService: CurrentColorService;
 
     constructor(
         drawingService: DrawingService,
-        currentColourService: CurrentColourService,
+        currentColorService: CurrentColorService,
         undoRedo: UndoRedoService,
         mousePositionHandler: MousePositionHandlerService,
     ) {
-        super(drawingService, currentColourService);
-        this.currentColourService = currentColourService;
+        super(drawingService, currentColorService);
+        this.currentColorService = currentColorService;
         this.undoRedo = undoRedo;
         this.mousePositionHandler = mousePositionHandler;
     }
@@ -60,15 +60,15 @@ export class EllipseService extends Tool {
                 this.drawingService.baseCtx,
                 this.firstGrid,
                 this.mouseDownCoord,
-                this.currentColourService.getPrimaryColorRgba(),
-                this.currentColourService.getSecondaryColorRgba(),
+                this.currentColorService.getPrimaryColorRgba(),
+                this.currentColorService.getSecondaryColorRgba(),
                 this.lineThickness || DEFAULT_MIN_THICKNESS,
                 this.shapeStyle,
             );
             const command = new ShapeCommand(
                 this,
-                this.currentColourService.getPrimaryColorRgba(),
-                this.currentColourService.getSecondaryColorRgba(),
+                this.currentColorService.getPrimaryColorRgba(),
+                this.currentColorService.getSecondaryColorRgba(),
                 this.lineThickness || DEFAULT_MIN_THICKNESS,
                 this.firstGrid,
                 this.mouseDownCoord,
@@ -214,8 +214,8 @@ export class EllipseService extends Tool {
             this.drawingService.previewCtx,
             this.firstGrid,
             currentCoord,
-            this.currentColourService.getPrimaryColorRgba(),
-            this.currentColourService.getSecondaryColorRgba(),
+            this.currentColorService.getPrimaryColorRgba(),
+            this.currentColorService.getSecondaryColorRgba(),
             this.lineThickness || DEFAULT_MIN_THICKNESS,
             this.shapeStyle,
         );

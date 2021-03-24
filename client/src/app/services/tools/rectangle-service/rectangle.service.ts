@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { ShapeCommand } from '@app/classes/tool-commands/shape-command';
 import { Vec2 } from '@app/classes/vec2';
-import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
+import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
 import { DEFAULT_MIN_THICKNESS } from '@app/services/tools/tools-constants';
@@ -17,18 +17,18 @@ import { ShapeStyle } from '@app/utils/enums/shape-style';
 export class RectangleService extends Tool {
     private firstGrid: Vec2;
     private shiftDown: boolean;
-    currentColourService: CurrentColourService;
+    currentColorService: CurrentColorService;
     private undoRedo: UndoRedoService;
     private mousePositionHandler: MousePositionHandlerService;
 
     constructor(
         drawingService: DrawingService,
-        currentColourService: CurrentColourService,
+        currentColorService: CurrentColorService,
         undoRedo: UndoRedoService,
         mousePositionHandler: MousePositionHandlerService,
     ) {
-        super(drawingService, currentColourService);
-        this.currentColourService = currentColourService;
+        super(drawingService, currentColorService);
+        this.currentColorService = currentColorService;
         this.undoRedo = undoRedo;
         this.mousePositionHandler = mousePositionHandler;
     }
@@ -56,8 +56,8 @@ export class RectangleService extends Tool {
                 this.drawingService.previewCtx,
                 this.firstGrid,
                 this.mouseDownCoord,
-                this.currentColourService.getPrimaryColorRgba(),
-                this.currentColourService.getSecondaryColorRgba(),
+                this.currentColorService.getPrimaryColorRgba(),
+                this.currentColorService.getSecondaryColorRgba(),
                 this.lineThickness || DEFAULT_MIN_THICKNESS,
                 this.shapeStyle,
             );
@@ -68,15 +68,15 @@ export class RectangleService extends Tool {
                 this.drawingService.baseCtx,
                 this.firstGrid,
                 this.mouseDownCoord,
-                this.currentColourService.getPrimaryColorRgba(),
-                this.currentColourService.getSecondaryColorRgba(),
+                this.currentColorService.getPrimaryColorRgba(),
+                this.currentColorService.getSecondaryColorRgba(),
                 this.lineThickness || DEFAULT_MIN_THICKNESS,
                 this.shapeStyle,
             );
             const command = new ShapeCommand(
                 this,
-                this.currentColourService.getPrimaryColorRgba(),
-                this.currentColourService.getSecondaryColorRgba(),
+                this.currentColorService.getPrimaryColorRgba(),
+                this.currentColorService.getSecondaryColorRgba(),
                 this.lineThickness || DEFAULT_MIN_THICKNESS,
                 this.firstGrid,
                 this.mouseDownCoord,
@@ -108,7 +108,7 @@ export class RectangleService extends Tool {
     }
 
     drawPerimeter(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
-        ctx.strokeStyle = this.currentColourService.getSecondaryColorRgba();
+        ctx.strokeStyle = this.currentColorService.getSecondaryColorRgba();
 
         const startCoord = { ...this.firstGrid };
         const width = Math.abs(finalGrid.x);
@@ -192,8 +192,8 @@ export class RectangleService extends Tool {
             this.drawingService.previewCtx,
             this.firstGrid,
             currentCoord,
-            this.currentColourService.getPrimaryColorRgba(),
-            this.currentColourService.getSecondaryColorRgba(),
+            this.currentColorService.getPrimaryColorRgba(),
+            this.currentColorService.getSecondaryColorRgba(),
             this.lineThickness || DEFAULT_MIN_THICKNESS,
             this.shapeStyle,
         );

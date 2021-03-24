@@ -2,7 +2,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CanvasResizerService, Status } from '@app/services/canvas-resizer/canvas-resizer.service';
-import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
+import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.service';
 import { SaveDrawingService } from '@app/services/save-drawing/save-drawing.service';
@@ -25,7 +25,7 @@ describe('DrawingComponent', () => {
 
     let toolManagerServiceMock: ToolManagerServiceMock;
     beforeEach(async(() => {
-        toolStub = new ToolStub({} as DrawingService, {} as CurrentColourService);
+        toolStub = new ToolStub({} as DrawingService, {} as CurrentColorService);
         drawingStub = new DrawingService();
         toolManagerServiceMock = new ToolManagerServiceMock();
         mouseStub = new MouseHandlerService();

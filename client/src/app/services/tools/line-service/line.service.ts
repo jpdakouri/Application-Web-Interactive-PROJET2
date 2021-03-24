@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { LineCommand } from '@app/classes/tool-commands/line-command';
 import { Vec2 } from '@app/classes/vec2';
-import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
+import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DEFAULT_DOT_RADIUS, DEFAULT_MIN_THICKNESS, PIXEL_DISTANCE, SHIFT_ANGLE_45, SHIFT_ANGLE_HALF_45 } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
@@ -18,8 +18,8 @@ export class LineService extends Tool {
     private shiftPressed: boolean;
     private undoRedo: UndoRedoService;
 
-    constructor(drawingService: DrawingService, currentColourService: CurrentColourService, undoRedo: UndoRedoService) {
-        super(drawingService, currentColourService);
+    constructor(drawingService: DrawingService, currentColorService: CurrentColorService, undoRedo: UndoRedoService) {
+        super(drawingService, currentColorService);
         this.undoRedo = undoRedo;
         this.clearPath();
     }
@@ -38,8 +38,8 @@ export class LineService extends Tool {
 
             this.drawLine(
                 this.drawingService.previewCtx,
-                this.currentColourService.getPrimaryColorHex(),
-                this.currentColourService.getSecondaryColorHex(),
+                this.currentColorService.getPrimaryColorHex(),
+                this.currentColorService.getSecondaryColorHex(),
                 this.showDots || false,
                 this.dotRadius || DEFAULT_DOT_RADIUS,
                 this.pathData,
@@ -63,8 +63,8 @@ export class LineService extends Tool {
         if (this.started)
             this.drawLine(
                 this.drawingService.previewCtx,
-                this.currentColourService.getPrimaryColorHex(),
-                this.currentColourService.getSecondaryColorHex(),
+                this.currentColorService.getPrimaryColorHex(),
+                this.currentColorService.getSecondaryColorHex(),
                 this.showDots || false,
                 this.dotRadius || DEFAULT_DOT_RADIUS,
                 this.pathData,
@@ -86,8 +86,8 @@ export class LineService extends Tool {
         }
         this.drawLine(
             this.drawingService.baseCtx,
-            this.currentColourService.getPrimaryColorHex(),
-            this.currentColourService.getSecondaryColorHex(),
+            this.currentColorService.getPrimaryColorHex(),
+            this.currentColorService.getSecondaryColorHex(),
             this.showDots || false,
             this.dotRadius || DEFAULT_DOT_RADIUS,
             this.pathData,
@@ -96,8 +96,8 @@ export class LineService extends Tool {
         );
         const command = new LineCommand(
             this,
-            this.currentColourService.getPrimaryColorHex(),
-            this.currentColourService.getSecondaryColorHex(),
+            this.currentColorService.getPrimaryColorHex(),
+            this.currentColorService.getSecondaryColorHex(),
             this.lineThickness || DEFAULT_MIN_THICKNESS,
             this.dotRadius || DEFAULT_DOT_RADIUS,
             this.pathData,
@@ -141,8 +141,8 @@ export class LineService extends Tool {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawLine(
             this.drawingService.previewCtx,
-            this.currentColourService.getPrimaryColorHex(),
-            this.currentColourService.getSecondaryColorHex(),
+            this.currentColorService.getPrimaryColorHex(),
+            this.currentColorService.getSecondaryColorHex(),
             this.showDots || false,
             this.dotRadius || DEFAULT_DOT_RADIUS,
             this.pathData,
@@ -201,7 +201,7 @@ export class LineService extends Tool {
         ctx.moveTo(lastPoint.x, lastPoint.y);
         ctx.lineTo(previewPoint.x, previewPoint.y);
         ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
-        ctx.strokeStyle = this.currentColourService.getPrimaryColorHex();
+        ctx.strokeStyle = this.currentColorService.getPrimaryColorHex();
         ctx.stroke();
     }
 

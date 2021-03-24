@@ -1,25 +1,25 @@
 import { SimpleChange } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
-import { ColourPaletteSelectorComponent } from './colour-palette-selector.component';
+import { CurrentColorService } from '@app/services/current-color/current-color.service';
+import { ColorPaletteSelectorComponent } from './color-palette-selector.component';
 
 const RGB_ARRAY_SIZE = 3;
 // The gradient is drawn differently by different browsers
 const topLeftColor1 = 254;
 const topLeftColor2 = 255;
 
-describe('ColourPaletteSelectorComponent', () => {
-    let component: ColourPaletteSelectorComponent;
-    let fixture: ComponentFixture<ColourPaletteSelectorComponent>;
+describe('ColorPaletteSelectorComponent', () => {
+    let component: ColorPaletteSelectorComponent;
+    let fixture: ComponentFixture<ColorPaletteSelectorComponent>;
     let canvasContext: CanvasRenderingContext2D;
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [ColourPaletteSelectorComponent],
+            declarations: [ColorPaletteSelectorComponent],
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(ColourPaletteSelectorComponent);
+        fixture = TestBed.createComponent(ColorPaletteSelectorComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
         const context = component.paletteCanvas.nativeElement.getContext('2d');
@@ -107,7 +107,7 @@ describe('ColourPaletteSelectorComponent', () => {
     });
 
     it('a color is only emitted on mouse up based on the button that is unclicked', () => {
-        const currentColorService = TestBed.inject(CurrentColourService);
+        const currentColorService = TestBed.inject(CurrentColorService);
         spyOn(currentColorService, 'setPrimaryColorRgb');
         spyOn(currentColorService, 'setSecondaryColorRgb');
         const clickEvent = new MouseEvent('mousedown', { clientX: 0, clientY: 0 });

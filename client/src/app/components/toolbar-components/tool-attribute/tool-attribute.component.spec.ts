@@ -7,11 +7,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSliderChange, MatSliderModule } from '@angular/material/slider';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ColourHistoryComponent } from '@app/components/colour-components/colour-history/colour-history.component';
-import { ColourPaletteSelectorComponent } from '@app/components/colour-components/colour-palette-selector/colour-palette-selector.component';
-import { ColourSelectorComponent } from '@app/components/colour-components/colour-selector/colour-selector.component';
-import { CurrentColourComponent } from '@app/components/colour-components/current-color/current-colour.component';
-import { HueSelectorComponent } from '@app/components/colour-components/hue-selector/hue-selector.component';
+import { ColorHistoryComponent } from '@app/components/color-components/color-history/color-history.component';
+import { ColorPaletteSelectorComponent } from '@app/components/color-components/color-palette-selector/color-palette-selector.component';
+import { ColorSelectorComponent } from '@app/components/color-components/color-selector/color-selector.component';
+import { CurrentColorComponent } from '@app/components/color-components/current-color/current-color.component';
+import { HueSelectorComponent } from '@app/components/color-components/hue-selector/hue-selector.component';
 import { PipettePreviewComponent } from '@app/components/pipette-preview/pipette-preview.component';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
@@ -45,10 +45,10 @@ describe('ToolAttributeBarComponent', () => {
         TestBed.configureTestingModule({
             declarations: [
                 ToolAttributeComponent,
-                ColourSelectorComponent,
-                ColourHistoryComponent,
-                CurrentColourComponent,
-                ColourPaletteSelectorComponent,
+                ColorSelectorComponent,
+                ColorHistoryComponent,
+                CurrentColorComponent,
+                ColorPaletteSelectorComponent,
                 HueSelectorComponent,
                 PipettePreviewComponent,
             ],

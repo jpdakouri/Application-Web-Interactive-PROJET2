@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Output, ViewChild } from '@angular/core';
 import {
-    Colours,
+    Colors,
     EXCLUDED_SIDE_WIDTH,
     SELECTOR_COLOR,
     SELECTOR_OUTLINE_COLOR,
@@ -95,19 +95,19 @@ export class HueSelectorComponent implements AfterViewInit {
 
         let gradientPartCount = 0;
         const GRADIENT_PARTS = 6;
-        GRADIENT.addColorStop(gradientPartCount / GRADIENT_PARTS, Colours.RGBA_RED);
+        GRADIENT.addColorStop(gradientPartCount / GRADIENT_PARTS, Colors.RGBA_RED);
         gradientPartCount++;
-        GRADIENT.addColorStop(gradientPartCount / GRADIENT_PARTS, Colours.RGBA_YELLOW);
+        GRADIENT.addColorStop(gradientPartCount / GRADIENT_PARTS, Colors.RGBA_YELLOW);
         gradientPartCount++;
-        GRADIENT.addColorStop(gradientPartCount / GRADIENT_PARTS, Colours.RGBA_GREEN);
+        GRADIENT.addColorStop(gradientPartCount / GRADIENT_PARTS, Colors.RGBA_GREEN);
         gradientPartCount++;
-        GRADIENT.addColorStop(gradientPartCount / GRADIENT_PARTS, Colours.RGBA_CYAN);
+        GRADIENT.addColorStop(gradientPartCount / GRADIENT_PARTS, Colors.RGBA_CYAN);
         gradientPartCount++;
-        GRADIENT.addColorStop(gradientPartCount / GRADIENT_PARTS, Colours.RGBA_BLUE);
+        GRADIENT.addColorStop(gradientPartCount / GRADIENT_PARTS, Colors.RGBA_BLUE);
         gradientPartCount++;
-        GRADIENT.addColorStop(gradientPartCount / GRADIENT_PARTS, Colours.RGBA_PURPLE);
+        GRADIENT.addColorStop(gradientPartCount / GRADIENT_PARTS, Colors.RGBA_PURPLE);
         gradientPartCount++;
-        GRADIENT.addColorStop(gradientPartCount / GRADIENT_PARTS, Colours.RGBA_RED);
+        GRADIENT.addColorStop(gradientPartCount / GRADIENT_PARTS, Colors.RGBA_RED);
         return GRADIENT;
     }
 
