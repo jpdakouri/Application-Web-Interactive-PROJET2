@@ -81,7 +81,6 @@ export class ToolAttributeComponent {
     }
 
     showPipettePreview(): boolean {
-        // TODO: changer pour visible seulement si pipette active
         return this.toolManagerService.isCurrentTool(ToolsNames.Pipette);
     }
 

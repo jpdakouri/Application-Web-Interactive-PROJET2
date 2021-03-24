@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { SelectionEllipseService } from '@app/services/tools/selectionEllipse-service/selection-ellipse.service';
-import { SelectionRectangleService } from '@app/services/tools/selectionRectangle-service/selection-rectangle.service';
+import { SelectionEllipseService } from '@app/services/tools/selection-ellipse-service/selection-ellipse.service';
+import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
 import { SelectionCommand } from './selection-command';
 
 describe('SelectionCommand', () => {

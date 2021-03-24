@@ -32,11 +32,9 @@ describe('CarouselComponent', () => {
     let component: CarouselComponent;
     let fixture: ComponentFixture<CarouselComponent>;
     let carouselServiceMock: CarouselServiceMock;
-    // let drawingCardComponentMock: DrawingCardComponentMock;
 
     beforeEach(async () => {
         carouselServiceMock = new CarouselServiceMock();
-        // drawingCardComponentMock = new DrawingCardComponentMock();
         await TestBed.configureTestingModule({
             declarations: [CarouselComponent, SearchByTagsComponent, MockDrawingCardComponent],
             providers: [

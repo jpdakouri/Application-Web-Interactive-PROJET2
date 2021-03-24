@@ -8,8 +8,8 @@ import { PencilService } from '@app/services/tools/pencil-service/pencil.service
 import { PipetteService } from '@app/services/tools/pipette-service/pipette.service';
 import { PolygonService } from '@app/services/tools/polygon-service/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
-import { SelectionEllipseService } from '@app/services/tools/selectionEllipse-service/selection-ellipse.service';
-import { SelectionRectangleService } from '@app/services/tools/selectionRectangle-service/selection-rectangle.service';
+import { SelectionEllipseService } from '@app/services/tools/selection-ellipse-service/selection-ellipse.service';
+import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 import { CurrentAttributes } from '@app/utils/types/current-attributes';

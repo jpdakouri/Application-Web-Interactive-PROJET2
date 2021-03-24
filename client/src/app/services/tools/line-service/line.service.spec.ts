@@ -116,6 +116,7 @@ describe('LineService', () => {
         service.onMouseUp(mouseEvent);
         expect(desiredAngleSpy).toHaveBeenCalled();
     });
+
     it(' desiredAngle shoulld return the right value', () => {
         service['pathData'].push({ x: 0, y: 0 });
         expect(service['desiredAngle']({ x: 2, y: -3 })).toEqual({ x: 2, y: -2 });
@@ -126,6 +127,7 @@ describe('LineService', () => {
         service['pathData'].push({ x: 0, y: 0 });
         expect(service['desiredAngle']({ x: 1, y: -3 })).toEqual({ x: 0, y: -3 });
     });
+
     it('onMouseMove should call previewUpdate if the drawing has started', () => {
         service.mouseDown = true;
         const mouseStartEvent = {
@@ -139,6 +141,7 @@ describe('LineService', () => {
 
         expect(previewUpdateSpy).toHaveBeenCalled();
     });
+
     it('onMouseMove should not call previewUpdate if the drawing has not started', () => {
         service.mouseDown = false;
         const previewUpdateSpy = spyOn<any>(service, 'previewUpdate').and.callThrough();
@@ -146,6 +149,7 @@ describe('LineService', () => {
 
         expect(previewUpdateSpy).not.toHaveBeenCalled();
     });
+
     it('onMouseLeave should stop the preview if drawing has started ', () => {
         service['pathData'].push({ x: 0, y: 0 });
         service['started'] = true;
@@ -160,6 +164,7 @@ describe('LineService', () => {
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawLineSpy).toHaveBeenCalled();
     });
+
     it('onMouseLeave not should not call drawLine if drawing has not started ', () => {
         service['started'] = false;
         const drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
@@ -169,6 +174,7 @@ describe('LineService', () => {
         } as MouseEvent);
         expect(drawLineSpy).not.toHaveBeenCalled();
     });
+
     it(' onDblClick should adapt if last point is 20px close to start', () => {
         const comparingArray: Vec2[] = [
             { x: 0, y: 0 },
@@ -196,6 +202,7 @@ describe('LineService', () => {
             true,
         );
     });
+
     it(' onDblClick should adapt if last 2 points are 20px close', () => {
         const comparingArray: Vec2[] = [
             { x: 0, y: 0 },
@@ -213,6 +220,7 @@ describe('LineService', () => {
         service.onDblClick();
         expect(drawLineSpy).toHaveBeenCalledWith(jasmine.any(CanvasRenderingContext2D), '#000000', '#ffffff', true, 1, comparingArray, 1, false);
     });
+
     it(' onDblClick should do nothing if distance is greater than 20px', () => {
         const comparingArray: Vec2[] = [
             { x: 0, y: 0 },
@@ -239,6 +247,7 @@ describe('LineService', () => {
             false,
         );
     });
+
     it(' keys should perform their task', () => {
         service['started'] = true;
         service.mouseDownCoord = { x: 20, y: 20 };
@@ -262,6 +271,7 @@ describe('LineService', () => {
         service.onKeyDown(event);
         expect(event.preventDefault).toHaveBeenCalled();
     });
+
     it('onKeyup should update shift state', () => {
         service['shiftPressed'] = true;
         service.mouseDownCoord = { x: 20, y: 20 };
@@ -346,4 +356,5 @@ describe('LineService', () => {
         const expectedWidth = 1;
         expect(TestBed.inject(DrawingService).previewCtx.lineWidth).toBe(expectedWidth);
     });
+    // tslint:disable-next-line:max-file-line-count
 });
