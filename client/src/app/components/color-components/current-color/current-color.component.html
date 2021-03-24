@@ -1,0 +1,26 @@
+<div class="current-color">
+    <h3>Couleur actuelle:</h3>
+    <div class="block-container">
+        <div class="yet-another-container">
+            <div class="color-container">
+                <canvas class="color-preview" [style.background]="currentColorService.getPrimaryColorRgb()" width="30" height="30"></canvas>
+                <h4 class="primary-title">Primaire</h4>
+            </div>
+            <div class="invertColors">
+                <button
+                    (click)="currentColorService.swapColors()"
+                    color="primary"
+                    mat-mini-fab
+                    aria-label="Invert colors"
+                    title="Inverser les couleurs"
+                >
+                    <mat-icon>autorenew</mat-icon>
+                </button>
+            </div>
+            <div class="color-container">
+                <canvas class="color-preview" [style.background]="currentColorService.getSecondaryColorRgb()" width="30" height="30"></canvas>
+                <h4 class="secondary-title">Secondaire</h4>
+            </div>
+        </div>
+    </div>
+</div>

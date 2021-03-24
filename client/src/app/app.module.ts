@@ -4,11 +4,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ColourHistoryComponent } from '@app/components/colour-components/colour-history/colour-history.component';
-import { ColourPaletteSelectorComponent } from '@app/components/colour-components/colour-palette-selector/colour-palette-selector.component';
-import { ColourSelectorComponent } from '@app/components/colour-components/colour-selector/colour-selector.component';
-import { CurrentColourComponent } from '@app/components/colour-components/current-color/current-colour.component';
-import { HueSelectorComponent } from '@app/components/colour-components/hue-selector/hue-selector.component';
+import { ColorHistoryComponent } from '@app/components/color-components/color-history/color-history.component';
+import { ColorPaletteSelectorComponent } from '@app/components/color-components/color-palette-selector/color-palette-selector.component';
+import { ColorSelectorComponent } from '@app/components/color-components/color-selector/color-selector.component';
+import { CurrentColorComponent } from '@app/components/color-components/current-color/current-color.component';
+import { HueSelectorComponent } from '@app/components/color-components/hue-selector/hue-selector.component';
 import { ToolAttributeComponent } from '@app/components/toolbar-components/tool-attribute/tool-attribute.component';
 import { ToolbarComponent } from '@app/components/toolbar-components/toolbar/toolbar.component';
 import { AppMaterialModule } from './app-material/app-material.module';
@@ -32,12 +32,12 @@ import { ServerErrorMessageComponent } from './components/server-error-message/s
         DrawingComponent,
         MainPageComponent,
         ToolAttributeComponent,
-        ColourHistoryComponent,
-        ColourSelectorComponent,
+        ColorHistoryComponent,
+        ColorSelectorComponent,
         ToolbarComponent,
-        CurrentColourComponent,
+        CurrentColorComponent,
         HueSelectorComponent,
-        ColourPaletteSelectorComponent,
+        ColorPaletteSelectorComponent,
         ExportDrawingComponent,
         SaveDrawingComponent,
         ServerErrorMessageComponent,

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
+import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import {
     DEFAULT_COLOR_BLACK,
@@ -34,7 +34,7 @@ export abstract class Tool {
     jetDiameter?: number = MIN_JET_DIAMETER;
     numberOfSides: number | undefined;
 
-    constructor(protected drawingService: DrawingService, protected currentColourService: CurrentColourService) {}
+    constructor(protected drawingService: DrawingService, protected currentColorService: CurrentColorService) {}
 
     onMouseDown(event: MouseEvent): void {}
 
