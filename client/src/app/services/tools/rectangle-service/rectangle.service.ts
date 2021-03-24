@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import { ShapeCommand } from '@app/classes/tool-commands/shape-command';
 import { Vec2 } from '@app/classes/vec2';
-import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
+import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { Sign } from '@app/services/services-constants';
+import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
 import { DEFAULT_MIN_THICKNESS } from '@app/services/tools/tools-constants';
-import { KeyboardButtons, MouseButtons } from '@app/utils/enums/list-boutton-pressed';
+import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
+import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
+import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 
 @Injectable({
@@ -14,11 +17,20 @@ import { ShapeStyle } from '@app/utils/enums/shape-style';
 export class RectangleService extends Tool {
     private firstGrid: Vec2;
     private shiftDown: boolean;
-    currentColourService: CurrentColourService;
+    currentColorService: CurrentColorService;
+    private undoRedo: UndoRedoService;
+    private mousePositionHandler: MousePositionHandlerService;
 
-    constructor(drawingService: DrawingService, currentColourService: CurrentColourService) {
-        super(drawingService, currentColourService);
-        this.currentColourService = currentColourService;
+    constructor(
+        drawingService: DrawingService,
+        currentColorService: CurrentColorService,
+        undoRedo: UndoRedoService,
+        mousePositionHandler: MousePositionHandlerService,
+    ) {
+        super(drawingService, currentColorService);
+        this.currentColorService = currentColorService;
+        this.undoRedo = undoRedo;
+        this.mousePositionHandler = mousePositionHandler;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -40,12 +52,39 @@ export class RectangleService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
-            this.drawRectangle(this.drawingService.previewCtx, this.mouseDownCoord);
+            this.drawRectangle(
+                this.drawingService.previewCtx,
+                this.firstGrid,
+                this.mouseDownCoord,
+                this.currentColorService.getPrimaryColorRgba(),
+                this.currentColorService.getSecondaryColorRgba(),
+                this.lineThickness || DEFAULT_MIN_THICKNESS,
+                this.shapeStyle,
+            );
             if (this.shiftDown) {
-                this.drawSquare(this.mouseDownCoord);
+                this.mousePositionHandler.makeSquare(this.mouseDownCoord, this.mouseDownCoord);
             }
-            this.drawRectangle(this.drawingService.baseCtx, this.mouseDownCoord);
+            this.drawRectangle(
+                this.drawingService.baseCtx,
+                this.firstGrid,
+                this.mouseDownCoord,
+                this.currentColorService.getPrimaryColorRgba(),
+                this.currentColorService.getSecondaryColorRgba(),
+                this.lineThickness || DEFAULT_MIN_THICKNESS,
+                this.shapeStyle,
+            );
+            const command = new ShapeCommand(
+                this,
+                this.currentColorService.getPrimaryColorRgba(),
+                this.currentColorService.getSecondaryColorRgba(),
+                this.lineThickness || DEFAULT_MIN_THICKNESS,
+                this.firstGrid,
+                this.mouseDownCoord,
+                this.shapeStyle,
+            );
+            this.undoRedo.addCommand(command);
             this.clearPath();
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
         this.mouseDown = false;
     }
@@ -69,7 +108,7 @@ export class RectangleService extends Tool {
     }
 
     drawPerimeter(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
-        ctx.strokeStyle = this.currentColourService.getSecondaryColorRgba();
+        ctx.strokeStyle = this.currentColorService.getSecondaryColorRgba();
 
         const startCoord = { ...this.firstGrid };
         const width = Math.abs(finalGrid.x);
@@ -84,90 +123,59 @@ export class RectangleService extends Tool {
         ctx.strokeRect(startCoord.x, startCoord.y, width, height);
     }
 
-    drawOutline(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+    drawOutline(ctx: CanvasRenderingContext2D, firstGrid: Vec2, finalGrid: Vec2, thickness: number, secondaryColor: string): void {
         ctx.beginPath();
-        ctx.strokeStyle = this.currentColourService.getSecondaryColorRgba();
-        ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
-        ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+        ctx.strokeStyle = secondaryColor;
+        ctx.lineWidth = thickness;
+        ctx.strokeRect(firstGrid.x, firstGrid.y, finalGrid.x, finalGrid.y);
     }
 
-    drawFilled(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+    drawFilled(ctx: CanvasRenderingContext2D, firstGrid: Vec2, finalGrid: Vec2, primaryColor: string): void {
         ctx.beginPath();
-        ctx.fillStyle = this.currentColourService.getPrimaryColorRgba();
-        ctx.fillRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+        ctx.fillStyle = primaryColor;
+        ctx.fillRect(firstGrid.x, firstGrid.y, finalGrid.x, finalGrid.y);
     }
 
-    drawFilledOutline(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+    drawFilledOutline(
+        ctx: CanvasRenderingContext2D,
+        firstGrid: Vec2,
+        finalGrid: Vec2,
+        thickness: number,
+        primaryColor: string,
+        secondaryColor: string,
+    ): void {
         ctx.beginPath();
-        ctx.fillStyle = this.currentColourService.getPrimaryColorRgba();
-        ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
-        ctx.strokeStyle = this.currentColourService.getSecondaryColorRgba();
-        ctx.strokeRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
-        ctx.fillRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
+        ctx.fillStyle = primaryColor;
+        ctx.lineWidth = thickness;
+        ctx.strokeStyle = secondaryColor;
+        ctx.strokeRect(firstGrid.x, firstGrid.y, finalGrid.x, finalGrid.y);
+        ctx.fillRect(firstGrid.x, firstGrid.y, finalGrid.x, finalGrid.y);
     }
 
-    private isMouseInFirstQuadrant(): boolean {
-        //  mouse is in first quadrant (+/+)
-        return Math.sign(this.mouseDownCoord.x) === Sign.Positive && Math.sign(this.mouseDownCoord.y) === Sign.Positive;
-    }
-
-    private isMouseInSecondQuadrant(): boolean {
-        // mouse is in third quadrant (-/-)
-        return Math.sign(this.mouseDownCoord.x) === Sign.Negative && Math.sign(this.mouseDownCoord.y) === Sign.Negative;
-    }
-
-    private isMouseInThirdQuadrant(): boolean {
-        // mouse is in fourth quadrant (-/+)
-        return Math.sign(this.mouseDownCoord.x) === Sign.Negative && Math.sign(this.mouseDownCoord.y) === Sign.Positive;
-    }
-
-    private isMouseInFourthQuadrant(): boolean {
-        // mouse is in second quadrant (+/-)
-        return Math.sign(this.mouseDownCoord.x) === Sign.Positive && Math.sign(this.mouseDownCoord.y) === Sign.Negative;
-    }
-
-    private isXGreaterThanY(): boolean {
-        return Math.abs(this.mouseDownCoord.x) > Math.abs(this.mouseDownCoord.y);
-    }
-
-    private isYGreaterThanX(): boolean {
-        return Math.abs(this.mouseDownCoord.y) > Math.abs(this.mouseDownCoord.x);
-    }
-
-    private drawSquare(grid: Vec2): void {
-        if (this.isMouseInFirstQuadrant()) {
-            grid.x = grid.y = Math.min(this.mouseDownCoord.x, this.mouseDownCoord.y);
-        }
-
-        if (this.isMouseInSecondQuadrant()) {
-            grid.x = grid.y = Math.max(this.mouseDownCoord.x, this.mouseDownCoord.y);
-        }
-
-        if (this.isMouseInThirdQuadrant()) {
-            this.isXGreaterThanY() ? (grid.x = -grid.y) : (grid.y = -grid.x);
-        }
-
-        if (this.isMouseInFourthQuadrant()) {
-            this.isYGreaterThanX() ? (grid.y = -grid.x) : (grid.x = -grid.y);
-        }
-    }
-
-    private drawRectangle(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
-        switch (this.shapeStyle) {
+    private drawRectangle(
+        ctx: CanvasRenderingContext2D,
+        firstGrid: Vec2,
+        finalGrid: Vec2,
+        primaryColor: string,
+        secondaryColor: string,
+        strokeThickness: number,
+        shapeStyle?: ShapeStyle,
+    ): void {
+        switch (shapeStyle) {
             case ShapeStyle.Outline:
-                this.drawOutline(ctx, finalGrid);
+                this.drawOutline(ctx, firstGrid, finalGrid, strokeThickness, secondaryColor);
                 break;
 
             case ShapeStyle.Filled:
-                this.drawFilled(ctx, finalGrid);
+                this.drawFilled(ctx, firstGrid, finalGrid, primaryColor);
                 break;
 
             case ShapeStyle.FilledOutline:
-                this.drawFilledOutline(ctx, finalGrid);
+                this.drawFilledOutline(ctx, firstGrid, finalGrid, strokeThickness, primaryColor, secondaryColor);
                 break;
 
             default:
-                this.drawOutline(ctx, finalGrid);
+                this.drawOutline(ctx, finalGrid, finalGrid, strokeThickness, secondaryColor);
                 break;
         }
     }
@@ -178,13 +186,33 @@ export class RectangleService extends Tool {
         this.drawingService.previewCtx.beginPath();
         this.drawPerimeter(this.drawingService.previewCtx, currentCoord);
         if (this.shiftDown) {
-            this.drawSquare(currentCoord);
+            this.mousePositionHandler.makeSquare(this.mouseDownCoord, currentCoord);
         }
-        this.drawRectangle(this.drawingService.previewCtx, currentCoord);
+        this.drawRectangle(
+            this.drawingService.previewCtx,
+            this.firstGrid,
+            currentCoord,
+            this.currentColorService.getPrimaryColorRgba(),
+            this.currentColorService.getSecondaryColorRgba(),
+            this.lineThickness || DEFAULT_MIN_THICKNESS,
+            this.shapeStyle,
+        );
         this.drawingService.previewCtx.closePath();
     }
 
     private clearPath(): void {
         this.firstGrid = this.mouseDownCoord = { x: 0, y: 0 };
+    }
+
+    executeCommand(command: ShapeCommand): void {
+        this.drawRectangle(
+            this.drawingService.baseCtx,
+            command.initialPosition,
+            command.finalPosition,
+            command.primaryColor,
+            command.secondaryColor,
+            command.strokeThickness,
+            command.shapeStyle,
+        );
     }
 }

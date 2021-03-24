@@ -7,7 +7,7 @@ export const MIN_HEX_RGB_VALUE = 1;
 export const MAX_HEX_RGB_VALUE = 2;
 export const INDEX_ELEMENT_NOT_THERE = -1;
 export const RGB_COMPONENTS = 3;
-export const MIN_TRANSPARENCY = 0;
+export const MIN_TRANSPARENCY = 1;
 export const MAX_TRANSPARENCY = 100;
 
 /****************************/
@@ -27,9 +27,9 @@ export const SELECTOR_OUTLINE_OFFSET_6PX = 6;
 export const EXCLUDED_SIDE_WIDTH = 5;
 
 /****************************/
-/***COLOURS***/
+/***COLORS***/
 /****************************/
-export enum Colours {
+export enum Colors {
     RGBA_WHITE = 'rgba(255,255,255,1)',
     RGBA_RED = 'rgba(255, 0, 0, 1)',
     RGBA_YELLOW = 'rgba(255, 255, 0, 1)',
@@ -54,8 +54,23 @@ export const MINIMUM_HEIGHT = 250;
 export const LOWER_BOUND_WIDTH = 500;
 export const LOWER_BOUND_HEIGHT = 500;
 
-export const SIDEBAR_WIDTH = 465;
+export const SIDEBAR_WIDTH = 335;
 
 export const WORKING_ZONE_VISIBLE_PORTION = 100;
 
 export const DEFAULT_WHITE = '#fff';
+
+/****************************/
+/***GLOBAL PIPETTE PREVIEW CONSTANTS***/
+/****************************/
+export const PREVIEW_NUMBER_OF_SQUARES_PER_SIDE = 15;
+
+/***********************/
+/***CAROUSEL CONSTANT***/
+/***********************/
+export const MAX_WIDTH_SIDE_CARD = '20vw';
+export const MAX_HEIGHT_SIDE_CARD = '40vh';
+export const MAX_WIDTH_MAIN_CARD = '25vw';
+export const MAX_HEIGHT_MAIN_CARD = '50vh';
+
+export const NOT_IN_ARRAY = -1;

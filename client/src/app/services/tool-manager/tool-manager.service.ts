@@ -5,7 +5,11 @@ import { EllipseService } from '@app/services/tools/ellipse-service/ellipse.serv
 import { EraserService } from '@app/services/tools/eraser-service/eraser.service';
 import { LineService } from '@app/services/tools/line-service/line.service';
 import { PencilService } from '@app/services/tools/pencil-service/pencil.service';
+import { PipetteService } from '@app/services/tools/pipette-service/pipette.service';
+import { PolygonService } from '@app/services/tools/polygon-service/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
+import { SelectionEllipseService } from '@app/services/tools/selection-ellipse-service/selection-ellipse.service';
+import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 import { CurrentAttributes } from '@app/utils/types/current-attributes';
@@ -28,6 +32,10 @@ export class ToolManagerService {
         lineService: LineService,
         eraserService: EraserService,
         aerosolService: AerosolService,
+        pipetteService: PipetteService,
+        selectBoxService: SelectionRectangleService,
+        selectEllipseService: SelectionEllipseService,
+        polygonService: PolygonService,
     ) {
         this.toolBox = {
             Pencil: pencilService,
@@ -36,12 +44,20 @@ export class ToolManagerService {
             Line: lineService,
             Eraser: eraserService,
             Aerosol: aerosolService,
+            Pipette: pipetteService,
+            SelectBox: selectBoxService,
+            SelectEllipse: selectEllipseService,
+            Polygon: polygonService,
         };
         this.currentAttributes = {
             LineThickness: 1,
             ShapeStyle: ShapeStyle.Outline,
             DotRadius: 1,
             ShowDots: false,
+            DropletDiameter: 1,
+            Frequency: 1,
+            JetDiameter: 1,
+            numberOfSides: 3,
         };
         this.shapeStyleSelection.set('Outline', ShapeStyle.Outline).set('Filled', ShapeStyle.Filled).set('FilledOutline', ShapeStyle.FilledOutline);
         this.toolChangeEmitter.subscribe((toolName: ToolsNames) => {
@@ -51,6 +67,9 @@ export class ToolManagerService {
             this.currentAttributes.LineThickness = currentTool.lineThickness;
             this.currentAttributes.DotRadius = currentTool.dotRadius;
             this.currentAttributes.ShowDots = currentTool.showDots;
+            this.currentAttributes.Frequency = currentTool.frequency;
+            this.currentAttributes.JetDiameter = currentTool.jetDiameter;
+            this.currentAttributes.DropletDiameter = currentTool.dropletDiameter;
         });
     }
 
@@ -89,8 +108,44 @@ export class ToolManagerService {
         return this.currentAttributes.ShapeStyle;
     }
 
+    getCurrentFrequency(): number | undefined {
+        return this.currentAttributes.Frequency;
+    }
+
+    getCurrentDropletDiameter(): number | undefined {
+        return this.currentAttributes.DropletDiameter;
+    }
+
+    getCurrentJetDiameter(): number | undefined {
+        return this.currentAttributes.JetDiameter;
+    }
+
+    setCurrentFrequency(frequency?: number): void {
+        this.toolBox[this.currentTool].frequency = frequency;
+        this.currentAttributes.Frequency = frequency;
+    }
+
+    setCurrentDropletDiameter(dropletDiameter?: number): void {
+        this.toolBox[this.currentTool].dropletDiameter = dropletDiameter;
+        this.currentAttributes.DropletDiameter = dropletDiameter;
+    }
+
+    setCurrentJetDiameter(jetDiameter?: number): void {
+        this.toolBox[this.currentTool].jetDiameter = jetDiameter;
+        this.currentAttributes.JetDiameter = jetDiameter;
+    }
+
     getCurrentToolInstance(): Tool {
         return this.toolBox[this.currentTool];
+    }
+
+    setCurrentNumberOfSides(numberOfSides?: number): void {
+        this.toolBox[this.currentTool].numberOfSides = numberOfSides;
+        this.currentAttributes.numberOfSides = numberOfSides;
+    }
+
+    getCurrentNumberOfSides(): number | undefined {
+        return this.currentAttributes.numberOfSides;
     }
 
     isCurrentTool(toolName: ToolsNames): boolean {

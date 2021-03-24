@@ -4,8 +4,12 @@ import { Vec2 } from '@app/classes/vec2';
 import { DEFAULT_HEIGHT, DEFAULT_WHITE, DEFAULT_WIDTH, SIDEBAR_WIDTH, WORKING_ZONE_VISIBLE_PORTION } from '@app/components/components-constants';
 import { CanvasResizerService } from '@app/services/canvas-resizer/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { SaveDrawingService } from '@app/services/save-drawing/save-drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
+import { SelectionEllipseService } from '@app/services/tools/selection-ellipse-service/selection-ellipse.service';
+import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
 import { MIN_ERASER_THICKNESS } from '@app/services/tools/tools-constants';
+import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { Status } from '@app/utils/enums/canvas-resizer-status';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 import { EraserCursor } from '@app/utils/interfaces/eraser-cursor';
@@ -19,11 +23,18 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('canvasResizerPreview', { static: false }) canvasResizerPreview: ElementRef<HTMLDivElement>;
+    @ViewChild('selectedArea', { static: false }) selectedArea: ElementRef<HTMLCanvasElement>;
     @Output() editorMinWidthEmitter: EventEmitter<number> = new EventEmitter<number>();
 
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
+    private cursorHeight: number;
+    eraserActive: boolean = false;
+    currentTool: Tool;
+    toolManagerService: ToolManagerService;
+    canvasResizerService: CanvasResizerService;
+    toolsNames: typeof ToolsNames = ToolsNames;
 
     eraserCursor: EraserCursor = {
         cursor: 'none',
@@ -37,39 +48,75 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         transform: 'translate(-50%, -50%)',
         zIndex: '3',
     };
-    private cursorHeight: number;
-    eraserActive: boolean = false;
-    currentTool: Tool;
-    toolManagerService: ToolManagerService;
-    canvasResizerService: CanvasResizerService;
-    toolsNames: typeof ToolsNames = ToolsNames;
+    selectionEllipseService: SelectionEllipseService;
+    selectionRectangleService: SelectionRectangleService;
 
-    constructor(private drawingService: DrawingService, toolManagerService: ToolManagerService, canvasResizerService: CanvasResizerService) {
+    selectedAreaCtx: CanvasRenderingContext2D;
+
+    constructor(
+        private drawingService: DrawingService,
+        toolManagerService: ToolManagerService,
+        canvasResizerService: CanvasResizerService,
+        private undoRedo: UndoRedoService,
+        selectionEllipseService: SelectionEllipseService,
+        selectionRectangleService: SelectionRectangleService,
+        private saveDrawingService: SaveDrawingService,
+        public saveService: SaveDrawingService,
+    ) {
         this.toolManagerService = toolManagerService;
         this.canvasResizerService = canvasResizerService;
+        this.selectionEllipseService = selectionEllipseService;
+        this.selectionRectangleService = selectionRectangleService;
     }
 
     ngOnInit(): void {
         this.updateCurrentTool();
         this.setCanvasSize();
         this.subscribeToToolChange();
+        this.subscribeToNewDrawing();
+        this.subscribeToCreateNewDrawingEmitter();
     }
 
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.selectedAreaCtx = this.selectedArea.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
-        this.drawingService.canvas = this.baseCanvas.nativeElement;
+        this.drawingService.selectedAreaCtx = this.selectedAreaCtx;
+        this.drawingService.canvas = this.saveDrawingService.originalCanvas = this.baseCanvas.nativeElement;
+        this.drawingService.canvas = this.saveService.originalCanvas = this.baseCanvas.nativeElement;
         this.drawingService.canvas.style.backgroundColor = DEFAULT_WHITE;
         this.canvasResizerService.canvasPreviewWidth = this.canvasSize.x;
         this.canvasResizerService.canvasPreviewHeight = this.canvasSize.y;
         this.drawingService.restoreCanvas();
+        this.undoRedo.saveInitialState();
+        setTimeout(() => {
+            this.selectionEllipseService.height = this.drawingService.canvas.height;
+            this.selectionEllipseService.width = this.drawingService.canvas.width;
+        });
+        setTimeout(() => {
+            this.undoRedo.saveInitialState();
+        });
     }
 
     subscribeToToolChange(): void {
-        this.toolManagerService.toolChangeEmitter.subscribe((toolName: ToolsNames) => {
+        this.toolManagerService.toolChangeEmitter.subscribe(() => {
             this.updateCurrentTool();
+        });
+    }
+
+    subscribeToCreateNewDrawingEmitter(): void {
+        this.drawingService.createNewDrawingEmitter.subscribe(() => {
+            this.canvasSize = this.canvasResizerService.calculateCanvasSize();
+            this.canvasResizerService.updatePreviewCanvasSize(this.canvasSize);
+        });
+    }
+
+    subscribeToNewDrawing(): void {
+        this.drawingService.newDrawing.subscribe((result: Vec2) => {
+            this.canvasSize = result;
+            this.canvasResizerService.updatePreviewCanvasSize(result);
         });
     }
 
@@ -121,7 +168,12 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         }
     }
 
-    @HostListener('mouseup', ['$event'])
+    @HostListener('dragstart', ['$event'])
+    onDrag(event: MouseEvent): void {
+        event.preventDefault();
+    }
+
+    @HostListener('window:mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
         if (this.canvasResizerService.isResizing()) {
             this.canvasResizerService.onMouseUp(event);
@@ -135,8 +187,18 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     @HostListener('mouseleave', ['$event'])
     onMouseLeave(event: MouseEvent): void {
-        this.currentTool.onMouseLeave(event);
+        if (this.canvasResizerService.isResizing()) {
+            this.eraserActive = false;
+            this.canvasResizerService.onMouseMove(event);
+        } else {
+            this.currentTool.onMouseLeave(event);
+        }
         this.eraserActive = this.currentTool.eraserActive || false;
+    }
+
+    @HostListener('mouseenter', ['$event'])
+    onMouseEnter(event: MouseEvent): void {
+        this.currentTool.onMouseEnter(event);
     }
 
     @HostListener('dblclick', ['$event'])
@@ -153,6 +215,12 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     @HostListener('keyup', ['$event'])
     onKeyUp(event: KeyboardEvent): void {
         this.currentTool.onKeyUp(event);
+    }
+
+    @HostListener('contextmenu', ['$event'])
+    onContextMenu(): boolean {
+        if (this.toolManagerService.currentTool === this.toolsNames.Pipette) return false; // disables the standard chrome menu
+        return true;
     }
 
     onMiddleRightResizerClick(): void {
@@ -191,5 +259,20 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.eraserCursor.left = mousePosition.x + 'px';
         this.eraserCursor.top = mousePosition.y + 'px';
         this.eraserActive = this.currentTool.eraserActive || false;
+    }
+    getSelectedAreaSize(): Vec2 {
+        return { x: this.selectionEllipseService.width, y: this.selectionEllipseService.height };
+    }
+
+    getTopLeftCorner(): Vec2 {
+        return { x: this.selectionEllipseService.topLeftCorner.x, y: this.selectionEllipseService.topLeftCorner.y };
+    }
+
+    getSelectedAreaSizeRectangle(): Vec2 {
+        return { x: this.selectionRectangleService.width, y: this.selectionRectangleService.height };
+    }
+
+    getTopLeftCornerRectangle(): Vec2 {
+        return { x: this.selectionRectangleService.topLeftCorner.x, y: this.selectionRectangleService.topLeftCorner.y };
     }
 }

@@ -1,0 +1,57 @@
+<div style="margin: auto">
+    <img
+        #previewImage
+        [src]="imageSource"
+        title="vignette de prévisualisation de l'image à exporter"
+        class="preview-image"
+        alt="Impossible d'afficher l'aperçu"
+    />
+    <div class="export-options">
+        <mat-form-field hintLabel="Max 25 caractères" appearance="fill">
+            <mat-label>Nom du fichier</mat-label>
+            <input matInput #input [formControl]="fileName" maxlength="25" placeholder="Ex. dessin1" required />
+            <mat-hint align="end">{{ input.value?.length || 0 }}/25</mat-hint>
+            <mat-error *ngIf="fileName.invalid">{{ getErrorMessageName() }}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Extension</mat-label>
+            <mat-select [(value)]="selectedFormat">
+                <mat-option [value]="selectedFormat">{{ selectedFormat }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="example-chip-list">
+            <mat-chip-list #chipList>
+                <mat-chip *ngFor="let tag of tags" [removable]="true" (removed)="remove(tag)">
+                    {{ tag.name }}
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip>
+                <input
+                    matInput
+                    placeholder="Étiquette(s)"
+                    maxlength="25"
+                    #tagValue
+                    id="tagValue"
+                    [formControl]="tagName"
+                    [matChipInputFor]="chipList"
+                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                    [matChipInputAddOnBlur]="true"
+                    (matChipInputTokenEnd)="addChip($event)"
+                />
+                <mat-hint align="end">{{ tagValue.value?.length || 0 }}/25</mat-hint>
+                <mat-error *ngIf="tagName.invalid">{{ getErrorMessageTag() }}</mat-error>
+            </mat-chip-list>
+        </mat-form-field>
+    </div>
+
+    <mat-dialog-actions>
+        <button mat-raised-button mat-dialog-close mat-flat-button>Annuler</button>
+
+        <div class="flexExpand"></div>
+
+        <button mat-raised-button color="primary" (click)="addDrawing()" [disabled]="waitingForServer || fileName.invalid">
+            <span class="material-icons">save</span>Sauvegarder
+        </button>
+    </mat-dialog-actions>
+</div>

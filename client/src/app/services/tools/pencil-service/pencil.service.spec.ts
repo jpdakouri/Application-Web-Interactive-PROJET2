@@ -1,8 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
+import { PencilCommand } from '@app/classes/tool-commands/pencil-command';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { MouseButtons } from '@app/utils/enums/list-boutton-pressed';
+import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { PencilService } from './pencil.service';
 
 // tslint:disable:no-any
@@ -138,5 +139,50 @@ describe('PencilService', () => {
 
         service.onMouseLeave(mouseEvent);
         expect(drawLineSpy).toHaveBeenCalled();
+    });
+
+    it('executeCommand draws a line for each point in path', () => {
+        const command = new PencilCommand(service, '0,0,0,1', 2, [
+            [
+                { x: 0, y: 0 },
+                { x: 2, y: 2 },
+            ],
+        ]);
+        spyOn(TestBed.inject(DrawingService).baseCtx, 'lineTo');
+        service.executeCommand(command);
+        expect(TestBed.inject(DrawingService).baseCtx.lineTo).toHaveBeenCalledTimes(2);
+    });
+
+    it('executeCommand draws a dot if a dot was previously drawn', () => {
+        const command = new PencilCommand(service, '0,0,0,1', 2, [[{ x: 0, y: 0 }]]);
+        spyOn(TestBed.inject(DrawingService).baseCtx, 'arc');
+        service.executeCommand(command);
+        expect(TestBed.inject(DrawingService).baseCtx.arc).toHaveBeenCalledTimes(1);
+    });
+
+    it('onMouseUp  uses defined thickness if defined', () => {
+        const definedValue = 10;
+        service.lineThickness = definedValue;
+        service.mouseDown = true;
+        spyOn(TestBed.inject(DrawingService).baseCtx, 'lineTo');
+        service.onMouseUp(mouseEvent);
+        expect(TestBed.inject(DrawingService).baseCtx.lineWidth).toBe(definedValue);
+    });
+    it('onMouseMove  uses default thickness if undefined', () => {
+        const definedValue = 1;
+        service.lineThickness = undefined;
+        service.mouseDown = true;
+        spyOn(TestBed.inject(DrawingService).baseCtx, 'lineTo');
+        service.onMouseMove(mouseEvent);
+        expect(TestBed.inject(DrawingService).baseCtx.lineWidth).toBe(definedValue);
+    });
+
+    it('onMouseleave uses default thickness if undefined', () => {
+        const definedValue = 1;
+        service.lineThickness = undefined;
+        service.mouseDown = true;
+        spyOn(TestBed.inject(DrawingService).baseCtx, 'lineTo');
+        service.onMouseLeave(mouseEvent);
+        expect(TestBed.inject(DrawingService).baseCtx.lineWidth).toBe(definedValue);
     });
 });

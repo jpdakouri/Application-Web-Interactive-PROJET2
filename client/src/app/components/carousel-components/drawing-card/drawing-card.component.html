@@ -1,0 +1,17 @@
+<mat-card #cardcontainer class="card-container" [style.width]="positionCaracteristics.width" [style.height]="positionCaracteristics.height">
+    <mat-card-header>
+        <div mat-card-avatar class="header-image"></div>
+        <mat-card-title> {{ infoDrawing.title }}</mat-card-title>
+        <mat-card-subtitle> id : {{ infoDrawing.id }} </mat-card-subtitle>
+    </mat-card-header>
+    <!-- <div class="imageContainer"> -->
+    <img mat-card-image #image [style.width]="imageSize.width" [style.height]="imageSize.height" [src]="infoDrawing.dataURL" alt="Dessin" />
+    <!-- </div> -->
+    <mat-card-content>
+        <p>Étiquette(s) : {{ infoDrawing.tags }}</p>
+    </mat-card-content>
+    <mat-card-actions>
+        <button mat-raised-button class="open" *ngIf="positionCaracteristics.position === 'main'" (click)="open()">Ouvrir</button>
+        <button mat-raised-button class="close" *ngIf="positionCaracteristics.position === 'main'" (click)="deleteDrawing()">Supprimer</button>
+    </mat-card-actions>
+</mat-card>

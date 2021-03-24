@@ -6,8 +6,9 @@ import { inject, injectable } from 'inversify';
 import * as logger from 'morgan';
 import * as swaggerJSDoc from 'swagger-jsdoc';
 import * as swaggerUi from 'swagger-ui-express';
-import { DateController } from './controllers/date.controller';
-import { IndexController } from './controllers/index.controller';
+import { DatabaseController } from './controllers/database-controller/database.controller';
+import { DateController } from './controllers/date-controller/date.controller';
+import { IndexController } from './controllers/index-controller/index.controller';
 import { TYPES } from './types';
 
 @injectable()
@@ -19,6 +20,7 @@ export class Application {
     constructor(
         @inject(TYPES.IndexController) private indexController: IndexController,
         @inject(TYPES.DateController) private dateController: DateController,
+        @inject(TYPES.DatabaseController) private databaseController: DatabaseController,
     ) {
         this.app = express();
 
@@ -41,8 +43,8 @@ export class Application {
     private config(): void {
         // Middlewares configuration
         this.app.use(logger('dev'));
-        this.app.use(bodyParser.json());
-        this.app.use(bodyParser.urlencoded({ extended: true }));
+        this.app.use(bodyParser.json({ limit: '100mb' }));
+        this.app.use(bodyParser.urlencoded({ limit: '100mb', extended: true }));
         this.app.use(cookieParser());
         this.app.use(cors());
     }
@@ -52,6 +54,7 @@ export class Application {
         this.app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerJSDoc(this.swaggerOptions)));
         this.app.use('/api/index', this.indexController.router);
         this.app.use('/api/date', this.dateController.router);
+        this.app.use('/api/drawings', this.databaseController.router);
         this.errorHandling();
     }
 

@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import { LineCommand } from '@app/classes/tool-commands/line-command';
 import { Vec2 } from '@app/classes/vec2';
-import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
+import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DEFAULT_DOT_RADIUS, DEFAULT_MIN_THICKNESS, PIXEL_DISTANCE, SHIFT_ANGLE_45, SHIFT_ANGLE_HALF_45 } from '@app/services/tools/tools-constants';
-import { KeyboardButtons, MouseButtons } from '@app/utils/enums/list-boutton-pressed';
+import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
+import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
+import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 
 @Injectable({
     providedIn: 'root',
@@ -13,9 +16,11 @@ export class LineService extends Tool {
     private started: boolean;
     private pathData: Vec2[];
     private shiftPressed: boolean;
+    private undoRedo: UndoRedoService;
 
-    constructor(drawingService: DrawingService, currentColourService: CurrentColourService) {
-        super(drawingService, currentColourService);
+    constructor(drawingService: DrawingService, currentColorService: CurrentColorService, undoRedo: UndoRedoService) {
+        super(drawingService, currentColorService);
+        this.undoRedo = undoRedo;
         this.clearPath();
     }
 
@@ -31,7 +36,16 @@ export class LineService extends Tool {
             if (!this.shiftPressed) this.pathData.push(this.mouseDownCoord);
             else this.pathData.push(this.desiredAngle(this.mouseDownCoord));
 
-            this.drawLine(this.drawingService.previewCtx, this.pathData, false);
+            this.drawLine(
+                this.drawingService.previewCtx,
+                this.currentColorService.getPrimaryColorHex(),
+                this.currentColorService.getSecondaryColorHex(),
+                this.showDots || false,
+                this.dotRadius || DEFAULT_DOT_RADIUS,
+                this.pathData,
+                this.lineThickness || DEFAULT_MIN_THICKNESS,
+                false,
+            );
             this.started = true;
         }
         this.mouseDown = false;
@@ -46,7 +60,17 @@ export class LineService extends Tool {
 
     onMouseLeave(event: MouseEvent): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        if (this.started) this.drawLine(this.drawingService.previewCtx, this.pathData, false);
+        if (this.started)
+            this.drawLine(
+                this.drawingService.previewCtx,
+                this.currentColorService.getPrimaryColorHex(),
+                this.currentColorService.getSecondaryColorHex(),
+                this.showDots || false,
+                this.dotRadius || DEFAULT_DOT_RADIUS,
+                this.pathData,
+                this.lineThickness || DEFAULT_MIN_THICKNESS,
+                false,
+            );
     }
 
     onDblClick(): void {
@@ -60,7 +84,26 @@ export class LineService extends Tool {
         } else if (this.verifyLastPoint(this.pathData[this.pathData.length - 2])) {
             this.pathData.pop();
         }
-        this.drawLine(this.drawingService.baseCtx, this.pathData, closedSegment);
+        this.drawLine(
+            this.drawingService.baseCtx,
+            this.currentColorService.getPrimaryColorHex(),
+            this.currentColorService.getSecondaryColorHex(),
+            this.showDots || false,
+            this.dotRadius || DEFAULT_DOT_RADIUS,
+            this.pathData,
+            this.lineThickness || DEFAULT_MIN_THICKNESS,
+            closedSegment,
+        );
+        const command = new LineCommand(
+            this,
+            this.currentColorService.getPrimaryColorHex(),
+            this.currentColorService.getSecondaryColorHex(),
+            this.lineThickness || DEFAULT_MIN_THICKNESS,
+            this.dotRadius || DEFAULT_DOT_RADIUS,
+            this.pathData,
+            closedSegment,
+        );
+        this.undoRedo.addCommand(command);
         this.clearPath();
     }
 
@@ -96,7 +139,16 @@ export class LineService extends Tool {
 
     private previewUpdate(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.drawLine(this.drawingService.previewCtx, this.pathData, false);
+        this.drawLine(
+            this.drawingService.previewCtx,
+            this.currentColorService.getPrimaryColorHex(),
+            this.currentColorService.getSecondaryColorHex(),
+            this.showDots || false,
+            this.dotRadius || DEFAULT_DOT_RADIUS,
+            this.pathData,
+            this.lineThickness || DEFAULT_MIN_THICKNESS,
+            false,
+        );
         if (this.shiftPressed)
             this.drawPreviewLine(this.drawingService.previewCtx, this.desiredAngle(this.mouseDownCoord), this.pathData[this.pathData.length - 1]);
         else this.drawPreviewLine(this.drawingService.previewCtx, this.mouseDownCoord, this.pathData[this.pathData.length - 1]);
@@ -149,26 +201,35 @@ export class LineService extends Tool {
         ctx.moveTo(lastPoint.x, lastPoint.y);
         ctx.lineTo(previewPoint.x, previewPoint.y);
         ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
-        ctx.strokeStyle = this.currentColourService.getPrimaryColorHex();
+        ctx.strokeStyle = this.currentColorService.getPrimaryColorHex();
         ctx.stroke();
     }
 
-    private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[], closedSegment: boolean): void {
+    private drawLine(
+        ctx: CanvasRenderingContext2D,
+        primaryColor: string,
+        secondaryColor: string,
+        dotShown: boolean,
+        dotRadius: number,
+        path: Vec2[],
+        strokeThickness: number,
+        closedSegment: boolean,
+    ): void {
         ctx.beginPath();
         ctx.moveTo(path[0].x, path[0].y);
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
-            ctx.strokeStyle = this.currentColourService.getPrimaryColorHex();
+            ctx.strokeStyle = primaryColor;
         }
         if (closedSegment) ctx.lineTo(path[0].x, path[0].y);
-        ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
+        ctx.lineWidth = strokeThickness;
         ctx.stroke();
 
-        if (this.showDots)
+        if (dotShown)
             for (const dot of path) {
                 ctx.beginPath();
-                ctx.arc(dot.x, dot.y, this.dotRadius ? this.dotRadius : DEFAULT_DOT_RADIUS, 0, 2 * Math.PI, true);
-                ctx.fillStyle = this.currentColourService.getSecondaryColorHex();
+                ctx.arc(dot.x, dot.y, dotRadius, 0, 2 * Math.PI, true);
+                ctx.fillStyle = secondaryColor;
                 ctx.fill();
             }
     }
@@ -176,5 +237,18 @@ export class LineService extends Tool {
     private verifyLastPoint(dotToVerify: Vec2): boolean {
         const lastDot = this.pathData[this.pathData.length - 1];
         return Math.abs(lastDot.x - dotToVerify.x) <= PIXEL_DISTANCE && Math.abs(lastDot.y - dotToVerify.y) <= PIXEL_DISTANCE;
+    }
+
+    executeCommand(command: LineCommand): void {
+        this.drawLine(
+            this.drawingService.baseCtx,
+            command.primaryColor,
+            command.secondaryColor,
+            command.dotShown,
+            command.dotThickness,
+            command.strokePath,
+            command.strokeThickness,
+            command.isClosedLoop,
+        );
     }
 }

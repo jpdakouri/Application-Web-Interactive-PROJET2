@@ -1,7 +1,13 @@
 <div #editor class="container">
     <div class="sidebar-container">
-        <app-toolbar class="bars"></app-toolbar>
-        <app-tool-attribute-bar class="bars"></app-tool-attribute-bar>
+        <app-toolbar
+            class="bars"
+            (exportButtonClicked)="onExportDrawing()"
+            (saveButtonClicked)="openSaveDrawingModal()"
+            (carouselClicked)="openCarouselModal()"
+            (selectedAll)="selectAll()"
+        ></app-toolbar>
+        <app-tool-attribute class="bars"></app-tool-attribute>
     </div>
     <div class="drawing-container">
         <app-drawing (editorMinWidthEmitter)="saveEditorMinWidth($event)" class="drawing" tabindex="0"></app-drawing>

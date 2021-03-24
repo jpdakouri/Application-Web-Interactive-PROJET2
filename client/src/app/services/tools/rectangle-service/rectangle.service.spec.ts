@@ -1,14 +1,19 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
+import { ShapeCommand } from '@app/classes/tool-commands/shape-command';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { KeyboardButtons, MouseButtons } from '@app/utils/enums/list-boutton-pressed';
+import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
+import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
+import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { RectangleService } from './rectangle.service';
 
 describe('RectangleService', () => {
     let service: RectangleService;
     let mouseEvent: MouseEvent;
+    let serviceMousePositionHandler: MousePositionHandlerService;
+
     let canvasTestHelper: CanvasTestHelper;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
@@ -27,6 +32,7 @@ describe('RectangleService', () => {
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
 
         service = TestBed.inject(RectangleService);
+        serviceMousePositionHandler = TestBed.inject(MousePositionHandlerService);
 
         spyOn<any>(service, 'getPositionFromMouse').and.returnValue({ x: 100, y: 100 });
 
@@ -80,7 +86,7 @@ describe('RectangleService', () => {
 
     it(' onMouseUp should call drawSquare if shift is down', () => {
         service['shiftDown'] = true;
-        const drawSquareSpy = spyOn<any>(service, 'drawSquare').and.callThrough();
+        const drawSquareSpy = spyOn<any>(serviceMousePositionHandler, 'makeSquare').and.callThrough();
         service.onMouseDown(mouseEvent);
         service.onMouseUp(mouseEvent);
         expect(drawSquareSpy).toHaveBeenCalled();
@@ -88,7 +94,7 @@ describe('RectangleService', () => {
 
     it(' onMouseUp should not call drawSquare if shift is not down', () => {
         service['shiftDown'] = false;
-        const drawSquareSpy = spyOn<any>(service, 'drawSquare').and.callThrough();
+        const drawSquareSpy = spyOn<any>(serviceMousePositionHandler, 'makeSquare').and.callThrough();
         service.onMouseUp(mouseEvent);
         expect(drawSquareSpy).not.toHaveBeenCalled();
     });
@@ -106,7 +112,7 @@ describe('RectangleService', () => {
         } as KeyboardEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
 
-        const drawSquareSpy = spyOn<any>(service, 'drawSquare').and.callThrough();
+        const drawSquareSpy = spyOn<any>(serviceMousePositionHandler, 'makeSquare').and.callThrough();
         service['shiftDown'] = false;
         service.onKeyDown({
             key: KeyboardButtons.Shift,
@@ -150,7 +156,7 @@ describe('RectangleService', () => {
     it('drawSquare should be called when shiftDown is true', () => {
         service.mouseDown = true;
         service['shiftDown'] = true;
-        const drawSquareSpy = spyOn<any>(service, 'drawSquare').and.callThrough();
+        const drawSquareSpy = spyOn<any>(serviceMousePositionHandler, 'makeSquare').and.callThrough();
 
         service.onMouseDown(mouseEvent);
         service.onMouseMove(mouseEvent);
@@ -160,7 +166,7 @@ describe('RectangleService', () => {
     it('drawSquare should not be called when shiftDown is false ', () => {
         service.mouseDown = true;
         service['shiftDown'] = false;
-        const drawSquareSpy = spyOn<any>(service, 'drawSquare').and.callThrough();
+        const drawSquareSpy = spyOn<any>(serviceMousePositionHandler, 'makeSquare').and.callThrough();
 
         service.onMouseDown(mouseEvent);
         service.onMouseMove(mouseEvent);
@@ -173,7 +179,7 @@ describe('RectangleService', () => {
         const drawOutlineSpy = spyOn<any>(service, 'drawOutline').and.callThrough();
         service.onMouseDown(mouseEvent);
         service.onMouseUp(mouseEvent);
-        expect(drawOutlineSpy).toHaveBeenCalledWith(jasmine.any(CanvasRenderingContext2D), service.mouseDownCoord);
+        expect(drawOutlineSpy).toHaveBeenCalled();
     });
 
     it(' drawOutline should be called when shapeStyle Outline is selected', () => {
@@ -183,7 +189,7 @@ describe('RectangleService', () => {
         const drawOutlineSpy = spyOn<any>(service, 'drawOutline').and.callThrough();
         service.onMouseDown(mouseEvent);
         service.onMouseUp(mouseEvent);
-        expect(drawOutlineSpy).toHaveBeenCalledWith(jasmine.any(CanvasRenderingContext2D), service.mouseDownCoord);
+        expect(drawOutlineSpy).toHaveBeenCalled();
     });
 
     it(' drawFilled should be called when shapeeStyke Filled is selected', () => {
@@ -192,7 +198,7 @@ describe('RectangleService', () => {
         const drawFilledSpy = spyOn<any>(service, 'drawFilled').and.callThrough();
         service.onMouseDown(mouseEvent);
         service.onMouseUp(mouseEvent);
-        expect(drawFilledSpy).toHaveBeenCalledWith(jasmine.any(CanvasRenderingContext2D), service.mouseDownCoord);
+        expect(drawFilledSpy).toHaveBeenCalled();
     });
 
     it(' drawFilledOutline should be called when shapeeStyke  is selected', () => {
@@ -202,52 +208,7 @@ describe('RectangleService', () => {
         const drawFilledOutlineSpy = spyOn<any>(service, 'drawFilledOutline').and.callThrough();
         service.onMouseDown(mouseEvent);
         service.onMouseUp(mouseEvent);
-        expect(drawFilledOutlineSpy).toHaveBeenCalledWith(jasmine.any(CanvasRenderingContext2D), service.mouseDownCoord);
-    });
-
-    it('should draw rectangle/square in the first quadrant (+/+)', () => {
-        service.mouseDownCoord = { x: 300, y: 200 };
-        service['shiftDown'] = true;
-        const expected = { x: 200, y: 200 } as Vec2;
-        const val = service.mouseDownCoord;
-        service['drawSquare'](val);
-        expect(val).toEqual(expected);
-    });
-
-    it('should draw a wide (height < width) rectangle/square in the third quadrant (-/+)', () => {
-        service.mouseDownCoord = { x: -300, y: 200 };
-        const expected = { x: -200, y: 200 } as Vec2;
-        const value = service.mouseDownCoord;
-        service['drawSquare'](value);
-        expect(service['drawSquare'](service.mouseDownCoord));
-        expect(value).toEqual(expected);
-    });
-
-    it(' should draw a wide (height < width) rectangle/square in the fourth quadrant (+/-) ', () => {
-        service.mouseDownCoord = { x: 300, y: -200 };
-        const expected = { x: 200, y: -200 } as Vec2;
-        const value = service.mouseDownCoord;
-        service['drawSquare'](value);
-        expect(service['drawSquare'](service.mouseDownCoord));
-        expect(value).toEqual(expected);
-    });
-
-    it(' should draw a wide (height < width) rectangle/square in the second quadrant (-/-)', () => {
-        service.mouseDownCoord = { x: -300, y: -200 };
-        const expected = { x: -200, y: -200 } as Vec2;
-        const value = service.mouseDownCoord;
-        service['drawSquare'](value);
-        expect(service['drawSquare'](service.mouseDownCoord));
-        expect(value).toEqual(expected);
-    });
-
-    it(' should draw a large (height > width) rectangle/square in the fourth quadrant (+/-)', () => {
-        service.mouseDownCoord = { x: 200, y: -300 };
-        const expected = { x: 200, y: -200 } as Vec2;
-        const value = service.mouseDownCoord;
-        service['drawSquare'](value);
-        expect(service['drawSquare'](service.mouseDownCoord));
-        expect(value).toEqual(expected);
+        expect(drawFilledOutlineSpy).toHaveBeenCalled();
     });
 
     it(' drawPerimeter works even when there is a negative coordinate in x', () => {
@@ -264,5 +225,19 @@ describe('RectangleService', () => {
         const drawPerimeterSpy = spyOn<any>(service, 'drawPerimeter').and.callThrough();
         service['drawPerimeter'](contextSpyObj, finalGrid);
         expect(drawPerimeterSpy).toHaveBeenCalledWith(contextSpyObj, finalGrid);
+    });
+
+    it('executeCommand calls drawEllipse with proper parameters', () => {
+        const command = new ShapeCommand(service, '0,0,0,1', '255,255,255,1', 1, { x: 0, y: 0 }, { x: 2, y: 2 }, ShapeStyle.FilledOutline);
+        spyOn(service, 'drawFilledOutline');
+        service.executeCommand(command);
+        expect(service.drawFilledOutline).toHaveBeenCalledWith(
+            TestBed.inject(DrawingService).baseCtx,
+            { x: 0, y: 0 },
+            { x: 2, y: 2 },
+            1,
+            '0,0,0,1',
+            '255,255,255,1',
+        );
     });
 });

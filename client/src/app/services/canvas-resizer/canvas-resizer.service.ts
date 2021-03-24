@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
-import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.service';
 import { LOWER_BOUND_HEIGHT, LOWER_BOUND_WIDTH, MINIMUM_HEIGHT, MINIMUM_WIDTH, SIDEBAR_WIDTH } from '@app/services/services-constants';
 import { Status } from '@app/utils/enums/canvas-resizer-status';
@@ -15,7 +14,7 @@ export class CanvasResizerService {
     canvasPreviewHeight: number;
     private mouseService: MouseHandlerService;
 
-    constructor(drawingService: DrawingService, mouseService: MouseHandlerService) {
+    constructor(mouseService: MouseHandlerService) {
         this.status = Status.OFF;
         this.canvasPreviewWidth = 0;
         this.canvasPreviewHeight = 0;
@@ -58,19 +57,19 @@ export class CanvasResizerService {
     calculateNewCanvasSize(canvasSize: Vec2): Vec2 {
         const deltaX = this.mouseService.calculateDeltaX();
         const deltaY = this.mouseService.calculateDeltaY();
-        let newCoordinate = { x: canvasSize.x, y: canvasSize.y };
+        let newCoordinate = { x: Math.round(canvasSize.x), y: Math.round(canvasSize.y) };
 
         switch (this.status) {
             case Status.MIDDLE_RIGHT_RESIZE:
-                newCoordinate.x += deltaX;
+                newCoordinate.x += Math.round(deltaX);
                 break;
 
             case Status.MIDDLE_BOTTOM_RESIZE:
-                newCoordinate.y += deltaY;
+                newCoordinate.y += Math.round(deltaY);
                 break;
 
             case Status.BOTTOM_RIGHT_RESIZE:
-                newCoordinate = { x: canvasSize.x + deltaX, y: canvasSize.y + deltaY };
+                newCoordinate = { x: Math.round(canvasSize.x + deltaX), y: Math.round(canvasSize.y + deltaY) };
                 break;
         }
         if (newCoordinate.x < MINIMUM_WIDTH) newCoordinate.x = MINIMUM_WIDTH;
@@ -81,8 +80,8 @@ export class CanvasResizerService {
 
     calculateCanvasSize(): Vec2 {
         const workingZone: Vec2 = this.calculateWorkingZoneSize();
-        const newWidth = workingZone.x / 2;
-        const newHeight = workingZone.y / 2;
+        const newWidth = Math.round(workingZone.x / 2);
+        const newHeight = Math.round(workingZone.y / 2);
         const newCoordinate: Vec2 = { x: newWidth, y: newHeight };
 
         if (workingZone.x < LOWER_BOUND_WIDTH) newCoordinate.x = MINIMUM_WIDTH;
@@ -100,20 +99,24 @@ export class CanvasResizerService {
     resizePreviewCanvas(): void {
         switch (this.status) {
             case Status.MIDDLE_RIGHT_RESIZE:
-                this.canvasPreviewWidth = this.mouseService.currentCoordinate.x - SIDEBAR_WIDTH;
+                this.canvasPreviewWidth = Math.round(this.mouseService.currentCoordinate.x - SIDEBAR_WIDTH);
                 break;
 
             case Status.MIDDLE_BOTTOM_RESIZE:
-                this.canvasPreviewHeight = this.mouseService.currentCoordinate.y;
+                this.canvasPreviewHeight = Math.round(this.mouseService.currentCoordinate.y);
                 break;
 
             case Status.BOTTOM_RIGHT_RESIZE:
-                this.canvasPreviewWidth = this.mouseService.currentCoordinate.x - SIDEBAR_WIDTH;
-                this.canvasPreviewHeight = this.mouseService.currentCoordinate.y;
+                this.canvasPreviewWidth = Math.round(this.mouseService.currentCoordinate.x - SIDEBAR_WIDTH);
+                this.canvasPreviewHeight = Math.round(this.mouseService.currentCoordinate.y);
                 break;
         }
-
         if (this.canvasPreviewWidth < MINIMUM_WIDTH) this.canvasPreviewWidth = MINIMUM_WIDTH;
         if (this.canvasPreviewHeight < MINIMUM_HEIGHT) this.canvasPreviewHeight = MINIMUM_HEIGHT;
+    }
+
+    updatePreviewCanvasSize(newCoordinate: Vec2): void {
+        this.canvasPreviewHeight = newCoordinate.y;
+        this.canvasPreviewWidth = newCoordinate.x;
     }
 }

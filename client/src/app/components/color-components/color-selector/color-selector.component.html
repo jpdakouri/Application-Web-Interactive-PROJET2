@@ -1,0 +1,36 @@
+<div class="color-wrapper">
+    <app-hue-selector (color)="hue = $event"></app-hue-selector>
+    <app-color-palette-selector [hue]="hue"></app-color-palette-selector>
+</div>
+<mat-divider></mat-divider>
+
+<div class="hex-input">
+    <h3>Entrez la couleur en format HEX</h3>
+    <mat-form-field>
+        <input matInput placeholder="ex: 12,7F,7A" [(ngModel)]="rgbColor" />
+    </mat-form-field>
+    <div *ngIf="isValidRGB()">
+        <button mat-raised-button color="primary" (click)="setPrimaryColor()">Définir comme couleur primaire</button>
+        <button mat-raised-button color="primary" (click)="setSecondaryColor()">Définir comme couleur secondaire</button>
+    </div>
+</div>
+<mat-divider></mat-divider>
+
+<div class="alpha-input">
+    <h3>Entrez l'opacité en % (1-100)</h3>
+    <mat-form-field>
+        <input matInput placeholder="% couleur primaire" [(ngModel)]="primaryColorTransparency" (keyup)="onPrimaryColorTransparencyEntryChange()" />
+    </mat-form-field>
+    <mat-form-field>
+        <input
+            matInput
+            placeholder="% couleur secondaire"
+            [(ngModel)]="secondaryColorTransparency"
+            (keyup)="onSecondaryColorTransparencyEntryChange()"
+        />
+    </mat-form-field>
+</div>
+<mat-divider></mat-divider>
+<app-current-color></app-current-color>
+<mat-divider></mat-divider>
+<app-color-history></app-color-history>

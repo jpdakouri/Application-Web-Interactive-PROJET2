@@ -1,0 +1,127 @@
+<div class="attribute-toolbar">
+    <div *ngIf="showLineThickness()">
+        <div class="line-thickness">
+            <h3 class="attribute-title">Épaisseur du trait: {{ this.getCurrentLineThickness() }}px</h3>
+            <mat-slider
+                [value]="this.getCurrentLineThickness()"
+                #thicknessSlider
+                color="primary"
+                [min]="showEraserThickness() ? 5 : 1"
+                max="30"
+                (input)="onThicknessChange($event)"
+                (change)="onThicknessChange($event)"
+                step="1"
+            ></mat-slider>
+        </div>
+        <mat-divider></mat-divider>
+    </div>
+    <div *ngIf="showPipettePreview()">
+        <app-pipette-preview></app-pipette-preview>
+        <mat-divider></mat-divider>
+    </div>
+    <div *ngIf="showShapeStyle()">
+        <div class="rectangle-ellipse-type">
+            <h3 class="attribute-title">Type d{{ shapeStyleTitle() }}</h3>
+            <mat-button-toggle-group (change)="onShapeStyleChange($event)" name="ShapeStyle" aria-label="Shape Style">
+                <mat-button-toggle [checked]="isChecked(shapeStyle.Outline)" value="Outline">Contour</mat-button-toggle>
+                <mat-button-toggle [checked]="isChecked(shapeStyle.Filled)" value="Filled">Plein</mat-button-toggle>
+                <mat-button-toggle [checked]="isChecked(shapeStyle.FilledOutline)" value="FilledOutline">Plein & contour</mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
+        <mat-divider></mat-divider>
+    </div>
+
+    <div *ngIf="showLineAttributes()">
+        <div class="dot-radius">
+            <h3 class="attribute-title">Rayon du point: {{ this.getCurrentDotRadius() }}px</h3>
+            <mat-slider
+                [value]="this.getCurrentDotRadius()"
+                #dotRadiusSlider
+                color="primary"
+                min="5"
+                max="20"
+                (input)="onDotRadiusChange($event)"
+                (change)="onDotRadiusChange($event)"
+                step="1"
+            ></mat-slider>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="show-dots">
+            <mat-checkbox (change)="onShowDotChange($event)">Voir les points</mat-checkbox>
+        </div>
+        <mat-divider></mat-divider>
+    </div>
+
+    <div class="aerosol-attributes" *ngIf="showAerosolAttributes()">
+        <div>
+            <div class="aerosol-emission-flow">
+                <h3 class="attribute-title">Débit du jet: {{ getCurrentFrequency() }} particules/s</h3>
+                <mat-slider
+                    [value]="getCurrentFrequency()"
+                    #flowSlider
+                    color="primary"
+                    [min]="MIN_FREQUENCY"
+                    [max]="MAX_FREQUENCY"
+                    step="1"
+                    (input)="onFrequencyChange($event)"
+                ></mat-slider>
+            </div>
+            <mat-divider></mat-divider>
+        </div>
+
+        <div>
+            <div class="aerosol-jet-diameter">
+                <h3 class="attribute-title">Diamètre du jet: {{ getCurrentJetDiameter() }}px</h3>
+                <mat-slider
+                    [value]="getCurrentJetDiameter()"
+                    #flowSlider
+                    color="primary"
+                    [min]="MIN_JET_DIAMETER"
+                    [max]="MAX_JET_DIAMETER"
+                    step="1"
+                    (input)="onJetDiameterChange($event)"
+                ></mat-slider>
+            </div>
+            <mat-divider></mat-divider>
+        </div>
+
+        <div>
+            <div class="aerosol-droplet-jet">
+                <h3 class="attribute-title">Diamètre des goutelettes: {{ getCurrentDropletDiameter() }}px</h3>
+                <mat-slider
+                    [value]="getCurrentDropletDiameter()"
+                    #flowSlider
+                    color="primary"
+                    [min]="MIN_DROPLET_DIAMETER"
+                    [max]="MAX_DROPLET_DIAMETER"
+                    step="1"
+                    (input)="onDropletDiameterChange($event)"
+                ></mat-slider>
+            </div>
+            <mat-divider></mat-divider>
+        </div>
+    </div>
+
+    <div *ngIf="showPolygonAttributes()">
+        <div class="number-of-sides">
+            <h3 class="attribute-title">Nombres de côtés: {{ this.getCurrentNumberOfSides() }}</h3>
+            <mat-slider
+                [value]="this.getCurrentNumberOfSides()"
+                #numberOfSideSlider
+                color="primary"
+                min="3"
+                max="12"
+                (input)="onNumberOfSidesChange($event)"
+                (change)="onNumberOfSidesChange($event)"
+                step="1"
+            ></mat-slider>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="show-dots">
+            <mat-checkbox (change)="onShowDotChange($event)">Voir les points</mat-checkbox>
+        </div>
+        <mat-divider></mat-divider>
+    </div>
+    <app-color-selector></app-color-selector>
+    <mat-divider></mat-divider>
+</div>

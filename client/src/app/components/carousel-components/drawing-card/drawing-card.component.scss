@@ -1,0 +1,35 @@
+.card-container {
+    position: relative;
+    display: block;
+}
+
+.mat-card-image {
+    border: 1px solid #000;
+}
+
+.mat-card {
+    box-shadow: 1px 2px 10px 10px grey !important;
+}
+
+img {
+    margin: auto !important;
+    display: block;
+    max-width: 90%;
+    max-height: 75%;
+}
+.mat-card-content {
+    margin-top: 5px !important;
+    margin-bottom: 0px !important;
+}
+
+.mat-card-image:first-child,
+.mat-card-image {
+    margin: 0px;
+}
+
+.open:hover {
+    color: green;
+}
+.close:hover {
+    color: red;
+}

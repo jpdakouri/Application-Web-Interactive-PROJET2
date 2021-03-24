@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
+import { EraserCommand } from '@app/classes/tool-commands/eraser-command';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EraserService } from './eraser.service';
@@ -110,5 +111,41 @@ describe('EraserService', () => {
         service.mouseDown = false;
         service.onMouseLeave(mouseEvent);
         expect(eraseSpy).not.toHaveBeenCalled();
+    });
+
+    it('executeCommand draws a line for each point in path', () => {
+        const command = new EraserCommand(service, 2, [
+            [
+                { x: 0, y: 0 },
+                { x: 2, y: 2 },
+            ],
+        ]);
+        spyOn(TestBed.inject(DrawingService).baseCtx, 'lineTo');
+        service.executeCommand(command);
+        expect(TestBed.inject(DrawingService).baseCtx.lineTo).toHaveBeenCalledTimes(2);
+    });
+
+    it('onmouseup uses default thickness if thickness is undefined, but uses set thickness if defined', () => {
+        service['mouseDown'] = true;
+        service.lineThickness = undefined;
+        service.onMouseUp(new MouseEvent('mouseup', { clientX: 0, clientY: 0 }));
+        const expectedValue = 5;
+        expect(TestBed.inject(DrawingService).baseCtx.lineWidth).toBe(expectedValue);
+        const definedThickness = 10;
+        service.lineThickness = definedThickness;
+        service.onMouseUp(new MouseEvent('mouseup', { clientX: 0, clientY: 0 }));
+        expect(TestBed.inject(DrawingService).baseCtx.lineWidth).toBe(definedThickness / 2);
+    });
+
+    it('onmouseleave uses default thickness if thickness is undefined, but uses set thickness if defined', () => {
+        service['mouseDown'] = true;
+        service.lineThickness = undefined;
+        service.onMouseLeave(new MouseEvent('mousemove', { clientX: 0, clientY: 0 }));
+        const expectedValue = 5;
+        expect(TestBed.inject(DrawingService).baseCtx.lineWidth).toBe(expectedValue);
+        const definedThickness = 15;
+        service.lineThickness = definedThickness;
+        service.onMouseLeave(new MouseEvent('mousemove', { clientX: 0, clientY: 0 }));
+        expect(TestBed.inject(DrawingService).baseCtx.lineWidth).toBe(definedThickness);
     });
 });

@@ -1,20 +1,51 @@
-import { EventEmitter, Injectable } from '@angular/core';
+import { EventEmitter } from '@angular/core';
 import { Tool } from '@app/classes/tool';
-import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
+import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 import { ToolStub } from '@app/utils/tests-mocks/tool-stub';
-
-@Injectable({
-    providedIn: 'root',
-})
 export class ToolManagerServiceMock {
     toolChangeEmitter: EventEmitter<ToolsNames> = new EventEmitter<ToolsNames>();
-    currentTool: ToolStub = new ToolStub({} as DrawingService, {} as CurrentColourService);
+    currentTool: ToolStub = new ToolStub({} as DrawingService, {} as CurrentColorService);
     getCurrentToolInstance(): Tool {
         return this.currentTool;
     }
-    isCurrentTool(): void {
+    isCurrentTool(): boolean {
+        return true;
+    }
+
+    getCurrentLineThickness(): number {
+        return 1;
+    }
+    getCurrentShapeStyle(): ShapeStyle {
+        return ShapeStyle.Outline;
+    }
+
+    getCurrentFrequency(): number {
+        return 1;
+    }
+
+    getCurrentDropletDiameter(): number {
+        return 1;
+    }
+
+    getCurrentJetDiameter(): number {
+        return 1;
+    }
+
+    getCurrentNumberOfSides(): number {
+        return 1;
+    }
+
+    emitToolChange(): void {
+        return;
+    }
+
+    setCurrentTool(): void {
+        return;
+    }
+    getCurrentDotRadius(): void {
         return;
     }
 }

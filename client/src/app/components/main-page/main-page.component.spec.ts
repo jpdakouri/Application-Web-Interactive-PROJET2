@@ -1,15 +1,17 @@
 import { HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterTestingModule } from '@angular/router/testing';
+import { CarouselComponent } from '@app/components/carousel-components/carousel/carousel.component';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { IndexService } from '@app/services/index/index.service';
 import { of } from 'rxjs';
 import { MainPageComponent } from './main-page.component';
 
 import SpyObj = jasmine.SpyObj;
-import { DrawingService } from '@app/services/drawing/drawing.service';
 
 describe('MainPageComponent', () => {
     let component: MainPageComponent;
@@ -24,11 +26,13 @@ describe('MainPageComponent', () => {
         indexServiceSpy.basicPost.and.returnValue(of());
 
         TestBed.configureTestingModule({
-            imports: [RouterTestingModule, HttpClientModule, MatGridListModule, MatIconModule, MatToolbarModule],
+            imports: [RouterTestingModule, HttpClientModule, MatGridListModule, MatIconModule, MatToolbarModule, MatDialogModule],
             declarations: [MainPageComponent],
             providers: [
                 { provide: IndexService, useValue: indexServiceSpy },
                 { provide: DrawingService, useValue: drawingServiceSpy },
+                { provide: MatDialogRef, useValue: {} },
+                { provide: CarouselComponent, useValue: {} },
             ],
         }).compileComponents();
     }));
@@ -60,5 +64,13 @@ describe('MainPageComponent', () => {
     it('should create new drawing when new drawing button is clicked', () => {
         component.onCreateNewDrawing();
         expect(drawingServiceSpy.createNewDrawing).toHaveBeenCalled();
+    });
+
+    it('should call openDialog when openCarousel is called', () => {
+        spyOn(component, 'onCreateNewDrawing').and.stub();
+        // tslint:disable:no-string-literal
+        spyOn(component['dialogControllerService'], 'openDialog').and.stub();
+        component.openCarousel();
+        expect(component['dialogControllerService'].openDialog).toHaveBeenCalled();
     });
 });

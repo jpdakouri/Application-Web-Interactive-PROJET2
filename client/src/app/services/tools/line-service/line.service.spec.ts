@@ -1,8 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
+import { LineCommand } from '@app/classes/tool-commands/line-command';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { KeyboardButtons, MouseButtons } from '@app/utils/enums/list-boutton-pressed';
+import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
+import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { LineService } from './line.service';
 
 // tslint:disable:no-any
@@ -28,7 +30,6 @@ describe('LineService', () => {
 
         service = TestBed.inject(LineService);
 
-        // Configuration du spy du service
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
@@ -188,7 +189,18 @@ describe('LineService', () => {
         service['pathData'].push({ x: DETECTION_RANGE, y: -DETECTION_RANGE });
 
         service.onDblClick();
-        expect(drawLineSpy).toHaveBeenCalledWith(jasmine.any(CanvasRenderingContext2D), comparingArray, true);
+
+        const expectedLineThickness = 5;
+        expect(drawLineSpy).toHaveBeenCalledWith(
+            jasmine.any(CanvasRenderingContext2D),
+            '#000000',
+            '#ffffff',
+            false,
+            expectedLineThickness,
+            comparingArray,
+            1,
+            true,
+        );
     });
 
     it(' onDblClick should adapt if last 2 points are 20px close', () => {
@@ -206,7 +218,7 @@ describe('LineService', () => {
         service['pathData'].push({ x: mouseEvent.offsetX + DETECTION_RANGE, y: mouseEvent.offsetY - DETECTION_RANGE });
 
         service.onDblClick();
-        expect(drawLineSpy).toHaveBeenCalledWith(jasmine.any(CanvasRenderingContext2D), comparingArray, false);
+        expect(drawLineSpy).toHaveBeenCalledWith(jasmine.any(CanvasRenderingContext2D), '#000000', '#ffffff', true, 1, comparingArray, 1, false);
     });
 
     it(' onDblClick should do nothing if distance is greater than 20px', () => {
@@ -223,7 +235,17 @@ describe('LineService', () => {
         service['pathData'].push({ x: mouseEvent.offsetX + DETECTION_RANGE * 2, y: mouseEvent.offsetY - DETECTION_RANGE });
 
         service.onDblClick();
-        expect(drawLineSpy).toHaveBeenCalledWith(jasmine.any(CanvasRenderingContext2D), comparingArray, false);
+        const expectedLineThickness = 5;
+        expect(drawLineSpy).toHaveBeenCalledWith(
+            jasmine.any(CanvasRenderingContext2D),
+            '#000000',
+            '#ffffff',
+            false,
+            expectedLineThickness,
+            comparingArray,
+            1,
+            false,
+        );
     });
 
     it(' keys should perform their task', () => {
@@ -271,4 +293,68 @@ describe('LineService', () => {
         } as KeyboardEvent);
         expect(previewUpdateSpy).not.toHaveBeenCalled();
     });
+
+    it('executeCommand draws a line for each point in path', () => {
+        const command = new LineCommand(
+            service,
+            '255,255,255,1',
+            '0,0,0,1',
+            1,
+            2,
+            [
+                { x: 0, y: 0 },
+                { x: 2, y: 2 },
+            ],
+            false,
+        );
+        spyOn(TestBed.inject(DrawingService).baseCtx, 'lineTo');
+        service.executeCommand(command);
+        expect(TestBed.inject(DrawingService).baseCtx.lineTo).toHaveBeenCalledTimes(2);
+    });
+    it('onmouseup uses default dot radius and thickness if undefined', () => {
+        service.dotRadius = undefined;
+        service.lineThickness = undefined;
+        service.showDots = true;
+        spyOn(TestBed.inject(DrawingService).previewCtx, 'arc');
+        service.onMouseDown(mouseEvent);
+        service.onMouseUp(mouseEvent);
+        service.onMouseDown(mouseEvent);
+        service.onMouseUp(mouseEvent);
+        const expectedCoordinate = 100;
+        const expectedRadius = 5;
+
+        expect(TestBed.inject(DrawingService).previewCtx.arc).toHaveBeenCalledWith(
+            expectedCoordinate,
+            expectedCoordinate,
+            expectedRadius,
+            0,
+            2 * Math.PI,
+            true,
+        );
+        const expectedWidth = 1;
+        expect(TestBed.inject(DrawingService).previewCtx.lineWidth).toBe(expectedWidth);
+    });
+
+    it('onmouseleave uses default dot radius and thickness if undefined', () => {
+        service.dotRadius = undefined;
+        service.lineThickness = undefined;
+        service.showDots = true;
+        spyOn(TestBed.inject(DrawingService).previewCtx, 'arc');
+        service.onMouseDown(mouseEvent);
+        service.onMouseUp(mouseEvent);
+        service.onMouseLeave(mouseEvent);
+        const expectedCoordinate = 100;
+        const expectedRadius = 5;
+        expect(TestBed.inject(DrawingService).previewCtx.arc).toHaveBeenCalledWith(
+            expectedCoordinate,
+            expectedCoordinate,
+            expectedRadius,
+            0,
+            2 * Math.PI,
+            true,
+        );
+        const expectedWidth = 1;
+        expect(TestBed.inject(DrawingService).previewCtx.lineWidth).toBe(expectedWidth);
+    });
+    // tslint:disable-next-line:max-file-line-count
 });
