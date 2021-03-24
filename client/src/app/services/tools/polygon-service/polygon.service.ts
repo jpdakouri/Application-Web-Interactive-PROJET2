@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { PolygonCommand } from '@app/classes/tool-commands/polygon-command';
 import { Vec2 } from '@app/classes/vec2';
-import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
+import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EllipseService } from '@app/services/tools/ellipse-service/ellipse.service';
 import { MousePositionHandlerService } from '@app/services/tools/mousePositionHandler-service/mouse-position-handler.service';
@@ -17,7 +17,7 @@ import { ShapeStyle } from '@app/utils/enums/shape-style';
 export class PolygonService extends Tool {
     private firstGrid: Vec2;
     numberOfSides: number;
-    currentColourService: CurrentColourService;
+    currentColorService: CurrentColorService;
     visualisationEllipse: EllipseService;
     private undoRedo: UndoRedoService;
     private mousePositionHandler: MousePositionHandlerService;
@@ -25,13 +25,13 @@ export class PolygonService extends Tool {
 
     constructor(
         drawingService: DrawingService,
-        currentColourService: CurrentColourService,
+        currentColorService: CurrentColorService,
         visualisationEllipse: EllipseService,
         undoRedo: UndoRedoService,
         mousePositionHandler: MousePositionHandlerService,
     ) {
-        super(drawingService, currentColourService);
-        this.currentColourService = currentColourService;
+        super(drawingService, currentColorService);
+        this.currentColorService = currentColorService;
         this.visualisationEllipse = visualisationEllipse;
         this.undoRedo = undoRedo;
         this.mousePositionHandler = mousePositionHandler;
@@ -55,8 +55,8 @@ export class PolygonService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawPolygon(
                 this.drawingService.previewCtx,
-                this.currentColourService.getPrimaryColorHex(),
-                this.currentColourService.getSecondaryColorHex(),
+                this.currentColorService.getPrimaryColorHex(),
+                this.currentColorService.getSecondaryColorHex(),
                 this.firstGrid,
                 this.mouseDownCoord,
                 this.numberOfSides,
@@ -77,8 +77,8 @@ export class PolygonService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawPolygon(
                 this.drawingService.baseCtx,
-                this.currentColourService.getPrimaryColorHex(),
-                this.currentColourService.getSecondaryColorHex(),
+                this.currentColorService.getPrimaryColorHex(),
+                this.currentColorService.getSecondaryColorHex(),
                 this.firstGrid,
                 this.mouseDownCoord,
                 this.numberOfSides,
@@ -87,8 +87,8 @@ export class PolygonService extends Tool {
             );
             const command = new PolygonCommand(
                 this,
-                this.currentColourService.getPrimaryColorHex(),
-                this.currentColourService.getSecondaryColorHex(),
+                this.currentColorService.getPrimaryColorHex(),
+                this.currentColorService.getSecondaryColorHex(),
                 this.firstGrid,
                 this.mouseDownCoord,
                 this.numberOfSides,
