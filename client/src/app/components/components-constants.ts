@@ -27,9 +27,9 @@ export const SELECTOR_OUTLINE_OFFSET_6PX = 6;
 export const EXCLUDED_SIDE_WIDTH = 5;
 
 /****************************/
-/***COLOURS***/
+/***COLORS***/
 /****************************/
-export enum Colours {
+export enum Colors {
     RGBA_WHITE = 'rgba(255,255,255,1)',
     RGBA_RED = 'rgba(255, 0, 0, 1)',
     RGBA_YELLOW = 'rgba(255, 255, 0, 1)',
