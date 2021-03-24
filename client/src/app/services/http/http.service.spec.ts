@@ -16,7 +16,7 @@ describe('HttpService', () => {
     let service: HttpService;
     let httpMock: HttpTestingController;
     let baseUrl: string;
-    // let dialogMock: jasmine.SpyObj<any>;
+
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule, MatDialogModule, BrowserAnimationsModule],
@@ -28,7 +28,6 @@ describe('HttpService', () => {
         service = TestBed.inject(HttpService);
         httpMock = TestBed.inject(HttpTestingController);
         baseUrl = service['BASE_URL'];
-        // dialogMock = jasmine.createSpyObj(service['dialog'], ['open']);
     });
 
     afterEach(() => {

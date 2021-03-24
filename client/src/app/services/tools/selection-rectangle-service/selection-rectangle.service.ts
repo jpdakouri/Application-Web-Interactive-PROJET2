@@ -5,7 +5,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ALPHA_POS, BLUE_POS, GREEN_POS, MAX_BYTE_VALUE, RED_POS } from '@app/services/services-constants';
-import { MousePositionHandlerService } from '@app/services/tools/mousePositionHandler-service/mouse-position-handler.service';
+import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
 import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
 import { PIXELS_ARROW_STEPS } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
@@ -19,8 +19,8 @@ import { Sign } from '@app/utils/enums/rgb-settings';
 export class SelectionRectangleService extends Tool {
     private firstGrid: Vec2;
     topLeftCorner: Vec2;
-    private begin: Vec2;
-    private end: Vec2;
+    private firstGridClip: Vec2;
+    private finalGridClip: Vec2;
     private offset: Vec2;
     private shiftDown: boolean;
     selectionActive: boolean;
@@ -62,7 +62,7 @@ export class SelectionRectangleService extends Tool {
         if (this.mouseDown) {
             if (!this.selectionActive) {
                 this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
-                this.begin = this.getPositionFromMouse(event);
+                this.firstGridClip = this.getPositionFromMouse(event);
                 this.updatePreview();
                 this.selectionActive = true;
             } else {
@@ -108,7 +108,7 @@ export class SelectionRectangleService extends Tool {
             this.isSelectionDone = true;
 
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.end = this.getPositionFromMouse(event);
+            this.finalGridClip = this.getPositionFromMouse(event);
             this.updateTopLeftCorner();
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             if (this.shiftDown) {
@@ -216,17 +216,17 @@ export class SelectionRectangleService extends Tool {
     }
 
     private updateTopLeftCorner(): void {
-        if (this.begin.x > this.end.x) {
-            this.topLeftCorner.x = this.end.x;
+        if (this.firstGridClip.x > this.finalGridClip.x) {
+            this.topLeftCorner.x = this.finalGridClip.x;
         }
-        if (this.begin.x < this.end.x) {
-            this.topLeftCorner.x = this.begin.x;
+        if (this.firstGridClip.x < this.finalGridClip.x) {
+            this.topLeftCorner.x = this.firstGridClip.x;
         }
-        if (this.begin.y > this.end.y) {
-            this.topLeftCorner.y = this.end.y;
+        if (this.firstGridClip.y > this.finalGridClip.y) {
+            this.topLeftCorner.y = this.finalGridClip.y;
         }
-        if (this.begin.y < this.end.y) {
-            this.topLeftCorner.y = this.begin.y;
+        if (this.firstGridClip.y < this.finalGridClip.y) {
+            this.topLeftCorner.y = this.firstGridClip.y;
         }
     }
 

@@ -16,13 +16,7 @@ describe('ColorSelectorComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [
-                ColorSelectorComponent,
-                ColorHistoryComponent,
-                ColorPaletteSelectorComponent,
-                CurrentColorComponent,
-                HueSelectorComponent,
-            ],
+            declarations: [ColorSelectorComponent, ColorHistoryComponent, ColorPaletteSelectorComponent, CurrentColorComponent, HueSelectorComponent],
             imports: [MatIconModule, BrowserAnimationsModule, MatInputModule, MatDividerModule, FormsModule],
         }).compileComponents();
     }));

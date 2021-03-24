@@ -79,7 +79,7 @@ export class CurrentColorService {
         return this.rgbToHex(parseInt(colorRGB[0], 10), parseInt(colorRGB[1], 10), parseInt(colorRGB[2], 10));
     }
 
-    // Inspiré de Stack Overflow
+    // Inspired from Stack Overflow
     private rgbToHex(r: number, g: number, b: number): string {
         return '#' + this.componentToHex(r) + this.componentToHex(g) + this.componentToHex(b);
     }

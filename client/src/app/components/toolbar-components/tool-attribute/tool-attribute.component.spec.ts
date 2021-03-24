@@ -196,27 +196,32 @@ describe('ToolAttributeBarComponent', () => {
         toolManagerServiceSpy.isCurrentTool.and.returnValue(false);
         expect(component.showLineThickness()).toEqual(false);
     });
+
     it("#showEllipseTitle should return true only if toolManagerService's #isCurrentTool returns true", () => {
         toolManagerServiceSpy.isCurrentTool.and.returnValue(true);
         expect(component.shapeStyleTitle()).toEqual("'ellipse");
     });
+
     it("#showLineAttributes should return true only if toolManagerService's #isCurrentTool returns true", () => {
         toolManagerServiceSpy.isCurrentTool.and.returnValue(true);
         expect(component.showLineAttributes()).toEqual(true);
         toolManagerServiceSpy.isCurrentTool.and.returnValue(false);
         expect(component.showLineAttributes()).toEqual(false);
     });
+
     it("#showShapeStyle should return true only if toolManagerService's #isCurrentTool returns true", () => {
         toolManagerServiceSpy.isCurrentTool.and.returnValue(true);
         expect(component.showShapeStyle()).toEqual(true);
         toolManagerServiceSpy.isCurrentTool.and.returnValue(false);
         expect(component.showShapeStyle()).toEqual(false);
     });
+
     it("#isChecked should return true only if it's parameter is the current shape style", () => {
         toolManagerServiceSpy.getCurrentShapeStyle.and.returnValue(ShapeStyle.Outline);
         expect(component.isChecked(ShapeStyle.Outline)).toEqual(true);
         expect(component.isChecked(ShapeStyle.Filled)).toEqual(false);
     });
+
     it('onNumberOfSidesChange should call setCurrentNumberOfSides from toolManagerService', () => {
         component.onNumberOfSidesChange({} as MatSliderChange);
         expect(toolManagerServiceSpy.setCurrentNumberOfSides).toHaveBeenCalled();

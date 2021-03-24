@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, HostListener, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import { Vec2 } from '@app/classes/vec2';
 import { Colors } from '@app/components/components-constants';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 @Component({
@@ -13,7 +14,7 @@ export class ColorPaletteSelectorComponent implements AfterViewInit, OnChanges {
     @ViewChild('paletteCanvas') paletteCanvas: ElementRef<HTMLCanvasElement>;
     private canvasContext: CanvasRenderingContext2D;
     private mousedown: boolean = false;
-    private selectedPosition: { x: number; y: number };
+    private selectedPosition: Vec2;
 
     constructor(private currentColorService: CurrentColorService) {}
 

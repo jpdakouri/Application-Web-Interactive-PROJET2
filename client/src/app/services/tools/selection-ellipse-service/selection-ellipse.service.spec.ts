@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
+import { SelectionCommand } from '@app/classes/tool-commands/selection-command';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { MousePositionHandlerService } from '@app/services/tools/mousePositionHandler-service/mouse-position-handler.service';
+import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { SelectionEllipseService } from './selection-ellipse.service';
@@ -68,7 +69,6 @@ describe('SelectionEllipseService', () => {
     });
 
     it(' mouseDown should activate the selection when isClickIn is true', () => {
-        // service.mouseDown = true;
         service.selectionActive = true;
 
         service.topLeftCorner = { x: 20, y: 20 };
@@ -127,8 +127,8 @@ describe('SelectionEllipseService', () => {
         service.mouseDownCoord = { x: 100, y: 100 };
         // const grid = service.mouseDownCoord;
         service['firstGrid'] = { x: 100, y: 100 };
-        service['begin'] = { x: 0, y: 0 };
-        service['end'] = { x: 100, y: 100 };
+        service['firstGridClip'] = { x: 0, y: 0 };
+        service['finalGridClip'] = { x: 100, y: 100 };
 
         service.onMouseUp(mouseEvent);
         expect(service.mouseDown).toBeFalse();
@@ -315,22 +315,12 @@ describe('SelectionEllipseService', () => {
         service['dragActive'] = false;
         service.mouseDownCoord = { x: 100, y: 100 };
         service['firstGrid'] = { x: 100, y: 100 };
-        service['begin'] = { x: 200, y: 200 };
-        service['end'] = { x: 100, y: 100 };
+        service['firstGridClip'] = { x: 200, y: 200 };
+        service['finalGridClip'] = { x: 100, y: 100 };
 
         service.onMouseUp(mouseEvent);
-        expect(service.topLeftCorner.x).toEqual(service['end'].x);
-        expect(service.topLeftCorner.x).toEqual(service['end'].y);
-    });
-
-    // à revoir, le test le rentre pas dnas le if de shiftDown dans le mouseUp
-    xit('makeCircle() should be called when the Shift key is being pressed during a mouseUp event', () => {
-        service['shiftDown'] = service.mouseDown = service.selectionActive = service.mouseMoved = true;
-        service['dragActive'] = false;
-        const makeCircleSpy = spyOn<any>(service, 'makeCircle').and.callThrough();
-        service.onMouseDown(mouseEvent);
-        service.onMouseUp(mouseEvent);
-        expect(makeCircleSpy).toHaveBeenCalled();
+        expect(service.topLeftCorner.x).toEqual(service['finalGridClip'].x);
+        expect(service.topLeftCorner.x).toEqual(service['finalGridClip'].y);
     });
 
     it(' isClickIn() should return false when coordinates on MouseDown are on the left side of the selected region', () => {
@@ -345,5 +335,13 @@ describe('SelectionEllipseService', () => {
         service.mouseDownCoord = { x: 300, y: 100 };
         const grid = service.mouseDownCoord;
         expect(service['isClickIn'](grid)).toEqual(false);
+    });
+
+    it('executeCommand calls the ellipse function for clipping', () => {
+        spyOn(TestBed.inject(DrawingService).baseCtx, 'ellipse');
+        const data = new ImageData(1, 1);
+        const command = new SelectionCommand(service, { x: 0, y: 0 }, { x: 1, y: 1 }, { x: 2, y: 2 }, data);
+        service.executeCommand(command);
+        expect(TestBed.inject(DrawingService).baseCtx.ellipse).toHaveBeenCalledWith(1, 1, 1, 1, 0, 0, 2 * Math.PI, false);
     });
 });
