@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { EraserCommand } from '@app/classes/tool-commands/eraser-command';
 import { Vec2 } from '@app/classes/vec2';
-import { CurrentColourService } from '@app/services/current-colour/current-colour.service';
+import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MIN_ERASER_THICKNESS } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
@@ -16,8 +16,8 @@ export class EraserService extends Tool {
     private undoRedo: UndoRedoService;
     private commandPaths: Vec2[][];
 
-    constructor(drawingService: DrawingService, currentColourService: CurrentColourService, undoRedo: UndoRedoService) {
-        super(drawingService, currentColourService);
+    constructor(drawingService: DrawingService, currentColorService: CurrentColorService, undoRedo: UndoRedoService) {
+        super(drawingService, currentColorService);
         this.clearPath();
         this.lineThickness = MIN_ERASER_THICKNESS;
         this.undoRedo = undoRedo;
