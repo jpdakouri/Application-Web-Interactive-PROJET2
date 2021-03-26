@@ -45,7 +45,7 @@
 
     <div class="flexExpand"></div>
 
-    <button mat-raised-button color="primary" disabled>
+    <button mat-raised-button color="primary" (click)="onUpload()" [disabled]="fileName.invalid">
       <span class="material-icons">file_upload</span>Téléverser sur Imgur
     </button>
 

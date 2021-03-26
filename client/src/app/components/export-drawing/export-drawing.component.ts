@@ -99,4 +99,6 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
         this.exportDrawingService.downloadDrawingAsImage(this.fileName.value, this.selectedFormat);
         this.dialogRef.close();
     }
+
+    onUpload(): void {}
 }
