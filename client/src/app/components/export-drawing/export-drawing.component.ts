@@ -3,6 +3,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ExportDrawingService } from '@app/services/export-drawing/export-drawing.service';
+import { ImgurApiServiceService } from '@app/services/imgur-api/imgur-api-service.service';
 import {
     FILE_NAME_REGEX,
     INVALID_FILE_NAME_ERROR_MESSAGE,
@@ -33,6 +34,7 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
 
     constructor(
         private exportDrawingService: ExportDrawingService,
+        private imgurService: ImgurApiServiceService,
         private drawingService: DrawingService,
         public dialogRef: MatDialogRef<ExportDrawingComponent>,
     ) {
@@ -100,5 +102,7 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
         this.dialogRef.close();
     }
 
-    onUpload(): void {}
+    onUpload(): void {
+        this.imgurService.upload(this.fileName.value, this.imageSource).subscribe((res) => console.log(res));
+    }
 }
