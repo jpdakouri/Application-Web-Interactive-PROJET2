@@ -103,6 +103,9 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
     }
 
     onUpload(): void {
-        this.imgurService.upload(this.fileName.value, this.imageSource).subscribe((res) => console.log(res));
+        this.exportDrawingService.imageSource = this.imageSource;
+        const blobImage = this.exportDrawingService.filteredImageToBlob(this.selectedFormat);
+        console.log(blobImage);
+        this.imgurService.upload(this.fileName.value, blobImage).subscribe((res) => console.log(res));
     }
 }
