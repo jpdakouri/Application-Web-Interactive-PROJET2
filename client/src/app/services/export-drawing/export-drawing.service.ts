@@ -52,7 +52,7 @@ export class ExportDrawingService {
         this.link.click();
     }
 
-    filteredImageToBlob(format: string): Blob {
+    filteredImageToBlob(format: string): string {
         const image = new Image();
         image.src = this.imageSource;
 
@@ -60,9 +60,8 @@ export class ExportDrawingService {
 
         // set the image to image with current filter applied on
         image.src = this.canvas.toDataURL(`image/${format}`) as string;
-        console.log(image.src);
 
-        return this.dataURItoBlob(image.src);
+        return image.src.split(';base64,')[1];
     }
 
     // Inspired from stack overflow

@@ -2,6 +2,16 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
+interface PostResponse {
+    data: Data;
+    status: number;
+    success: boolean;
+}
+
+interface Data {
+    link: string;
+}
+
 @Injectable({
     providedIn: 'root',
 })
@@ -11,7 +21,7 @@ export class ImgurApiServiceService {
 
     constructor(private http: HttpClient) {}
 
-    upload(fileName: string, image: Blob): Observable<any> {
+    upload(fileName: string, imageSource: string): Observable<PostResponse> {
         const httpOptions = {
             headers: new HttpHeaders({
                 Authorization: `Client-ID ${this.clientID}`,
@@ -19,10 +29,28 @@ export class ImgurApiServiceService {
         };
         const formData = new FormData();
         // const img = this.dataURItoBlob(imageSource);
-        formData.append('image', image, fileName);
+        formData.append('image', imageSource);
+        formData.append('name', fileName);
 
-        return this.http.post(`${this.IMGUR_UPLOAD_URL}`, formData, httpOptions);
+        // @ts-ignore
+        return this.http.post<PostResponse>(`${this.IMGUR_UPLOAD_URL}`, formData, httpOptions);
+        // .subscribe((res) => {
+        //     console.log(res.data.link);
+        // });
     }
+
+    // upload(fileName: string, image: Blob): Observable<any> {
+    //     const httpOptions = {
+    //         headers: new HttpHeaders({
+    //             Authorization: `Client-ID ${this.clientID}`,
+    //         }),
+    //     };
+    //     const formData = new FormData();
+    //     // const img = this.dataURItoBlob(imageSource);
+    //     formData.append('image', image, fileName);
+    //
+    //     return this.http.post(`${this.IMGUR_UPLOAD_URL}`, formData, httpOptions);
+    // }
 
     // dataURItoBlob(dataURI: string): Blob {
     //     // convert base64/URLEncoded data component to raw binary data held in a string

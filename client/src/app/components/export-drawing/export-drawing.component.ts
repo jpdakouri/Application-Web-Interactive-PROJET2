@@ -1,6 +1,8 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { UploadLinkComponent } from '@app/components/export-drawing/upload-link/upload-link.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ExportDrawingService } from '@app/services/export-drawing/export-drawing.service';
 import { ImgurApiServiceService } from '@app/services/imgur-api/imgur-api-service.service';
@@ -37,6 +39,7 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
         private imgurService: ImgurApiServiceService,
         private drawingService: DrawingService,
         public dialogRef: MatDialogRef<ExportDrawingComponent>,
+        private snackBar: MatSnackBar,
     ) {
         this.filters = Object.values(ImageFilter);
         this.formats = Object.values(ImageFormat);
@@ -104,8 +107,26 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
 
     onUpload(): void {
         this.exportDrawingService.imageSource = this.imageSource;
-        const blobImage = this.exportDrawingService.filteredImageToBlob(this.selectedFormat);
-        console.log(blobImage);
-        this.imgurService.upload(this.fileName.value, blobImage).subscribe((res) => console.log(res));
+        const imageSource = this.exportDrawingService.filteredImageToBlob(this.selectedFormat);
+        this.imgurService.upload(this.fileName.value, imageSource).subscribe(
+            (res) => {
+                this.closeDialog();
+                this.snackBar.openFromComponent(UploadLinkComponent, {
+                    data: res.data.link,
+                    duration: 10000,
+                });
+                console.log(res.data);
+            },
+            (error) => {
+                console.log('Error occurred ! ' + error);
+            },
+        );
     }
+
+    // onUpload(): void {
+    //     this.exportDrawingService.imageSource = this.imageSource;
+    //     const blobImage = this.exportDrawingService.filteredImageToBlob(this.selectedFormat);
+    //     console.log(blobImage);
+    //     this.imgurService.upload(this.fileName.value, blobImage).subscribe((res) => console.log(res));
+    // }
 }
