@@ -48,6 +48,9 @@ export const DEFAULT_JET_DIAMETER = 50;
 
 export const MS_PER_S = 1000;
 
+export const MIN_GRID_SIZE = 50;
+export const MAX_GRID_SIZE = 300;
+
 /***********************/
 /***POLYGON CONSTANTS**/
 /***********************/

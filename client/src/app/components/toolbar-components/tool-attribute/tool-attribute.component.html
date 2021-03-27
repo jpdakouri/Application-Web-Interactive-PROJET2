@@ -1,4 +1,22 @@
 <div class="attribute-toolbar">
+    <div class="grid">
+        <mat-checkbox [(ngModel)]="showGrid"
+            >Grille de prévisualisation<br /><small class="small-text">Afficher une grille à la zone de dessin</small></mat-checkbox
+        >
+        <div *ngIf="showGrid">
+            <h3 class="attribute-title">Taille des grilles: {{ gridService.gridSize }} pixels</h3>
+            <mat-slider
+                [value]="gridService.gridSize"
+                #flowSlider
+                color="primary"
+                [min]="gridService.minGridSize"
+                [max]="gridService.maxGridSize"
+                step="20"
+                (input)="onGridSizeChange($event)"
+            ></mat-slider>
+        </div>
+    </div>
+    <mat-divider></mat-divider>
     <div *ngIf="showLineThickness()">
         <div class="line-thickness">
             <h3 class="attribute-title">Épaisseur du trait: {{ this.getCurrentLineThickness() }}px</h3>
@@ -17,8 +35,8 @@
     </div>
     <div *ngIf="showPipettePreview()">
         <app-pipette-preview></app-pipette-preview>
-        <mat-divider></mat-divider>
     </div>
+    <mat-divider></mat-divider>
     <div *ngIf="showShapeStyle()">
         <div class="rectangle-ellipse-type">
             <h3 class="attribute-title">Type d{{ shapeStyleTitle() }}</h3>

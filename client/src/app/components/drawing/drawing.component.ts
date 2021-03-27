@@ -22,12 +22,15 @@ import { EraserCursor } from '@app/utils/interfaces/eraser-cursor';
 export class DrawingComponent implements AfterViewInit, OnInit {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
+    @ViewChild('gridCanvas', { static: false }) gridCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('canvasResizerPreview', { static: false }) canvasResizerPreview: ElementRef<HTMLDivElement>;
     @ViewChild('selectedArea', { static: false }) selectedArea: ElementRef<HTMLCanvasElement>;
     @Output() editorMinWidthEmitter: EventEmitter<number> = new EventEmitter<number>();
 
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
+    private selectedAreaCtx: CanvasRenderingContext2D;
+    private gridCtx: CanvasRenderingContext2D;
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
     private cursorHeight: number;
     eraserActive: boolean = false;
@@ -50,8 +53,6 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     };
     selectionEllipseService: SelectionEllipseService;
     selectionRectangleService: SelectionRectangleService;
-
-    selectedAreaCtx: CanvasRenderingContext2D;
 
     constructor(
         private drawingService: DrawingService,
@@ -79,11 +80,13 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-        this.selectedAreaCtx = this.selectedArea.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.selectedAreaCtx = this.selectedArea.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.gridCtx = this.gridCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.selectedAreaCtx = this.selectedAreaCtx;
+        this.drawingService.gridCtx = this.gridCtx;
         this.drawingService.canvas = this.saveDrawingService.originalCanvas = this.baseCanvas.nativeElement;
         this.drawingService.canvas = this.saveService.originalCanvas = this.baseCanvas.nativeElement;
         this.drawingService.canvas.style.backgroundColor = DEFAULT_WHITE;

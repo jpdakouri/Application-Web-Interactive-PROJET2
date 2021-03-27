@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatSliderChange } from '@angular/material/slider';
+import { GridService } from '@app/services/grid-service/grid.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import {
     MAX_DROPLET_DIAMETER,
@@ -30,8 +31,9 @@ export class ToolAttributeComponent {
     toolsNames: typeof ToolsNames = ToolsNames;
     shapeStyle: typeof ShapeStyle = ShapeStyle;
     toolManagerService: ToolManagerService;
+    showGrid: boolean = false;
 
-    constructor(toolManagerService: ToolManagerService) {
+    constructor(toolManagerService: ToolManagerService, public gridService: GridService) {
         this.toolManagerService = toolManagerService;
     }
 
@@ -147,5 +149,9 @@ export class ToolAttributeComponent {
 
     onNumberOfSidesChange(event: MatSliderChange): void {
         this.toolManagerService.setCurrentNumberOfSides(event.value || undefined);
+    }
+
+    onGridSizeChange(event: MatSliderChange): void {
+        this.gridService.gridSize = event.value as number;
     }
 }

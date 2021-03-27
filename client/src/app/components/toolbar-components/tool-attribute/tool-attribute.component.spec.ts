@@ -58,6 +58,7 @@ describe('ToolAttributeBarComponent', () => {
                 MatInputModule,
                 MatButtonToggleModule,
                 MatSliderModule,
+                MatCheckboxModule,
                 MatDividerModule,
                 MatCheckboxModule,
                 FormsModule,
