@@ -7,6 +7,8 @@ import { MAX_GRID_SIZE, MIN_GRID_SIZE } from '@app/services/tools/tools-constant
 export class GridService {
     readonly minGridSize: number = MIN_GRID_SIZE;
     readonly maxGridSize: number = MAX_GRID_SIZE;
-    gridSize: number = 
+    gridSize: number = this.minGridSize;
     constructor() {}
+
+    newGrid(newSize: number): void {}
 }
