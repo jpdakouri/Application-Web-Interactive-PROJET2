@@ -24,6 +24,7 @@ import { PipettePreviewComponent } from './components/pipette-preview/pipette-pr
 import { SaveDrawingComponent } from './components/save-drawing/save-drawing.component';
 import { SearchByTagsComponent } from './components/search-by-tags/search-by-tags.component';
 import { ServerErrorMessageComponent } from './components/server-error-message/server-error-message.component';
+import { GridComponent } from './components/grid/grid.component';
 
 @NgModule({
     declarations: [
@@ -45,6 +46,7 @@ import { ServerErrorMessageComponent } from './components/server-error-message/s
         SearchByTagsComponent,
         CarouselComponent,
         DrawingCardComponent,
+        GridComponent,
     ],
     imports: [BrowserModule, HttpClientModule, AppRoutingModule, BrowserAnimationsModule, AppMaterialModule, FormsModule, ReactiveFormsModule],
     providers: [
