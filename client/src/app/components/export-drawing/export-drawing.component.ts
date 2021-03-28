@@ -5,7 +5,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { UploadLinkComponent } from '@app/components/export-drawing/upload-link/upload-link.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ExportDrawingService } from '@app/services/export-drawing/export-drawing.service';
-import { ImgurApiServiceService } from '@app/services/imgur-api/imgur-api-service.service';
+import { ImgurApiService } from '@app/services/imgur-api/imgur-api.service';
 import {
     FILE_NAME_REGEX,
     INVALID_FILE_NAME_ERROR_MESSAGE,
@@ -36,7 +36,7 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
 
     constructor(
         private exportDrawingService: ExportDrawingService,
-        private imgurService: ImgurApiServiceService,
+        private imgurService: ImgurApiService,
         private drawingService: DrawingService,
         public dialogRef: MatDialogRef<ExportDrawingComponent>,
         private snackBar: MatSnackBar,
@@ -107,7 +107,7 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
 
     onUpload(): void {
         this.exportDrawingService.imageSource = this.imageSource;
-        const imageSource = this.exportDrawingService.filteredImageToBlob(this.selectedFormat);
+        const imageSource = this.exportDrawingService.canvasToBase64Image(this.selectedFormat);
         this.imgurService.upload(this.fileName.value, imageSource).subscribe(
             (res) => {
                 this.closeDialog();
@@ -122,11 +122,4 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
             },
         );
     }
-
-    // onUpload(): void {
-    //     this.exportDrawingService.imageSource = this.imageSource;
-    //     const blobImage = this.exportDrawingService.filteredImageToBlob(this.selectedFormat);
-    //     console.log(blobImage);
-    //     this.imgurService.upload(this.fileName.value, blobImage).subscribe((res) => console.log(res));
-    // }
 }

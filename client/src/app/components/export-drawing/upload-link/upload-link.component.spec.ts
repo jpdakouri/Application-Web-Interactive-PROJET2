@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { MatSnackBar, MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
 import { UploadLinkComponent } from './upload-link.component';
 
 describe('UploadLinkComponent', () => {
@@ -9,6 +9,10 @@ describe('UploadLinkComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [UploadLinkComponent],
+            providers: [
+                { provide: MatSnackBar, useValue: {} },
+                { provide: MAT_SNACK_BAR_DATA, useValue: {} },
+            ],
         }).compileComponents();
     });
 
