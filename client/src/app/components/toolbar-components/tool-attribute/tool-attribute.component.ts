@@ -154,4 +154,8 @@ export class ToolAttributeComponent {
     onGridSizeChange(event: MatSliderChange): void {
         this.gridService.newGrid(event.value as number);
     }
+
+    shouldShowGrid(): boolean {
+        return this.showGrid;
+    }
 }
