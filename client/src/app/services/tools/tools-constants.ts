@@ -50,6 +50,8 @@ export const MS_PER_S = 1000;
 
 export const MIN_GRID_SIZE = 50;
 export const MAX_GRID_SIZE = 300;
+export const MIN_GRID_OPACITY = 0.1;
+export const MAX_GRID_OPACITY = 1;
 
 /***********************/
 /***POLYGON CONSTANTS**/

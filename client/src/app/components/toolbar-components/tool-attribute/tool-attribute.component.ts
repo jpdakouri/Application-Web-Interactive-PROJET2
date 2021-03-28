@@ -156,7 +156,7 @@ export class ToolAttributeComponent {
         else this.gridService.clear();
     }
 
-    shouldShowGrid(): boolean {
-        return this.showGrid;
+    onGridOpacityChange(event: MatSliderChange): void {
+        this.gridService.changeOpacity(event.value);
     }
 }
