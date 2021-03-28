@@ -41,7 +41,7 @@ export class GridService {
     }
 
     changeOpacity(value: number | null): void {
-        this.gridOpacity = value ? value.toFixed(1) : '1';
+        this.gridOpacity = value ? value.toFixed(1) : this.gridOpacity;
         this.newGrid(null);
     }
 
