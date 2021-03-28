@@ -9,4 +9,5 @@ export enum ToolsNames {
     SelectBox = 'SelectBox',
     SelectEllipse = 'SelectEllipse',
     Polygon = 'Polygon',
+    Text = 'Text',
 }

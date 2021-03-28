@@ -80,6 +80,82 @@
         <mat-divider></mat-divider>
     </div>
 
+
+  <div class="text-attributes"  style=" margin: 15px 0;" *ngIf="showTextAttributes()">
+
+    <div class="font-selector">
+      <mat-form-field appearance="fill">
+        <mat-label>Police</mat-label>
+        <mat-select style="font-size: large">
+          <mat-option style="font-family: 'Arial'">Arial</mat-option>
+          <mat-option style="font-family: 'Times New Roman'">Times New Roman</mat-option>
+          <mat-option style="font-family: 'Menlo',monospace">Menlo</mat-option>
+          <mat-option style="font-family: 'Consolas',serif">Consolas</mat-option>
+          <mat-option style="font-family: 'Courier'">Courier</mat-option>
+          <mat-option style="font-family: 'Pacifico'">Pacifico</mat-option>
+          <mat-option style="font-family: 'Droid Sans'">Droid Sans</mat-option>
+          <mat-option style="font-family: 'Source Code Pro'">Source Code Pro</mat-option>
+          <mat-option style="font-family: 'Droid Serif'">Droid Serif</mat-option>
+          <mat-option style="font-family: 'Roboto'">Roboto</mat-option>
+          <mat-option style="font-family: 'Verdana'">Verdana</mat-option>
+          <mat-option style="font-family: 'Fira Code Retina'">Fira Code Retina</mat-option>
+<!--          <mat-option style="font-family: "></mat-option>-->
+<!--          <mat-option *ngFor="let food of foods" [value]="food.value">-->
+<!--            {{food.viewValue}}-->
+<!--          </mat-option>-->
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div class="text-appearance" style="position: center">
+<!--      <div class="default-appearance" style=" margin: 15px;">Default appearance: </div>-->
+      <mat-button-toggle-group name="fontStyle" aria-label="Font Style" style="margin-bottom: 15px" multiple>
+          <mat-button-toggle value="bold"><mat-icon>format_bold</mat-icon></mat-button-toggle>
+          <mat-button-toggle value="italic"><mat-icon>format_italic</mat-icon></mat-button-toggle>
+          <mat-button-toggle value="underline"><mat-icon>format_underline</mat-icon></mat-button-toggle>
+          <mat-button-toggle value="underline"><mat-icon>strikethrough_s</mat-icon></mat-button-toggle>
+        </mat-button-toggle-group>
+
+      <div class="text-alignment">
+        <mat-button-toggle-group #group="matButtonToggleGroup" >
+          <mat-button-toggle value="left" aria-label="Text align left">
+            <mat-icon>format_align_left</mat-icon>
+          </mat-button-toggle>
+          <mat-button-toggle  value="center" aria-label="Text align center">
+            <mat-icon>format_align_center</mat-icon>
+          </mat-button-toggle>
+          <mat-button-toggle value="right" aria-label="Text align right">
+            <mat-icon>format_align_right</mat-icon>
+          </mat-button-toggle>
+          <mat-button-toggle value="justify" aria-label="Text align justify">
+            <mat-icon>format_align_justify</mat-icon>
+          </mat-button-toggle>
+        </mat-button-toggle-group>
+<!--      <div class="example-selected-value" style=" margin: 15px 0;">Selected value: {{group.value}}</div>-->
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div class="text-font-size">
+      <h3 class="attribute-title">Taille de la police: {{ 111 }} px</h3>
+      <mat-slider
+        [value]="getCurrentFrequency()"
+        #flowSlider
+        color="primary"
+        [min]="MIN_FREQUENCY"
+        [max]="MAX_FREQUENCY"
+        step="1"
+        (input)="onFrequencyChange($event)"
+      ></mat-slider>
+    </div>
+
+    <mat-divider></mat-divider>
+
+  </div>
+
     <div class="aerosol-attributes" *ngIf="showAerosolAttributes()">
         <div>
             <div class="aerosol-emission-flow">

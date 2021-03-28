@@ -86,6 +86,10 @@ export class ToolAttributeComponent {
         return this.toolManagerService.isCurrentTool(ToolsNames.Pipette);
     }
 
+    showTextAttributes(): boolean {
+        return this.toolManagerService.isCurrentTool(ToolsNames.Text);
+    }
+
     isChecked(shapeStyle: ShapeStyle): boolean {
         return this.getCurrentShapeStyle() === shapeStyle;
     }
