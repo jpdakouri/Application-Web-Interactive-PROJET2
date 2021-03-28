@@ -1,6 +1,6 @@
 <div class="attribute-toolbar">
     <div class="grid">
-        <mat-checkbox [(ngModel)]="showGrid"
+        <mat-checkbox [(ngModel)]="showGrid" (change)="onGridSizeChange($event)"
             >Grille de prévisualisation<br /><small class="small-text">Afficher une grille à la zone de dessin</small></mat-checkbox
         >
         <div *ngIf="showGrid">
@@ -13,6 +13,16 @@
                 [max]="gridService.maxGridSize"
                 step="20"
                 (input)="onGridSizeChange($event)"
+            ></mat-slider>
+            <h3 class="attribute-title">Opacité: {{ gridService.gridOpacity | percent }}</h3>
+            <mat-slider
+                [value]="gridService.gridOpacity"
+                #heightSlider
+                color="primary"
+                [min]="0.3"
+                [max]="1"
+                step="0.1"
+                (input)="onGridOpacityChange($event)"
             ></mat-slider>
         </div>
     </div>
