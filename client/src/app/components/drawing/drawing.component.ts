@@ -132,7 +132,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.emitEditorMinWidth();
     }
 
-    //Comportement bizare avec resizing
+    // Comportement bizare avec resizing
     resizeCanvas(): void {
         this.canvasSize = this.canvasResizerService.calculateNewCanvasSize(this.canvasSize);
         this.drawingService.restoreCanvas();
