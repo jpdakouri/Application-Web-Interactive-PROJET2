@@ -2,8 +2,10 @@ import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@
 import { ToolbarComponent } from '@app/components/toolbar-components/toolbar/toolbar.component';
 import { DialogControllerService } from '@app/services/dialog-controller/dialog-controller.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { GridService } from '@app/services/grid-service/grid.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
+import { GRID_SIZE_CHANGE_VALUE } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { ToolsNames } from '@app/utils/enums/tools-names';
@@ -20,6 +22,7 @@ export class EditorComponent implements AfterViewInit {
 
     private toolFinder: Map<KeyboardButtons, ToolsNames>;
     editorMinWidth: number;
+    showGrid: boolean = false;
 
     constructor(
         private toolManagerService: ToolManagerService,
@@ -27,6 +30,7 @@ export class EditorComponent implements AfterViewInit {
         private dialogControllerService: DialogControllerService,
         private selectionRectangleService: SelectionRectangleService,
         private undoRedo: UndoRedoService,
+        private gridService: GridService,
     ) {
         this.toolFinder = new Map<KeyboardButtons, ToolsNames>();
         this.toolFinder
@@ -47,6 +51,8 @@ export class EditorComponent implements AfterViewInit {
         this.setEditorMinWidth();
     }
 
+    // faudra creer un manager de shortcut
+    // tslint:disable-next-line:cyclomatic-complexity
     @HostListener('window:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
         if (this.dialogControllerService.noDialogOpened) {
@@ -78,6 +84,17 @@ export class EditorComponent implements AfterViewInit {
                 if (!(toolKeyDown == undefined)) {
                     this.toolManagerService.setCurrentTool(toolKeyDown);
                     this.toolManagerService.emitToolChange(toolKeyDown);
+                }
+                if (event.key === KeyboardButtons.grid) {
+                    this.showGrid = !this.showGrid;
+                    if (this.showGrid) this.gridService.newGrid(null);
+                    else this.gridService.clear();
+                }
+                if (event.key === KeyboardButtons.gridUp && this.gridService.gridSizeCanModify(true)) {
+                    if (this.showGrid) this.gridService.newGrid((this.gridService.gridSize += GRID_SIZE_CHANGE_VALUE));
+                }
+                if (event.key === KeyboardButtons.gripDown && this.gridService.gridSizeCanModify(false)) {
+                    if (this.showGrid) this.gridService.newGrid((this.gridService.gridSize -= GRID_SIZE_CHANGE_VALUE));
                 }
             }
         }
