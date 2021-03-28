@@ -58,6 +58,7 @@ describe('ToolAttributeBarComponent', () => {
                 MatInputModule,
                 MatButtonToggleModule,
                 MatSliderModule,
+                MatCheckboxModule,
                 MatDividerModule,
                 MatCheckboxModule,
                 FormsModule,
@@ -225,5 +226,23 @@ describe('ToolAttributeBarComponent', () => {
     it('onNumberOfSidesChange should call setCurrentNumberOfSides from toolManagerService', () => {
         component.onNumberOfSidesChange({} as MatSliderChange);
         expect(toolManagerServiceSpy.setCurrentNumberOfSides).toHaveBeenCalled();
+    });
+
+    it('onGridSizeChange should call newGrid if showGrid is true', () => {
+        spyOn(component.gridService, 'newGrid').and.stub();
+        spyOn(component.gridService, 'clear').and.stub();
+        component.showGrid = true;
+        component.onGridSizeChange({} as MatSliderChange);
+        expect(component.gridService.newGrid).toHaveBeenCalled();
+
+        component.showGrid = false;
+        component.onGridSizeChange({} as MatSliderChange);
+        expect(component.gridService.clear).toHaveBeenCalled();
+    });
+
+    it('onGridOpacityChange should call the service to change the opacity', () => {
+        spyOn(component.gridService, 'changeOpacity').and.stub();
+        component.onGridOpacityChange({} as MatSliderChange);
+        expect(component.gridService.changeOpacity).toHaveBeenCalled();
     });
 });

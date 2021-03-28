@@ -24,4 +24,7 @@ export enum KeyboardButtons {
     Pipette = 'i',
     Undo = 'z',
     Redo = 'Z',
+    grid = 'g',
+    gridUp = '=',
+    gripDown = '-',
 }
