@@ -52,6 +52,18 @@ export class ExportDrawingService {
         this.link.click();
     }
 
+    canvasToBase64Image(format: string): string {
+        const image = new Image();
+        image.src = this.imageSource;
+
+        this.drawImageOnCanvas(image, this.canvas, this.currentFilter.getValue());
+
+        // set the image to image with current filter applied on
+        image.src = this.canvas.toDataURL(`image/${format}`) as string;
+
+        return image.src.split(';base64,')[1];
+    }
+
     private drawImageOnCanvas(image: HTMLImageElement, canvas: HTMLCanvasElement, filter?: string): void {
         const context = canvas.getContext('2d') as CanvasRenderingContext2D;
         canvas.width = image.width;
