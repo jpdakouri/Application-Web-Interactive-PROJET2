@@ -16,11 +16,11 @@ export class DrawingService {
     @Output() createNewDrawingEmitter: EventEmitter<boolean> = new EventEmitter();
 
     saveCanvas(): void {
-        sessionStorage.setItem('canvasBuffer', this.canvas.toDataURL());
+        localStorage.setItem('canvasBuffer', this.canvas.toDataURL());
     }
 
     restoreCanvas(): void {
-        const dataURL = sessionStorage.getItem('canvasBuffer');
+        const dataURL = localStorage.getItem('canvasBuffer');
         const image = new Image();
         if (dataURL) {
             image.src = dataURL;
@@ -69,6 +69,11 @@ export class DrawingService {
         }
         return false;
     }
+
+    // automaticSave(): void {
+    //     const savedCanvas = localStorage.getItem('canvasBuffer');
+    //     this.baseCtx.canvas.onpointerdown.
+    // }
 
     emitCreateNewDrawing(): void {
         this.createNewDrawingEmitter.emit(true);
