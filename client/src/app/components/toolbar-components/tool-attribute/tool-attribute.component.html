@@ -83,33 +83,36 @@
 
   <div class="text-attributes"  style=" margin: 15px 0;" *ngIf="showTextAttributes()">
 
-    <div class="font-selector">
-      <mat-form-field appearance="fill">
+    <div class="font-selector" style="text-align: center;">
+      <mat-form-field appearance="fill" style="width: 90%;">
         <mat-label>Police</mat-label>
-        <mat-select style="font-size: large">
-          <mat-option style="font-family: 'Arial'">Arial</mat-option>
-          <mat-option style="font-family: 'Times New Roman'">Times New Roman</mat-option>
-          <mat-option style="font-family: 'Menlo',monospace">Menlo</mat-option>
-          <mat-option style="font-family: 'Consolas',serif">Consolas</mat-option>
-          <mat-option style="font-family: 'Courier'">Courier</mat-option>
-          <mat-option style="font-family: 'Pacifico'">Pacifico</mat-option>
-          <mat-option style="font-family: 'Droid Sans'">Droid Sans</mat-option>
-          <mat-option style="font-family: 'Source Code Pro'">Source Code Pro</mat-option>
-          <mat-option style="font-family: 'Droid Serif'">Droid Serif</mat-option>
-          <mat-option style="font-family: 'Roboto'">Roboto</mat-option>
-          <mat-option style="font-family: 'Verdana'">Verdana</mat-option>
-          <mat-option style="font-family: 'Fira Code Retina'">Fira Code Retina</mat-option>
-<!--          <mat-option style="font-family: "></mat-option>-->
-<!--          <mat-option *ngFor="let food of foods" [value]="food.value">-->
-<!--            {{food.viewValue}}-->
-<!--          </mat-option>-->
+        <mat-select>
+          <mat-option *ngFor="let font of textFonts" [value]="font" [style.font-family]="font" style="font-size: large;">
+            {{font}}
+          </mat-option>
         </mat-select>
       </mat-form-field>
     </div>
 
+
     <mat-divider></mat-divider>
 
-    <div class="text-appearance" style="position: center">
+    <div class="text-font-size">
+      <h3 class="attribute-title">Taille de la police: {{ 111 }} px</h3>
+      <mat-slider
+        [value]="getCurrentFrequency()"
+        #flowSlider
+        color="primary"
+        [min]="MIN_FREQUENCY"
+        [max]="MAX_FREQUENCY"
+        step="1"
+        (input)="onFrequencyChange($event)"
+      ></mat-slider>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div class="text-appearance" style="text-align: center">
 <!--      <div class="default-appearance" style=" margin: 15px;">Default appearance: </div>-->
       <mat-button-toggle-group name="fontStyle" aria-label="Font Style" style="margin-bottom: 15px" multiple>
           <mat-button-toggle value="bold"><mat-icon>format_bold</mat-icon></mat-button-toggle>
@@ -135,21 +138,6 @@
         </mat-button-toggle-group>
 <!--      <div class="example-selected-value" style=" margin: 15px 0;">Selected value: {{group.value}}</div>-->
       </div>
-    </div>
-
-    <mat-divider></mat-divider>
-
-    <div class="text-font-size">
-      <h3 class="attribute-title">Taille de la police: {{ 111 }} px</h3>
-      <mat-slider
-        [value]="getCurrentFrequency()"
-        #flowSlider
-        color="primary"
-        [min]="MIN_FREQUENCY"
-        [max]="MAX_FREQUENCY"
-        step="1"
-        (input)="onFrequencyChange($event)"
-      ></mat-slider>
     </div>
 
     <mat-divider></mat-divider>

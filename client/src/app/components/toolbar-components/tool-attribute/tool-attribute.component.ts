@@ -13,6 +13,7 @@ import {
     MIN_JET_DIAMETER,
 } from '@app/services/tools/tools-constants';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
+import { TextFont } from '@app/utils/enums/text-font.enum';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 
 @Component({
@@ -120,6 +121,10 @@ export class ToolAttributeComponent {
 
     getCurrentNumberOfSides(): number | undefined {
         return this.toolManagerService.getCurrentNumberOfSides();
+    }
+
+    get textFonts(): string[] {
+        return Object.values(TextFont);
     }
 
     onThicknessChange(event: MatSliderChange): void {
