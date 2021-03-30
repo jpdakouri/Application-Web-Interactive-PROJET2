@@ -29,6 +29,7 @@ export abstract class Tool {
     showDots?: boolean = false;
     mouseMoved: boolean = false;
     eraserActive?: boolean = false;
+    bucketTolerance?: number = 0;
     dropletDiameter?: number = MIN_DROPLET_DIAMETER;
     frequency?: number = MIN_FREQUENCY;
     jetDiameter?: number = MIN_JET_DIAMETER;

@@ -9,4 +9,5 @@ export type CurrentAttributes = {
     Frequency?: number;
     JetDiameter?: number;
     numberOfSides?: number;
+    BucketTolerance?: number;
 };

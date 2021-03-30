@@ -4,6 +4,7 @@ import { AerosolService } from '@app/services/tools/aerosol-service/aerosol.serv
 import { EllipseService } from '@app/services/tools/ellipse-service/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service/eraser.service';
 import { LineService } from '@app/services/tools/line-service/line.service';
+import { PaintBucketService } from '@app/services/tools/paint-bucket-service/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil-service/pencil.service';
 import { PipetteService } from '@app/services/tools/pipette-service/pipette.service';
 import { PolygonService } from '@app/services/tools/polygon-service/polygon.service';
@@ -36,6 +37,7 @@ export class ToolManagerService {
         selectBoxService: SelectionRectangleService,
         selectEllipseService: SelectionEllipseService,
         polygonService: PolygonService,
+        paintBucket: PaintBucketService,
     ) {
         this.toolBox = {
             Pencil: pencilService,
@@ -48,6 +50,7 @@ export class ToolManagerService {
             SelectBox: selectBoxService,
             SelectEllipse: selectEllipseService,
             Polygon: polygonService,
+            PaintBucket: paintBucket,
         };
         this.currentAttributes = {
             LineThickness: 1,
@@ -58,6 +61,7 @@ export class ToolManagerService {
             Frequency: 1,
             JetDiameter: 1,
             numberOfSides: 3,
+            BucketTolerance: 0,
         };
         this.shapeStyleSelection.set('Outline', ShapeStyle.Outline).set('Filled', ShapeStyle.Filled).set('FilledOutline', ShapeStyle.FilledOutline);
         this.toolChangeEmitter.subscribe((toolName: ToolsNames) => {
@@ -70,6 +74,7 @@ export class ToolManagerService {
             this.currentAttributes.Frequency = currentTool.frequency;
             this.currentAttributes.JetDiameter = currentTool.jetDiameter;
             this.currentAttributes.DropletDiameter = currentTool.dropletDiameter;
+            this.currentAttributes.BucketTolerance = currentTool.bucketTolerance;
         });
     }
 
@@ -95,6 +100,11 @@ export class ToolManagerService {
         this.currentAttributes.DotRadius = dotRadius;
     }
 
+    setCurrentTolerance(tolerance?: number): void {
+        this.toolBox[this.currentTool].bucketTolerance = tolerance;
+        this.currentAttributes.BucketTolerance = tolerance;
+    }
+
     getCurrentDotRadius(): number | undefined {
         return this.currentAttributes.DotRadius;
     }
@@ -110,6 +120,10 @@ export class ToolManagerService {
 
     getCurrentFrequency(): number | undefined {
         return this.currentAttributes.Frequency;
+    }
+
+    getCurrentTolerance(): number | undefined {
+        return this.currentAttributes.BucketTolerance;
     }
 
     getCurrentDropletDiameter(): number | undefined {
