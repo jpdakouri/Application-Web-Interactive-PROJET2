@@ -67,6 +67,14 @@ export const LINE_DASH = 5;
 export const PREVIEW_SIZE = 15;
 export const PREVIEW_HALF_SIZE = (PREVIEW_SIZE - 1) / 2; // 7
 export const OUT_OF_BOUND_COLOR_RGBA = 'rgba(100,100,100,1)';
+
+/**********************/
+/****TEXT CONSTANTS****/
+/**********************/
+export const MIN_FONT_SIZE = 5;
+export const MAX_FONT_SIZE = 150;
+export const DEFAULT_FONT_SIZE = 80;
+
 /***************************/
 /* ERROR MESSAGE CONSTANT***/
 /***************************/

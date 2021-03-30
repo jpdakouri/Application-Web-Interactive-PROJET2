@@ -12,9 +12,11 @@ import { SelectionEllipseService } from '@app/services/tools/selection-ellipse-s
 import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
 import { TextService } from '@app/services/tools/text/text.service';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
+import { TextFont } from '@app/utils/enums/text-font.enum';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 import { CurrentAttributes } from '@app/utils/types/current-attributes';
 import { ToolBox } from '@app/utils/types/tool-box';
+import { DEFAULT_FONT_SIZE } from '../tools/tools-constants';
 
 @Injectable({
     providedIn: 'root',
@@ -37,7 +39,7 @@ export class ToolManagerService {
         selectBoxService: SelectionRectangleService,
         selectEllipseService: SelectionEllipseService,
         polygonService: PolygonService,
-        textService: TextService,
+        public textService: TextService,
     ) {
         this.toolBox = {
             Pencil: pencilService,
@@ -61,6 +63,8 @@ export class ToolManagerService {
             Frequency: 1,
             JetDiameter: 1,
             numberOfSides: 3,
+            FontSize: DEFAULT_FONT_SIZE,
+            FontFace: TextFont.Arial,
         };
         this.shapeStyleSelection.set('Outline', ShapeStyle.Outline).set('Filled', ShapeStyle.Filled).set('FilledOutline', ShapeStyle.FilledOutline);
         this.toolChangeEmitter.subscribe((toolName: ToolsNames) => {
@@ -73,6 +77,8 @@ export class ToolManagerService {
             this.currentAttributes.Frequency = currentTool.frequency;
             this.currentAttributes.JetDiameter = currentTool.jetDiameter;
             this.currentAttributes.DropletDiameter = currentTool.dropletDiameter;
+            this.currentAttributes.FontSize = currentTool.fontSize;
+            this.currentAttributes.FontFace = currentTool.fontFace;
         });
     }
 
@@ -149,6 +155,20 @@ export class ToolManagerService {
 
     getCurrentNumberOfSides(): number | undefined {
         return this.currentAttributes.numberOfSides;
+    }
+
+    getCurrentFontSize(): number | undefined {
+        return this.currentAttributes.FontSize;
+    }
+
+    setCurrentFontFace(selectedFont?: string): void {
+        this.toolBox[this.currentTool].fontFace = selectedFont;
+        this.currentAttributes.FontFace = selectedFont;
+    }
+
+    setCurrentFontSize(fontSize?: number): void {
+        this.toolBox[this.currentTool].fontSize = fontSize;
+        this.currentAttributes.FontSize = fontSize;
     }
 
     isCurrentTool(toolName: ToolsNames): boolean {

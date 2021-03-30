@@ -9,4 +9,6 @@ export type CurrentAttributes = {
     Frequency?: number;
     JetDiameter?: number;
     numberOfSides?: number;
+    FontSize?: number;
+    FontFace?: string;
 };

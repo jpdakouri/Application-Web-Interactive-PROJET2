@@ -4,6 +4,7 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatSliderChange } from '@angular/material/slider';
 import { GridService } from '@app/services/grid-service/grid.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
+import { TextService } from '@app/services/tools/text/text.service';
 import {
     MAX_DROPLET_DIAMETER,
     MAX_FREQUENCY,
@@ -34,7 +35,7 @@ export class ToolAttributeComponent {
     shapeStyle: typeof ShapeStyle = ShapeStyle;
     toolManagerService: ToolManagerService;
 
-    constructor(toolManagerService: ToolManagerService, public gridService: GridService) {
+    constructor(toolManagerService: ToolManagerService, public gridService: GridService, public textService: TextService) {
         this.toolManagerService = toolManagerService;
     }
 
@@ -123,6 +124,10 @@ export class ToolAttributeComponent {
         return this.toolManagerService.getCurrentNumberOfSides();
     }
 
+    getCurrentFontSize(): number | undefined {
+        return this.toolManagerService.getCurrentFontSize();
+    }
+
     get textFonts(): string[] {
         return Object.values(TextFont);
     }
@@ -146,6 +151,16 @@ export class ToolAttributeComponent {
 
     onFrequencyChange(event: MatSliderChange): void {
         this.toolManagerService.setCurrentFrequency(event.value || undefined);
+    }
+
+    onFontSizeChange(event: MatSliderChange): void {
+        this.toolManagerService.setCurrentFontSize(event.value || undefined);
+        this.textService.draw();
+    }
+
+    onFontFaceChange(selectedFont?: string): void {
+        this.toolManagerService.setCurrentFontFace(selectedFont || undefined);
+        this.textService.draw();
     }
 
     onDropletDiameterChange(event: MatSliderChange): void {
