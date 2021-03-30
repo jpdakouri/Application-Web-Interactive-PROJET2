@@ -157,6 +157,11 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         return { x: this.canvasResizerService.canvasPreviewWidth, y: this.canvasResizerService.canvasPreviewHeight };
     }
 
+    @HostListener('window:beforeunload', ['$event'])
+    unloadHandler(): void {
+        this.drawingService.saveCanvas();
+    }
+
     @HostListener('mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
         if (this.canvasResizerService.isResizing()) {
