@@ -16,6 +16,7 @@ import {
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { TextFont } from '@app/utils/enums/text-font.enum';
 import { ToolsNames } from '@app/utils/enums/tools-names';
+import { TextAlign } from '@app/utils/enums/text-align.enum';
 
 @Component({
     selector: 'app-tool-attribute',
@@ -182,5 +183,10 @@ export class ToolAttributeComponent {
 
     onGridOpacityChange(event: MatSliderChange): void {
         this.gridService.changeOpacity(event.value);
+    }
+
+    onTextAlignChange(value: string): void {
+        this.textService.textAlign = value as TextAlign;
+        this.textService.draw();
     }
 }

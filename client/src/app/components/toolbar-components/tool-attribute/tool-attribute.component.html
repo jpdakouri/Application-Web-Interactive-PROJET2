@@ -115,12 +115,12 @@
             <mat-button-toggle-group name="fontStyle" aria-label="Font Style" style="margin-bottom: 15px" multiple>
                 <mat-button-toggle value="bold"><mat-icon>format_bold</mat-icon></mat-button-toggle>
                 <mat-button-toggle value="italic"><mat-icon>format_italic</mat-icon></mat-button-toggle>
-                <mat-button-toggle value="underline"><mat-icon>format_underline</mat-icon></mat-button-toggle>
-                <mat-button-toggle value="underline"><mat-icon>strikethrough_s</mat-icon></mat-button-toggle>
+<!--                <mat-button-toggle value="underline"><mat-icon>format_underline</mat-icon></mat-button-toggle>-->
+<!--                <mat-button-toggle value="underline"><mat-icon>strikethrough_s</mat-icon></mat-button-toggle>-->
             </mat-button-toggle-group>
 
             <div class="text-alignment">
-                <mat-button-toggle-group #group="matButtonToggleGroup">
+                <mat-button-toggle-group #group="matButtonToggleGroup" [value]="textService.textAlign" (change)="onTextAlignChange(group.value)">
                     <mat-button-toggle value="left" aria-label="Text align left">
                         <mat-icon>format_align_left</mat-icon>
                     </mat-button-toggle>
@@ -130,11 +130,11 @@
                     <mat-button-toggle value="right" aria-label="Text align right">
                         <mat-icon>format_align_right</mat-icon>
                     </mat-button-toggle>
-                    <mat-button-toggle value="justify" aria-label="Text align justify">
-                        <mat-icon>format_align_justify</mat-icon>
-                    </mat-button-toggle>
+<!--                    <mat-button-toggle value="justify" aria-label="Text align justify">-->
+<!--                        <mat-icon>format_align_justify</mat-icon>-->
+<!--                    </mat-button-toggle>-->
                 </mat-button-toggle-group>
-                <div class="example-selected-value" style=" margin: 15px 0;">Selected value: {{group.value}}</div>
+                <div class="example-selected-value" style=" margin: 15px 0;">Selected value: {{textService.textAlign}}</div>
             </div>
         </div>
 
