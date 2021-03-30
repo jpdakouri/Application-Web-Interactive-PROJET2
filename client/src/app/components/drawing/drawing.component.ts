@@ -95,6 +95,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.canvasResizerService.canvasPreviewWidth = this.canvasSize.x;
         this.canvasResizerService.canvasPreviewHeight = this.canvasSize.y;
         this.drawingService.restoreCanvas();
+        this.drawingService.saveCanvas();
         this.undoRedo.saveInitialState();
         setTimeout(() => {
             this.selectionEllipseService.height = this.drawingService.canvas.height;

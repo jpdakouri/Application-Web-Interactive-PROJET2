@@ -58,21 +58,22 @@ export class DrawingService {
     }
 
     createNewDrawing(): boolean {
-        if (sessionStorage.getItem('canvasBuffer') && !this.isCanvasBlank()) {
+        if (localStorage.getItem('canvasBuffer') && !this.isCanvasBlank()) {
             if (confirm("Le canvas n'est pas vide! Voulez-vous procéder tout de même?")) {
                 this.clearCanvas(this.previewCtx);
                 this.clearCanvas(this.baseCtx);
                 this.emitCreateNewDrawing();
-                sessionStorage.clear();
+                localStorage.clear();
                 return true;
             }
         }
         return false;
     }
 
-    // automaticSave(): void {
-    //     const savedCanvas = localStorage.getItem('canvasBuffer');
-    //     this.baseCtx.canvas.onpointerdown.
+    // continueDrawing(): void {
+    //     if (!this.isCanvasBlank() && localStorage.getItem('canvasBuffer')) {
+
+    //     }
     // }
 
     emitCreateNewDrawing(): void {

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { DialogControllerService } from '@app/services/dialog-controller/dialog-controller.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { IndexService } from '@app/services/index/index.service';
+import { DrawingData } from '@common/communication/drawing-data';
 import { Message } from '@common/communication/message';
 import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -16,12 +17,10 @@ export class MainPageComponent {
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
     canOpen: boolean = false;
     isPendingDrawing: boolean = false;
-
-    constructor(
-        private basicService: IndexService,
-        private drawingService: DrawingService,
-        private dialogControllerService: DialogControllerService,
-    ) {}
+    drawingService: DrawingService;
+    constructor(private basicService: IndexService, drawingService: DrawingService, private dialogControllerService: DialogControllerService) {
+        this.drawingService = drawingService;
+    }
 
     sendTimeToServer(): void {
         const newTimeMessage: Message = {
@@ -49,5 +48,25 @@ export class MainPageComponent {
     openCarousel(): void {
         this.onCreateNewDrawing();
         this.dialogControllerService.openDialog('carousel');
+    }
+
+    onContinueDrawing(): void {
+        if (!this.drawingService.isCanvasBlank() && localStorage.getItem('canvasBuffer')) {
+            const dataURL = localStorage.getItem('canvasBuffer');
+            const image = new Image();
+            image.src = dataURL as string;
+            if (dataURL) {
+                const drawingData: DrawingData = new DrawingData(
+                    '',
+                    '',
+                    [],
+                    dataURL,
+                    this.drawingService.canvas.width,
+                    this.drawingService.canvas.height,
+                );
+                this.drawingService.openDrawing(drawingData);
+            }
+            this.drawingService.restoreCanvas();
+        }
     }
 }

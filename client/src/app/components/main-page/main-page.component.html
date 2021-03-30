@@ -9,9 +9,10 @@
 </mat-toolbar>
 
 <mat-grid-list class="grid-list" cols="2" rows="2" [rowHeight]="300">
-    <mat-grid-tile id="paintbrushes" routerLink="/editor" [colspan]="1" [rowspan]="1">
-        <mat-grid-tile-header class="tile-header">Continuer un dessin</mat-grid-tile-header>
+    <mat-grid-tile id="paintbrushes" routerLink="/editor" [colspan]="1" [rowspan]="1" (click)="onContinueDrawing()">
+        <mat-grid-tile-header class="tile-header" *ngIf="!drawingService.isCanvasBlank()">Continuer un dessin</mat-grid-tile-header>
     </mat-grid-tile>
+
     <mat-grid-tile id="canvas" routerLink="/editor" [colspan]="1" [rowspan]="2" (click)="onCreateNewDrawing()">
         <mat-grid-tile-header class="tile-header">Créer un nouveau dessin</mat-grid-tile-header>
     </mat-grid-tile>
