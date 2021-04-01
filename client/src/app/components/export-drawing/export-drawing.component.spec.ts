@@ -1,3 +1,4 @@
+import { HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
@@ -6,10 +7,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ExportDrawingService } from '@app/services/export-drawing/export-drawing.service';
+import { ImgurApiService } from '@app/services/imgur-api/imgur-api.service';
 import { INVALID_FILE_NAME_ERROR_MESSAGE, NO_ERROR_MESSAGE, REQUIRED_FILE_NAME_ERROR_MESSAGE } from '@app/services/services-constants';
 import { ImageFilter } from '@app/utils/enums/image-filter.enum';
 import { ImageFormat } from '@app/utils/enums/image-format.enum';
@@ -22,6 +25,8 @@ describe('ExportDrawingComponent', () => {
     let canvasTestHelper: CanvasTestHelper;
     let drawingServiceSpy: jasmine.SpyObj<DrawingService>;
     let exportDrawingMock: ExportDrawingServiceMock;
+    // @ts-ignore
+    let imgurApiServiceSpy: jasmine.SpyObj<ImgurApiService>;
     const dialogMock = {
         // tslint:disable-next-line:no-empty
         close: () => {},
@@ -29,6 +34,8 @@ describe('ExportDrawingComponent', () => {
 
     beforeEach(async(() => {
         drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['']);
+        // @ts-ignore
+        imgurApiServiceSpy = jasmine.createSpy('ImgurApiService', ['upload']);
         exportDrawingMock = new ExportDrawingServiceMock();
 
         TestBed.configureTestingModule({
@@ -36,10 +43,13 @@ describe('ExportDrawingComponent', () => {
             providers: [
                 { provide: MatDialogRef, useValue: dialogMock },
                 { provide: ExportDrawingService, useValue: exportDrawingMock },
+                { provide: ImgurApiService, useValue: exportDrawingMock },
                 { provide: DrawingService, useValue: drawingServiceSpy },
             ],
             imports: [
                 BrowserAnimationsModule,
+                HttpClientModule,
+                MatSnackBarModule,
                 MatOptionModule,
                 MatSelectModule,
                 MatIconModule,
