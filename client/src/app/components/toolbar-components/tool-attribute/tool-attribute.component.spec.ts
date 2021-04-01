@@ -41,6 +41,7 @@ describe('ToolAttributeBarComponent', () => {
             'setCurrentJetDiameter',
             'getCurrentNumberOfSides',
             'setCurrentNumberOfSides',
+            'getCurrentTolerance',
         ]);
         TestBed.configureTestingModule({
             declarations: [

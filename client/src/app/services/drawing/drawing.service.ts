@@ -19,6 +19,14 @@ export class DrawingService {
         sessionStorage.setItem('canvasBuffer', this.canvas.toDataURL());
     }
 
+    getCanvas(): HTMLCanvasElement {
+        return this.canvas;
+    }
+
+    getBaseContext(): CanvasRenderingContext2D {
+        return this.baseCtx;
+    }
+
     restoreCanvas(): void {
         const dataURL = sessionStorage.getItem('canvasBuffer');
         const image = new Image();
