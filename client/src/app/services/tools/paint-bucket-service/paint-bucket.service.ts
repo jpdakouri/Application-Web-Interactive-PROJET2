@@ -9,6 +9,8 @@ import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
 
+// Algorithm inspired by:
+// https://www.geeksforgeeks.org/flood-fill-algorithm-implement-fill-paint/
 @Injectable({
     providedIn: 'root',
 })
