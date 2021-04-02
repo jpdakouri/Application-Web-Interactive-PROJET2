@@ -20,35 +20,28 @@ export class LineCreatorService extends Tool {
         this.clearPath();
     }
 
-    executeCommand(command: ToolCommand): void {
-        throw new Error('Method not implemented.');
-    }
-
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButtons.Left;
         this.mouseDownCoord = this.getPositionFromMouse(event);
     }
 
-    onMouseUp(event: MouseEvent): void {
-        if (this.mouseDown) {
-            this.mouseDownCoord = this.getPositionFromMouse(event);
+    defaultMouseUp(event: MouseEvent): void {
+        this.mouseDownCoord = this.getPositionFromMouse(event);
 
-            if (!this.shiftPressed) this.pathData.push(this.mouseDownCoord);
-            else this.pathData.push(this.desiredAngle(this.mouseDownCoord));
+        if (!this.shiftPressed) this.pathData.push(this.mouseDownCoord);
+        else this.pathData.push(this.desiredAngle(this.mouseDownCoord));
 
-            this.drawLine(
-                this.drawingService.previewCtx,
-                this.currentColorService.getPrimaryColorHex(),
-                this.currentColorService.getSecondaryColorHex(),
-                this.showDots || false,
-                this.dotRadius || DEFAULT_DOT_RADIUS,
-                this.pathData,
-                this.lineThickness || DEFAULT_MIN_THICKNESS,
-                false,
-            );
-            this.started = true;
-        }
-        this.mouseDown = false;
+        this.drawLine(
+            this.drawingService.previewCtx,
+            this.currentColorService.getPrimaryColorHex(),
+            this.currentColorService.getSecondaryColorHex(),
+            this.showDots || false,
+            this.dotRadius || DEFAULT_DOT_RADIUS,
+            this.pathData,
+            this.lineThickness || DEFAULT_MIN_THICKNESS,
+            false,
+        );
+        this.started = true;
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -60,7 +53,7 @@ export class LineCreatorService extends Tool {
 
     onMouseLeave(event: MouseEvent): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        if (this.started)
+        if (this.started) {
             this.drawLine(
                 this.drawingService.previewCtx,
                 this.currentColorService.getPrimaryColorHex(),
@@ -71,6 +64,8 @@ export class LineCreatorService extends Tool {
                 this.lineThickness || DEFAULT_MIN_THICKNESS,
                 false,
             );
+            this.mouseDown = false;
+        }
     }
 
     onKeyDown(event: KeyboardEvent): void {
@@ -203,5 +198,9 @@ export class LineCreatorService extends Tool {
     verifyLastPoint(dotToVerify: Vec2): boolean {
         const lastDot = this.pathData[this.pathData.length - 1];
         return Math.abs(lastDot.x - dotToVerify.x) <= PIXEL_DISTANCE && Math.abs(lastDot.y - dotToVerify.y) <= PIXEL_DISTANCE;
+    }
+
+    executeCommand(command: ToolCommand): void {
+        throw new Error('Method not implemented.');
     }
 }
