@@ -3,17 +3,17 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ALPHA_POS, BLUE_POS, GREEN_POS, MAX_BYTE_VALUE, RED_POS } from '@app/services/services-constants';
+import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
+import { PIXELS_ARROW_STEPS } from '@app/services/tools/tools-constants';
+import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
-import { MousePositionHandlerService } from '../mouse-position-handler-service/mouse-position-handler.service';
-import { RectangleService } from '../rectangle-service/rectangle.service';
-import { PIXELS_ARROW_STEPS } from '../tools-constants';
-import { UndoRedoService } from '../undo-redo-service/undo-redo.service';
 
 @Injectable({
     providedIn: 'root',
 })
-export class SelectionService extends Tool {
+export abstract class SelectionService extends Tool {
     firstGrid: Vec2;
     topLeftCorner: Vec2;
     firstGridClip: Vec2;
@@ -32,7 +32,6 @@ export class SelectionService extends Tool {
     width: number;
     isSelectionDone: boolean;
 
-    rectangleService: RectangleService;
     currentColorService: CurrentColorService;
     constructor(
         drawingService: DrawingService,
@@ -184,6 +183,19 @@ export class SelectionService extends Tool {
     clearPath(): void {
         this.firstGrid = this.mouseDownCoord = { x: 0, y: 0 };
     }
+
+    replaceEmptyPixels(imageData: ImageData): void {
+        for (let i = 3; i < imageData.data.length; i += ALPHA_POS) {
+            if (imageData.data[i] === 0) {
+                imageData.data[i - RED_POS] = MAX_BYTE_VALUE;
+                imageData.data[i - GREEN_POS] = MAX_BYTE_VALUE;
+                imageData.data[i - BLUE_POS] = MAX_BYTE_VALUE;
+                imageData.data[i] = MAX_BYTE_VALUE;
+            }
+        }
+    }
+
+    abstract updatePreview(): void;
 
     executeCommand(command: ToolCommand): void {
         throw new Error('Method not implemented.');

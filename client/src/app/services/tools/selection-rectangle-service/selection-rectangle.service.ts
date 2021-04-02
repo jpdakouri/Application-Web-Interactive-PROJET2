@@ -1,16 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Tool } from '@app/classes/tool';
 import { SelectionCommand } from '@app/classes/tool-commands/selection-command';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { ALPHA_POS, BLUE_POS, GREEN_POS, MAX_BYTE_VALUE, RED_POS } from '@app/services/services-constants';
 import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
-import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection.service';
-import { PIXELS_ARROW_STEPS } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
-import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { Sign } from '@app/utils/enums/rgb-settings';
 
@@ -123,14 +118,7 @@ export class SelectionRectangleService extends SelectionService {
         const bottomRightCorner: Vec2 = { x: imageData.width, y: imageData.height };
 
         // Replace all empty pixels with white ones
-        for (let i = 3; i < imageData.data.length; i += ALPHA_POS) {
-            if (imageData.data[i] === 0) {
-                imageData.data[i - RED_POS] = MAX_BYTE_VALUE;
-                imageData.data[i - GREEN_POS] = MAX_BYTE_VALUE;
-                imageData.data[i - BLUE_POS] = MAX_BYTE_VALUE;
-                imageData.data[i] = MAX_BYTE_VALUE;
-            }
-        }
+        this.replaceEmptyPixels(imageData);
         createImageBitmap(imageData).then((imgBitmap) => {
             this.drawingService.selectedAreaCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
         });
@@ -149,7 +137,7 @@ export class SelectionRectangleService extends SelectionService {
         this.drawingService.baseCtx.fillRect(this.firstGrid.x, this.firstGrid.y, finalGrid.x, finalGrid.y);
     }
 
-    private updatePreview(): void {
+    updatePreview(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         const currentCoord = { ...this.mouseDownCoord };
         this.drawingService.previewCtx.beginPath();
