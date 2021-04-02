@@ -48,10 +48,11 @@ export abstract class LineCreatorService extends Tool {
     onMouseMove(event: MouseEvent): void {
         if (this.started) {
             this.mouseDownCoord = this.getPositionFromMouse(event);
+            this.verifyValideLine(this.mouseDownCoord);
             this.previewUpdate();
         }
     }
-    verifyValideLine(): boolean {
+    verifyValideLine(courrentPosition: Vec2): boolean {
         return true;
     }
 

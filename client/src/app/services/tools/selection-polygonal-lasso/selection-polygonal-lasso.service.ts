@@ -9,38 +9,46 @@ import { ToolCommand } from '@app/utils/interfaces/tool-command';
     providedIn: 'root',
 })
 export class SelectionPolygonalLassoService extends LineCreatorService {
+    private valideEndPoint: boolean = true;
     constructor(drawingService: DrawingService, currentColorService: CurrentColorService) {
         super(drawingService, currentColorService);
     }
 
     onMouseUp(event: MouseEvent): void {
-        if (this.mouseDown) {
+        if (this.valideEndPoint && this.mouseDown) {
             this.defaultMouseUp(event);
-            if (this.pathData.length > MIN_ARRAY_LENGTH) {
-                if (this.verifyLastPoint(this.pathData[0])) this.endOfSelection();
-            }
+            if (this.pathData.length > MIN_ARRAY_LENGTH && this.verifyLastPoint(this.pathData[0])) this.endOfSelection();
         }
         this.mouseDown = false;
     }
 
-    verifyValideLine(): boolean {
-        // const pathLength = this.pathData.length - 1;
-        // const lineToVerify: Vec2[] = [this.pathData[pathLength], this.pathData[pathLength - 1]];
-        // for (let i = 0; i < pathLength - 1; i++) {
-        //     const drawnLine: Vec2[] = [this.pathData[i], this.pathData[i + 1]];
-        //     if (this.verifiyCrossedLines(drawnLine, lineToVerify)) {
-        //         return false;
-        //     }
-        // }
+    getPrimaryColor(): string {
+        return this.valideEndPoint && this.pathData.length >= MIN_ARRAY_LENGTH ? '#000000' : '#ff0000';
+    }
+
+    verifyValideLine(courrentPosition: Vec2): boolean {
+        const pathLength = this.pathData.length - 1;
+        const lineToVerify: Vec2[] = [this.pathData[pathLength], courrentPosition];
+        for (let i = 0; i < pathLength - 1; i++) {
+            const drawnLine: Vec2[] = [this.pathData[i], this.pathData[i + 1]];
+            if (this.verifiyCrossedLines(drawnLine, lineToVerify)) {
+                this.valideEndPoint = false;
+                return false;
+            }
+        }
+        this.valideEndPoint = true;
         return true;
     }
 
-    private valideLine(): boolean {
-        return this.verifyValideLine() && this.pathData.length >= MIN_ARRAY_LENGTH;
+    // Cross product between 2 lines
+    ccw(A: Vec2, B: Vec2, C: Vec2): boolean {
+        return (C.y - A.y) * (B.x - A.x) > (B.y - A.y) * (C.x - A.x);
     }
-
-    getPrimaryColor(): string {
-        return this.valideLine() ? '#000000' : '#ff0000';
+    verifiyCrossedLines(line1: Vec2[], line2: Vec2[]): boolean {
+        return (
+            this.ccw(line1[0], line2[0], line2[1]) !== this.ccw(line1[1], line2[0], line2[1]) &&
+            this.ccw(line1[0], line1[1], line2[0]) !== this.ccw(line1[0], line1[1], line2[1])
+        );
     }
 
     private endOfSelection(): void {
@@ -61,17 +69,7 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
         this.clearPath();
     }
 
-    // (Fx - Ex)(Py - Fy) - (Fy - Ey)(Px - Fx)
-
-    // (Fx - Ex)(Qy - Fy) - (Fy - Ey)(Qx - Fx)
-    // Cross product between 2 lines
-    verifiyCrossedLines(line1: Vec2[], line2: Vec2[]): boolean {
-        const crossProd1 = (line1[1].x - line1[0].x) * (line2[0].y - line1[1].y) - (line1[1].y - line1[0].y) * (line2[0].x - line1[1].x);
-        const crossProd2 = (line1[1].x - line1[0].x) * (line2[1].y - line1[1].y) - (line1[1].y - line1[0].y) * (line2[1].x - line1[1].x);
-
-        return crossProd1 * crossProd2 <= 0;
-    }
-
+    // No need here
     executeCommand(command: ToolCommand): void {
         return;
     }
