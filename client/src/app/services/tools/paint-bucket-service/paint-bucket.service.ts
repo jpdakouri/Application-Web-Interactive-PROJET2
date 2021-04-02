@@ -104,6 +104,10 @@ export class PaintBucketService extends Tool {
         this.newCanvasImageData = this.canvasImageData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
     }
 
+    isTransparent(color: Color): boolean {
+        return color.A === 0;
+    }
+
     getRGBAFromCoord(x: number, y: number): Color {
         const data = this.canvasImageData.data;
         const width = this.canvas.width;
@@ -111,7 +115,10 @@ export class PaintBucketService extends Tool {
         const G = data[y * (width * ARRAY_OFFSET) + x * ARRAY_OFFSET + 1];
         const B = data[y * (width * ARRAY_OFFSET) + x * ARRAY_OFFSET + 2];
         const A = data[y * (width * ARRAY_OFFSET) + x * ARRAY_OFFSET + ALPHA];
-        const color: Color = { R, G, B, A };
+        let color: Color = { R, G, B, A };
+        if (this.isTransparent(color)) {
+            color = { R: 255, G: 255, B: 255, A: 255 };
+        }
         return color;
     }
 
@@ -124,16 +131,15 @@ export class PaintBucketService extends Tool {
         this.newCanvasImageData.data[y * (width * ARRAY_OFFSET) + x * ARRAY_OFFSET + ALPHA] = color.A;
     }
 
-    // getArrayPosfromXY(x: number, y: number): number {
-    //     return y * (this.canvasImageData.width * 4) + x * 4;
-    // }
-
     setStartColor(): void {
         const startPixel = this.baseCtx.getImageData(this.mouseDownCoord.x, this.mouseDownCoord.y, 1, 1).data;
         this.startColor.R = startPixel[0];
         this.startColor.G = startPixel[1];
         this.startColor.B = startPixel[2];
         this.startColor.A = startPixel[ALPHA];
+        if (this.isTransparent(this.startColor)) {
+            this.startColor = { R: 255, G: 255, B: 255, A: 255 };
+        }
     }
 
     setFillColor(): void {
@@ -148,7 +154,7 @@ export class PaintBucketService extends Tool {
     }
     isSimilarColor(colorA: Color): boolean {
         const colorB = this.startColor;
-        const threshold = this.bucketTolerance * MAX_PIXEL_VALUE;
+        const threshold = (this.bucketTolerance / 100) * MAX_PIXEL_VALUE;
         const R = Math.abs(colorA.R - colorB.R);
         const G = Math.abs(colorA.G - colorB.G);
         const B = Math.abs(colorA.B - colorB.B);
