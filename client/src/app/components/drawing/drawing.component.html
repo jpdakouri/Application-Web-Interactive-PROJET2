@@ -55,6 +55,98 @@
         [ngStyle]="{ border: selectionEllipseService.selectionActive || selectionRectangleService.selectionActive ? '1px solid' : 'none' }"
     >
     </canvas>
+
+    <!-- <textarea id="w3review" name="w3review" rows="3" cols="50" style="position: absolute; z-index: 111; font-size: xx-large">
+        At w3schools.com you will learn how to make a website. They offer free tutorials in all web development technologies.
+        </textarea
+    > -->
+    <!-- <textarea
+        class="textbox-editor"
+        style="
+            position: absolute;
+            inset: 0px;
+            padding: 0px;
+            margin: 0px;
+            border: 0px;
+            resize: none;
+            overflow: hidden;
+            transform: scale(1);
+            transform-origin: left top;
+            width: 733px;
+            height: 318px;
+            font-family: Courier;
+            font-size: 72px;
+            font-weight: normal;
+            font-style: normal;
+            text-decoration: none;
+            line-height: 120px;
+            color: rgb(0, 0, 0);
+            background: rgb(255, 255, 255);
+        "
+    ></textarea> -->
+
+    <div
+        class="on-canvas-object textbox"
+        touch-action="none"
+        style="cursor: url('images/cursors/move.png') 8 8, move; position: absolute; left: 103px; top: 193px; width: 641px; height: 452px"
+    >
+        <!-- <canvas width="641" height="452" style="pointer-events: none; transform: scale(1); transform-origin: left top"></canvas -->
+        <textarea class="textbox-editor"
+                   [style]="{ 'font-size': textService.fontSize + 'px',
+                              'font-family': textService.fontFace,
+                              'text-align': textService.textAlign,
+                              overflow : 'hidden',
+                              'font-weight' : textService.getSingleStyle('bold'),
+                              'font-style' : textService.getSingleStyle('italic'),
+                              'text-decoration': textService.getTextDecoration(),
+                              'color': textService.currentColorService.getPrimaryColorRgb(),
+                              'border-style': 'dashed',
+                              'width': 733 + 'px',
+                              'height': 318 + 'px',
+                              'position': 'absolute'}"></textarea>
+
+<!--        <div-->
+<!--            class="handle"-->
+<!--            touch-action="none"-->
+<!--            style="cursor: url('images/cursors/nesw-resize.png') 16 16, ne-resize; left: 639.5px; top: -2px; max-width: 320.5px; max-height: 226px"-->
+<!--        ></div>-->
+<!--        <div-->
+<!--            class="handle"-->
+<!--            touch-action="none"-->
+<!--            style="cursor: url('images/cursors/ns-resize.png') 16 16, n-resize; left: 319px; top: -2px; max-width: 320.5px; max-height: 226px"-->
+<!--        ></div>-->
+<!--        <div-->
+<!--            class="handle"-->
+<!--            touch-action="none"-->
+<!--            style="cursor: url('images/cursors/nwse-resize.png') 16 16, nw-resize; left: -2px; top: -2px; max-width: 320.5px; max-height: 226px"-->
+<!--        ></div>-->
+<!--        <div-->
+<!--            class="handle"-->
+<!--            touch-action="none"-->
+<!--            style="cursor: url('images/cursors/ew-resize.png') 16 16, w-resize; left: -2px; top: 224.5px; max-width: 320.5px; max-height: 226px"-->
+<!--        ></div>-->
+<!--        <div-->
+<!--            class="handle"-->
+<!--            touch-action="none"-->
+<!--            style="cursor: url('images/cursors/nesw-resize.png') 16 16, sw-resize; left: -2px; top: 450.5px; max-width: 320.5px; max-height: 226px"-->
+<!--        ></div>-->
+<!--        <div-->
+<!--            class="handle"-->
+<!--            touch-action="none"-->
+<!--            style="cursor: url('images/cursors/ns-resize.png') 16 16, s-resize; left: 319px; top: 450.5px; max-width: 320.5px; max-height: 226px"-->
+<!--        ></div>-->
+<!--        <div-->
+<!--            class="handle"-->
+<!--            touch-action="none"-->
+<!--            style="cursor: url('images/cursors/nwse-resize.png') 16 16, se-resize; left: 639.5px; top: 450.5px; max-width: 320.5px; max-height: 226px"-->
+<!--        ></div>-->
+<!--        <div-->
+<!--            class="handle"-->
+<!--            touch-action="none"-->
+<!--            style="cursor: url('images/cursors/ew-resize.png') 16 16, e-resize; left: 639.5px; top: 224.5px; max-width: 320.5px; max-height: 226px"-->
+<!--        ></div>-->
+
+    </div>
     <div
         class="resizer selection-box-middle-right"
         [hidden]="!selectionEllipseService.isSelectionDone"

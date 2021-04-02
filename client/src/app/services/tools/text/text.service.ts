@@ -19,7 +19,12 @@ export class TextService extends Tool {
     private currentTextPosition: Vec2;
     textAlign: TextAlign = TextAlign.Start;
 
-    constructor(currentColorService: CurrentColorService, drawingService: DrawingService) {
+    // private specialKeys: Map<string, string>;
+    textStyle: string;
+    fontStyle: string;
+    fontWeight: string;
+
+    constructor(public currentColorService: CurrentColorService, drawingService: DrawingService) {
         super(drawingService, currentColorService);
         // this.fonts = Object.values(TextFont);
         this.fontFace = TextFont.Arial;
@@ -28,9 +33,14 @@ export class TextService extends Tool {
         this.mouseDownCoordinate = { x: 0, y: 0 };
         this.currentTextPosition = { x: 0, y: 0 };
         this.textAlign = TextAlign.Start;
+        this.textStyle = '';
+        this.fontStyle = '';
+        this.fontWeight = '';
+        // this.specialKeys = new Map<string, string>();
     }
 
     onMouseDown(event: MouseEvent): void {
+        console.log(this.getStyle());
         super.onMouseDown(event);
         this.mouseDownCoordinate = this.getPositionFromMouse(event);
         // this.draw();
@@ -42,9 +52,9 @@ export class TextService extends Tool {
         this.text = '|'; // TODO: IMPORTANT for the cursor
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         // this.drawingService.previewCtx.fillRect(this.mouseDownCoordinate.x, this.mouseDownCoordinate.y, 2, this.fontSize as number);
-        console.log(this.fontSize);
+        // console.log(this.fontSize);
 
-        console.log(this.textAlign);
+        // console.log(this.textAlign);
     }
 
     // tslint:disable-next-line:cyclomatic-complexity
@@ -108,7 +118,7 @@ export class TextService extends Tool {
         // const array = this.text.split('|');
         // const temp = this.text.slice(0, this.text.indexOf('|')) + '|';
         // const cursorIndex = this.text.indexOf('|');
-        console.log(this.cursorIndex);
+        // console.log(this.cursorIndex);
         if (this.cursorIndex < this.text.length - 1) {
             this.text =
                 this.text.slice(0, this.cursorIndex) +
@@ -146,11 +156,11 @@ export class TextService extends Tool {
         // this.currentTextPosition.x = this.currentTextPosition.x - this.drawingService.baseCtx.measureText(this.text).width;
         const t = this.fontSize as number;
         this.currentTextPosition.y = this.currentTextPosition.y + t;
-        console.log(this.currentTextPosition.x);
+        // console.log(this.currentTextPosition.x);
     }
 
     private handleDeleteKey(): void {
-        console.log(this.cursorIndex);
+        // console.log(this.cursorIndex);
         if (this.cursorIndex !== this.text.length - 1) {
             this.text =
                 this.text.slice(0, this.cursorIndex + 1) +
@@ -158,13 +168,14 @@ export class TextService extends Tool {
                 // this.text.charAt(cursorIndex + 1) +
                 this.text.slice(this.cursorIndex + 2, this.text.length);
         }
-        console.log(this.text);
+        // console.log(this.text);
     }
 
     get cursorIndex(): number {
         const cursor = '|';
         return this.text.indexOf(cursor);
     }
+
     draw(): void {
         this.drawStyledText(this.drawingService.previewCtx, this.text, this.currentTextPosition, TextFont.BrushScriptMT, this.fontSize as number);
         console.log(this.textAlign);
@@ -207,8 +218,37 @@ export class TextService extends Tool {
         this.drawingService.baseCtx.fillStyle = this.currentColorService.getPrimaryColorRgb();
 
         context.font = `${this.fontSize}px ${this.fontFace}`;
-        context.textAlign = this.textAlign;
+        // @ts-ignore
+        context.textAlign = this.textAlign as string;
         context.fillText(text, position.x, position.y);
+    }
+
+    getStyle(): string {
+        console.log(this.textStyle);
+        // const temp = this.textStyle.split(',');
+        let tempStyle = '';
+        for (const item of this.textStyle) {
+            tempStyle = tempStyle.concat(' ').concat(item);
+        }
+        console.log(tempStyle);
+        return tempStyle;
+    }
+
+    // @ts-ignore
+    getSingleStyle(style: string): string {
+        for (let i = 0; i < this.textStyle.length; i++) {
+            if (this.textStyle[i] === style) {
+                return this.textStyle[i];
+            }
+        }
+    }
+
+    getTextDecoration(): string {
+        let tempStyle = '';
+        console.log(tempStyle);
+        if (this.getSingleStyle('underline') !== undefined) tempStyle += this.getSingleStyle('underline') + ' ';
+        if (this.getSingleStyle('line-through') !== undefined) tempStyle += this.getSingleStyle('line-through');
+        return tempStyle;
     }
 
     onMouseUp(event: MouseEvent): void {}

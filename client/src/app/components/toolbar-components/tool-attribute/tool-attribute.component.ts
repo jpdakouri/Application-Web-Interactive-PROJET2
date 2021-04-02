@@ -14,9 +14,9 @@ import {
     MIN_JET_DIAMETER,
 } from '@app/services/tools/tools-constants';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
+import { TextAlign } from '@app/utils/enums/text-align.enum';
 import { TextFont } from '@app/utils/enums/text-font.enum';
 import { ToolsNames } from '@app/utils/enums/tools-names';
-import { TextAlign } from '@app/utils/enums/text-align.enum';
 
 @Component({
     selector: 'app-tool-attribute',
@@ -189,4 +189,10 @@ export class ToolAttributeComponent {
         this.textService.textAlign = value as TextAlign;
         this.textService.draw();
     }
+
+    onTextStyleChange(textStyle: string): void {
+        this.textService.textStyle = textStyle;
+    }
+
+    onFontStyleChange() {}
 }

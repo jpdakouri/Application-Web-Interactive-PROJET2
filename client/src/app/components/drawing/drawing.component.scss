@@ -49,3 +49,13 @@ canvas {
 .resizer.bottom-right {
     cursor: nwse-resize;
 }
+
+.handle {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    // width: 3px;
+    // height: 3px;
+    z-index: 1;
+    background-color: brown;
+}
