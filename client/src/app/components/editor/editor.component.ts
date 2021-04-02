@@ -43,6 +43,7 @@ export class EditorComponent implements AfterViewInit {
             .set(KeyboardButtons.Aerosol, ToolsNames.Aerosol)
             .set(KeyboardButtons.SelectionRectangle, ToolsNames.SelectBox)
             .set(KeyboardButtons.SelectionEllipse, ToolsNames.SelectEllipse)
+            .set(KeyboardButtons.SelectionPolygon, ToolsNames.SelectPolygon)
             .set(KeyboardButtons.Polygon, ToolsNames.Polygon)
             .set(KeyboardButtons.Pipette, ToolsNames.Pipette);
     }

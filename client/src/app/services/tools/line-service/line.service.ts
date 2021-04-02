@@ -16,6 +16,7 @@ export class LineService extends LineCreatorService {
         super(drawingService, currentColorService);
         this.undoRedo = undoRedo;
     }
+
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
             this.defaultMouseUp(event);
@@ -36,7 +37,7 @@ export class LineService extends LineCreatorService {
         }
         this.drawLine(
             this.drawingService.baseCtx,
-            this.currentColorService.getPrimaryColorHex(),
+            this.getPrimaryColor(),
             this.currentColorService.getSecondaryColorHex(),
             this.showDots || false,
             this.dotRadius || DEFAULT_DOT_RADIUS,
@@ -46,7 +47,7 @@ export class LineService extends LineCreatorService {
         );
         const command = new LineCommand(
             this,
-            this.currentColorService.getPrimaryColorHex(),
+            this.getPrimaryColor(),
             this.currentColorService.getSecondaryColorHex(),
             this.lineThickness || DEFAULT_MIN_THICKNESS,
             this.dotRadius || DEFAULT_DOT_RADIUS,
@@ -55,6 +56,10 @@ export class LineService extends LineCreatorService {
         );
         this.undoRedo.addCommand(command);
         this.clearPath();
+    }
+
+    getPrimaryColor(): string {
+        return this.currentColorService.getPrimaryColorHex();
     }
 
     executeCommand(command: LineCommand): void {

@@ -6,12 +6,11 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DEFAULT_DOT_RADIUS, DEFAULT_MIN_THICKNESS, PIXEL_DISTANCE, SHIFT_ANGLE_45, SHIFT_ANGLE_HALF_45 } from '@app/services/tools/tools-constants';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
-import { ToolCommand } from '@app/utils/interfaces/tool-command';
 
 @Injectable({
     providedIn: 'root',
 })
-export class LineCreatorService extends Tool {
+export abstract class LineCreatorService extends Tool {
     started: boolean;
     pathData: Vec2[];
     shiftPressed: boolean;
@@ -25,6 +24,8 @@ export class LineCreatorService extends Tool {
         this.mouseDownCoord = this.getPositionFromMouse(event);
     }
 
+    abstract onMouseUp(event: MouseEvent): void;
+
     defaultMouseUp(event: MouseEvent): void {
         this.mouseDownCoord = this.getPositionFromMouse(event);
 
@@ -33,7 +34,7 @@ export class LineCreatorService extends Tool {
 
         this.drawLine(
             this.drawingService.previewCtx,
-            this.currentColorService.getPrimaryColorHex(),
+            this.getPrimaryColor(),
             this.currentColorService.getSecondaryColorHex(),
             this.showDots || false,
             this.dotRadius || DEFAULT_DOT_RADIUS,
@@ -50,13 +51,16 @@ export class LineCreatorService extends Tool {
             this.previewUpdate();
         }
     }
+    verifyValideLine(): boolean {
+        return true;
+    }
 
     onMouseLeave(event: MouseEvent): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         if (this.started) {
             this.drawLine(
                 this.drawingService.previewCtx,
-                this.currentColorService.getPrimaryColorHex(),
+                this.getPrimaryColor(),
                 this.currentColorService.getSecondaryColorHex(),
                 this.showDots || false,
                 this.dotRadius || DEFAULT_DOT_RADIUS,
@@ -98,11 +102,13 @@ export class LineCreatorService extends Tool {
         }
     }
 
+    abstract getPrimaryColor(): string;
+
     private previewUpdate(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawLine(
             this.drawingService.previewCtx,
-            this.currentColorService.getPrimaryColorHex(),
+            this.getPrimaryColor(),
             this.currentColorService.getSecondaryColorHex(),
             this.showDots || false,
             this.dotRadius || DEFAULT_DOT_RADIUS,
@@ -162,7 +168,7 @@ export class LineCreatorService extends Tool {
         ctx.moveTo(lastPoint.x, lastPoint.y);
         ctx.lineTo(previewPoint.x, previewPoint.y);
         ctx.lineWidth = this.lineThickness || DEFAULT_MIN_THICKNESS;
-        ctx.strokeStyle = this.currentColorService.getPrimaryColorHex();
+        ctx.strokeStyle = this.getPrimaryColor();
         ctx.stroke();
     }
 
@@ -198,9 +204,5 @@ export class LineCreatorService extends Tool {
     verifyLastPoint(dotToVerify: Vec2): boolean {
         const lastDot = this.pathData[this.pathData.length - 1];
         return Math.abs(lastDot.x - dotToVerify.x) <= PIXEL_DISTANCE && Math.abs(lastDot.y - dotToVerify.y) <= PIXEL_DISTANCE;
-    }
-
-    executeCommand(command: ToolCommand): void {
-        throw new Error('Method not implemented.');
     }
 }
