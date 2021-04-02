@@ -40,12 +40,23 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
         return true;
     }
 
-    // Cross product between 2 lines
-    ccw(A: Vec2, B: Vec2, C: Vec2): boolean {
+    // verifies if points are counter clock wise
+    private ccw(A: Vec2, B: Vec2, C: Vec2): boolean {
         return (C.y - A.y) * (B.x - A.x) > (B.y - A.y) * (C.x - A.x);
     }
-    verifiyCrossedLines(line1: Vec2[], line2: Vec2[]): boolean {
+    // varifies lines aren't superposed
+    private superposedLines(line1: Vec2[], line2: Vec2[]): boolean {
+        const a = (line1[1].y - line1[0].y) / (line1[1].x - line1[0].x);
+        const b = line1[1].y - a * line1[1].x;
+        const superposedPoint1 = line2[0].y === a * line2[0].x + b;
+        const superposedPoint2 = line2[1].y === a * line2[1].x + b;
+        return superposedPoint1 && superposedPoint2;
+    }
+
+    // algorithm found at https://bryceboe.com/2006/10/23/line-segment-intersection-algorithm/
+    private verifiyCrossedLines(line1: Vec2[], line2: Vec2[]): boolean {
         return (
+            this.superposedLines(line1, line2) &&
             this.ccw(line1[0], line2[0], line2[1]) !== this.ccw(line1[1], line2[0], line2[1]) &&
             this.ccw(line1[0], line1[1], line2[0]) !== this.ccw(line1[0], line1[1], line2[1])
         );

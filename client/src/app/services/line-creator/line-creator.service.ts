@@ -74,26 +74,27 @@ export abstract class LineCreatorService extends Tool {
     }
 
     onKeyDown(event: KeyboardEvent): void {
-        switch (event.key) {
-            case KeyboardButtons.Shift:
-                this.shiftPressed = true;
-                this.previewUpdate();
-                break;
-            case KeyboardButtons.Escape:
-                this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                this.clearPath();
-                this.started = false;
-                break;
-            case KeyboardButtons.Backspace:
-                if (this.pathData.length > 1) {
-                    this.pathData.pop();
-                }
-                this.previewUpdate();
-                event.preventDefault();
-                break;
-            default:
-                break;
-        }
+        if (this.started)
+            switch (event.key) {
+                case KeyboardButtons.Shift:
+                    this.shiftPressed = true;
+                    this.previewUpdate();
+                    break;
+                case KeyboardButtons.Escape:
+                    this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                    this.clearPath();
+                    this.started = false;
+                    break;
+                case KeyboardButtons.Backspace:
+                    if (this.pathData.length > 1) {
+                        this.pathData.pop();
+                    }
+                    this.previewUpdate();
+                    event.preventDefault();
+                    break;
+                default:
+                    break;
+            }
     }
 
     onKeyUp(event: KeyboardEvent): void {
