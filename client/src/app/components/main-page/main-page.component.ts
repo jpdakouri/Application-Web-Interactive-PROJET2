@@ -51,10 +51,11 @@ export class MainPageComponent {
     }
 
     onContinueDrawing(): void {
-        if (!this.drawingService.isCanvasBlank() && localStorage.getItem('canvasBuffer')) {
+        if (!this.drawingService.isCanvasBlank() && !localStorage.getItem('canvasBuffer')) {
             const dataURL = localStorage.getItem('canvasBuffer');
             const image = new Image();
             image.src = dataURL as string;
+
             if (dataURL) {
                 const drawingData: DrawingData = new DrawingData(
                     '',

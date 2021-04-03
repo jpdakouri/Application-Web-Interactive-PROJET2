@@ -23,6 +23,7 @@ export class DrawingService {
         const dataURL = localStorage.getItem('canvasBuffer');
         const image = new Image();
         if (dataURL) {
+            console.log('bufferr :' + dataURL);
             image.src = dataURL;
             image.onload = () => {
                 this.baseCtx.drawImage(image, 0, 0);

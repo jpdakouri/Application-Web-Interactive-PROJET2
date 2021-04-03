@@ -94,10 +94,10 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.drawingService.canvas.style.backgroundColor = DEFAULT_WHITE;
         this.canvasResizerService.canvasPreviewWidth = this.canvasSize.x;
         this.canvasResizerService.canvasPreviewHeight = this.canvasSize.y;
-        this.drawingService.restoreCanvas();
-        this.drawingService.saveCanvas();
-        this.undoRedo.saveInitialState();
         setTimeout(() => {
+            this.drawingService.restoreCanvas();
+            this.drawingService.saveCanvas();
+            this.undoRedo.saveInitialState();
             this.selectionEllipseService.height = this.drawingService.canvas.height;
             this.selectionEllipseService.width = this.drawingService.canvas.width;
         });
