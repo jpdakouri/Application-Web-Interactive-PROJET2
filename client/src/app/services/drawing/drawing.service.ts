@@ -43,8 +43,8 @@ export class DrawingService {
         return !hasSomeColoredPixels;
     }
 
-    openDrawing(drawing: DrawingData): void {
-        this.createNewDrawing();
+    openDrawing(drawing: DrawingData, showConfirmDialog?: boolean): void {
+        this.createNewDrawing(showConfirmDialog);
         this.canvas.width = drawing.width;
         this.canvas.height = drawing.height;
         this.previewCtx.canvas.width = drawing.width;
@@ -58,8 +58,8 @@ export class DrawingService {
         this.saveCanvas();
     }
 
-    createNewDrawing(): boolean {
-        if (localStorage.getItem('canvasBuffer') && !this.isCanvasBlank()) {
+    createNewDrawing(showConfirmDialog?: boolean): boolean {
+        if (localStorage.getItem('canvasBuffer') && !this.isCanvasBlank() && showConfirmDialog) {
             if (confirm("Le canvas n'est pas vide! Voulez-vous procéder tout de même?")) {
                 this.clearCanvas(this.previewCtx);
                 this.clearCanvas(this.baseCtx);
@@ -67,15 +67,29 @@ export class DrawingService {
                 localStorage.clear();
                 return true;
             }
+        } else {
+            this.clearCanvas(this.previewCtx);
+            this.clearCanvas(this.baseCtx);
+            this.emitCreateNewDrawing();
+            localStorage.clear();
+            return true;
         }
         return false;
     }
 
-    // continueDrawing(): void {
-    //     if (!this.isCanvasBlank() && localStorage.getItem('canvasBuffer')) {
+    continueDrawing(): void {
+        if (!this.isCanvasBlank() && localStorage.getItem('canvasBuffer')) {
+            const dataURL = localStorage.getItem('canvasBuffer');
+            const image = new Image();
+            image.src = dataURL as string;
 
-    //     }
-    // }
+            if (dataURL) {
+                const drawingData: DrawingData = new DrawingData('', '', [], dataURL, this.canvas.width, this.canvas.height);
+                this.openDrawing(drawingData, false);
+            }
+            this.restoreCanvas();
+        }
+    }
 
     emitCreateNewDrawing(): void {
         this.createNewDrawingEmitter.emit(true);

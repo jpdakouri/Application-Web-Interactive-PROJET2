@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { DialogControllerService } from '@app/services/dialog-controller/dialog-controller.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { IndexService } from '@app/services/index/index.service';
-import { DrawingData } from '@common/communication/drawing-data';
 import { Message } from '@common/communication/message';
 import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -42,7 +41,7 @@ export class MainPageComponent {
     }
 
     onCreateNewDrawing(): void {
-        this.drawingService.createNewDrawing();
+        this.drawingService.createNewDrawing(true);
     }
 
     openCarousel(): void {
@@ -51,23 +50,6 @@ export class MainPageComponent {
     }
 
     onContinueDrawing(): void {
-        if (!this.drawingService.isCanvasBlank() && !localStorage.getItem('canvasBuffer')) {
-            const dataURL = localStorage.getItem('canvasBuffer');
-            const image = new Image();
-            image.src = dataURL as string;
-
-            if (dataURL) {
-                const drawingData: DrawingData = new DrawingData(
-                    '',
-                    '',
-                    [],
-                    dataURL,
-                    this.drawingService.canvas.width,
-                    this.drawingService.canvas.height,
-                );
-                this.drawingService.openDrawing(drawingData);
-            }
-            this.drawingService.restoreCanvas();
-        }
+        this.drawingService.continueDrawing();
     }
 }
