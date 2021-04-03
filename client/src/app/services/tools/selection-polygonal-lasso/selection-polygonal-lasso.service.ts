@@ -76,28 +76,38 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
             this.lineThickness || DEFAULT_MIN_THICKNESS,
             closedSegment,
         );
-        this.drawingService.baseCtx.save();
+        // this.drawingService.baseCtx.save();
         this.clipArea();
-        this.drawingService.baseCtx.restore();
+        // this.drawingService.baseCtx.restore();
         this.clearPath();
     }
 
     clipArea(): void {
         this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
-        this.drawingService.baseCtx.beginPath();
-        this.drawingService.baseCtx.moveTo(this.pathData[0].x, this.pathData[0].y);
-        for (const point of this.pathData) this.drawingService.baseCtx.lineTo(point.x, point.y);
-
-        this.drawingService.baseCtx.lineTo(this.pathData[0].x, this.pathData[0].y);
-        this.drawingService.baseCtx.stroke();
-        this.drawingService.baseCtx.clip();
 
         const coords = this.getClippedCoords();
         const size = this.getClippedSize(coords);
-        this.drawingService.selectedAreaCtx.translate(-coords[0].x, -coords[0].y);
-        this.drawingService.selectedAreaCtx.canvas.height = size.y;
-        this.drawingService.selectedAreaCtx.canvas.width = size.x;
-        this.drawingService.selectedAreaCtx.putImageData(this.drawingService.baseCtx.getImageData(coords[0].x, coords[0].y, size.x, size.y), 0, 0);
+
+        const imageData = this.drawingService.baseCtx.getImageData(coords[0].x, coords[0].y, size.x, size.y);
+        const bottomRightCorner: Vec2 = { x: imageData.width, y: imageData.height };
+        // this.replaceEmptyPixels(imageData);
+        createImageBitmap(imageData).then((imgBitmap) => {
+            this.drawingService.selectedAreaCtx.save();
+            this.drawingService.selectedAreaCtx.beginPath();
+            this.drawingService.selectedAreaCtx.moveTo(this.pathData[0].x, this.pathData[0].y);
+            for (const point of this.pathData) this.drawingService.baseCtx.lineTo(point.x, point.y);
+            this.drawingService.selectedAreaCtx.lineTo(this.pathData[0].x, this.pathData[0].y);
+            this.drawingService.selectedAreaCtx.stroke();
+
+            this.drawingService.selectedAreaCtx.clip();
+            this.drawingService.selectedAreaCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
+            this.drawingService.selectedAreaCtx.restore();
+        });
+
+        // this.drawingService.selectedAreaCtx.translate(-coords[0].x, -coords[0].y);
+        // this.drawingService.selectedAreaCtx.canvas.height = size.y;
+        // this.drawingService.selectedAreaCtx.canvas.width = size.x;
+        // this.drawingService.selectedAreaCtx.putImageData(this.drawingService.baseCtx.getImageData(coords[0].x, coords[0].y, size.x, size.y), 0, 0);
     }
 
     getClippedSize(coords: Vec2[]): Vec2 {
