@@ -197,7 +197,5 @@ export abstract class SelectionService extends Tool {
 
     abstract updatePreview(): void;
 
-    executeCommand(command: ToolCommand): void {
-        throw new Error('Method not implemented.');
-    }
+    abstract executeCommand(command: ToolCommand): void;
 }
