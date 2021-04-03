@@ -9,6 +9,7 @@ import { SaveDrawingService } from '@app/services/save-drawing/save-drawing.serv
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-ellipse-service/selection-ellipse.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
+import { SelectionResizerService } from '@app/services/tools/selection-resizer-service/selection-resizer.service';
 import { MIN_ERASER_THICKNESS } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { Status } from '@app/utils/enums/canvas-resizer-status';
@@ -38,6 +39,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     currentTool: Tool;
     toolManagerService: ToolManagerService;
     canvasResizerService: CanvasResizerService;
+    selectionResizerService: SelectionResizerService;
     toolsNames: typeof ToolsNames = ToolsNames;
 
     eraserCursor: EraserCursor = {
@@ -65,9 +67,11 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         private saveDrawingService: SaveDrawingService,
         public saveService: SaveDrawingService,
         public gridService: GridService,
+        selectionResizerService: SelectionResizerService,
     ) {
         this.toolManagerService = toolManagerService;
         this.canvasResizerService = canvasResizerService;
+        this.selectionResizerService = selectionResizerService;
         this.selectionEllipseService = selectionEllipseService;
         this.selectionRectangleService = selectionRectangleService;
     }
@@ -245,6 +249,10 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     onMiddleBottomResizerClick(): void {
         this.drawingService.saveCanvas();
         this.canvasResizerService.onMiddleBottomResizerClick();
+    }
+
+    onMiddleLeftBoxClick(): void {
+        this.selectionResizerService.onMiddleLeftBoxClick();
     }
 
     emitEditorMinWidth(): void {
