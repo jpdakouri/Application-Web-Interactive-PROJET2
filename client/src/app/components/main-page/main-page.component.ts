@@ -40,6 +40,11 @@ export class MainPageComponent {
             .subscribe(this.message);
     }
 
+    getLocalStorage(): string | null {
+        console.log(localStorage.getItem('canvasInfo'));
+        return localStorage.getItem('canvasInfo');
+    }
+
     onCreateNewDrawing(): void {
         this.drawingService.createNewDrawing(true);
     }

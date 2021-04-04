@@ -47,7 +47,7 @@ fdescribe('DrawingService', () => {
         service.baseCtx.stroke();
         service.saveCanvas();
         const expectedCanvasDataURL = service.canvas.toDataURL();
-        const canvasDataURL = sessionStorage.getItem('canvasBuffer');
+        const canvasDataURL = sessionStorage.getItem('canvasInfo');
         expect(canvasDataURL).toEqual(expectedCanvasDataURL);
         service.baseCtx.beginPath();
         service.baseCtx.rect(RECTANGLE_OFFSET + 1, RECTANGLE_OFFSET + 1, RECTANGLE_DIMENSIONS + 1, RECTANGLE_DIMENSIONS + 1);
@@ -66,7 +66,7 @@ fdescribe('DrawingService', () => {
         service.baseCtx.rect(RECTANGLE_OFFSET, RECTANGLE_OFFSET, RECTANGLE_DIMENSIONS, RECTANGLE_DIMENSIONS);
         service.baseCtx.stroke();
         const canvasDataURL = service.canvas.toDataURL();
-        sessionStorage.setItem('canvasBuffer', canvasDataURL);
+        sessionStorage.setItem('canvasInfo', canvasDataURL);
         const canvasImageData = service.baseCtx.getImageData(0, 0, service.canvas.width, service.canvas.height);
         const originalPixels = canvasImageData.data;
 

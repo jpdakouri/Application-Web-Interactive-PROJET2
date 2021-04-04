@@ -14,7 +14,7 @@
         routerLink="/editor"
         [colspan]="1"
         [rowspan]="1"
-        *ngIf="!drawingService.isCanvasBlank()"
+        *ngIf="!drawingService.isCanvasBlank() && getLocalStorage() !== null"
         (click)="onContinueDrawing()"
     >
         <mat-grid-tile-header class="tile-header">Continuer un dessin</mat-grid-tile-header>
