@@ -132,11 +132,9 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.emitEditorMinWidth();
     }
 
-    // Comportement bizare avec resizing
     resizeCanvas(): void {
         this.canvasSize = this.canvasResizerService.calculateNewCanvasSize(this.canvasSize);
         this.drawingService.restoreCanvas();
-        this.gridService.newGrid(null);
         this.emitEditorMinWidth();
     }
 
@@ -188,6 +186,9 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             this.canvasResizerService.onMouseUp(event);
             this.resizeCanvas();
             this.canvasResizerService.setStatus(Status.OFF);
+            setTimeout(() => {
+                this.gridService.newGrid(null);
+            });
         } else {
             this.currentTool.onMouseUp(event);
         }
