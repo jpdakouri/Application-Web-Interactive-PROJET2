@@ -15,7 +15,7 @@ export class TextService extends Tool {
     // private fonts: string[];
     // currentFont: string;
     textArea: HTMLTextAreaElement;
-    private mouseDownCoordinate: Vec2;
+    // private mouseDownCoordinate: Vec2;
     text: string;
     // private currentTextPosition: Vec2;
     textAlign: TextAlign = TextAlign.Start;
@@ -33,14 +33,14 @@ export class TextService extends Tool {
         this.fontFace = TextFont.Arial;
         this.fontSize = DEFAULT_FONT_SIZE;
         this.text = '';
-        this.mouseDownCoordinate = { x: 0, y: 0 };
+        // this.mouseDownCoordinate = { x: 0, y: 0 };
         // this.currentTextPosition = { x: 0, y: 0 };
         this.textAlign = TextAlign.Start;
         this.textStyle = '';
         this.fontStyle = '';
         this.fontWeight = '';
         this.textBoxPosition = { x: 0, y: 0 };
-        this.textBoxSize = { x: 800, y: 200 };
+        this.textBoxSize = { x: 300, y: 100 };
         this.isWriting = false;
         this.textHasBeenCreated = false;
     }
@@ -67,7 +67,7 @@ export class TextService extends Tool {
             this.isWriting = !this.isWriting;
             this.textBoxPosition = this.getPositionFromMouse(event);
         }
-        this.mouseDownCoordinate = this.getPositionFromMouse(event);
+        // this.mouseDownCoordinate = this.getPositionFromMouse(event);
 
         // this.isWriting = true;
         // this.mouseDownCoordinate = this.getPositionFromMouse(event);
@@ -85,19 +85,23 @@ export class TextService extends Tool {
         // this.text = this.textArea.value;
         console.log(this.text);
         // this.fillTextMultiLine(this.drawingService.baseCtx, this.text, this.mouseDownCoordinate.x, this.mouseDownCoordinate.y);
-        this.fillTextMultiLine(this.drawingService.baseCtx, this.text, this.textBoxPosition.x, this.textBoxPosition.y);
+        // this.fillTextMultiLine(this.drawingService.baseCtx, this.text, this.textBoxPosition.x, this.textBoxPosition.y);
+
+        console.log(' pos x ' + this.textBoxPosition.x);
+        console.log('final pos x ' + this.getTextFinalPosition(this.textBoxPosition).x);
+        this.fillTextMultiLine(this.drawingService.baseCtx, this.text, this.getTextFinalPosition(this.textBoxPosition));
         // this.text = '';
         // this.textArea.value = '';
     }
 
-    fillTextMultiLine(ctx: CanvasRenderingContext2D, text: string, x: number, y: number): void {
+    fillTextMultiLine(ctx: CanvasRenderingContext2D, text: string, position: Vec2): void {
         // this.drawingService.clearCanvas(ctx); // TODO : temp --- to remove
         const bold = this.getSingleStyle('bold') == undefined ? '' : 'bold';
         const italic = this.getSingleStyle('italic') == undefined ? '' : 'italic';
         this.fontWeight = bold.concat(' ').concat(italic);
         ctx.font = ` ${this.fontWeight} ${this.fontSize}px ${this.fontFace}`;
         ctx.textAlign = this.textAlign;
-        // console.log(ctx.font);
+        console.log(ctx.textAlign);
         ctx.fillStyle = this.currentColorService.getPrimaryColorRgb();
 
         // this.drawingService.clearCanvas(ctx);
@@ -106,11 +110,11 @@ export class TextService extends Tool {
         // const actualHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
         // const lineHeight = ctx.measureText('M').width * 1.286; // a good approx for 10-18px sizes;
         const lines = text.split('\n');
-        y += fontHeight;
+        position.y += fontHeight;
 
         for (let i = 0; i < lines.length; ++i) {
-            ctx.fillText(lines[i], x, y);
-            y += fontHeight + 0.025 * fontHeight;
+            ctx.fillText(lines[i], position.x, position.y);
+            position.y += fontHeight + 0.025 * fontHeight;
         }
     }
 
@@ -146,18 +150,18 @@ export class TextService extends Tool {
         // context.fillText(text, position.x, position.y);
     }
 
-    getTextPosition(): Vec2 {
-        const textPosition = this.mouseDownCoordinate;
+    getTextFinalPosition(currentPosition: Vec2): Vec2 {
+        const textPosition = { ...currentPosition };
         switch (this.textAlign) {
             case TextAlign.Start:
-                // textPosition.x +=
                 break;
 
             case TextAlign.Center:
-                // textPosition.x += this.textBoxPosition.x;
+                textPosition.x += this.textBoxSize.x / 2;
                 break;
 
             case TextAlign.End:
+                textPosition.x += this.textBoxSize.x;
                 break;
         }
         return textPosition;
