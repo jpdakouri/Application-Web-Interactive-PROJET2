@@ -28,7 +28,6 @@ export class DrawingService {
         console.log('restore');
         const canvasInfo = localStorage.getItem('canvasInfo');
         const info = JSON.parse(canvasInfo as string);
-        // console.log(canvasInfo);
         if (info[0]) {
             const drawingData: DrawingData = new DrawingData('', '', [], info[0], info[1], info[2]);
             const img = new Image();
@@ -74,11 +73,10 @@ export class DrawingService {
                 this.clearCanvas(this.previewCtx);
                 this.clearCanvas(this.baseCtx);
                 localStorage.clear();
+                this.saveCanvas();
                 return true;
             } else if (localStorage.getItem('canvasInfo') && !this.isCanvasBlank()) {
-                this.clearCanvas(this.previewCtx);
-                this.clearCanvas(this.baseCtx);
-                localStorage.clear();
+                this.continueDrawing();
                 return true;
             }
         }
