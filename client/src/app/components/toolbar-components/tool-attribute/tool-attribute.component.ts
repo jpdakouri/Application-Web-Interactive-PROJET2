@@ -193,6 +193,4 @@ export class ToolAttributeComponent {
     onTextStyleChange(textStyle: string): void {
         this.textService.textStyle = textStyle;
     }
-
-    onFontStyleChange() {}
 }

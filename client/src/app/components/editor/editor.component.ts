@@ -44,7 +44,8 @@ export class EditorComponent implements AfterViewInit {
             .set(KeyboardButtons.SelectionRectangle, ToolsNames.SelectBox)
             .set(KeyboardButtons.SelectionEllipse, ToolsNames.SelectEllipse)
             .set(KeyboardButtons.Polygon, ToolsNames.Polygon)
-            .set(KeyboardButtons.Pipette, ToolsNames.Pipette);
+            .set(KeyboardButtons.Pipette, ToolsNames.Pipette)
+            .set(KeyboardButtons.Text, ToolsNames.Text);
     }
 
     ngAfterViewInit(): void {
@@ -55,8 +56,7 @@ export class EditorComponent implements AfterViewInit {
     // tslint:disable-next-line:cyclomatic-complexity
     @HostListener('window:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
-        return;
-        if (this.dialogControllerService.noDialogOpened) {
+        if (this.dialogControllerService.noDialogOpened && !this.toolManagerService.textService.isWriting) {
             if (event.ctrlKey) {
                 if (event.key === KeyboardButtons.NewDrawing) if (this.onCreateNewDrawing()) this.undoRedo.saveInitialState();
                 if (event.key === KeyboardButtons.Carousel) this.openCarouselModal();
@@ -83,6 +83,7 @@ export class EditorComponent implements AfterViewInit {
             if (!event.shiftKey && !event.ctrlKey) {
                 const toolKeyDown = this.toolFinder.get(event.key as KeyboardButtons) as ToolsNames;
                 if (!(toolKeyDown == undefined)) {
+                    console.log(toolKeyDown);
                     this.toolManagerService.setCurrentTool(toolKeyDown);
                     this.toolManagerService.emitToolChange(toolKeyDown);
                 }
