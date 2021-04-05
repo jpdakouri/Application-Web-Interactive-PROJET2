@@ -65,9 +65,9 @@ export class TextService extends Tool {
             this.testText();
             this.text = '';
             this.isWriting = !this.isWriting;
+            this.textBoxPosition = this.getPositionFromMouse(event);
         }
         this.mouseDownCoordinate = this.getPositionFromMouse(event);
-        // this.textBoxPosition = this.getPositionFromMouse(event);
 
         // this.isWriting = true;
         // this.mouseDownCoordinate = this.getPositionFromMouse(event);
@@ -91,7 +91,7 @@ export class TextService extends Tool {
     }
 
     fillTextMultiLine(ctx: CanvasRenderingContext2D, text: string, x: number, y: number): void {
-        this.drawingService.clearCanvas(ctx); // TODO : temp --- to remove
+        // this.drawingService.clearCanvas(ctx); // TODO : temp --- to remove
         const bold = this.getSingleStyle('bold') == undefined ? '' : 'bold';
         const italic = this.getSingleStyle('italic') == undefined ? '' : 'italic';
         this.fontWeight = bold.concat(' ').concat(italic);

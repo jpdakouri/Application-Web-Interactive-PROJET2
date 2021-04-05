@@ -86,14 +86,15 @@
     ></textarea> -->
 
 
-<!--  'left' : textService.textBoxPosition.x + 'px',-->
-<!--  'top': textService.textBoxPosition.y + 'px',-->
+
     <div
         class="on-canvas-object textbox"
         touch-action="none"
         [ngStyle]="{
                     'width': textService.textBoxSize.x + 'px',
-                    'height': textService.textBoxSize.y + 'px'}"
+                    'height': textService.textBoxSize.y + 'px',
+                     'left' : textService.textBoxPosition.x + 'px',
+                      'top': textService.textBoxPosition.y + 'px'}"
     >
         <!-- <canvas width="641" height="452" style="pointer-events: none; transform: scale(1); transform-origin: left top"></canvas -->
         <textarea class="textbox-editor"
@@ -116,6 +117,8 @@
                               'height': textService.textBoxSize.y + 'px',
                               'outline': 'none',
                               'position': 'absolute',
+                               'left' : textService.textBoxPosition.x + 'px',
+                               'top': textService.textBoxPosition.y + 'px',
                               'margin': 0,
                               'z-index': 100}"></textarea>
 
