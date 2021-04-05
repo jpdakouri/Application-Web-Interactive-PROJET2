@@ -56,37 +56,6 @@
     >
     </canvas>
 
-    <!-- <textarea id="w3review" name="w3review" rows="3" cols="50" style="position: absolute; z-index: 111; font-size: xx-large">
-        At w3schools.com you will learn how to make a website. They offer free tutorials in all web development technologies.
-        </textarea
-    > -->
-    <!-- <textarea
-        class="textbox-editor"
-        style="
-            position: absolute;
-            inset: 0px;
-            padding: 0px;
-            margin: 0px;
-            border: 0px;
-            resize: none;
-            overflow: hidden;
-            transform: scale(1);
-            transform-origin: left top;
-            width: 733px;
-            height: 318px;
-            font-family: Courier;
-            font-size: 72px;
-            font-weight: normal;
-            font-style: normal;
-            text-decoration: none;
-            line-height: 120px;
-            color: rgb(0, 0, 0);
-            background: rgb(255, 255, 255);
-        "
-    ></textarea> -->
-
-
-
     <div
         class="on-canvas-object textbox"
         touch-action="none"
@@ -100,9 +69,10 @@
         <textarea class="textbox-editor"
                   id="textArea"
                   placeholder="Entrez votre texte ici"
+                  autofocus
                   #textArea
                   [(ngModel)]="textService.text"
-                  *ngIf="!textService.isWriting"
+                  *ngIf="textService.isWriting"
                   [ngStyle]="{
                               'font-size': textService.fontSize + 'px',
                               'font-family': textService.fontFace,
@@ -112,7 +82,7 @@
                               'font-style' : textService.getSingleStyle('italic'),
                               'text-decoration': textService.getTextDecoration(),
                               'color': textService.currentColorService.getPrimaryColorRgb(),
-                              'border-style': 'dashed',
+                              'border': 'solid 1px black',
                               'width': textService.textBoxSize.x + 'px',
                               'height': textService.textBoxSize.y + 'px',
                               'outline': 'none',
@@ -120,7 +90,9 @@
                                'left' : textService.textBoxPosition.x + 'px',
                                'top': textService.textBoxPosition.y + 'px',
                               'margin': 0,
-                              'z-index': 100}"></textarea>
+                              'z-index': 100,
+                              'caret-color': 'black'
+                              }"></textarea>
 
     </div>
 

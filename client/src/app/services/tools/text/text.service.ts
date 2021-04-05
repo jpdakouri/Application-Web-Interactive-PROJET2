@@ -7,6 +7,7 @@ import { DEFAULT_FONT_SIZE } from '@app/services/tools/tools-constants';
 import { TextAlign } from '@app/utils/enums/text-align.enum';
 import { TextFont } from '@app/utils/enums/text-font.enum';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
+import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 
 @Injectable({
     providedIn: 'root',
@@ -26,6 +27,7 @@ export class TextService extends Tool {
     fontStyle: string;
     fontWeight: string;
     isWriting: boolean;
+    showTextBox: boolean;
     textBoxSize: Vec2;
 
     constructor(public currentColorService: CurrentColorService, drawingService: DrawingService) {
@@ -34,24 +36,23 @@ export class TextService extends Tool {
         this.fontSize = DEFAULT_FONT_SIZE;
         this.text = '';
         // this.mouseDownCoordinate = { x: 0, y: 0 };
-        // this.currentTextPosition = { x: 0, y: 0 };
         this.textAlign = TextAlign.Start;
         this.textStyle = '';
         this.fontStyle = '';
         this.fontWeight = '';
         this.textBoxPosition = { x: 0, y: 0 };
-        this.textBoxSize = { x: 300, y: 100 };
+        this.textBoxSize = { x: 800, y: 200 };
         this.isWriting = false;
         this.textHasBeenCreated = false;
+        // this.showTextBox = false;
     }
 
     onMouseDown(event: MouseEvent): void {
-        // this.text = this.textArea.value;
-        console.log(this.textArea.value);
+        this.showTextBox = true;
 
-        const myElementToCheckIfClicksAreInsideOf = document.querySelector('#textArea');
+        const textAreaSelector = document.querySelector('#textArea');
         // @ts-ignore
-        if (myElementToCheckIfClicksAreInsideOf !== null && myElementToCheckIfClicksAreInsideOf.contains(event.target)) {
+        if (textAreaSelector !== null && textAreaSelector.contains(event.target)) {
             // if (!this.isWriting) {
             //     this.isWriting = true;
             // } else {
@@ -61,37 +62,20 @@ export class TextService extends Tool {
             console.log('in');
         } else {
             console.log('out');
-            // this.text = this.textArea.value;
             this.testText();
             this.text = '';
             this.isWriting = !this.isWriting;
             this.textBoxPosition = this.getPositionFromMouse(event);
         }
-        // this.mouseDownCoordinate = this.getPositionFromMouse(event);
-
-        // this.isWriting = true;
-        // this.mouseDownCoordinate = this.getPositionFromMouse(event);
-        // if (!this.isClickInTextBox(event)) {
-        //     this.textBoxPosition = this.getPositionFromMouse(event);
-        // }
-        // this.isWriting = false;
-        // // this.textBoxPosition = { x: event.offsetX, y: event.offsetY };
-        // console.log('textBoxPosition ' + this.textBoxPosition.x);
-        //
-        // this.testText();
     }
 
     testText(): void {
-        // this.text = this.textArea.value;
-        console.log(this.text);
+        // console.log(this.text);
         // this.fillTextMultiLine(this.drawingService.baseCtx, this.text, this.mouseDownCoordinate.x, this.mouseDownCoordinate.y);
-        // this.fillTextMultiLine(this.drawingService.baseCtx, this.text, this.textBoxPosition.x, this.textBoxPosition.y);
-
+        console.log(this.textBoxSize.x);
         console.log(' pos x ' + this.textBoxPosition.x);
         console.log('final pos x ' + this.getTextFinalPosition(this.textBoxPosition).x);
         this.fillTextMultiLine(this.drawingService.baseCtx, this.text, this.getTextFinalPosition(this.textBoxPosition));
-        // this.text = '';
-        // this.textArea.value = '';
     }
 
     fillTextMultiLine(ctx: CanvasRenderingContext2D, text: string, position: Vec2): void {
@@ -112,10 +96,10 @@ export class TextService extends Tool {
         const lines = text.split('\n');
         position.y += fontHeight;
 
-        for (let i = 0; i < lines.length; ++i) {
-            ctx.fillText(lines[i], position.x, position.y);
+        lines.forEach((line) => {
+            ctx.fillText(line, position.x, position.y);
             position.y += fontHeight + 0.025 * fontHeight;
-        }
+        });
     }
 
     isClickInTextBox(event: MouseEvent): boolean {
@@ -194,6 +178,13 @@ export class TextService extends Tool {
         if (this.getSingleStyle('line-through') !== undefined) tempStyle += this.getSingleStyle('line-through');
         // console.log(tempStyle);
         return tempStyle;
+    }
+
+    onKeyDown(event: KeyboardEvent): void {
+        if (event.key === KeyboardButtons.Escape) {
+            this.isWriting = !this.isWriting;
+            this.text = '';
+        }
     }
 
     executeCommand(command: ToolCommand): void {}
