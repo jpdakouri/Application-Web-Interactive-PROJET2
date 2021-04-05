@@ -12,6 +12,7 @@ export class GridService {
     readonly maxOpacity: number = MAX_GRID_OPACITY;
     gridSize: number = this.minGridSize;
     gridOpacity: string = '1';
+    showGrid: boolean = false;
 
     constructor(private drawingService: DrawingService) {}
 

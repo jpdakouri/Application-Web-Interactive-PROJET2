@@ -1,10 +1,10 @@
 <div class="attribute-toolbar">
     <div class="grid">
-        <mat-checkbox [(ngModel)]="showGrid" class="attribute-title" (change)="onGridSizeChange($event)"
+        <mat-checkbox [(ngModel)]="gridService.showGrid" class="attribute-title" (change)="onGridSizeChange($event)"
             ><h3 class="attribute-sub-title" style="margin: auto; margin-top: 5px">Grille de prévisualisation</h3>
             <small class="small-text">Afficher une grille à la zone de dessin</small>
         </mat-checkbox>
-        <div *ngIf="showGrid">
+        <div *ngIf="gridService.showGrid">
             <h3 class="attribute-sub-title">Taille des grilles: {{ gridService.gridSize }} pixels</h3>
             <mat-slider
                 [value]="gridService.gridSize"
