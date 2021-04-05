@@ -14,186 +14,76 @@ import { ToolCommand } from '@app/utils/interfaces/tool-command';
 export class TextService extends Tool {
     // private fonts: string[];
     // currentFont: string;
+    textArea: HTMLTextAreaElement;
     private mouseDownCoordinate: Vec2;
     private text: string;
-    private currentTextPosition: Vec2;
+    // private currentTextPosition: Vec2;
     textAlign: TextAlign = TextAlign.Start;
+    textBoxPosition: Vec2;
+    textHasBeenCreated: boolean;
 
-    // private specialKeys: Map<string, string>;
     textStyle: string;
     fontStyle: string;
     fontWeight: string;
+    isWriting: boolean;
+    textBoxSize: Vec2;
 
     constructor(public currentColorService: CurrentColorService, drawingService: DrawingService) {
         super(drawingService, currentColorService);
-        // this.fonts = Object.values(TextFont);
         this.fontFace = TextFont.Arial;
         this.fontSize = DEFAULT_FONT_SIZE;
-        this.text = '|';
+        this.text = '';
         this.mouseDownCoordinate = { x: 0, y: 0 };
-        this.currentTextPosition = { x: 0, y: 0 };
+        // this.currentTextPosition = { x: 0, y: 0 };
         this.textAlign = TextAlign.Start;
         this.textStyle = '';
         this.fontStyle = '';
         this.fontWeight = '';
-        // this.specialKeys = new Map<string, string>();
+        this.textBoxPosition = { x: 0, y: 0 };
+        this.textBoxSize = { x: 800, y: 200 };
+        this.isWriting = false;
+        this.textHasBeenCreated = false;
     }
 
     onMouseDown(event: MouseEvent): void {
-        console.log(this.getStyle());
-        super.onMouseDown(event);
         this.mouseDownCoordinate = this.getPositionFromMouse(event);
-        // this.draw();
-        // this.drawingService.clearCanvas(this.drawingService.baseCtx);
-
-        // const position = { x: this.mouseDownCoordinate.x, y: this.mouseDownCoordinate.y } as Vec2;
-        this.drawStyledText(this.drawingService.baseCtx, this.text, this.currentTextPosition, TextFont.BrushScriptMT, this.fontSize as number);
-
-        this.text = '|'; // TODO: IMPORTANT for the cursor
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        // this.drawingService.previewCtx.fillRect(this.mouseDownCoordinate.x, this.mouseDownCoordinate.y, 2, this.fontSize as number);
-        // console.log(this.fontSize);
-
-        // console.log(this.textAlign);
-    }
-
-    // tslint:disable-next-line:cyclomatic-complexity
-    onKeyDown(event: KeyboardEvent): void {
-        this.currentTextPosition = { x: this.mouseDownCoordinate.x, y: this.mouseDownCoordinate.y } as Vec2;
-
-        // TODO: create a map of these keys
-        switch (event.key) {
-            case 'Enter':
-                this.handleEnterKey();
-                break;
-
-            case 'Delete':
-                this.handleDeleteKey();
-                break;
-
-            case 'Backspace':
-                this.handleBackspaceKey();
-                break;
-
-            case 'ArrowLeft':
-                this.handleArrowLeftKey();
-                break;
-
-            case 'ArrowRight':
-                this.handleArrowRightKey();
-                break;
+        const myElementToCheckIfClicksAreInsideOf = document.querySelector('#textArea');
+        // @ts-ignore
+        if (myElementToCheckIfClicksAreInsideOf !== null && myElementToCheckIfClicksAreInsideOf.contains(event.target)) {
+            if (!this.isWriting) {
+                this.isWriting = true;
+            } else {
+                this.testText();
+                this.textBoxPosition = this.getPositionFromMouse(event);
+            }
+        } else {
+            // this.isWriting = false;
+            // this.textBoxPosition = this.getPositionFromMouse(event);
         }
 
-        if (
-            !event.shiftKey &&
-            !event.ctrlKey &&
-            !event.altKey &&
-            event.key !== 'Backspace' &&
-            event.key !== 'ArrowLeft' &&
-            event.key !== 'ArrowRight' &&
-            event.key !== 'Enter' &&
-            event.key !== 'Delete'
-        ) {
-            // this.text = this.text.concat(event.key);
-            // const cursorIndex = this.text.indexOf('|');
-            console.log(this.cursorIndex);
-            this.text = this.text.slice(0, this.cursorIndex) + event.key + this.text.slice(this.cursorIndex, this.text.length);
+        this.isWriting = true;
+        this.mouseDownCoordinate = this.getPositionFromMouse(event);
+        if (!this.isClickInTextBox(event)) {
+            this.textBoxPosition = this.getPositionFromMouse(event);
         }
-        // if (event.shiftKey || event.ctrlKey || event.altKey) {
-        //     this.text = this.text.concat(event.key.slice(0, 8));
-        //     // this.text = this.text.concat(event.key);
-        // }
+        this.isWriting = false;
+        // this.textBoxPosition = { x: event.offsetX, y: event.offsetY };
+        console.log('textBoxPosition ' + this.textBoxPosition.x);
 
-        // this.text = this.text.concat(event.key);
-
-        // console.log(this.text);
-
-        // const position = { x: this.drawingService.canvas.width / 2, y: this.drawingService.canvas.width / 4 } as Vec2;
-        const position = { x: this.mouseDownCoordinate.x, y: this.mouseDownCoordinate.y } as Vec2;
-        // const position = this.currentTextPosition;
-        this.drawStyledText(this.drawingService.previewCtx, this.text, position, TextFont.BrushScriptMT, this.fontSize as number);
+        this.testText();
     }
 
-    private handleArrowRightKey(): void {
-        // const array = this.text.split('|');
-        // const temp = this.text.slice(0, this.text.indexOf('|')) + '|';
-        // const cursorIndex = this.text.indexOf('|');
-        // console.log(this.cursorIndex);
-        if (this.cursorIndex < this.text.length - 1) {
-            this.text =
-                this.text.slice(0, this.cursorIndex) +
-                this.text.charAt(this.cursorIndex + 1) +
-                '|' +
-                this.text.slice(this.cursorIndex + 2, this.text.length);
-        }
-        console.log(this.text);
+    isClickInTextBox(event: MouseEvent): boolean {
+        // console.log('mousePosition ' + event.clientX);
+
+        console.log('isClick in ' + this.textBoxPosition.x);
+        return (
+            !(event.offsetX < this.textBoxSize.x || event.offsetX > this.textBoxSize.x + this.textBoxPosition.x) &&
+            !(event.offsetY < this.textBoxSize.y || event.offsetY < this.textBoxSize.y + this.textBoxPosition.y)
+        );
     }
 
-    private handleArrowLeftKey(): void {
-        console.log('ArrowLeft');
-
-        // const array = this.text.split('|');
-        // const temp = this.text.slice(0, this.text.indexOf('|')) + '|';
-        console.log(this.cursorIndex);
-        if (this.cursorIndex > 0) {
-            this.text =
-                this.text.slice(0, this.cursorIndex - 1) +
-                '|' +
-                this.text.charAt(this.cursorIndex - 1) +
-                this.text.slice(this.cursorIndex + 1, this.text.length);
-        }
-        console.log(this.text);
-    }
-
-    private handleBackspaceKey(): void {
-        // this.text = this.text.slice(0, this.text.length); // V1
-        if (this.cursorIndex > 0) {
-            this.text = this.text.slice(0, this.cursorIndex - 1) + this.text.slice(this.cursorIndex, this.text.length);
-        }
-    }
-
-    private handleEnterKey(): void {
-        // this.currentTextPosition.x = this.currentTextPosition.x - this.drawingService.baseCtx.measureText(this.text).width;
-        const t = this.fontSize as number;
-        this.currentTextPosition.y = this.currentTextPosition.y + t;
-        // console.log(this.currentTextPosition.x);
-    }
-
-    private handleDeleteKey(): void {
-        // console.log(this.cursorIndex);
-        if (this.cursorIndex !== this.text.length - 1) {
-            this.text =
-                this.text.slice(0, this.cursorIndex + 1) +
-                // '|' +
-                // this.text.charAt(cursorIndex + 1) +
-                this.text.slice(this.cursorIndex + 2, this.text.length);
-        }
-        // console.log(this.text);
-    }
-
-    get cursorIndex(): number {
-        const cursor = '|';
-        return this.text.indexOf(cursor);
-    }
-
-    draw(): void {
-        this.drawStyledText(this.drawingService.previewCtx, this.text, this.currentTextPosition, TextFont.BrushScriptMT, this.fontSize as number);
-        console.log(this.textAlign);
-        // this.drawingService.clearCanvas(this.drawingService.baseCtx);
-        // this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        // // clear background
-        // this.drawingService.baseCtx.fillStyle = this.currentColorService.getPrimaryColorRgb();
-        // // draw fontFace in red
-        // // this.drawingService.baseCtx.fillStyle = '#cb2f2f';
-        // this.drawingService.baseCtx.strokeStyle = '#cb2f2f';
-        // // ctx.fontFace=fontSize+" "+fontFace; // ! important
-        // this.drawingService.baseCtx.font = `bold italic ${this.fontSize}px ${this.fontFace}`;
-        // this.drawingService.baseCtx.textAlign = TextAlign.Center;
-        // // context.fillText('Canvas Rocks!', 50, 100);
-        // // context.strokeText('Canvas Rocks!', 50, 230);
-        // this.drawingService.baseCtx.fillText('LOG2990 :)', this.drawingService.canvas.width / 2, this.drawingService.canvas.height / 4);
-        // this.drawingService.baseCtx.strokeText('Projet 2 !', this.drawingService.canvas.width / 2, this.drawingService.canvas.height / 2);
-    } // end draw
+    draw(): void {}
 
     drawStyledText(
         context: CanvasRenderingContext2D,
@@ -204,33 +94,70 @@ export class TextService extends Tool {
         textStyle?: string,
         textAlign?: string,
     ): void {
-        // context.fillRect(context.measureText(text).width, position.y, 2, this.fontSize as number);
+        // this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        //
+        // this.drawingService.previewCtx.fillStyle = this.currentColorService.getPrimaryColorRgb();
+        // this.drawingService.baseCtx.fillStyle = this.currentColorService.getPrimaryColorRgb();
+        //
+        // context.font = `${this.fontSize}px ${this.fontFace}`;
+        // // @ts-ignore
+        // context.textAlign = this.textAlign as string;
+        // context.fillText(text, position.x, position.y);
+    }
 
-        // const tempFontSize = this.fontSize as number;
-        // tslint:disable-next-line:no-magic-numbers
-        // this.drawingService.baseCtx.fillRect(this.mouseDownCoordinate.x, this.mouseDownCoordinate.y, 1, -(3 / 2) * tempFontSize);
+    testText(): void {
+        this.text = this.textArea.value;
+        this.fillTextMultiLine(this.drawingService.baseCtx, this.text, this.mouseDownCoordinate.x, this.mouseDownCoordinate.y);
+        console.log(this.text);
+    }
 
-        // this.drawingService.clearCanvas(this.drawingService.baseCtx);
-        // text = text.concat('|'); // TODO: IMPORTANT for the cursor
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+    fillTextMultiLine(ctx: CanvasRenderingContext2D, text: string, x: number, y: number): void {
+        const bold = this.getSingleStyle('bold') == undefined ? '' : 'bold';
+        const italic = this.getSingleStyle('italic') == undefined ? '' : 'italic';
+        this.fontWeight = bold.concat(' ').concat(italic);
+        ctx.font = ` ${this.fontWeight} ${this.fontSize}px ${this.fontFace}`;
+        ctx.textAlign = this.textAlign;
+        // console.log(ctx.font);
+        ctx.fillStyle = this.currentColorService.getPrimaryColorRgb();
 
-        this.drawingService.previewCtx.fillStyle = this.currentColorService.getPrimaryColorRgb();
-        this.drawingService.baseCtx.fillStyle = this.currentColorService.getPrimaryColorRgb();
+        this.drawingService.clearCanvas(ctx);
+        const metrics = ctx.measureText(text);
+        const fontHeight = metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
+        // const actualHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+        // const lineHeight = ctx.measureText('M').width * 1.286; // a good approx for 10-18px sizes;
+        const lines = text.split('\n');
+        for (let i = 0; i < lines.length; ++i) {
+            ctx.fillText(lines[i], x, y);
+            // y += lineHeight;
+            y += fontHeight + 0.025 * fontHeight;
+        }
+    }
 
-        context.font = `${this.fontSize}px ${this.fontFace}`;
-        // @ts-ignore
-        context.textAlign = this.textAlign as string;
-        context.fillText(text, position.x, position.y);
+    getTextPosition(): Vec2 {
+        const textPosition = this.mouseDownCoordinate;
+        switch (this.textAlign) {
+            case TextAlign.Start:
+                // textPosition.x +=
+                break;
+
+            case TextAlign.Center:
+                // textPosition.x += this.textBoxPosition.x;
+                break;
+
+            case TextAlign.End:
+                break;
+        }
+        return textPosition;
     }
 
     getStyle(): string {
-        console.log(this.textStyle);
+        // console.log(this.textStyle);
         // const temp = this.textStyle.split(',');
         let tempStyle = '';
         for (const item of this.textStyle) {
             tempStyle = tempStyle.concat(' ').concat(item);
         }
-        console.log(tempStyle);
+        // console.log(tempStyle);
         return tempStyle;
     }
 
@@ -238,6 +165,7 @@ export class TextService extends Tool {
     getSingleStyle(style: string): string {
         for (let i = 0; i < this.textStyle.length; i++) {
             if (this.textStyle[i] === style) {
+                // console.log(this.textStyle[i]);
                 return this.textStyle[i];
             }
         }
@@ -245,19 +173,25 @@ export class TextService extends Tool {
 
     getTextDecoration(): string {
         let tempStyle = '';
-        console.log(tempStyle);
         if (this.getSingleStyle('underline') !== undefined) tempStyle += this.getSingleStyle('underline') + ' ';
         if (this.getSingleStyle('line-through') !== undefined) tempStyle += this.getSingleStyle('line-through');
+        // console.log(tempStyle);
         return tempStyle;
     }
 
     onMouseUp(event: MouseEvent): void {}
 
-    onMouseMove(event: MouseEvent): void {}
+    onMouseMove(event: MouseEvent): void {
+        // this.getPositionFromMouse(event)
+        // console.log('offsetX ' + event.offsetX);
+        // console.log('offsetY ' + event.offsetY);
+    }
 
     onMouseEnter(event: MouseEvent): void {}
 
-    onMouseLeave(event: MouseEvent): void {}
+    onMouseLeave(event: MouseEvent): void {
+        // this.isWriting = false;
+    }
 
     onKeyUp(event: KeyboardEvent): void {}
 
