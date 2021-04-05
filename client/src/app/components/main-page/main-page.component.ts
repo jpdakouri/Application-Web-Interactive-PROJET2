@@ -57,4 +57,8 @@ export class MainPageComponent {
     onContinueDrawing(): void {
         this.drawingService.continueDrawing();
     }
+
+    // clearStorage(): void {
+    //     localStorage.clear();
+    // }
 }
