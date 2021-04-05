@@ -11,12 +11,12 @@ import { RectangleService } from '@app/services/tools/rectangle-service/rectangl
 import { SelectionEllipseService } from '@app/services/tools/selection-ellipse-service/selection-ellipse.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
 import { TextService } from '@app/services/tools/text/text.service';
+import { DEFAULT_FONT_SIZE } from '@app/services/tools/tools-constants';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { TextFont } from '@app/utils/enums/text-font.enum';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 import { CurrentAttributes } from '@app/utils/types/current-attributes';
 import { ToolBox } from '@app/utils/types/tool-box';
-import { DEFAULT_FONT_SIZE } from '../tools/tools-constants';
 
 @Injectable({
     providedIn: 'root',
