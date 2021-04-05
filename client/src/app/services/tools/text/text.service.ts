@@ -84,12 +84,14 @@ export class TextService extends Tool {
     testText(): void {
         // this.text = this.textArea.value;
         console.log(this.text);
-        this.fillTextMultiLine(this.drawingService.baseCtx, this.text, this.mouseDownCoordinate.x, this.mouseDownCoordinate.y);
+        // this.fillTextMultiLine(this.drawingService.baseCtx, this.text, this.mouseDownCoordinate.x, this.mouseDownCoordinate.y);
+        this.fillTextMultiLine(this.drawingService.baseCtx, this.text, this.textBoxPosition.x, this.textBoxPosition.y);
         // this.text = '';
         // this.textArea.value = '';
     }
 
     fillTextMultiLine(ctx: CanvasRenderingContext2D, text: string, x: number, y: number): void {
+        this.drawingService.clearCanvas(ctx); // TODO : temp --- to remove
         const bold = this.getSingleStyle('bold') == undefined ? '' : 'bold';
         const italic = this.getSingleStyle('italic') == undefined ? '' : 'italic';
         this.fontWeight = bold.concat(' ').concat(italic);
@@ -104,9 +106,10 @@ export class TextService extends Tool {
         // const actualHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
         // const lineHeight = ctx.measureText('M').width * 1.286; // a good approx for 10-18px sizes;
         const lines = text.split('\n');
+        y += fontHeight;
+
         for (let i = 0; i < lines.length; ++i) {
             ctx.fillText(lines[i], x, y);
-            // y += lineHeight;
             y += fontHeight + 0.025 * fontHeight;
         }
     }
