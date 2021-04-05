@@ -41,7 +41,7 @@ export class MainPageComponent {
     }
 
     getLocalStorage(): string | null {
-        console.log(localStorage.getItem('canvasInfo'));
+        // console.log(localStorage.getItem('canvasInfo'));
         return localStorage.getItem('canvasInfo');
     }
 
