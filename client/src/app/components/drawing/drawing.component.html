@@ -86,23 +86,23 @@
     ></textarea> -->
 
 
-<!--        style="left: 0px; top: 0px; width: 800px; height: 200px;"-->
+<!--  'left' : textService.textBoxPosition.x + 'px',-->
+<!--  'top': textService.textBoxPosition.y + 'px',-->
     <div
         class="on-canvas-object textbox"
         touch-action="none"
-        *ngIf="!textService.isWriting"
-        [ngStyle]="{'left' : textService.textBoxPosition.x + 'px',
-                    'top': textService.textBoxPosition.y + 'px',
+        [ngStyle]="{
                     'width': textService.textBoxSize.x + 'px',
-                    'height': textService.textBoxSize.y + 'px'
-}"
+                    'height': textService.textBoxSize.y + 'px'}"
     >
         <!-- <canvas width="641" height="452" style="pointer-events: none; transform: scale(1); transform-origin: left top"></canvas -->
         <textarea class="textbox-editor"
                   id="textArea"
                   placeholder="Entrez votre texte ici"
                   #textArea
-                   [ngStyle]="{
+                  [(ngModel)]="textService.text"
+                  *ngIf="!textService.isWriting"
+                  [ngStyle]="{
                               'font-size': textService.fontSize + 'px',
                               'font-family': textService.fontFace,
                               'text-align': textService.textAlign,
@@ -117,8 +117,6 @@
                               'outline': 'none',
                               'position': 'absolute',
                               'margin': 0,
-                              'left' : textService.textBoxPosition.x + 'px',
-                              'top': textService.textBoxPosition.y + 'px',
                               'z-index': 100}"></textarea>
 
     </div>

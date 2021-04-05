@@ -16,7 +16,7 @@ export class TextService extends Tool {
     // currentFont: string;
     textArea: HTMLTextAreaElement;
     private mouseDownCoordinate: Vec2;
-    private text: string;
+    text: string;
     // private currentTextPosition: Vec2;
     textAlign: TextAlign = TextAlign.Start;
     textBoxPosition: Vec2;
@@ -46,31 +46,69 @@ export class TextService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.mouseDownCoordinate = this.getPositionFromMouse(event);
+        // this.text = this.textArea.value;
+        console.log(this.textArea.value);
+
         const myElementToCheckIfClicksAreInsideOf = document.querySelector('#textArea');
         // @ts-ignore
         if (myElementToCheckIfClicksAreInsideOf !== null && myElementToCheckIfClicksAreInsideOf.contains(event.target)) {
-            if (!this.isWriting) {
-                this.isWriting = true;
-            } else {
-                this.testText();
-                this.textBoxPosition = this.getPositionFromMouse(event);
-            }
+            // if (!this.isWriting) {
+            //     this.isWriting = true;
+            // } else {
+            //     this.testText();
+            //     this.textBoxPosition = this.getPositionFromMouse(event);
+            // }
+            console.log('in');
         } else {
-            // this.isWriting = false;
-            // this.textBoxPosition = this.getPositionFromMouse(event);
+            console.log('out');
+            // this.text = this.textArea.value;
+            this.testText();
+            this.text = '';
+            this.isWriting = !this.isWriting;
         }
-
-        this.isWriting = true;
         this.mouseDownCoordinate = this.getPositionFromMouse(event);
-        if (!this.isClickInTextBox(event)) {
-            this.textBoxPosition = this.getPositionFromMouse(event);
-        }
-        this.isWriting = false;
-        // this.textBoxPosition = { x: event.offsetX, y: event.offsetY };
-        console.log('textBoxPosition ' + this.textBoxPosition.x);
+        // this.textBoxPosition = this.getPositionFromMouse(event);
 
-        this.testText();
+        // this.isWriting = true;
+        // this.mouseDownCoordinate = this.getPositionFromMouse(event);
+        // if (!this.isClickInTextBox(event)) {
+        //     this.textBoxPosition = this.getPositionFromMouse(event);
+        // }
+        // this.isWriting = false;
+        // // this.textBoxPosition = { x: event.offsetX, y: event.offsetY };
+        // console.log('textBoxPosition ' + this.textBoxPosition.x);
+        //
+        // this.testText();
+    }
+
+    testText(): void {
+        // this.text = this.textArea.value;
+        console.log(this.text);
+        this.fillTextMultiLine(this.drawingService.baseCtx, this.text, this.mouseDownCoordinate.x, this.mouseDownCoordinate.y);
+        // this.text = '';
+        // this.textArea.value = '';
+    }
+
+    fillTextMultiLine(ctx: CanvasRenderingContext2D, text: string, x: number, y: number): void {
+        const bold = this.getSingleStyle('bold') == undefined ? '' : 'bold';
+        const italic = this.getSingleStyle('italic') == undefined ? '' : 'italic';
+        this.fontWeight = bold.concat(' ').concat(italic);
+        ctx.font = ` ${this.fontWeight} ${this.fontSize}px ${this.fontFace}`;
+        ctx.textAlign = this.textAlign;
+        // console.log(ctx.font);
+        ctx.fillStyle = this.currentColorService.getPrimaryColorRgb();
+
+        // this.drawingService.clearCanvas(ctx);
+        const metrics = ctx.measureText(text);
+        const fontHeight = metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
+        // const actualHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+        // const lineHeight = ctx.measureText('M').width * 1.286; // a good approx for 10-18px sizes;
+        const lines = text.split('\n');
+        for (let i = 0; i < lines.length; ++i) {
+            ctx.fillText(lines[i], x, y);
+            // y += lineHeight;
+            y += fontHeight + 0.025 * fontHeight;
+        }
     }
 
     isClickInTextBox(event: MouseEvent): boolean {
@@ -103,34 +141,6 @@ export class TextService extends Tool {
         // // @ts-ignore
         // context.textAlign = this.textAlign as string;
         // context.fillText(text, position.x, position.y);
-    }
-
-    testText(): void {
-        this.text = this.textArea.value;
-        this.fillTextMultiLine(this.drawingService.baseCtx, this.text, this.mouseDownCoordinate.x, this.mouseDownCoordinate.y);
-        console.log(this.text);
-    }
-
-    fillTextMultiLine(ctx: CanvasRenderingContext2D, text: string, x: number, y: number): void {
-        const bold = this.getSingleStyle('bold') == undefined ? '' : 'bold';
-        const italic = this.getSingleStyle('italic') == undefined ? '' : 'italic';
-        this.fontWeight = bold.concat(' ').concat(italic);
-        ctx.font = ` ${this.fontWeight} ${this.fontSize}px ${this.fontFace}`;
-        ctx.textAlign = this.textAlign;
-        // console.log(ctx.font);
-        ctx.fillStyle = this.currentColorService.getPrimaryColorRgb();
-
-        this.drawingService.clearCanvas(ctx);
-        const metrics = ctx.measureText(text);
-        const fontHeight = metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
-        // const actualHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
-        // const lineHeight = ctx.measureText('M').width * 1.286; // a good approx for 10-18px sizes;
-        const lines = text.split('\n');
-        for (let i = 0; i < lines.length; ++i) {
-            ctx.fillText(lines[i], x, y);
-            // y += lineHeight;
-            y += fontHeight + 0.025 * fontHeight;
-        }
     }
 
     getTextPosition(): Vec2 {
@@ -178,22 +188,6 @@ export class TextService extends Tool {
         // console.log(tempStyle);
         return tempStyle;
     }
-
-    onMouseUp(event: MouseEvent): void {}
-
-    onMouseMove(event: MouseEvent): void {
-        // this.getPositionFromMouse(event)
-        // console.log('offsetX ' + event.offsetX);
-        // console.log('offsetY ' + event.offsetY);
-    }
-
-    onMouseEnter(event: MouseEvent): void {}
-
-    onMouseLeave(event: MouseEvent): void {
-        // this.isWriting = false;
-    }
-
-    onKeyUp(event: KeyboardEvent): void {}
 
     executeCommand(command: ToolCommand): void {}
 }
