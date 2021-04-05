@@ -31,7 +31,6 @@ export class DrawingService {
         // console.log(canvasInfo);
         if (info[0]) {
             const drawingData: DrawingData = new DrawingData('', '', [], info[0], info[1], info[2]);
-            // this.openDrawing(drawingData, false);
             const img = new Image();
             img.onload = () => {
                 this.canvas.getContext('2d')?.drawImage(img, 0, 0);
@@ -66,7 +65,6 @@ export class DrawingService {
         };
         img.src = drawing.dataURL as string;
         this.newDrawing.emit({ x: drawing.width, y: drawing.height } as Vec2);
-        this.saveCanvas();
     }
 
     createNewDrawing(showConfirmDialog?: boolean): boolean {
@@ -75,13 +73,11 @@ export class DrawingService {
             if (confirm("Le canvas n'est pas vide! Voulez-vous procéder tout de même?")) {
                 this.clearCanvas(this.previewCtx);
                 this.clearCanvas(this.baseCtx);
-                // this.emitCreateNewDrawing();
                 localStorage.clear();
                 return true;
             } else if (localStorage.getItem('canvasInfo') && !this.isCanvasBlank()) {
                 this.clearCanvas(this.previewCtx);
                 this.clearCanvas(this.baseCtx);
-                // this.emitCreateNewDrawing();
                 localStorage.clear();
                 return true;
             }
@@ -95,7 +91,6 @@ export class DrawingService {
             const dataURL = localStorage.getItem('canvasInfo');
             const image = new Image();
             image.src = dataURL as string;
-
             if (dataURL) {
                 const drawingData: DrawingData = new DrawingData('', '', [], dataURL, this.canvas.width, this.canvas.height);
                 const img = new Image();
@@ -104,7 +99,6 @@ export class DrawingService {
                 };
                 img.src = drawingData.dataURL as string;
                 this.newDrawing.emit({ x: drawingData.width, y: drawingData.height } as Vec2);
-                this.saveCanvas();
             }
             this.restoreCanvas();
         }

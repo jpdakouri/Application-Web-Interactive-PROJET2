@@ -109,7 +109,7 @@ export class EditorComponent implements AfterViewInit {
     }
 
     onCreateNewDrawing(): boolean {
-        return this.drawingService.createNewDrawing();
+        return this.drawingService.createNewDrawing(true);
     }
 
     openSaveDrawingModal(): void {
