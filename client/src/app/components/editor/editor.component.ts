@@ -83,7 +83,6 @@ export class EditorComponent implements AfterViewInit {
             if (!event.shiftKey && !event.ctrlKey) {
                 const toolKeyDown = this.toolFinder.get(event.key as KeyboardButtons) as ToolsNames;
                 if (!(toolKeyDown == undefined)) {
-                    console.log(toolKeyDown);
                     this.toolManagerService.setCurrentTool(toolKeyDown);
                     this.toolManagerService.emitToolChange(toolKeyDown);
                 }

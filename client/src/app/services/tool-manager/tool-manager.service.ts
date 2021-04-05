@@ -176,6 +176,11 @@ export class ToolManagerService {
     }
 
     emitToolChange(toolName: ToolsNames): void {
+        if (this.currentTool === ToolsNames.Text) {
+            this.textService.isWriting = false;
+            this.textService.testText();
+        }
+
         this.toolChangeEmitter.emit(toolName);
     }
 }
