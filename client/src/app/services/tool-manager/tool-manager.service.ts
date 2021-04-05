@@ -22,7 +22,7 @@ import { ToolBox } from '@app/utils/types/tool-box';
     providedIn: 'root',
 })
 export class ToolManagerService {
-    currentTool: ToolsNames = ToolsNames.Text;
+    currentTool: ToolsNames = ToolsNames.Pencil;
     toolChangeEmitter: EventEmitter<ToolsNames> = new EventEmitter<ToolsNames>();
     toolBox: ToolBox;
     currentAttributes: CurrentAttributes;
