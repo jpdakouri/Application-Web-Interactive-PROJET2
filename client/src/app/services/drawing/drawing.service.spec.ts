@@ -171,8 +171,8 @@ fdescribe('DrawingService', () => {
         expect(emitSpy).toHaveBeenCalled();
     });
 
-    it('openDrawing should call save canva', () => {
-        spyOn(service, 'createNewDrawing').withArgs(true).and.stub();
+    it('openDrawing should call saveCanvas', () => {
+        spyOn(service, 'createNewDrawing').and.stub();
         spyOn(service, 'saveCanvas').and.stub();
         const newDrawing = {
             width: 100,
@@ -191,7 +191,7 @@ fdescribe('DrawingService', () => {
             height: 100,
             dataURL: canva,
         } as DrawingData;
-        service.openDrawing(newDrawing);
+        service.openDrawing(newDrawing, true);
         expect(service.saveCanvas).toHaveBeenCalled();
     });
 });

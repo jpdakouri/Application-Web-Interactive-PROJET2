@@ -77,6 +77,7 @@ export class DrawingService {
                 return true;
             } else if (localStorage.getItem('canvasInfo') && !this.isCanvasBlank()) {
                 this.continueDrawing();
+                this.saveCanvas();
                 return true;
             }
         }
@@ -84,7 +85,7 @@ export class DrawingService {
     }
 
     continueDrawing(): void {
-        console.log('conti');
+        console.log('continue');
         if (!this.isCanvasBlank() && localStorage.getItem('canvasInfo')) {
             const dataURL = localStorage.getItem('canvasInfo');
             const image = new Image();

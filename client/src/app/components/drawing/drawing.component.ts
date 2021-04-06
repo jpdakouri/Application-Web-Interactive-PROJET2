@@ -194,6 +194,11 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             this.canvasResizerService.onMouseUp(event);
             this.resizeCanvas();
             this.canvasResizerService.setStatus(Status.OFF);
+            if (this.gridService.showGrid) {
+                setTimeout(() => {
+                    this.gridService.newGrid(null);
+                });
+            }
         } else {
             this.currentTool.onMouseUp(event);
         }
