@@ -150,7 +150,9 @@ export class TextService extends Tool {
 
     onKeyDown(event: KeyboardEvent): void {
         if (event.key === KeyboardButtons.Escape) {
-            this.isWriting = !this.isWriting;
+            if (this.isWriting) {
+                this.isWriting = false;
+            }
             this.text = '';
         }
     }
