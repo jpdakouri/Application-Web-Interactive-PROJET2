@@ -62,8 +62,15 @@
         [ngStyle]="{
                     'width': textService.textBoxSize.x + 'px',
                     'height': textService.textBoxSize.y + 'px',
-                     'left' : textService.textBoxPosition.x + 'px',
-                      'top': textService.textBoxPosition.y + 'px'}"
+                    'left' : textService.textBoxPosition.x + 'px',
+                    'top': textService.textBoxPosition.y + 'px',
+                    'position': 'relative',
+                    'margin': 0,
+                    'padding': 0,
+                    'border': 'solid 0px',
+                    'word-wrap': 'break-word'
+
+                    }"
     >
         <!-- <canvas width="641" height="452" style="pointer-events: none; transform: scale(1); transform-origin: left top"></canvas -->
         <textarea class="textbox-editor"
@@ -86,12 +93,11 @@
                               'width': textService.textBoxSize.x + 'px',
                               'height': textService.textBoxSize.y + 'px',
                               'outline': 'none',
-                              'position': 'absolute',
-                               'left' : textService.textBoxPosition.x + 'px',
-                               'top': textService.textBoxPosition.y + 'px',
+                              'position': 'relative',
                               'margin': 0,
                               'z-index': 100,
-                              'caret-color': 'black'
+                              'caret-color': 'black',
+                              'word-wrap': 'break-word'
                               }"></textarea>
 
     </div>

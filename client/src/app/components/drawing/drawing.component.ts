@@ -99,7 +99,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.drawingService.canvas.style.backgroundColor = DEFAULT_WHITE;
         this.canvasResizerService.canvasPreviewWidth = this.canvasSize.x;
         this.canvasResizerService.canvasPreviewHeight = this.canvasSize.y;
-        this.textService.textArea = this.textArea.nativeElement;
+        // this.textService.textArea = this.textArea.nativeElement;
         this.drawingService.restoreCanvas();
         this.undoRedo.saveInitialState();
         setTimeout(() => {

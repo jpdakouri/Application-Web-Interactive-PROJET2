@@ -9,6 +9,7 @@ import { SaveDrawingService } from '@app/services/save-drawing/save-drawing.serv
 import { SIDEBAR_WIDTH } from '@app/services/services-constants';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { PencilService } from '@app/services/tools/pencil-service/pencil.service';
+import { TextService } from '@app/services/tools/text/text.service';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 import { ToolManagerServiceMock } from '@app/utils/tests-mocks/tool-manager-mock';
@@ -22,6 +23,7 @@ describe('DrawingComponent', () => {
     let drawingStub: DrawingService;
     let mouseStub: MouseHandlerService;
     let canvasResizerStub: CanvasResizerService;
+    let textService: TextService;
 
     let toolManagerServiceMock: ToolManagerServiceMock;
     beforeEach(async(() => {
@@ -30,6 +32,7 @@ describe('DrawingComponent', () => {
         toolManagerServiceMock = new ToolManagerServiceMock();
         mouseStub = new MouseHandlerService();
         canvasResizerStub = new CanvasResizerService(mouseStub);
+        textService = new TextService({} as CurrentColorService, {} as DrawingService);
 
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],
@@ -40,6 +43,7 @@ describe('DrawingComponent', () => {
                 { provide: MouseHandlerService, useValue: mouseStub },
                 { provide: ToolManagerService, useValue: toolManagerServiceMock },
                 { provide: SaveDrawingService, useValue: {} },
+                { provide: TextService, useValue: textService },
             ],
             imports: [MatTooltipModule, HttpClientTestingModule],
         }).compileComponents();
@@ -49,6 +53,7 @@ describe('DrawingComponent', () => {
         fixture = TestBed.createComponent(DrawingComponent);
         component = fixture.componentInstance;
         toolStub = toolManagerServiceMock.currentTool;
+
         fixture.detectChanges();
     });
 

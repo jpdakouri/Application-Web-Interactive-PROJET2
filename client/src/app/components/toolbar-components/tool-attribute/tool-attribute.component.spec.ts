@@ -18,6 +18,7 @@ import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { ToolAttributeComponent } from './tool-attribute.component';
 
 import SpyObj = jasmine.SpyObj;
+import { MatOptionModule } from '@angular/material/core';
 
 describe('ToolAttributeBarComponent', () => {
     let component: ToolAttributeComponent;
@@ -63,6 +64,7 @@ describe('ToolAttributeBarComponent', () => {
                 MatCheckboxModule,
                 FormsModule,
                 MatIconModule,
+                MatOptionModule,
             ],
         }).compileComponents();
     }));

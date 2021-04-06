@@ -13,12 +13,11 @@ import { ToolCommand } from '@app/utils/interfaces/tool-command';
     providedIn: 'root',
 })
 export class TextService extends Tool {
-    textArea: HTMLTextAreaElement;
+    // textArea: HTMLTextAreaElement;
     text: string;
     textAlign: TextAlign = TextAlign.Start;
     textBoxPosition: Vec2;
     textHasBeenCreated: boolean;
-
     textStyle: string;
     fontStyle: string;
     fontWeight: string;
@@ -96,8 +95,6 @@ export class TextService extends Tool {
         );
     }
 
-    draw(): void {}
-
     drawStyledText(
         context: CanvasRenderingContext2D,
         text: string,
@@ -106,17 +103,7 @@ export class TextService extends Tool {
         fontSize: number,
         textStyle?: string,
         textAlign?: string,
-    ): void {
-        // this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        //
-        // this.drawingService.previewCtx.fillStyle = this.currentColorService.getPrimaryColorRgb();
-        // this.drawingService.baseCtx.fillStyle = this.currentColorService.getPrimaryColorRgb();
-        //
-        // context.font = `${this.fontSize}px ${this.fontFace}`;
-        // // @ts-ignore
-        // context.textAlign = this.textAlign as string;
-        // context.fillText(text, position.x, position.y);
-    }
+    ): void {}
 
     getTextFinalPosition(currentPosition: Vec2): Vec2 {
         const textPosition = { ...currentPosition };
@@ -136,24 +123,21 @@ export class TextService extends Tool {
     }
 
     getStyle(): string {
-        // console.log(this.textStyle);
-        // const temp = this.textStyle.split(',');
         let tempStyle = '';
         for (const item of this.textStyle) {
             tempStyle = tempStyle.concat(' ').concat(item);
         }
-        // console.log(tempStyle);
         return tempStyle;
     }
 
-    // @ts-ignore
     getSingleStyle(style: string): string {
+        let textStyle = '';
         for (let i = 0; i < this.textStyle.length; i++) {
             if (this.textStyle[i] === style) {
-                // console.log(this.textStyle[i]);
-                return this.textStyle[i];
+                textStyle = this.textStyle[i];
             }
         }
+        return textStyle;
     }
 
     getTextDecoration(): string {

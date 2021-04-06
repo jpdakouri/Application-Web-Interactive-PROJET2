@@ -156,12 +156,10 @@ export class ToolAttributeComponent {
 
     onFontSizeChange(event: MatSliderChange): void {
         this.toolManagerService.setCurrentFontSize(event.value || undefined);
-        this.textService.draw();
     }
 
     onFontFaceChange(selectedFont?: string): void {
         this.toolManagerService.setCurrentFontFace(selectedFont || undefined);
-        this.textService.draw();
     }
 
     onDropletDiameterChange(event: MatSliderChange): void {
@@ -187,7 +185,6 @@ export class ToolAttributeComponent {
 
     onTextAlignChange(value: string): void {
         this.textService.textAlign = value as TextAlign;
-        this.textService.draw();
     }
 
     onTextStyleChange(textStyle: string): void {
