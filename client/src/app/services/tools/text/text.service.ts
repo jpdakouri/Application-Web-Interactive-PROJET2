@@ -17,9 +17,8 @@ export class TextService extends Tool {
     textAlign: TextAlign = TextAlign.Start;
     textBoxPosition: Vec2;
     textHasBeenCreated: boolean;
-    textStyle: string;
+    textStyles: string[];
     fontStyle: string;
-    fontWeight: string;
     isWriting: boolean;
     showTextBox: boolean;
     textBoxSize: Vec2;
@@ -30,9 +29,8 @@ export class TextService extends Tool {
         this.fontSize = DEFAULT_FONT_SIZE;
         this.text = '';
         this.textAlign = TextAlign.Start;
-        this.textStyle = '';
+        this.textStyles = [];
         this.fontStyle = '';
-        this.fontWeight = '';
         this.textBoxPosition = { x: 0, y: 0 };
         this.textBoxSize = { x: 800, y: 200 };
         this.isWriting = false;
@@ -55,18 +53,23 @@ export class TextService extends Tool {
         }
     }
 
+    drawStyledText(
+        context: CanvasRenderingContext2D,
+        text: string,
+        position: Vec2,
+        fontFace: TextFont,
+        fontSize: number,
+        textStyle?: string,
+        textAlign?: string,
+    ): void {}
+
     testText(): void {
         console.log(this.textBoxSize.x);
         this.fillTextMultiLine(this.drawingService.baseCtx, this.text, this.getTextFinalPosition(this.textBoxPosition));
     }
 
     fillTextMultiLine(context: CanvasRenderingContext2D, text: string, position: Vec2): void {
-        const bold = this.getSingleStyle('bold') == undefined ? '' : ' bold ';
-        const italic = this.getSingleStyle('italic') == undefined ? '' : ' italic ';
-        console.log(italic);
-
-        this.fontWeight = bold.concat(' ').concat(italic);
-        context.font = ` ${this.fontWeight} ${this.fontSize}px ${this.fontFace}`;
+        context.font = ` ${this.getCurrentStyle()} ${this.fontSize}px ${this.fontFace}`;
         context.textAlign = this.textAlign;
         console.log(context.textAlign);
         context.fillStyle = this.currentColorService.getPrimaryColorRgb();
@@ -86,24 +89,6 @@ export class TextService extends Tool {
         return metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
     }
 
-    isClickInTextBox(event: MouseEvent): boolean {
-        console.log('isClick in ' + this.textBoxPosition.x);
-        return (
-            !(event.offsetX < this.textBoxSize.x || event.offsetX > this.textBoxSize.x + this.textBoxPosition.x) &&
-            !(event.offsetY < this.textBoxSize.y || event.offsetY < this.textBoxSize.y + this.textBoxPosition.y)
-        );
-    }
-
-    drawStyledText(
-        context: CanvasRenderingContext2D,
-        text: string,
-        position: Vec2,
-        fontFace: TextFont,
-        fontSize: number,
-        textStyle?: string,
-        textAlign?: string,
-    ): void {}
-
     getTextFinalPosition(currentPosition: Vec2): Vec2 {
         const textPosition = { ...currentPosition };
         switch (this.textAlign) {
@@ -121,17 +106,17 @@ export class TextService extends Tool {
         return textPosition;
     }
 
-    getStyle(): string {
-        let tempStyle = '';
-        for (const item of this.textStyle) {
-            tempStyle = tempStyle.concat(' ').concat(item);
-        }
-        return tempStyle;
+    getCurrentStyle(): string {
+        const bold = this.getSingleStyle('bold');
+        const italic = this.getSingleStyle('italic');
+
+        return bold.concat(' ').concat(italic);
     }
 
-    getSingleStyle(style: string): string | undefined {
-        let textStyle;
-        for (const item of this.textStyle) {
+    getSingleStyle(style: string): string {
+        let textStyle = '';
+        console.log(this.textStyles);
+        for (const item of this.textStyles) {
             if (style === item) {
                 textStyle = item;
             }

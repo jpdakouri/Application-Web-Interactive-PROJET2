@@ -187,7 +187,7 @@ export class ToolAttributeComponent {
         this.textService.textAlign = value as TextAlign;
     }
 
-    onTextStyleChange(textStyle: string): void {
-        this.textService.textStyle = textStyle;
+    onTextStyleChange(textStyle: string[]): void {
+        this.textService.textStyles = textStyle;
     }
 }
