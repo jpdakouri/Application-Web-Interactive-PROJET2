@@ -129,14 +129,13 @@ export class TextService extends Tool {
         return tempStyle;
     }
 
-    getSingleStyle(style: string): string {
-        let textStyle = '';
-        for (let i = 0; i < this.textStyle.length; i++) {
-            if (this.textStyle[i] === style) {
-                textStyle = this.textStyle[i];
+    getSingleStyle(style: string): string | undefined {
+        let textStyle;
+        for (const item of this.textStyle) {
+            if (style === item) {
+                textStyle = item;
             }
         }
-        // console.log(textStyle);
         return textStyle;
     }
 
@@ -147,9 +146,6 @@ export class TextService extends Tool {
             }
             this.text = '';
         }
-    }
-    onMouseMove(event: MouseEvent): void {
-        // console.log(this.textStyle);
     }
 
     executeCommand(command: ToolCommand): void {}
