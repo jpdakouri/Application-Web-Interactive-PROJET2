@@ -13,7 +13,6 @@ import { ToolCommand } from '@app/utils/interfaces/tool-command';
     providedIn: 'root',
 })
 export class TextService extends Tool {
-    // textArea: HTMLTextAreaElement;
     text: string;
     textAlign: TextAlign = TextAlign.Start;
     textBoxPosition: Vec2;
@@ -62,8 +61,10 @@ export class TextService extends Tool {
     }
 
     fillTextMultiLine(context: CanvasRenderingContext2D, text: string, position: Vec2): void {
-        const bold = this.getSingleStyle('bold') == undefined ? '' : 'bold';
-        const italic = this.getSingleStyle('italic') == undefined ? '' : 'italic';
+        const bold = this.getSingleStyle('bold') == undefined ? '' : ' bold ';
+        const italic = this.getSingleStyle('italic') == undefined ? '' : ' italic ';
+        console.log(italic);
+
         this.fontWeight = bold.concat(' ').concat(italic);
         context.font = ` ${this.fontWeight} ${this.fontSize}px ${this.fontFace}`;
         context.textAlign = this.textAlign;
@@ -86,8 +87,6 @@ export class TextService extends Tool {
     }
 
     isClickInTextBox(event: MouseEvent): boolean {
-        // console.log('mousePosition ' + event.clientX);
-
         console.log('isClick in ' + this.textBoxPosition.x);
         return (
             !(event.offsetX < this.textBoxSize.x || event.offsetX > this.textBoxSize.x + this.textBoxPosition.x) &&
@@ -137,15 +136,8 @@ export class TextService extends Tool {
                 textStyle = this.textStyle[i];
             }
         }
+        // console.log(textStyle);
         return textStyle;
-    }
-
-    getTextDecoration(): string {
-        let tempStyle = '';
-        if (this.getSingleStyle('underline') !== undefined) tempStyle += this.getSingleStyle('underline') + ' ';
-        if (this.getSingleStyle('line-through') !== undefined) tempStyle += this.getSingleStyle('line-through');
-        // console.log(tempStyle);
-        return tempStyle;
     }
 
     onKeyDown(event: KeyboardEvent): void {
@@ -155,6 +147,9 @@ export class TextService extends Tool {
             }
             this.text = '';
         }
+    }
+    onMouseMove(event: MouseEvent): void {
+        // console.log(this.textStyle);
     }
 
     executeCommand(command: ToolCommand): void {}

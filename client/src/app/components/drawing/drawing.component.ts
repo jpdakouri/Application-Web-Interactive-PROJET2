@@ -60,14 +60,14 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     constructor(
         private drawingService: DrawingService,
-        toolManagerService: ToolManagerService,
-        canvasResizerService: CanvasResizerService,
         private undoRedo: UndoRedoService,
-        selectionEllipseService: SelectionEllipseService,
-        selectionRectangleService: SelectionRectangleService,
         private saveDrawingService: SaveDrawingService,
         public saveService: SaveDrawingService,
         public gridService: GridService,
+        toolManagerService: ToolManagerService,
+        canvasResizerService: CanvasResizerService,
+        selectionEllipseService: SelectionEllipseService,
+        selectionRectangleService: SelectionRectangleService,
         textService: TextService,
     ) {
         this.toolManagerService = toolManagerService;
@@ -99,7 +99,6 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.drawingService.canvas.style.backgroundColor = DEFAULT_WHITE;
         this.canvasResizerService.canvasPreviewWidth = this.canvasSize.x;
         this.canvasResizerService.canvasPreviewHeight = this.canvasSize.y;
-        // this.textService.textArea = this.textArea.nativeElement;
         this.drawingService.restoreCanvas();
         this.undoRedo.saveInitialState();
         setTimeout(() => {
