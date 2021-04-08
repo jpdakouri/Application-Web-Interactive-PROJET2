@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatSliderChange } from '@angular/material/slider';
-import { GridService } from '@app/services/grid-service/grid.service';
+import { GridService } from '@app/services/grid/grid.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import {
     MAX_DROPLET_DIAMETER,
@@ -60,6 +60,9 @@ export class ToolAttributeComponent {
     showLineAttributes(): boolean {
         return this.toolManagerService.isCurrentTool(ToolsNames.Line);
     }
+    showBucketTolerance(): boolean {
+        return this.toolManagerService.isCurrentTool(ToolsNames.PaintBucket);
+    }
 
     showShapeStyle(): boolean {
         return (
@@ -91,6 +94,10 @@ export class ToolAttributeComponent {
 
     getCurrentLineThickness(): number | undefined {
         return this.toolManagerService.getCurrentLineThickness();
+    }
+
+    getCurrentTolerance(): number | undefined {
+        return this.toolManagerService.getCurrentTolerance();
     }
 
     getCurrentDotRadius(): number | undefined {
@@ -132,6 +139,10 @@ export class ToolAttributeComponent {
 
     onDotRadiusChange(event: MatSliderChange): void {
         this.toolManagerService.setCurrentDotRadius(event.value || undefined);
+    }
+
+    onToleranceChange(event: MatSliderChange): void {
+        this.toolManagerService.setCurrentTolerance(event.value || undefined);
     }
 
     onFrequencyChange(event: MatSliderChange): void {

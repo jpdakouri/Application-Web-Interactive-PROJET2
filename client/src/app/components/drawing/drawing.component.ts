@@ -4,7 +4,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { DEFAULT_HEIGHT, DEFAULT_WHITE, DEFAULT_WIDTH, SIDEBAR_WIDTH, WORKING_ZONE_VISIBLE_PORTION } from '@app/components/components-constants';
 import { CanvasResizerService } from '@app/services/canvas-resizer/canvas-resizer.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { GridService } from '@app/services/grid-service/grid.service';
+import { GridService } from '@app/services/grid/grid.service';
 import { SaveDrawingService } from '@app/services/save-drawing/save-drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-ellipse-service/selection-ellipse.service';
@@ -133,11 +133,9 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.emitEditorMinWidth();
     }
 
-    // Comportement bizare avec resizing
     resizeCanvas(): void {
         this.canvasSize = this.canvasResizerService.calculateNewCanvasSize(this.canvasSize);
         this.drawingService.restoreCanvas();
-        this.gridService.newGrid(null);
         this.emitEditorMinWidth();
     }
 
@@ -194,11 +192,10 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             this.canvasResizerService.onMouseUp(event);
             this.resizeCanvas();
             this.canvasResizerService.setStatus(Status.OFF);
-            if (this.gridService.showGrid) {
+            if (this.gridService.showGrid)
                 setTimeout(() => {
                     this.gridService.newGrid(null);
                 });
-            }
         } else {
             this.currentTool.onMouseUp(event);
         }

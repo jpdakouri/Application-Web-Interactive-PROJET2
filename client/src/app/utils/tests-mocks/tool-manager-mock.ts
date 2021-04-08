@@ -11,6 +11,10 @@ export class ToolManagerServiceMock {
     getCurrentToolInstance(): Tool {
         return this.currentTool;
     }
+
+    getCurrentTolerance(): number {
+        return 0;
+    }
     isCurrentTool(): boolean {
         return true;
     }

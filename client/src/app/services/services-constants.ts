@@ -44,3 +44,12 @@ export const GREEN_POS = 2;
 export const BLUE_POS = 1;
 export const ALPHA_POS = 4;
 export const MAX_BYTE_VALUE = 255;
+
+/****************************/
+/***PAINTBUCKET CONSTANTS*/
+/****************************/
+export const MAX_PIXEL_VALUE = 255;
+
+export const ALPHA = 3;
+
+export const ARRAY_OFFSET = 4;

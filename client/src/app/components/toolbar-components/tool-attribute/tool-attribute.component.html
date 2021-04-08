@@ -1,8 +1,9 @@
 <div class="attribute-toolbar">
     <div class="grid">
         <mat-checkbox [(ngModel)]="gridService.showGrid" class="attribute-title" (change)="onGridSizeChange($event)"
-            >Grille de prévisualisation<br /><small class="small-text">Afficher une grille à la zone de dessin</small></mat-checkbox
-        >
+            ><h3 class="attribute-sub-title" style="margin: auto; margin-top: 5px">Grille de prévisualisation</h3>
+            <small class="small-text">Afficher une grille à la zone de dessin</small>
+        </mat-checkbox>
         <div *ngIf="gridService.showGrid">
             <h3 class="attribute-sub-title">Taille des grilles: {{ gridService.gridSize }} pixels</h3>
             <mat-slider
@@ -43,10 +44,26 @@
         </div>
         <mat-divider></mat-divider>
     </div>
+    <div *ngIf="showBucketTolerance()">
+        <div class="bucket-tolerance">
+            <h3 class="attribute-title">Tolérance du remplissage: {{ this.getCurrentTolerance() }}%</h3>
+            <mat-slider
+                [value]="this.getCurrentTolerance()"
+                #bucketSlider
+                color="primary"
+                [min]="0"
+                [max]="100"
+                (input)="onToleranceChange($event)"
+                (change)="onToleranceChange($event)"
+                step="1"
+            ></mat-slider>
+        </div>
+        <mat-divider></mat-divider>
+    </div>
     <div *ngIf="showPipettePreview()">
         <app-pipette-preview></app-pipette-preview>
     </div>
-    <mat-divider></mat-divider>
+
     <div *ngIf="showShapeStyle()">
         <div class="rectangle-ellipse-type">
             <h3 class="attribute-title">Type d{{ shapeStyleTitle() }}</h3>

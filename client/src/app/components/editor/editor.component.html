@@ -7,7 +7,7 @@
             (carouselClicked)="openCarouselModal()"
             (selectedAll)="selectAll()"
         ></app-toolbar>
-        <app-tool-attribute [(showGrid)]="gridService.showGrid" class="bars"></app-tool-attribute>
+        <app-tool-attribute class="bars"></app-tool-attribute>
     </div>
     <div class="drawing-container">
         <app-drawing (editorMinWidthEmitter)="saveEditorMinWidth($event)" class="drawing" tabindex="0"></app-drawing>

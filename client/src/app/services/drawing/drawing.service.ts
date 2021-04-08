@@ -24,6 +24,14 @@ export class DrawingService {
         localStorage.setItem('canvasInfo', JSON.stringify(value));
     }
 
+    getCanvas(): HTMLCanvasElement {
+        return this.canvas;
+    }
+
+    getBaseContext(): CanvasRenderingContext2D {
+        return this.baseCtx;
+    }
+
     restoreCanvas(): void {
         console.log('restore');
         const canvasInfo = localStorage.getItem('canvasInfo');

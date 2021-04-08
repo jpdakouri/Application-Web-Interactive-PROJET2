@@ -91,6 +91,7 @@
             <mat-icon>crop</mat-icon>
         </button>
     </div>
+
     <div class="flex-item">
         <button
             aria-label='Selection ellipse "s"'
@@ -100,6 +101,18 @@
             mat-mini-fab
         >
             <mat-icon>all_out</mat-icon>
+        </button>
+    </div>
+
+    <div class="flex-item">
+        <button
+            aria-label='Selection polygonale "v"'
+            title='Selection polygonale "v"'
+            [color]="isSelected(this.toolsNames.SelectPolygon) ? 'accent' : 'primary'"
+            (click)="setCurrentTool(this.toolsNames.SelectPolygon)"
+            mat-mini-fab
+        >
+            <mat-icon>lasso</mat-icon>
         </button>
     </div>
 
@@ -215,6 +228,42 @@
             [disabled]="!undoRedo.canRedoCommands()"
         >
             <mat-icon>redo</mat-icon>
+        </button>
+    </div>
+    <div class="flex-item">
+        <button
+            color="primary"
+            mat-mini-fab
+            aria-label="Sceau de peinture"
+            title="Sceau de peinture"
+            (click)="setCurrentTool(toolsNames.PaintBucket)"
+            [color]="isSelected(this.toolsNames.PaintBucket) ? 'accent' : 'primary'"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="24" height="24" viewBox="0 0 172 172" style="fill: #000000">
+                <g
+                    fill="none"
+                    fill-rule="nonzero"
+                    stroke="none"
+                    stroke-width="1"
+                    stroke-linecap="butt"
+                    stroke-linejoin="miter"
+                    stroke-miterlimit="10"
+                    stroke-dasharray=""
+                    stroke-dashoffset="0"
+                    font-family="none"
+                    font-weight="none"
+                    font-size="none"
+                    text-anchor="none"
+                    style="mix-blend-mode: normal"
+                >
+                    <path d="M0,172v-172h172v172z" fill="none"></path>
+                    <g fill="#ffffff">
+                        <path
+                            d="M58.81706,14.27734l-10.13411,10.13411l19.94629,19.94629l-41.4043,40.11653l-0.04199,0.042c-8.26713,8.26713 -8.26713,21.93925 0,30.20637l36.5472,36.5472c8.26714,8.26713 21.58008,8.62629 29.49251,0.71386l36.54721,-36.5472c8.26713,-8.26714 8.26713,-21.93924 0,-30.20638l-14.33333,-14.33333zM78.74935,54.49186l26.55306,26.53907l14.33333,14.33333c1.59977,1.59976 2.39356,3.28442 2.39356,4.96907h-86.93783c-0.25887,-1.92147 0.39909,-3.85644 2.22559,-5.68294zM143.33333,114.66667c0,0 -14.33333,20.78333 -14.33333,28.66667c0,7.88333 6.45,14.33333 14.33333,14.33333c7.88333,0 14.33333,-6.45 14.33333,-14.33333c0,-7.88333 -14.33333,-28.66667 -14.33333,-28.66667z"
+                        ></path>
+                    </g>
+                </g>
+            </svg>
         </button>
     </div>
 </div>

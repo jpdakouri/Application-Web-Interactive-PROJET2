@@ -19,6 +19,7 @@ import { DrawingCardComponent } from './components/carousel-components/drawing-c
 import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { ExportDrawingComponent } from './components/export-drawing/export-drawing.component';
+import { UploadLinkComponent } from './components/export-drawing/upload-link/upload-link.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { PipettePreviewComponent } from './components/pipette-preview/pipette-preview.component';
 import { SaveDrawingComponent } from './components/save-drawing/save-drawing.component';
@@ -45,6 +46,7 @@ import { ServerErrorMessageComponent } from './components/server-error-message/s
         SearchByTagsComponent,
         CarouselComponent,
         DrawingCardComponent,
+        UploadLinkComponent,
     ],
     imports: [BrowserModule, HttpClientModule, AppRoutingModule, BrowserAnimationsModule, AppMaterialModule, FormsModule, ReactiveFormsModule],
     providers: [
