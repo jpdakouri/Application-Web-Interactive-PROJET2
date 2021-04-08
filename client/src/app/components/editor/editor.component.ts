@@ -86,15 +86,15 @@ export class EditorComponent implements AfterViewInit {
                     this.toolManagerService.emitToolChange(toolKeyDown);
                 }
                 if (event.key === KeyboardButtons.grid) {
-                    this.showGrid = !this.showGrid;
-                    if (this.showGrid) this.gridService.newGrid(null);
+                    this.gridService.showGrid = !this.gridService.showGrid;
+                    if (this.gridService.showGrid) this.gridService.newGrid(null);
                     else this.gridService.clear();
                 }
                 if (event.key === KeyboardButtons.gridUp && this.gridService.gridSizeCanModify(true)) {
-                    if (this.showGrid) this.gridService.newGrid((this.gridService.gridSize += GRID_SIZE_CHANGE_VALUE));
+                    if (this.gridService.showGrid) this.gridService.newGrid((this.gridService.gridSize += GRID_SIZE_CHANGE_VALUE));
                 }
                 if (event.key === KeyboardButtons.gripDown && this.gridService.gridSizeCanModify(false)) {
-                    if (this.showGrid) this.gridService.newGrid((this.gridService.gridSize -= GRID_SIZE_CHANGE_VALUE));
+                    if (this.gridService.showGrid) this.gridService.newGrid((this.gridService.gridSize -= GRID_SIZE_CHANGE_VALUE));
                 }
             }
         }
@@ -109,7 +109,7 @@ export class EditorComponent implements AfterViewInit {
     }
 
     onCreateNewDrawing(): boolean {
-        return this.drawingService.createNewDrawing(true);
+        return this.drawingService.createNewDrawing();
     }
 
     openSaveDrawingModal(): void {
