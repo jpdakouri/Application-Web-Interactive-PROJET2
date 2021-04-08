@@ -55,6 +55,10 @@ export class StampService extends Tool {
         this.drawPreview(this.rotationAngle, this.scalingFactor, this.getPositionFromMouse(event), this.selectedStamp);
     }
 
+    onMouseLeave(): void {
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+    }
+
     private drawPreview(rotationAngle: number, scalingFactor: number, position: Vec2, stamp: Stamp): void {
         const stampImage = new Image(STAMP_SIZE, STAMP_SIZE);
         stampImage.src = BASE_STAMP_IMAGE_PATH + stamp + STAMP_IMAGE_EXTENSION;

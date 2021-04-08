@@ -188,7 +188,7 @@ export class ToolAttributeComponent {
         this.toolManagerService.setStampScalingFactor(event.value || undefined);
     }
 
-    onSelectedStampChange(stamp: Stamp): void {
-        this.toolManagerService.setSelectedStamp(stamp);
+    onSelectedStampChange(stampName: string): void {
+        this.toolManagerService.setSelectedStamp(stampName);
     }
 }

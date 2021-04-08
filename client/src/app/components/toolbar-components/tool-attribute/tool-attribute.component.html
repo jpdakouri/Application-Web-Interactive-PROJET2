@@ -167,7 +167,6 @@
         <mat-divider></mat-divider>
     </div>
     <div *ngIf="showStampAttributes()">
-        <div class="number-of-sides">
             <h3 class="attribute-title">Facteur de mise à échelle: {{ this.getStampScalingFactor() }}</h3>
             <mat-slider
                 [value]="this.getStampScalingFactor()"
@@ -179,7 +178,11 @@
                 (change)="onStampScalingFactorChange($event)"
                 step="0.05"
             ></mat-slider>
-        </div>
+            <img src = "../../assets/stamps/house.png" (click) = "onSelectedStampChange('house')">
+            <img src = "../../assets/stamps/smile.png" (click) = "onSelectedStampChange('smile')">
+            <img src = "../../assets/stamps/hashtag.png" (click) = "onSelectedStampChange('hashtag')">
+            <img src = "../../assets/stamps/star.png" (click) = "onSelectedStampChange('star')">
+            <img src = "../../assets/stamps/letter.png" (click) = "onSelectedStampChange('letter')">
         <mat-divider></mat-divider>
     </div>
     <app-color-selector></app-color-selector>
