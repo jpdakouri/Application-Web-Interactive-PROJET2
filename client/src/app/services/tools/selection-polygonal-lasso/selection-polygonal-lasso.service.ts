@@ -44,7 +44,14 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
     private ccw(A: Vec2, B: Vec2, C: Vec2): boolean {
         return (C.y - A.y) * (B.x - A.x) > (B.y - A.y) * (C.x - A.x);
     }
-
+    // varifies lines aren't superposed
+    // private superposedLines(line1: Vec2[], line2: Vec2[]): boolean {
+    //     const a = (line1[1].y - line1[0].y) / (line1[1].x - line1[0].x);
+    //     const b = line1[1].y - a * line1[1].x;
+    //     const superposedPoint1 = line2[0].y === a * line2[0].x + b;
+    //     const superposedPoint2 = line2[1].y === a * line2[1].x + b;
+    //     return superposedPoint1 && superposedPoint2;
+    // }
     // algorithm found at https://bryceboe.com/2006/10/23/line-segment-intersection-algorithm/
     private verifiyCrossedLines(line1: Vec2[], line2: Vec2[]): boolean {
         return (
@@ -69,8 +76,40 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
             this.lineThickness || DEFAULT_MIN_THICKNESS,
             closedSegment,
         );
+        // this.drawingService.baseCtx.save();
+        // this.clipArea();
+        // this.drawingService.baseCtx.restore();
         this.clearPath();
     }
+
+    // clipArea(): void {
+    //     this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
+
+    //     const coords = this.getClippedCoords();
+    //     const size = this.getClippedSize(coords);
+
+    //     const imageData = this.drawingService.baseCtx.getImageData(coords[0].x, coords[0].y, size.x, size.y);
+    //     const bottomRightCorner: Vec2 = { x: imageData.width, y: imageData.height };
+    //     // this.replaceEmptyPixels(imageData);
+    //     createImageBitmap(imageData).then((imgBitmap) => {
+    //         this.drawingService.selectedAreaCtx.save();
+    //         this.drawingService.selectedAreaCtx.beginPath();
+    //         this.drawingService.selectedAreaCtx.moveTo(this.pathData[0].x, this.pathData[0].y);
+    //         for (const point of this.pathData) this.drawingService.baseCtx.lineTo(point.x, point.y);
+    //         this.drawingService.selectedAreaCtx.lineTo(this.pathData[0].x, this.pathData[0].y);
+    //         this.drawingService.selectedAreaCtx.stroke();
+
+    //         this.drawingService.selectedAreaCtx.clip();
+    //         this.drawingService.selectedAreaCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
+    //         this.drawingService.selectedAreaCtx.restore();
+    //     });
+
+    //     // this.drawingService.selectedAreaCtx.translate(-coords[0].x, -coords[0].y);
+    //     // this.drawingService.selectedAreaCtx.canvas.height = size.y;
+    //     // this.drawingService.selectedAreaCtx.canvas.width = size.x;
+    // tslint:disable-next-line:max-line-length
+    //     // this.drawingService.selectedAreaCtx.putImageData(this.drawingService.baseCtx.getImageData(coords[0].x, coords[0].y, size.x, size.y), 0, 0);
+    // }
 
     getClippedSize(coords: Vec2[]): Vec2 {
         const height = Math.abs(coords[1].y - coords[0].y);
