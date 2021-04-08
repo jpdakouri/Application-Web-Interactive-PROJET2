@@ -13,6 +13,7 @@ import { SelectionEllipseService } from '@app/services/tools/selection-ellipse-s
 import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
 import { StampService } from '@app/services/tools/stamp-service/stamp.service';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
+import { Stamp } from '@app/utils/enums/stamp';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 import { CurrentAttributes } from '@app/utils/types/current-attributes';
 import { ToolBox } from '@app/utils/types/tool-box';
@@ -171,5 +172,29 @@ export class ToolManagerService {
 
     emitToolChange(toolName: ToolsNames): void {
         this.toolChangeEmitter.emit(toolName);
+    }
+
+    getStampScalingFactor(): number {
+        const stamp = this.toolBox.Stamp as StampService;
+        return stamp.scalingFactor;
+    }
+
+    getSelectedStamp(): Stamp {
+        const stamp = this.toolBox.Stamp as StampService;
+        return stamp.selectedStamp;
+    }
+
+    setStampScalingFactor(factor?: number): void {
+        if (factor != undefined) {
+            const stamp = this.toolBox.Stamp as StampService;
+            stamp.scalingFactor = factor;
+        }
+    }
+
+    setSelectedStamp(stamp: Stamp): void {
+        if (stamp != undefined) {
+            const stampTool = this.toolBox.Stamp as StampService;
+            stampTool.selectedStamp = stamp;
+        }
     }
 }

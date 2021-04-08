@@ -22,7 +22,7 @@ import { Stamp } from '@app/utils/enums/stamp';
 export class StampService extends Tool {
     selectedStamp: Stamp;
     private rotationAngle: number;
-    private scalingFactor: number;
+    scalingFactor: number;
     private undoRedo: UndoRedoService;
     constructor(drawingService: DrawingService, currentColorService: CurrentColorService, undoRedo: UndoRedoService) {
         super(drawingService, currentColorService);
@@ -59,7 +59,7 @@ export class StampService extends Tool {
         const stampImage = new Image(STAMP_SIZE, STAMP_SIZE);
         stampImage.src = BASE_STAMP_IMAGE_PATH + stamp + STAMP_IMAGE_EXTENSION;
         console.log(BASE_STAMP_IMAGE_PATH + stamp + STAMP_IMAGE_EXTENSION);
-
+        /*
         const stampCenter: Vec2 = { x: position.x - STAMP_SIZE / 2, y: position.y - STAMP_SIZE / 2 };
 
         const centerAngle = Math.atan(stampCenter.y / stampCenter.x);
@@ -75,6 +75,11 @@ export class StampService extends Tool {
             centerDistanceFromOrigin * Math.sin(correctedAngle),
         );
         this.drawingService.previewCtx.restore();
+        */
+        const stampCenter: Vec2 = { x: position.x - (scalingFactor * STAMP_SIZE) / 2, y: position.y - (scalingFactor * STAMP_SIZE) / 2 };
+        console.log(stampCenter);
+        this.degToRad(0);
+        this.drawingService.previewCtx.drawImage(stampImage, stampCenter.x, stampCenter.y, scalingFactor * STAMP_SIZE, scalingFactor * STAMP_SIZE);
     }
 
     private drawOnBase(rotationAngle: number, scalingFactor: number, position: Vec2, stamp: Stamp): void {
