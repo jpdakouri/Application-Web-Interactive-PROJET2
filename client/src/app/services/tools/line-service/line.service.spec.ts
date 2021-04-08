@@ -248,30 +248,6 @@ describe('LineService', () => {
         );
     });
 
-    it(' keys should perform their task', () => {
-        service['started'] = true;
-        service.mouseDownCoord = { x: 20, y: 20 };
-        service['pathData'].push({ x: 0, y: 0 }, service.mouseDownCoord);
-
-        service.onKeyDown({
-            key: KeyboardButtons.Shift,
-        } as KeyboardEvent);
-        expect(service['shiftPressed']).toBeTrue();
-
-        service.onKeyDown({
-            key: KeyboardButtons.Escape,
-        } as KeyboardEvent);
-        expect(service['started']).toBeFalse();
-
-        service['pathData'].push({ x: 0, y: 0 }, service.mouseDownCoord);
-        const event = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Backspace });
-        service.onKeyDown(event);
-        expect(event.preventDefault).toHaveBeenCalled();
-
-        service.onKeyDown(event);
-        expect(event.preventDefault).toHaveBeenCalled();
-    });
-
     it('onKeyup should update shift state', () => {
         service['shiftPressed'] = true;
         service.mouseDownCoord = { x: 20, y: 20 };
