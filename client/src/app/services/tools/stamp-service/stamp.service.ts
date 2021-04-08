@@ -41,7 +41,6 @@ export class StampService extends Tool {
     }
 
     onMouseMove(event: MouseEvent): void {
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawPreview(this.rotationAngle, this.scalingFactor, this.getPositionFromMouse(event), this.selectedStamp);
     }
 
@@ -53,37 +52,37 @@ export class StampService extends Tool {
             this.rotationAngle += event.deltaY > 0 ? BIG_ANGLE_CHANGE : -BIG_ANGLE_CHANGE;
         }
         console.log(this.rotationAngle);
+        this.drawPreview(this.rotationAngle, this.scalingFactor, this.getPositionFromMouse(event), this.selectedStamp);
     }
 
     private drawPreview(rotationAngle: number, scalingFactor: number, position: Vec2, stamp: Stamp): void {
         const stampImage = new Image(STAMP_SIZE, STAMP_SIZE);
         stampImage.src = BASE_STAMP_IMAGE_PATH + stamp + STAMP_IMAGE_EXTENSION;
-        console.log(BASE_STAMP_IMAGE_PATH + stamp + STAMP_IMAGE_EXTENSION);
-        /*
-        const stampCenter: Vec2 = { x: position.x - STAMP_SIZE / 2, y: position.y - STAMP_SIZE / 2 };
 
-        const centerAngle = Math.atan(stampCenter.y / stampCenter.x);
-        const centerDistanceFromOrigin = Math.sqrt(stampCenter.x * stampCenter.x + stampCenter.y * stampCenter.y);
-
-        const correctedAngle = -centerAngle + this.degToRad(rotationAngle);
+        const stampCenterAngleFromOrigin = Math.atan(position.y / position.x);
+        const correctedAngle = stampCenterAngleFromOrigin - this.degToRad(rotationAngle);
+        const distanceFromOrigin = Math.sqrt(position.y * position.y + position.x * position.x);
         this.drawingService.previewCtx.save();
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawingService.previewCtx.rotate(this.degToRad(rotationAngle));
-        console.log(centerDistanceFromOrigin);
         this.drawingService.previewCtx.drawImage(
             stampImage,
-            centerDistanceFromOrigin * Math.cos(correctedAngle),
-            centerDistanceFromOrigin * Math.sin(correctedAngle),
+            distanceFromOrigin * Math.cos(correctedAngle) - (STAMP_SIZE / 2) * scalingFactor,
+            distanceFromOrigin * Math.sin(correctedAngle) - (STAMP_SIZE / 2) * scalingFactor,
+            scalingFactor * STAMP_SIZE,
+            scalingFactor * STAMP_SIZE,
         );
         this.drawingService.previewCtx.restore();
-        */
-        const stampCenter: Vec2 = { x: position.x - (scalingFactor * STAMP_SIZE) / 2, y: position.y - (scalingFactor * STAMP_SIZE) / 2 };
-        console.log(stampCenter);
-        this.degToRad(0);
-        this.drawingService.previewCtx.drawImage(stampImage, stampCenter.x, stampCenter.y, scalingFactor * STAMP_SIZE, scalingFactor * STAMP_SIZE);
     }
 
     private drawOnBase(rotationAngle: number, scalingFactor: number, position: Vec2, stamp: Stamp): void {
         this.drawPreview(rotationAngle, scalingFactor, position, stamp);
+        createImageBitmap(
+            this.drawingService.previewCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height),
+        ).then((imgBitmap) => {
+            this.drawingService.baseCtx.drawImage(imgBitmap, 0, 0);
+        });
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 
     private degToRad(angle: number): number {
