@@ -3,8 +3,9 @@ import { Vec2 } from '@app/classes/vec2';
 import { EllipseService } from '@app/services/tools/ellipse-service/ellipse.service';
 import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
+import { ToolCommand } from '@app/utils/interfaces/tool-command';
 
-export class ShapeCommand {
+export class ShapeCommand implements ToolCommand {
     readonly tool: Tool;
     readonly primaryColor: string;
     readonly secondaryColor: string;
