@@ -8,6 +8,7 @@ export enum ToolsNames {
     Pipette = 'Pipette',
     SelectBox = 'SelectBox',
     SelectEllipse = 'SelectEllipse',
+    SelectPolygon = 'SelectPolygon',
     Polygon = 'Polygon',
     PaintBucket = 'PaintBucket',
     Stamp = 'Stamp',

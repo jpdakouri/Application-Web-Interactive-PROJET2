@@ -20,6 +20,7 @@ export const QUARTER_CIRCLE_RAD = Math.PI / 2;
 export const SHIFT_ANGLE_45 = QUARTER_CIRCLE_RAD / 2;
 export const SHIFT_ANGLE_HALF_45 = SHIFT_ANGLE_45 / 2;
 export const DEFAULT_DOT_RADIUS = 5;
+export const MIN_ARRAY_LENGTH = 3;
 
 /**********************/
 /****ERASER CONSTANTS****/
@@ -30,6 +31,7 @@ export const MIN_ERASER_THICKNESS = 5;
 /***SELECTOR CONSTANTS**/
 /***********************/
 export const PIXELS_ARROW_STEPS = 3;
+
 /**********************/
 /****AEROSOL CONSTANTS****/
 /**********************/

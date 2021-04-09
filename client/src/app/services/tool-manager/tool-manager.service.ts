@@ -10,6 +10,7 @@ import { PipetteService } from '@app/services/tools/pipette-service/pipette.serv
 import { PolygonService } from '@app/services/tools/polygon-service/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-ellipse-service/selection-ellipse.service';
+import { SelectionPolygonalLassoService } from '@app/services/tools/selection-polygonal-lasso/selection-polygonal-lasso.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
 import { StampService } from '@app/services/tools/stamp-service/stamp.service';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
@@ -41,6 +42,7 @@ export class ToolManagerService {
         polygonService: PolygonService,
         paintBucket: PaintBucketService,
         stampService: StampService,
+        selectPolygonalLassoService: SelectionPolygonalLassoService,
     ) {
         this.toolBox = {
             Pencil: pencilService,
@@ -52,6 +54,7 @@ export class ToolManagerService {
             Pipette: pipetteService,
             SelectBox: selectBoxService,
             SelectEllipse: selectEllipseService,
+            SelectPolygon: selectPolygonalLassoService,
             Polygon: polygonService,
             PaintBucket: paintBucket,
             Stamp: stampService,

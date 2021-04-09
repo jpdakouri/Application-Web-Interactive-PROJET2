@@ -1,8 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatSliderChange } from '@angular/material/slider';
-import { GridService } from '@app/services/grid-service/grid.service';
+import { GridService } from '@app/services/grid/grid.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import {
     MAX_DROPLET_DIAMETER,
@@ -22,7 +22,6 @@ import { ToolsNames } from '@app/utils/enums/tools-names';
     styleUrls: ['./tool-attribute.component.scss'],
 })
 export class ToolAttributeComponent {
-    @Input() showGrid: boolean = false;
     readonly MIN_FREQUENCY: number = MIN_FREQUENCY;
     readonly MIN_JET_DIAMETER: number = MIN_JET_DIAMETER;
     readonly MIN_DROPLET_DIAMETER: number = MIN_DROPLET_DIAMETER;
@@ -168,7 +167,7 @@ export class ToolAttributeComponent {
     }
 
     onGridSizeChange(event: MatSliderChange): void {
-        if (this.showGrid) this.gridService.newGrid(event.value as number);
+        if (this.gridService.showGrid) this.gridService.newGrid(event.value as number);
         else this.gridService.clear();
     }
 
