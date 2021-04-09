@@ -48,6 +48,20 @@ export class DrawingService {
         }
     }
 
+    restoreDrawing(): void {
+        const canvasInfo = localStorage.getItem('canvasInfo');
+        const info = JSON.parse(canvasInfo as string);
+        const dataURL = info[0];
+        const image = new Image();
+        if (dataURL) {
+            image.src = dataURL;
+            image.onload = () => {
+                this.baseCtx.drawImage(image, 0, 0);
+                this.previewCtx.drawImage(image, 0, 0);
+            };
+        }
+    }
+
     clearCanvas(context: CanvasRenderingContext2D): void {
         context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }

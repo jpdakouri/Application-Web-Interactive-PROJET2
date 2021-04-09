@@ -135,7 +135,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     resizeCanvas(): void {
         this.canvasSize = this.canvasResizerService.calculateNewCanvasSize(this.canvasSize);
-        this.drawingService.restoreCanvas();
+        this.drawingService.restoreDrawing();
         this.emitEditorMinWidth();
     }
 
