@@ -12,9 +12,9 @@ export class ToolManagerServiceMock {
     currentTool: ToolStub = new ToolStub({} as DrawingService, {} as CurrentColorService);
     textService: TextService = new TextService({} as CurrentColorService, {} as DrawingService);
 
-  isCurrentTool(): boolean {
-    return true;
-  }
+    isCurrentTool(): boolean {
+        return true;
+    }
 
     getCurrentToolInstance(): Tool {
         return this.currentTool;
@@ -68,7 +68,7 @@ export class ToolManagerServiceMock {
     }
 
     getCurrentFontSize(): number {
-      return 1;
+        return 1;
     }
 
     setStampScalingFactor(): void {
