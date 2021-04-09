@@ -41,6 +41,7 @@ export class StampService extends Tool {
     }
 
     onMouseMove(event: MouseEvent): void {
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawPreview(this.rotationAngle, this.scalingFactor, this.getPositionFromMouse(event), this.selectedStamp);
     }
 
@@ -51,7 +52,6 @@ export class StampService extends Tool {
         } else {
             this.rotationAngle += event.deltaY > 0 ? BIG_ANGLE_CHANGE : -BIG_ANGLE_CHANGE;
         }
-        console.log(this.rotationAngle);
         this.drawPreview(this.rotationAngle, this.scalingFactor, this.getPositionFromMouse(event), this.selectedStamp);
     }
 
@@ -67,7 +67,6 @@ export class StampService extends Tool {
         const correctedAngle = stampCenterAngleFromOrigin - this.degToRad(rotationAngle);
         const distanceFromOrigin = Math.sqrt(position.y * position.y + position.x * position.x);
         this.drawingService.previewCtx.save();
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawingService.previewCtx.rotate(this.degToRad(rotationAngle));
         this.drawingService.previewCtx.drawImage(
             stampImage,
