@@ -10,8 +10,11 @@ import { PipetteService } from '@app/services/tools/pipette-service/pipette.serv
 import { PolygonService } from '@app/services/tools/polygon-service/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-ellipse-service/selection-ellipse.service';
+import { SelectionPolygonalLassoService } from '@app/services/tools/selection-polygonal-lasso/selection-polygonal-lasso.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
+import { StampService } from '@app/services/tools/stamp-service/stamp.service';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
+import { Stamp } from '@app/utils/enums/stamp';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 import { CurrentAttributes } from '@app/utils/types/current-attributes';
 import { ToolBox } from '@app/utils/types/tool-box';
@@ -38,6 +41,8 @@ export class ToolManagerService {
         selectEllipseService: SelectionEllipseService,
         polygonService: PolygonService,
         paintBucket: PaintBucketService,
+        stampService: StampService,
+        selectPolygonalLassoService: SelectionPolygonalLassoService,
     ) {
         this.toolBox = {
             Pencil: pencilService,
@@ -49,8 +54,10 @@ export class ToolManagerService {
             Pipette: pipetteService,
             SelectBox: selectBoxService,
             SelectEllipse: selectEllipseService,
+            SelectPolygon: selectPolygonalLassoService,
             Polygon: polygonService,
             PaintBucket: paintBucket,
+            Stamp: stampService,
         };
         this.currentAttributes = {
             LineThickness: 1,
@@ -168,5 +175,45 @@ export class ToolManagerService {
 
     emitToolChange(toolName: ToolsNames): void {
         this.toolChangeEmitter.emit(toolName);
+    }
+
+    getStampScalingFactor(): number {
+        const stamp = this.toolBox.Stamp as StampService;
+        return stamp.scalingFactor;
+    }
+
+    getSelectedStamp(): Stamp {
+        const stamp = this.toolBox.Stamp as StampService;
+        return stamp.selectedStamp;
+    }
+
+    setStampScalingFactor(factor?: number): void {
+        if (factor != undefined) {
+            const stamp = this.toolBox.Stamp as StampService;
+            stamp.scalingFactor = factor;
+        }
+    }
+
+    setSelectedStamp(stampName: string): void {
+        if (stampName != undefined) {
+            const stampTool = this.toolBox.Stamp as StampService;
+            switch (stampName) {
+                case Stamp.House:
+                    stampTool.selectedStamp = Stamp.House;
+                    break;
+                case Stamp.Letter:
+                    stampTool.selectedStamp = Stamp.Letter;
+                    break;
+                case Stamp.Star:
+                    stampTool.selectedStamp = Stamp.Star;
+                    break;
+                case Stamp.Hashtag:
+                    stampTool.selectedStamp = Stamp.Hashtag;
+                    break;
+                default:
+                    stampTool.selectedStamp = Stamp.Smile;
+                    break;
+            }
+        }
     }
 }

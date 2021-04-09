@@ -48,6 +48,8 @@ export abstract class Tool {
     onDblClick(): void {}
     onMouseLeave(event: MouseEvent): void {}
 
+    onMouseWheelScroll(event: MouseEvent): void {}
+
     onKeyDown(event: KeyboardEvent): void {}
 
     onKeyUp(event: KeyboardEvent): void {}

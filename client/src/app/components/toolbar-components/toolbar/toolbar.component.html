@@ -91,6 +91,7 @@
             <mat-icon>crop</mat-icon>
         </button>
     </div>
+
     <div class="flex-item">
         <button
             aria-label='Selection ellipse "s"'
@@ -100,6 +101,18 @@
             mat-mini-fab
         >
             <mat-icon>all_out</mat-icon>
+        </button>
+    </div>
+
+    <div class="flex-item">
+        <button
+            aria-label='Selection polygonale "v"'
+            title='Selection polygonale "v"'
+            [color]="isSelected(this.toolsNames.SelectPolygon) ? 'accent' : 'primary'"
+            (click)="setCurrentTool(this.toolsNames.SelectPolygon)"
+            mat-mini-fab
+        >
+            <mat-icon>lasso</mat-icon>
         </button>
     </div>
 
@@ -129,6 +142,9 @@
         >
             <mat-icon>panorama_fish_eye</mat-icon>
         </button>
+    </div>
+    <div class="flex-item">
+        <button (click)="setCurrentTool(this.toolsNames.Stamp)">Étampe</button>
     </div>
     <div class="flex-item">
         <button
