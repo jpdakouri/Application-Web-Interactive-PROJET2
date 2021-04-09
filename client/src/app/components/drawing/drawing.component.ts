@@ -9,6 +9,7 @@ import { SaveDrawingService } from '@app/services/save-drawing/save-drawing.serv
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-ellipse-service/selection-ellipse.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
+import { TextService } from '@app/services/tools/text/text.service';
 import { MIN_ERASER_THICKNESS } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { Status } from '@app/utils/enums/canvas-resizer-status';
@@ -26,6 +27,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     @ViewChild('gridCanvas', { static: false }) gridCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('canvasResizerPreview', { static: false }) canvasResizerPreview: ElementRef<HTMLDivElement>;
     @ViewChild('selectedArea', { static: false }) selectedArea: ElementRef<HTMLCanvasElement>;
+    @ViewChild('textArea', { static: false }) textArea: ElementRef<HTMLTextAreaElement>;
     @Output() editorMinWidthEmitter: EventEmitter<number> = new EventEmitter<number>();
 
     private baseCtx: CanvasRenderingContext2D;
@@ -54,22 +56,25 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     };
     selectionEllipseService: SelectionEllipseService;
     selectionRectangleService: SelectionRectangleService;
+    textService: TextService;
 
     constructor(
         private drawingService: DrawingService,
-        toolManagerService: ToolManagerService,
-        canvasResizerService: CanvasResizerService,
         private undoRedo: UndoRedoService,
-        selectionEllipseService: SelectionEllipseService,
-        selectionRectangleService: SelectionRectangleService,
         private saveDrawingService: SaveDrawingService,
         public saveService: SaveDrawingService,
         public gridService: GridService,
+        toolManagerService: ToolManagerService,
+        canvasResizerService: CanvasResizerService,
+        selectionEllipseService: SelectionEllipseService,
+        selectionRectangleService: SelectionRectangleService,
+        textService: TextService,
     ) {
         this.toolManagerService = toolManagerService;
         this.canvasResizerService = canvasResizerService;
         this.selectionEllipseService = selectionEllipseService;
         this.selectionRectangleService = selectionRectangleService;
+        this.textService = textService;
     }
 
     ngOnInit(): void {

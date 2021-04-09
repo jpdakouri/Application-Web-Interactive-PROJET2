@@ -31,7 +31,6 @@ export const MIN_ERASER_THICKNESS = 5;
 /***SELECTOR CONSTANTS**/
 /***********************/
 export const PIXELS_ARROW_STEPS = 3;
-
 /**********************/
 /****AEROSOL CONSTANTS****/
 /**********************/
@@ -69,6 +68,7 @@ export const LINE_DASH = 5;
 export const PREVIEW_SIZE = 15;
 export const PREVIEW_HALF_SIZE = (PREVIEW_SIZE - 1) / 2; // 7
 export const OUT_OF_BOUND_COLOR_RGBA = 'rgba(100,100,100,1)';
+
 /***********************/
 /***STAMP CONSTANTS**/
 /***********************/
@@ -79,6 +79,18 @@ export const BIG_ANGLE_CHANGE = 15;
 export const STAMP_IMAGE_EXTENSION = '.png';
 export const HALF_CIRCLE_DEG = 180;
 export const DEG_TO_RAD_RATIO = Math.PI / HALF_CIRCLE_DEG;
+
+/**********************/
+/****TEXT CONSTANTS****/
+/**********************/
+export const MIN_FONT_SIZE = 5;
+export const MAX_FONT_SIZE = 150;
+export const DEFAULT_FONT_SIZE = 30;
+export const FONT_HEIGHT_FACTOR = 0.025;
+
+export const DEFAULT_TEXT_BOX_WIDTH = 800;
+export const DEFAULT_TEXT_BOX_HEIGHT = 200;
+
 /***************************/
 /* ERROR MESSAGE CONSTANT***/
 /***************************/

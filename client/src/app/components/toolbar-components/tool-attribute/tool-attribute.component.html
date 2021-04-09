@@ -97,6 +97,72 @@
         <mat-divider></mat-divider>
     </div>
 
+    <div class="text-attributes" style="margin: 15px 0" *ngIf="showTextAttributes()">
+        <div class="font-selector" style="text-align: center">
+            <mat-form-field appearance="fill" style="width: 90%">
+                <mat-label>Police</mat-label>
+                <mat-select [(value)]="textService.fontFace" (selectionChange)="onFontFaceChange(textService.fontFace)">
+                    <mat-option *ngFor="let fontFace of textFonts" [value]="fontFace" [style.font-family]="fontFace" style="font-size: large">
+                        {{ fontFace }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="text-font-size">
+            <h3 class="attribute-title">Taille de la police : {{ getCurrentFontSize() }} px</h3>
+            <mat-slider
+                [value]="getCurrentFontSize()"
+                #flowSlider
+                color="primary"
+                [min]="2"
+                [max]="150"
+                step="1"
+                (input)="onFontSizeChange($event)"
+                (change)="onFontSizeChange($event)"
+            ></mat-slider>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="text-appearance">
+            <mat-button-toggle-group
+                id="fontStyleGroup"
+                name="fontStyle"
+                aria-label="Font Style"
+                multiple
+                #fontStyleGroup="matButtonToggleGroup"
+                [value]="textService.textStyles"
+                (change)="onTextStyleChange(fontStyleGroup.value)"
+            >
+                <mat-button-toggle value="bold"><mat-icon>format_bold</mat-icon></mat-button-toggle>
+                <mat-button-toggle value="italic"><mat-icon>format_italic</mat-icon></mat-button-toggle>
+            </mat-button-toggle-group>
+
+            <div class="text-alignment">
+                <mat-button-toggle-group
+                    #textAlignmentGroup="matButtonToggleGroup"
+                    [value]="textService.textAlign"
+                    (change)="onTextAlignChange(textAlignmentGroup.value)"
+                >
+                    <mat-button-toggle value="start" aria-label="Text align left">
+                        <mat-icon>format_align_left</mat-icon>
+                    </mat-button-toggle>
+                    <mat-button-toggle value="center" aria-label="Text align center">
+                        <mat-icon>format_align_center</mat-icon>
+                    </mat-button-toggle>
+                    <mat-button-toggle value="end" aria-label="Text align right">
+                        <mat-icon>format_align_right</mat-icon>
+                    </mat-button-toggle>
+                </mat-button-toggle-group>
+            </div>
+        </div>
+
+        <mat-divider></mat-divider>
+    </div>
+
     <div class="aerosol-attributes" *ngIf="showAerosolAttributes()">
         <div>
             <div class="aerosol-emission-flow">
