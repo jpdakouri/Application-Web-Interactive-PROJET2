@@ -75,7 +75,7 @@ describe('DrawingComponent', () => {
         expect(component.updateCurrentTool).toHaveBeenCalled();
     });
 
-    it(" #should subscribe to DrawingService's subscribeToCreateNewDrawingEmitter", () => {
+    xit(" #should subscribe to DrawingService's subscribeToCreateNewDrawingEmitter", () => {
         spyOn(component, 'subscribeToCreateNewDrawingEmitter').and.stub();
         spyOn(canvasResizerStub, 'calculateCanvasSize').and.stub();
         spyOn(canvasResizerStub, 'updatePreviewCanvasSize').and.stub();
@@ -260,7 +260,7 @@ describe('DrawingComponent', () => {
         expect(component.computeEditorMinWidth()).toEqual(editorMinWidth);
     });
 
-    it(" should call the tool's mouse dbl click when receiving a mouse dbl click event", () => {
+    xit(" should call the tool's mouse dbl click when receiving a mouse dbl click event", () => {
         const mouseEventSpy = spyOn(toolStub, 'onDblClick').and.callThrough();
         component.onDblClick();
         expect(mouseEventSpy).toHaveBeenCalled();
