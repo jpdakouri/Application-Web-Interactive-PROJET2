@@ -74,12 +74,18 @@ export class PaintBucketService extends Tool {
         this.baseCtx.putImageData(this.newCanvasImageData, 0, 0);
     }
 
+    // tslint:disable-next-line: cyclomatic-complexity
     visit(visited: number[][], bfsQueue: Vec2[], x: number, y: number): void {
         const rightColor = this.getRGBAFromCoord(x + 1, y);
+        if (this.isValidCoord(x + 1, y) && visited[x + 1][y] !== 1 && !this.isSimilarColor(rightColor)) {
+            console.log(rightColor, this.startColor);
+            console.log((this.bucketTolerance / 100) * MAX_PIXEL_VALUE);
+        }
         if (this.isValidCoord(x + 1, y) && visited[x + 1][y] !== 1 && this.isSimilarColor(rightColor)) {
             bfsQueue.push({ x: x + 1, y });
             visited[x + 1][y] = 1;
         }
+
         const leftColor = this.getRGBAFromCoord(x - 1, y);
         if (this.isValidCoord(x - 1, y) && visited[x - 1][y] !== 1 && this.isSimilarColor(leftColor)) {
             bfsQueue.push({ x: x - 1, y });
@@ -107,6 +113,10 @@ export class PaintBucketService extends Tool {
     isTransparent(color: Color): boolean {
         return color.A === 0;
     }
+    isHalf(color: Color): boolean {
+        const A = color.A === 128 || color.A === 127;
+        return A;
+    }
 
     getRGBAFromCoord(x: number, y: number): Color {
         const data = this.canvasImageData.data;
@@ -116,7 +126,7 @@ export class PaintBucketService extends Tool {
         const B = data[y * (width * ARRAY_OFFSET) + x * ARRAY_OFFSET + 2];
         const A = data[y * (width * ARRAY_OFFSET) + x * ARRAY_OFFSET + ALPHA];
         let color: Color = { R, G, B, A };
-        if (this.isTransparent(color)) {
+        if (this.isTransparent(color) || this.isHalf(color)) {
             color = { R: 255, G: 255, B: 255, A: 255 };
         }
         return color;
@@ -137,7 +147,7 @@ export class PaintBucketService extends Tool {
         this.startColor.G = startPixel[1];
         this.startColor.B = startPixel[2];
         this.startColor.A = startPixel[ALPHA];
-        if (this.isTransparent(this.startColor)) {
+        if (this.isTransparent(this.startColor) || this.isHalf(this.startColor)) {
             this.startColor = { R: 255, G: 255, B: 255, A: 255 };
         }
     }
@@ -159,6 +169,9 @@ export class PaintBucketService extends Tool {
         const G = Math.abs(colorA.G - colorB.G);
         const B = Math.abs(colorA.B - colorB.B);
         const A = Math.abs(colorA.A - colorB.A);
+        if (colorA.R === 0 && colorA.G === 0 && colorA.B === 0 && colorA.A < 255) {
+            return A < threshold + 50;
+        }
         return R < threshold && G < threshold && B < threshold && A < threshold;
     }
 }
