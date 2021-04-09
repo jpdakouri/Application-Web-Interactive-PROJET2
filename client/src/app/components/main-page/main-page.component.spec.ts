@@ -20,7 +20,7 @@ describe('MainPageComponent', () => {
     let drawingServiceSpy: SpyObj<DrawingService>;
 
     beforeEach(async(() => {
-        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['createNewDrawing']);
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['createNewDrawing', 'continueDrawing', 'isCanvasBlank']);
         indexServiceSpy = jasmine.createSpyObj('IndexService', ['basicGet', 'basicPost']);
         indexServiceSpy.basicGet.and.returnValue(of({ title: '', body: '' }));
         indexServiceSpy.basicPost.and.returnValue(of());

@@ -37,7 +37,6 @@ export class GridService {
 
     clear(): void {
         this.drawingService.clearCanvas(this.drawingService.gridCtx);
-        this.gridSize = this.minGridSize;
         this.gridOpacity = '1';
     }
 
