@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.service';
@@ -16,6 +17,8 @@ export class SelectionResizerService extends SelectionService {
     private mouseService: MouseHandlerService;
     private selectionMouseDown: boolean = false;
     imageData: ImageData;
+    private coords: Vec2;
+    private moveOffset: Vec2;
     constructor(
         mouseService: MouseHandlerService,
         drawingService: DrawingService,
@@ -26,10 +29,13 @@ export class SelectionResizerService extends SelectionService {
         super(drawingService, currentColorService, mousePositionHandler, undoRedo);
         this.status = SelectionStatus.OFF;
         this.mouseService = mouseService;
+        this.coords = { x: 0, y: 0 };
+        this.moveOffset = { x: 0, y: 0 };
     }
     onMouseDown(event: MouseEvent): void {
         this.mouseService.onMouseDown(this.mouseService.eventToCoordinate(event));
         this.selectionMouseDown = true;
+        this.mouseDownCoord = this.coords = this.getPositionFromMouse(event);
         // LIGNE SUIVANTE A CHANGER, JUSTE LA POUR REGLER UN PROBLEME DE COMPILATION !!!
         this.undoRedo = this.undoRedo;
     }
@@ -42,6 +48,12 @@ export class SelectionResizerService extends SelectionService {
     onMouseMove(event: MouseEvent): void {
         if (this.selectionMouseDown) {
             this.mouseService.onMouseMove(this.mouseService.eventToCoordinate(event));
+            const currentCoord = this.getPositionFromMouse(event);
+            this.offset.x = this.mouseDownCoord.x - currentCoord.x;
+            this.offset.y = this.mouseDownCoord.y - currentCoord.y;
+            this.moveOffset.x = this.coords.x - currentCoord.x;
+            this.moveOffset.y = this.coords.y - currentCoord.y;
+            this.coords = currentCoord;
             if (this.isResizing()) {
                 this.resizeSelection();
             }
@@ -62,15 +74,21 @@ export class SelectionResizerService extends SelectionService {
     }
 
     private resizeSelection(): void {
-        this.drawingService.selectedAreaCtx.canvas.width += 1;
+        this.drawingService.selectedAreaCtx.canvas.width = this.width + this.offset.x;
         const rapport = this.drawingService.selectedAreaCtx.canvas.width / this.width;
         this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
-        this.drawingService.selectedAreaCtx.scale(rapport, 1);
+        // this.drawingService.selectedAreaCtx.scale(rapport, 1);
         createImageBitmap(this.imageData).then((imgBitmap) => {
-            this.drawingService.selectedAreaCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
+            this.drawingService.selectedAreaCtx.drawImage(
+                imgBitmap,
+                0,
+                0,
+                this.drawingService.selectedAreaCtx.canvas.width,
+                this.drawingService.selectedAreaCtx.canvas.height,
+            );
         });
-        this.drawingService.selectedAreaCtx.setTransform(1, 0, 0, 1, 0, 0);
-        this.topLeftCorner.x -= 1;
+        // this.drawingService.selectedAreaCtx.setTransform(1, 0, 0, 1, 0, 0);
+        this.topLeftCorner.x = this.initialTopLeftCorner.x - this.moveOffset.x;
         this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x + 'px';
         // this.drawingService.selectedAreaCtx.putImageData(this.imageData, 0, 0, 0, 0, this.width, this.height);
         console.log(rapport);
@@ -79,6 +97,9 @@ export class SelectionResizerService extends SelectionService {
     private initialize(): void {
         this.width = this.drawingService.selectedAreaCtx.canvas.width;
         this.height = this.drawingService.selectedAreaCtx.canvas.height;
+        this.topLeftCorner.x = this.drawingService.selectedAreaCtx.canvas.offsetLeft;
+        this.topLeftCorner.y = this.drawingService.selectedAreaCtx.canvas.offsetTop;
+        this.initialTopLeftCorner = this.topLeftCorner;
         this.imageData = this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
     }
 
