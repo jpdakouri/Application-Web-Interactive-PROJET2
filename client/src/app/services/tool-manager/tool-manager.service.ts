@@ -11,6 +11,7 @@ import { PolygonService } from '@app/services/tools/polygon-service/polygon.serv
 import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-ellipse-service/selection-ellipse.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
+import { SelectionResizerService } from '@app/services/tools/selection-resizer-service/selection-resizer.service';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 import { CurrentAttributes } from '@app/utils/types/current-attributes';
@@ -38,6 +39,7 @@ export class ToolManagerService {
         selectEllipseService: SelectionEllipseService,
         polygonService: PolygonService,
         paintBucket: PaintBucketService,
+        selectionResizer: SelectionResizerService,
     ) {
         this.toolBox = {
             Pencil: pencilService,
@@ -51,6 +53,7 @@ export class ToolManagerService {
             SelectEllipse: selectEllipseService,
             Polygon: polygonService,
             PaintBucket: paintBucket,
+            SelectionResizer: selectionResizer,
         };
         this.currentAttributes = {
             LineThickness: 1,

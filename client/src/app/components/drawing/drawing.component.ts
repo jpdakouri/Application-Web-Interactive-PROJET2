@@ -252,6 +252,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     }
 
     onMiddleLeftBoxClick(): void {
+        this.toolManagerService.emitToolChange(this.toolsNames.SelectionResizer);
         this.selectionResizerService.onMiddleLeftBoxClick();
     }
 

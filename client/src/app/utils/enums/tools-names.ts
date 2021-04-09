@@ -10,4 +10,5 @@ export enum ToolsNames {
     SelectEllipse = 'SelectEllipse',
     Polygon = 'Polygon',
     PaintBucket = 'PaintBucket',
+    SelectionResizer = 'SelectionResizer',
 }
