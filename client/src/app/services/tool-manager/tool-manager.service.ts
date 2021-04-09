@@ -178,46 +178,45 @@ export class ToolManagerService {
         return this.currentAttributes.numberOfSides;
     }
 
-
-  getStampScalingFactor(): number {
-    const stamp = this.toolBox.Stamp as StampService;
-    return stamp.scalingFactor;
-  }
-
-  getSelectedStamp(): Stamp {
-    const stamp = this.toolBox.Stamp as StampService;
-    return stamp.selectedStamp;
-  }
-
-  setStampScalingFactor(factor?: number): void {
-    if (factor != undefined) {
-      const stamp = this.toolBox.Stamp as StampService;
-      stamp.scalingFactor = factor;
+    getStampScalingFactor(): number {
+        const stamp = this.toolBox.Stamp as StampService;
+        return stamp.scalingFactor;
     }
-  }
 
-  setSelectedStamp(stampName: string): void {
-    if (stampName != undefined) {
-      const stampTool = this.toolBox.Stamp as StampService;
-      switch (stampName) {
-        case Stamp.House:
-          stampTool.selectedStamp = Stamp.House;
-          break;
-        case Stamp.Letter:
-          stampTool.selectedStamp = Stamp.Letter;
-          break;
-        case Stamp.Star:
-          stampTool.selectedStamp = Stamp.Star;
-          break;
-        case Stamp.Hashtag:
-          stampTool.selectedStamp = Stamp.Hashtag;
-          break;
-        default:
-          stampTool.selectedStamp = Stamp.Smile;
-          break;
-      }
+    getSelectedStamp(): Stamp {
+        const stamp = this.toolBox.Stamp as StampService;
+        return stamp.selectedStamp;
     }
-  }
+
+    setStampScalingFactor(factor?: number): void {
+        if (factor != undefined) {
+            const stamp = this.toolBox.Stamp as StampService;
+            stamp.scalingFactor = factor;
+        }
+    }
+
+    setSelectedStamp(stampName: string): void {
+        if (stampName != undefined) {
+            const stampTool = this.toolBox.Stamp as StampService;
+            switch (stampName) {
+                case Stamp.House:
+                    stampTool.selectedStamp = Stamp.House;
+                    break;
+                case Stamp.Letter:
+                    stampTool.selectedStamp = Stamp.Letter;
+                    break;
+                case Stamp.Star:
+                    stampTool.selectedStamp = Stamp.Star;
+                    break;
+                case Stamp.Hashtag:
+                    stampTool.selectedStamp = Stamp.Hashtag;
+                    break;
+                default:
+                    stampTool.selectedStamp = Stamp.Smile;
+                    break;
+            }
+        }
+    }
 
     getCurrentFontSize(): number | undefined {
         return this.currentAttributes.FontSize;
@@ -244,5 +243,4 @@ export class ToolManagerService {
         }
         this.toolChangeEmitter.emit(toolName);
     }
-
 }
