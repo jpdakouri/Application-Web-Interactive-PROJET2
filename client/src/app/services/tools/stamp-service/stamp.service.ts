@@ -52,6 +52,7 @@ export class StampService extends Tool {
         } else {
             this.rotationAngle += event.deltaY > 0 ? BIG_ANGLE_CHANGE : -BIG_ANGLE_CHANGE;
         }
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawPreview(this.rotationAngle, this.scalingFactor, this.getPositionFromMouse(event), this.selectedStamp);
     }
 
