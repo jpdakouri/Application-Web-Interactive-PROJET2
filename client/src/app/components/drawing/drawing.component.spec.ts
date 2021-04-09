@@ -313,4 +313,13 @@ describe('DrawingComponent', () => {
         expect(component.getTopLeftCornerRectangle().x).toEqual(2);
         expect(component.getTopLeftCornerRectangle().y).toEqual(2);
     });
+
+    it('onMouseWheelScroll delegates to the current tool', () => {
+        const testTool = TestBed.inject(PencilService);
+        component.currentTool = testTool;
+        spyOn(testTool, 'onMouseWheelScroll');
+        const event = new WheelEvent('mousewheel');
+        component.onMouseWheelScroll(event);
+        expect(testTool.onMouseWheelScroll).toHaveBeenCalled();
+    });
 });
