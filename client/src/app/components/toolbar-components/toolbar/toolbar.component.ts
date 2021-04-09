@@ -3,6 +3,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { ToolsNames } from '@app/utils/enums/tools-names';
+
 @Component({
     selector: 'app-toolbar',
     templateUrl: './toolbar.component.html',
@@ -36,7 +37,7 @@ export class ToolbarComponent {
     }
 
     onCreateNewDrawing(): void {
-        if (this.drawingService.createNewDrawing()) this.undoRedo.saveInitialState();
+        if (this.drawingService.createNewDrawing(true)) this.undoRedo.saveInitialState();
     }
 
     onExport(): void {

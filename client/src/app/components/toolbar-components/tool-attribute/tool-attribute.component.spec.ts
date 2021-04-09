@@ -18,6 +18,7 @@ import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { ToolAttributeComponent } from './tool-attribute.component';
 
 import SpyObj = jasmine.SpyObj;
+import { MatOptionModule } from '@angular/material/core';
 
 describe('ToolAttributeBarComponent', () => {
     let component: ToolAttributeComponent;
@@ -64,6 +65,7 @@ describe('ToolAttributeBarComponent', () => {
                 MatCheckboxModule,
                 FormsModule,
                 MatIconModule,
+                MatOptionModule,
             ],
         }).compileComponents();
     }));
@@ -232,11 +234,11 @@ describe('ToolAttributeBarComponent', () => {
     it('onGridSizeChange should call newGrid if showGrid is true', () => {
         spyOn(component.gridService, 'newGrid').and.stub();
         spyOn(component.gridService, 'clear').and.stub();
-        component.showGrid = true;
+        component.gridService.showGrid = true;
         component.onGridSizeChange({} as MatSliderChange);
         expect(component.gridService.newGrid).toHaveBeenCalled();
 
-        component.showGrid = false;
+        component.gridService.showGrid = false;
         component.onGridSizeChange({} as MatSliderChange);
         expect(component.gridService.clear).toHaveBeenCalled();
     });

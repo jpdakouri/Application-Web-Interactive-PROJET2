@@ -111,11 +111,7 @@ export class SelectionEllipseService extends SelectionService {
         ctx.closePath();
     }
 
-    private clipArea(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
-        ctx.save();
-        this.drawEllipse(ctx, finalGrid);
-        ctx.clip('evenodd');
-    }
+    // private clipArea(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {}
 
     private selectEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         this.initialTopLeftCorner = { ...this.topLeftCorner };
@@ -125,7 +121,9 @@ export class SelectionEllipseService extends SelectionService {
         this.replaceEmptyPixels(imageData);
         createImageBitmap(imageData).then((imgBitmap) => {
             ctx.setLineDash([]);
-            this.clipArea(ctx, finalGrid);
+            ctx.save();
+            this.drawEllipse(ctx, finalGrid);
+            ctx.clip('evenodd');
             this.drawingService.selectedAreaCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
             ctx.restore();
         });

@@ -20,6 +20,7 @@ export const QUARTER_CIRCLE_RAD = Math.PI / 2;
 export const SHIFT_ANGLE_45 = QUARTER_CIRCLE_RAD / 2;
 export const SHIFT_ANGLE_HALF_45 = SHIFT_ANGLE_45 / 2;
 export const DEFAULT_DOT_RADIUS = 5;
+export const MIN_ARRAY_LENGTH = 3;
 
 /**********************/
 /****ERASER CONSTANTS****/
@@ -67,6 +68,29 @@ export const LINE_DASH = 5;
 export const PREVIEW_SIZE = 15;
 export const PREVIEW_HALF_SIZE = (PREVIEW_SIZE - 1) / 2; // 7
 export const OUT_OF_BOUND_COLOR_RGBA = 'rgba(100,100,100,1)';
+
+/***********************/
+/***STAMP CONSTANTS**/
+/***********************/
+export const STAMP_SIZE = 100;
+export const BASE_STAMP_IMAGE_PATH = '../../assets/stamps/';
+export const SMALL_ANGLE_CHANGE = 1;
+export const BIG_ANGLE_CHANGE = 15;
+export const STAMP_IMAGE_EXTENSION = '.png';
+export const HALF_CIRCLE_DEG = 180;
+export const DEG_TO_RAD_RATIO = Math.PI / HALF_CIRCLE_DEG;
+
+/**********************/
+/****TEXT CONSTANTS****/
+/**********************/
+export const MIN_FONT_SIZE = 5;
+export const MAX_FONT_SIZE = 150;
+export const DEFAULT_FONT_SIZE = 30;
+export const FONT_HEIGHT_FACTOR = 0.025;
+
+export const DEFAULT_TEXT_BOX_WIDTH = 800;
+export const DEFAULT_TEXT_BOX_HEIGHT = 200;
+
 /***************************/
 /* ERROR MESSAGE CONSTANT***/
 /***************************/
