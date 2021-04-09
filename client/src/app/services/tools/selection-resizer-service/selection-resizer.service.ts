@@ -15,6 +15,7 @@ export class SelectionResizerService extends SelectionService {
     status: SelectionStatus;
     private mouseService: MouseHandlerService;
     private selectionMouseDown: boolean = false;
+    imageData: ImageData;
     constructor(
         mouseService: MouseHandlerService,
         drawingService: DrawingService,
@@ -35,14 +36,12 @@ export class SelectionResizerService extends SelectionService {
 
     onMouseUp(event: MouseEvent): void {
         this.mouseService.onMouseUp(this.mouseService.eventToCoordinate(event));
+        this.selectionMouseDown = false;
     }
 
     onMouseMove(event: MouseEvent): void {
         if (this.selectionMouseDown) {
             this.mouseService.onMouseMove(this.mouseService.eventToCoordinate(event));
-            this.dragActive = false;
-            console.log(this.dragActive, 'dans le resize');
-            console.log('on bouge');
             if (this.isResizing()) {
                 this.resizeSelection();
             }
@@ -59,11 +58,28 @@ export class SelectionResizerService extends SelectionService {
 
     onMiddleLeftBoxClick(): void {
         this.setStatus(SelectionStatus.MIDDLE_LEFT_BOX);
-        console.log(this.status !== SelectionStatus.OFF);
+        this.initialize();
     }
 
     private resizeSelection(): void {
-        console.log('Ca marche !');
+        this.drawingService.selectedAreaCtx.canvas.width += 1;
+        const rapport = this.drawingService.selectedAreaCtx.canvas.width / this.width;
+        this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
+        this.drawingService.selectedAreaCtx.scale(rapport, 1);
+        createImageBitmap(this.imageData).then((imgBitmap) => {
+            this.drawingService.selectedAreaCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
+        });
+        this.drawingService.selectedAreaCtx.setTransform(1, 0, 0, 1, 0, 0);
+        this.topLeftCorner.x -= 1;
+        this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x + 'px';
+        // this.drawingService.selectedAreaCtx.putImageData(this.imageData, 0, 0, 0, 0, this.width, this.height);
+        console.log(rapport);
+    }
+
+    private initialize(): void {
+        this.width = this.drawingService.selectedAreaCtx.canvas.width;
+        this.height = this.drawingService.selectedAreaCtx.canvas.height;
+        this.imageData = this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
     }
 
     updatePreview(): void {
