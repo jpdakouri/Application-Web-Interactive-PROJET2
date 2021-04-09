@@ -11,4 +11,5 @@ export enum ToolsNames {
     SelectPolygon = 'SelectPolygon',
     Polygon = 'Polygon',
     PaintBucket = 'PaintBucket',
+    Stamp = 'Stamp',
 }

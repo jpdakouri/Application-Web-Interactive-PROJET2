@@ -218,6 +218,11 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.drawingService.saveCanvas();
     }
 
+    @HostListener('mousewheel', ['$event'])
+    onMouseWheelScroll(event: WheelEvent): void {
+        this.currentTool.onMouseWheelScroll(event);
+    }
+
     @HostListener('keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
         this.currentTool.onKeyDown(event);

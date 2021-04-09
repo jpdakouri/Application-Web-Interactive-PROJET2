@@ -13,6 +13,7 @@ import {
     MIN_JET_DIAMETER,
 } from '@app/services/tools/tools-constants';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
+import { Stamp } from '@app/utils/enums/stamp';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 
 @Component({
@@ -82,6 +83,10 @@ export class ToolAttributeComponent {
 
     showPolygonAttributes(): boolean {
         return this.toolManagerService.isCurrentTool(ToolsNames.Polygon);
+    }
+
+    showStampAttributes(): boolean {
+        return this.toolManagerService.isCurrentTool(ToolsNames.Stamp);
     }
 
     showPipettePreview(): boolean {
@@ -168,5 +173,21 @@ export class ToolAttributeComponent {
 
     onGridOpacityChange(event: MatSliderChange): void {
         this.gridService.changeOpacity(event.value);
+    }
+
+    getStampScalingFactor(): number {
+        return this.toolManagerService.getStampScalingFactor();
+    }
+
+    getSelectedStamp(): Stamp {
+        return this.toolManagerService.getSelectedStamp();
+    }
+
+    onStampScalingFactorChange(event: MatSliderChange): void {
+        this.toolManagerService.setStampScalingFactor(event.value || undefined);
+    }
+
+    onSelectedStampChange(stampName: string): void {
+        this.toolManagerService.setSelectedStamp(stampName);
     }
 }
