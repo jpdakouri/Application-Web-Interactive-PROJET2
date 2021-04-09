@@ -1,8 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatSliderChange } from '@angular/material/slider';
-import { GridService } from '@app/services/grid-service/grid.service';
+import { GridService } from '@app/services/grid/grid.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { TextService } from '@app/services/tools/text/text.service';
 import {
@@ -16,6 +16,7 @@ import {
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { TextAlign } from '@app/utils/enums/text-align.enum';
 import { TextFont } from '@app/utils/enums/text-font.enum';
+import { Stamp } from '@app/utils/enums/stamp';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 
 @Component({
@@ -24,7 +25,6 @@ import { ToolsNames } from '@app/utils/enums/tools-names';
     styleUrls: ['./tool-attribute.component.scss'],
 })
 export class ToolAttributeComponent {
-    @Input() showGrid: boolean = false;
     readonly MIN_FREQUENCY: number = MIN_FREQUENCY;
     readonly MIN_JET_DIAMETER: number = MIN_JET_DIAMETER;
     readonly MIN_DROPLET_DIAMETER: number = MIN_DROPLET_DIAMETER;
@@ -65,6 +65,10 @@ export class ToolAttributeComponent {
         return this.toolManagerService.isCurrentTool(ToolsNames.Line);
     }
 
+    showBucketTolerance(): boolean {
+        return this.toolManagerService.isCurrentTool(ToolsNames.PaintBucket);
+    }
+
     showShapeStyle(): boolean {
         return (
             this.toolManagerService.isCurrentTool(ToolsNames.Ellipse) ||
@@ -85,6 +89,10 @@ export class ToolAttributeComponent {
         return this.toolManagerService.isCurrentTool(ToolsNames.Polygon);
     }
 
+    showStampAttributes(): boolean {
+        return this.toolManagerService.isCurrentTool(ToolsNames.Stamp);
+    }
+
     showPipettePreview(): boolean {
         return this.toolManagerService.isCurrentTool(ToolsNames.Pipette);
     }
@@ -99,6 +107,10 @@ export class ToolAttributeComponent {
 
     getCurrentLineThickness(): number | undefined {
         return this.toolManagerService.getCurrentLineThickness();
+    }
+
+    getCurrentTolerance(): number | undefined {
+        return this.toolManagerService.getCurrentTolerance();
     }
 
     getCurrentDotRadius(): number | undefined {
@@ -133,6 +145,14 @@ export class ToolAttributeComponent {
         return Object.values(TextFont);
     }
 
+    getStampScalingFactor(): number {
+        return this.toolManagerService.getStampScalingFactor();
+    }
+
+    getSelectedStamp(): Stamp {
+        return this.toolManagerService.getSelectedStamp();
+    }
+
     onThicknessChange(event: MatSliderChange): void {
         this.toolManagerService.setCurrentLineThickness(event.value || undefined);
     }
@@ -148,6 +168,10 @@ export class ToolAttributeComponent {
 
     onDotRadiusChange(event: MatSliderChange): void {
         this.toolManagerService.setCurrentDotRadius(event.value || undefined);
+    }
+
+    onToleranceChange(event: MatSliderChange): void {
+        this.toolManagerService.setCurrentTolerance(event.value || undefined);
     }
 
     onFrequencyChange(event: MatSliderChange): void {
@@ -175,12 +199,20 @@ export class ToolAttributeComponent {
     }
 
     onGridSizeChange(event: MatSliderChange): void {
-        if (this.showGrid) this.gridService.newGrid(event.value as number);
+        if (this.gridService.showGrid) this.gridService.newGrid(event.value as number);
         else this.gridService.clear();
     }
 
     onGridOpacityChange(event: MatSliderChange): void {
         this.gridService.changeOpacity(event.value);
+    }
+
+    onStampScalingFactorChange(event: MatSliderChange): void {
+        this.toolManagerService.setStampScalingFactor(event.value || undefined);
+    }
+
+    onSelectedStampChange(stampName: string): void {
+        this.toolManagerService.setSelectedStamp(stampName);
     }
 
     onTextAlignChange(value: string): void {

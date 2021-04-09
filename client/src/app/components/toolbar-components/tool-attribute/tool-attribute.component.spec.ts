@@ -42,6 +42,7 @@ describe('ToolAttributeBarComponent', () => {
             'setCurrentJetDiameter',
             'getCurrentNumberOfSides',
             'setCurrentNumberOfSides',
+            'getCurrentTolerance',
         ]);
         TestBed.configureTestingModule({
             declarations: [
@@ -233,11 +234,11 @@ describe('ToolAttributeBarComponent', () => {
     it('onGridSizeChange should call newGrid if showGrid is true', () => {
         spyOn(component.gridService, 'newGrid').and.stub();
         spyOn(component.gridService, 'clear').and.stub();
-        component.showGrid = true;
+        component.gridService.showGrid = true;
         component.onGridSizeChange({} as MatSliderChange);
         expect(component.gridService.newGrid).toHaveBeenCalled();
 
-        component.showGrid = false;
+        component.gridService.showGrid = false;
         component.onGridSizeChange({} as MatSliderChange);
         expect(component.gridService.clear).toHaveBeenCalled();
     });

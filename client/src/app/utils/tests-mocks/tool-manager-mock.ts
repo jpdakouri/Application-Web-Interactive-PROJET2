@@ -4,6 +4,7 @@ import { CurrentColorService } from '@app/services/current-color/current-color.s
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { TextService } from '@app/services/tools/text/text.service';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
+import { Stamp } from '@app/utils/enums/stamp';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 import { ToolStub } from '@app/utils/tests-mocks/tool-stub';
 export class ToolManagerServiceMock {
@@ -11,12 +12,16 @@ export class ToolManagerServiceMock {
     currentTool: ToolStub = new ToolStub({} as DrawingService, {} as CurrentColorService);
     textService: TextService = new TextService({} as CurrentColorService, {} as DrawingService);
 
+  isCurrentTool(): boolean {
+    return true;
+  }
+
     getCurrentToolInstance(): Tool {
         return this.currentTool;
     }
 
-    isCurrentTool(): boolean {
-        return true;
+    getCurrentTolerance(): number {
+        return 0;
     }
 
     getCurrentLineThickness(): number {
@@ -49,11 +54,28 @@ export class ToolManagerServiceMock {
     setCurrentTool(): void {
         return;
     }
+
     getCurrentDotRadius(): void {
         return;
     }
 
-    getCurrentFontSize(): number {
+    getStampScalingFactor(): number {
         return 1;
+    }
+
+    getSelectedStamp(): Stamp {
+        return Stamp.House;
+    }
+
+    getCurrentFontSize(): number {
+      return 1;
+    }
+
+    setStampScalingFactor(): void {
+        /*empty*/
+    }
+
+    setSelectedStamp(): void {
+        /*empty*/
     }
 }

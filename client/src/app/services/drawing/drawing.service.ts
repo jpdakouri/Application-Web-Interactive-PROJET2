@@ -16,11 +16,42 @@ export class DrawingService {
     @Output() createNewDrawingEmitter: EventEmitter<boolean> = new EventEmitter();
 
     saveCanvas(): void {
-        sessionStorage.setItem('canvasBuffer', this.canvas.toDataURL());
+        console.log('save');
+        const value = [];
+        value.push(this.canvas.toDataURL());
+        value.push(this.canvas.width);
+        value.push(this.canvas.height);
+        localStorage.setItem('canvasInfo', JSON.stringify(value));
+    }
+
+    getCanvas(): HTMLCanvasElement {
+        return this.canvas;
+    }
+
+    getBaseContext(): CanvasRenderingContext2D {
+        return this.baseCtx;
     }
 
     restoreCanvas(): void {
-        const dataURL = sessionStorage.getItem('canvasBuffer');
+        console.log('restore');
+        const canvasInfo = localStorage.getItem('canvasInfo');
+        const info = JSON.parse(canvasInfo as string);
+        if (info[0]) {
+            const drawingData: DrawingData = new DrawingData('', '', [], info[0], info[1], info[2]);
+            const img = new Image();
+            img.onload = () => {
+                this.canvas.getContext('2d')?.drawImage(img, 0, 0);
+            };
+            img.src = drawingData.dataURL as string;
+            this.newDrawing.emit({ x: drawingData.width, y: drawingData.height } as Vec2);
+            this.saveCanvas();
+        }
+    }
+
+    restoreDrawing(): void {
+        const canvasInfo = localStorage.getItem('canvasInfo');
+        const info = JSON.parse(canvasInfo as string);
+        const dataURL = info[0];
         const image = new Image();
         if (dataURL) {
             image.src = dataURL;
@@ -42,8 +73,9 @@ export class DrawingService {
         return !hasSomeColoredPixels;
     }
 
-    openDrawing(drawing: DrawingData): void {
-        this.createNewDrawing();
+    openDrawing(drawing: DrawingData, showConfirmDialog?: boolean): void {
+        console.log('openD');
+        this.createNewDrawing(showConfirmDialog);
         this.canvas.width = drawing.width;
         this.canvas.height = drawing.height;
         this.previewCtx.canvas.width = drawing.width;
@@ -54,23 +86,50 @@ export class DrawingService {
         };
         img.src = drawing.dataURL as string;
         this.newDrawing.emit({ x: drawing.width, y: drawing.height } as Vec2);
-        this.saveCanvas();
     }
 
-    createNewDrawing(): boolean {
-        if (sessionStorage.getItem('canvasBuffer') && !this.isCanvasBlank()) {
+    createNewDrawing(showConfirmDialog?: boolean): boolean {
+        console.log('clearDrawing');
+        if (localStorage.getItem('canvasInfo') && !this.isCanvasBlank() && showConfirmDialog) {
             if (confirm("Le canvas n'est pas vide! Voulez-vous procéder tout de même?")) {
                 this.clearCanvas(this.previewCtx);
                 this.clearCanvas(this.baseCtx);
-                this.emitCreateNewDrawing();
-                sessionStorage.clear();
+                localStorage.clear();
+                this.saveCanvas();
+                return true;
+            } else if (localStorage.getItem('canvasInfo') && !this.isCanvasBlank()) {
+                this.continueDrawing();
+                this.saveCanvas();
                 return true;
             }
         }
         return false;
     }
 
+    continueDrawing(): void {
+        console.log('continue');
+        if (!this.isCanvasBlank() && localStorage.getItem('canvasInfo')) {
+            const dataURL = localStorage.getItem('canvasInfo');
+            const image = new Image();
+            image.src = dataURL as string;
+            if (dataURL) {
+                const drawingData: DrawingData = new DrawingData('', '', [], dataURL, this.canvas.width, this.canvas.height);
+                const img = new Image();
+                img.onload = () => {
+                    this.canvas.getContext('2d')?.drawImage(img, 0, 0);
+                };
+                img.src = drawingData.dataURL as string;
+                this.newDrawing.emit({ x: drawingData.width, y: drawingData.height } as Vec2);
+            }
+            this.restoreCanvas();
+        }
+    }
+
     emitCreateNewDrawing(): void {
         this.createNewDrawingEmitter.emit(true);
     }
+
+    // emitContinuerawing(): void {
+    //     this.createNewDrawingEmitter.emit(true);
+    // }
 }

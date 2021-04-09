@@ -4,15 +4,19 @@ import { AerosolService } from '@app/services/tools/aerosol-service/aerosol.serv
 import { EllipseService } from '@app/services/tools/ellipse-service/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service/eraser.service';
 import { LineService } from '@app/services/tools/line-service/line.service';
+import { PaintBucketService } from '@app/services/tools/paint-bucket-service/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil-service/pencil.service';
 import { PipetteService } from '@app/services/tools/pipette-service/pipette.service';
 import { PolygonService } from '@app/services/tools/polygon-service/polygon.service';
 import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-ellipse-service/selection-ellipse.service';
+import { SelectionPolygonalLassoService } from '@app/services/tools/selection-polygonal-lasso/selection-polygonal-lasso.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
+import { StampService } from '@app/services/tools/stamp-service/stamp.service';
 import { TextService } from '@app/services/tools/text/text.service';
 import { DEFAULT_FONT_SIZE } from '@app/services/tools/tools-constants';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
+import { Stamp } from '@app/utils/enums/stamp';
 import { TextFont } from '@app/utils/enums/text-font.enum';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 import { CurrentAttributes } from '@app/utils/types/current-attributes';
@@ -40,6 +44,9 @@ export class ToolManagerService {
         selectEllipseService: SelectionEllipseService,
         polygonService: PolygonService,
         public textService: TextService,
+        paintBucket: PaintBucketService,
+        stampService: StampService,
+        selectPolygonalLassoService: SelectionPolygonalLassoService,
     ) {
         this.toolBox = {
             Pencil: pencilService,
@@ -51,7 +58,10 @@ export class ToolManagerService {
             Pipette: pipetteService,
             SelectBox: selectBoxService,
             SelectEllipse: selectEllipseService,
+            SelectPolygon: selectPolygonalLassoService,
             Polygon: polygonService,
+            PaintBucket: paintBucket,
+            Stamp: stampService,
             Text: textService,
         };
         this.currentAttributes = {
@@ -63,6 +73,7 @@ export class ToolManagerService {
             Frequency: 1,
             JetDiameter: 1,
             numberOfSides: 3,
+            BucketTolerance: 0,
             FontSize: DEFAULT_FONT_SIZE,
             FontFace: TextFont.Arial,
         };
@@ -77,6 +88,7 @@ export class ToolManagerService {
             this.currentAttributes.Frequency = currentTool.frequency;
             this.currentAttributes.JetDiameter = currentTool.jetDiameter;
             this.currentAttributes.DropletDiameter = currentTool.dropletDiameter;
+            this.currentAttributes.BucketTolerance = currentTool.bucketTolerance;
             this.currentAttributes.FontSize = currentTool.fontSize;
             this.currentAttributes.FontFace = currentTool.fontFace;
         });
@@ -104,6 +116,11 @@ export class ToolManagerService {
         this.currentAttributes.DotRadius = dotRadius;
     }
 
+    setCurrentTolerance(tolerance?: number): void {
+        this.toolBox[this.currentTool].bucketTolerance = tolerance;
+        this.currentAttributes.BucketTolerance = tolerance;
+    }
+
     getCurrentDotRadius(): number | undefined {
         return this.currentAttributes.DotRadius;
     }
@@ -119,6 +136,10 @@ export class ToolManagerService {
 
     getCurrentFrequency(): number | undefined {
         return this.currentAttributes.Frequency;
+    }
+
+    getCurrentTolerance(): number | undefined {
+        return this.currentAttributes.BucketTolerance;
     }
 
     getCurrentDropletDiameter(): number | undefined {
@@ -157,6 +178,47 @@ export class ToolManagerService {
         return this.currentAttributes.numberOfSides;
     }
 
+
+  getStampScalingFactor(): number {
+    const stamp = this.toolBox.Stamp as StampService;
+    return stamp.scalingFactor;
+  }
+
+  getSelectedStamp(): Stamp {
+    const stamp = this.toolBox.Stamp as StampService;
+    return stamp.selectedStamp;
+  }
+
+  setStampScalingFactor(factor?: number): void {
+    if (factor != undefined) {
+      const stamp = this.toolBox.Stamp as StampService;
+      stamp.scalingFactor = factor;
+    }
+  }
+
+  setSelectedStamp(stampName: string): void {
+    if (stampName != undefined) {
+      const stampTool = this.toolBox.Stamp as StampService;
+      switch (stampName) {
+        case Stamp.House:
+          stampTool.selectedStamp = Stamp.House;
+          break;
+        case Stamp.Letter:
+          stampTool.selectedStamp = Stamp.Letter;
+          break;
+        case Stamp.Star:
+          stampTool.selectedStamp = Stamp.Star;
+          break;
+        case Stamp.Hashtag:
+          stampTool.selectedStamp = Stamp.Hashtag;
+          break;
+        default:
+          stampTool.selectedStamp = Stamp.Smile;
+          break;
+      }
+    }
+  }
+
     getCurrentFontSize(): number | undefined {
         return this.currentAttributes.FontSize;
     }
@@ -182,4 +244,5 @@ export class ToolManagerService {
         }
         this.toolChangeEmitter.emit(toolName);
     }
+
 }
