@@ -110,11 +110,11 @@
 
         <mat-divider></mat-divider>
 
-        <div class="text-appearance" style="text-align: center">
+        <div class="text-appearance">
             <mat-button-toggle-group
+                id="fontStyleGroup"
                 name="fontStyle"
                 aria-label="Font Style"
-                style="margin-bottom: 15px"
                 multiple
                 #fontStyleGroup="matButtonToggleGroup"
                 [value]="textService.textStyles"

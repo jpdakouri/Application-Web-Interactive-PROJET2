@@ -64,7 +64,7 @@ describe('EditorComponent', () => {
     beforeEach(async(() => {
         drawingServiceSpy = new DrawingServiceMock();
         toolManagerServiceMock = new ToolManagerServiceMock();
-        toolManagerServiceMock.textService.isWriting = false;
+        toolManagerServiceMock.textService.showTextBox = false;
         TestBed.configureTestingModule({
             declarations: [
                 EditorComponent,

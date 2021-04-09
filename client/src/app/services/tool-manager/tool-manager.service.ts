@@ -177,10 +177,9 @@ export class ToolManagerService {
 
     emitToolChange(toolName: ToolsNames): void {
         if (this.currentTool === ToolsNames.Text) {
-            this.textService.isWriting = false;
-            this.textService.testText();
+            this.textService.showTextBox = false;
+            this.textService.drawStyledText();
         }
-
         this.toolChangeEmitter.emit(toolName);
     }
 }

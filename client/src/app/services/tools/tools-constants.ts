@@ -74,6 +74,10 @@ export const OUT_OF_BOUND_COLOR_RGBA = 'rgba(100,100,100,1)';
 export const MIN_FONT_SIZE = 5;
 export const MAX_FONT_SIZE = 150;
 export const DEFAULT_FONT_SIZE = 30;
+export const FONT_HEIGHT_FACTOR = 0.025;
+
+export const DEFAULT_TEXT_BOX_WIDTH = 800;
+export const DEFAULT_TEXT_BOX_HEIGHT = 200;
 
 /***************************/
 /* ERROR MESSAGE CONSTANT***/

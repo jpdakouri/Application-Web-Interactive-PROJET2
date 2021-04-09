@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="drawing.component.scss">
 <div id="canvas-container">
     <div
         class="resizer middle-right"
@@ -57,45 +58,31 @@
     </canvas>
 
     <div
-        class="on-canvas-object textbox"
-        touch-action="none"
+        class="text-box"
         [ngStyle]="{
             width: textService.textBoxSize.x + 'px',
             height: textService.textBoxSize.y + 'px',
             left: textService.textBoxPosition.x + 'px',
-            top: textService.textBoxPosition.y + 'px',
-            position: 'relative',
-            margin: 0,
-            padding: 0,
-            border: 'solid 0px',
-            'word-wrap': 'break-word'
+            top: textService.textBoxPosition.y + 'px'
         }"
     >
         <textarea
-            class="textbox-editor"
+            class=""
             id="textArea"
             placeholder="Entrez votre texte ici"
             autofocus
             #textArea
             [(ngModel)]="textService.text"
-            *ngIf="textService.isWriting"
+            *ngIf="textService.showTextBox"
             [ngStyle]="{
                 'font-size': textService.fontSize + 'px',
                 'font-family': textService.fontFace,
                 'text-align': textService.textAlign,
-                overflow: 'hidden',
                 'font-weight': textService.getSingleStyle('bold'),
                 'font-style': textService.getSingleStyle('italic'),
-                color: textService.currentColorService.getPrimaryColorRgb(),
-                border: 'solid 1px black',
-                width: textService.textBoxSize.x + 'px',
-                height: textService.textBoxSize.y + 'px',
-                outline: 'none',
-                position: 'relative',
-                margin: 0,
-                'z-index': 100,
-                'caret-color': 'black',
-                'word-wrap': 'break-word'
+                'color': textService.currentColorService.getPrimaryColorRgb(),
+                'width': textService.textBoxSize.x + 'px',
+                'height': textService.textBoxSize.y + 'px'
             }"
         ></textarea>
     </div>

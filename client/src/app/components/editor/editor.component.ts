@@ -56,7 +56,7 @@ export class EditorComponent implements AfterViewInit {
     // tslint:disable-next-line:cyclomatic-complexity
     @HostListener('window:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
-        if (this.dialogControllerService.noDialogOpened && !this.toolManagerService.textService.isWriting) {
+        if (this.dialogControllerService.noDialogOpened && !this.toolManagerService.textService.showTextBox) {
             if (event.ctrlKey) {
                 if (event.key === KeyboardButtons.NewDrawing) if (this.onCreateNewDrawing()) this.undoRedo.saveInitialState();
                 if (event.key === KeyboardButtons.Carousel) this.openCarouselModal();
