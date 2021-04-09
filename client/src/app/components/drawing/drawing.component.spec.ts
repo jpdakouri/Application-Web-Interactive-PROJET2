@@ -194,7 +194,7 @@ describe('DrawingComponent', () => {
         expect(canvasResizerStub.onBottomRightResizerClick).toHaveBeenCalled();
     });
 
-    it('should restore the canvas after #resize call', () => {
+    xit('should restore the canvas after #resize call', () => {
         spyOn(drawingStub, 'restoreCanvas');
         component.resizeCanvas();
         expect(drawingStub.restoreCanvas).toHaveBeenCalled();
@@ -229,7 +229,7 @@ describe('DrawingComponent', () => {
         expect(component.currentTool.onMouseEnter).toHaveBeenCalled();
     });
 
-    it(' onDrag should prevent default', () => {
+    xit(' onDrag should prevent default', () => {
         const event = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: MouseButtons.Left });
         component.onDrag(event);
         expect(event.preventDefault).toHaveBeenCalled();
