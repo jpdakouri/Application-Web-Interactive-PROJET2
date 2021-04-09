@@ -95,6 +95,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.canvasResizerService.canvasPreviewWidth = this.canvasSize.x;
         this.canvasResizerService.canvasPreviewHeight = this.canvasSize.y;
         this.drawingService.restoreCanvas();
+        this.drawingService.saveCanvas();
         this.undoRedo.saveInitialState();
         setTimeout(() => {
             this.selectionEllipseService.height = this.drawingService.canvas.height;
@@ -134,7 +135,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     resizeCanvas(): void {
         this.canvasSize = this.canvasResizerService.calculateNewCanvasSize(this.canvasSize);
-        this.drawingService.restoreCanvas();
+        this.drawingService.restoreDrawing();
         this.emitEditorMinWidth();
     }
 
@@ -152,6 +153,11 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     getPreviewCanvasSize(): Vec2 {
         return { x: this.canvasResizerService.canvasPreviewWidth, y: this.canvasResizerService.canvasPreviewHeight };
+    }
+
+    @HostListener('window:beforeunload', ['$event'])
+    unloadHandler(): void {
+        this.drawingService.saveCanvas();
     }
 
     @HostListener('mousemove', ['$event'])
@@ -216,6 +222,11 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     onDblClick(): void {
         this.currentTool.onDblClick();
         this.drawingService.saveCanvas();
+    }
+
+    @HostListener('mousewheel', ['$event'])
+    onMouseWheelScroll(event: WheelEvent): void {
+        this.currentTool.onMouseWheelScroll(event);
     }
 
     @HostListener('keydown', ['$event'])
