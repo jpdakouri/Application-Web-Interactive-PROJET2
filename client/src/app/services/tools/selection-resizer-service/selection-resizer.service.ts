@@ -97,26 +97,34 @@ export class SelectionResizerService extends SelectionService {
     private resizeSelection(): void {
         switch (this.status) {
             case SelectionStatus.TOP_LEFT_BOX:
-                this.status = SelectionStatus.TOP_LEFT_BOX;
+                this.drawingService.selectedAreaCtx.canvas.width = this.width + this.offset.x;
+                this.topLeftCorner.x = this.initialTopLeftCorner.x - this.moveOffset.x;
+                this.drawingService.selectedAreaCtx.canvas.height = this.height + this.offset.y;
+                this.topLeftCorner.y = this.initialTopLeftCorner.y - this.moveOffset.y;
                 break;
             case SelectionStatus.TOP_MIDDLE_BOX:
                 this.drawingService.selectedAreaCtx.canvas.height = this.height + this.offset.y;
                 this.topLeftCorner.y = this.initialTopLeftCorner.y - this.moveOffset.y;
                 break;
             case SelectionStatus.TOP_RIGHT_BOX:
-                this.status = SelectionStatus.TOP_RIGHT_BOX;
+                this.drawingService.selectedAreaCtx.canvas.width = this.width - this.offset.x;
+                this.drawingService.selectedAreaCtx.canvas.height = this.height + this.offset.y;
+                this.topLeftCorner.y = this.initialTopLeftCorner.y - this.moveOffset.y;
                 break;
             case SelectionStatus.MIDDLE_RIGHT_BOX:
                 this.drawingService.selectedAreaCtx.canvas.width = this.width - this.offset.x;
                 break;
             case SelectionStatus.BOTTOM_RIGHT_BOX:
-                this.status = SelectionStatus.BOTTOM_RIGHT_BOX;
+                this.drawingService.selectedAreaCtx.canvas.width = this.width - this.offset.x;
+                this.drawingService.selectedAreaCtx.canvas.height = this.height - this.offset.y;
                 break;
             case SelectionStatus.BOTTOM_MIDDLE_BOX:
                 this.drawingService.selectedAreaCtx.canvas.height = this.height - this.offset.y;
                 break;
             case SelectionStatus.BOTTOM_LEFT_BOX:
-                this.status = SelectionStatus.BOTTOM_LEFT_BOX;
+                this.drawingService.selectedAreaCtx.canvas.width = this.width + this.offset.x;
+                this.topLeftCorner.x = this.initialTopLeftCorner.x - this.moveOffset.x;
+                this.drawingService.selectedAreaCtx.canvas.height = this.height - this.offset.y;
                 break;
             case SelectionStatus.MIDDLE_LEFT_BOX:
                 this.drawingService.selectedAreaCtx.canvas.width = this.width + this.offset.x;
