@@ -94,24 +94,36 @@ export class SelectionResizerService extends SelectionService {
         this.initialize();
     }
 
-    onMiddleLeftBoxClick(): void {
-        this.setStatus(SelectionStatus.MIDDLE_LEFT_BOX);
-    }
-
     private resizeSelection(): void {
-        this.drawingService.selectedAreaCtx.canvas.width = this.width + this.offset.x;
-        this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
-        this.topLeftCorner.x = this.initialTopLeftCorner.x - this.moveOffset.x;
-        this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x + 'px';
-        createImageBitmap(this.imageData).then((imgBitmap) => {
-            this.drawingService.selectedAreaCtx.drawImage(
-                imgBitmap,
-                0,
-                0,
-                this.drawingService.selectedAreaCtx.canvas.width,
-                this.drawingService.selectedAreaCtx.canvas.height,
-            );
-        });
+        switch (this.status) {
+            case SelectionStatus.TOP_LEFT_BOX:
+                this.status = SelectionStatus.TOP_LEFT_BOX;
+                break;
+            case SelectionStatus.TOP_MIDDLE_BOX:
+                this.drawingService.selectedAreaCtx.canvas.height = this.height + this.offset.y;
+                this.topLeftCorner.y = this.initialTopLeftCorner.y - this.moveOffset.y;
+                break;
+            case SelectionStatus.TOP_RIGHT_BOX:
+                this.status = SelectionStatus.TOP_RIGHT_BOX;
+                break;
+            case SelectionStatus.MIDDLE_RIGHT_BOX:
+                this.drawingService.selectedAreaCtx.canvas.width = this.width - this.offset.x;
+                break;
+            case SelectionStatus.BOTTOM_RIGHT_BOX:
+                this.status = SelectionStatus.BOTTOM_RIGHT_BOX;
+                break;
+            case SelectionStatus.BOTTOM_MIDDLE_BOX:
+                this.drawingService.selectedAreaCtx.canvas.height = this.height - this.offset.y;
+                break;
+            case SelectionStatus.BOTTOM_LEFT_BOX:
+                this.status = SelectionStatus.BOTTOM_LEFT_BOX;
+                break;
+            case SelectionStatus.MIDDLE_LEFT_BOX:
+                this.drawingService.selectedAreaCtx.canvas.width = this.width + this.offset.x;
+                this.topLeftCorner.x = this.initialTopLeftCorner.x - this.moveOffset.x;
+                break;
+        }
+        this.updatePreview();
     }
 
     private initialize(): void {
@@ -124,7 +136,18 @@ export class SelectionResizerService extends SelectionService {
     }
 
     updatePreview(): void {
-        throw new Error('Method not implemented.');
+        this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
+        this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x + 'px';
+        this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y + 'px';
+        createImageBitmap(this.imageData).then((imgBitmap) => {
+            this.drawingService.selectedAreaCtx.drawImage(
+                imgBitmap,
+                0,
+                0,
+                this.drawingService.selectedAreaCtx.canvas.width,
+                this.drawingService.selectedAreaCtx.canvas.height,
+            );
+        });
     }
     executeCommand(command: ToolCommand): void {
         throw new Error('Method not implemented.');
