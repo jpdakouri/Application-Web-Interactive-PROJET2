@@ -218,7 +218,7 @@
             top: getSelectedAreaSizeRectangle().y / 2 + 2 + 'px',
             transform: 'translate(' + getTopLeftCornerRectangle().x + 'px, ' + getTopLeftCornerRectangle().y + 'px)'
         }"
-        (mousedown)="onMiddleLeftBoxClick()"
+        (mousedown)="onSelectionBoxClick(this.selectionStatus.MIDDLE_LEFT_BOX)"
         (mouseup)="this.toolManagerService.emitToolChange(this.toolsNames.SelectBox)"
         *ngIf="selectionRectangleService.selectionActive"
     ></div>

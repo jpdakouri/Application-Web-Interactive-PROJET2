@@ -65,7 +65,32 @@ export class SelectionResizerService extends SelectionService {
     }
 
     setStatus(status: SelectionStatus): void {
-        this.status = status;
+        switch (status) {
+            case SelectionStatus.TOP_LEFT_BOX:
+                this.status = SelectionStatus.TOP_LEFT_BOX;
+                break;
+            case SelectionStatus.TOP_MIDDLE_BOX:
+                this.status = SelectionStatus.TOP_MIDDLE_BOX;
+                break;
+            case SelectionStatus.TOP_RIGHT_BOX:
+                this.status = SelectionStatus.TOP_RIGHT_BOX;
+                break;
+            case SelectionStatus.MIDDLE_RIGHT_BOX:
+                this.status = SelectionStatus.MIDDLE_RIGHT_BOX;
+                break;
+            case SelectionStatus.BOTTOM_RIGHT_BOX:
+                this.status = SelectionStatus.BOTTOM_RIGHT_BOX;
+                break;
+            case SelectionStatus.BOTTOM_MIDDLE_BOX:
+                this.status = SelectionStatus.BOTTOM_MIDDLE_BOX;
+                break;
+            case SelectionStatus.BOTTOM_LEFT_BOX:
+                this.status = SelectionStatus.BOTTOM_LEFT_BOX;
+                break;
+            case SelectionStatus.MIDDLE_LEFT_BOX:
+                this.status = SelectionStatus.MIDDLE_LEFT_BOX;
+                break;
+        }
     }
 
     onMiddleLeftBoxClick(): void {
@@ -75,9 +100,9 @@ export class SelectionResizerService extends SelectionService {
 
     private resizeSelection(): void {
         this.drawingService.selectedAreaCtx.canvas.width = this.width + this.offset.x;
-        const rapport = this.drawingService.selectedAreaCtx.canvas.width / this.width;
         this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
-        // this.drawingService.selectedAreaCtx.scale(rapport, 1);
+        this.topLeftCorner.x = this.initialTopLeftCorner.x - this.moveOffset.x;
+        this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x + 'px';
         createImageBitmap(this.imageData).then((imgBitmap) => {
             this.drawingService.selectedAreaCtx.drawImage(
                 imgBitmap,
@@ -87,11 +112,6 @@ export class SelectionResizerService extends SelectionService {
                 this.drawingService.selectedAreaCtx.canvas.height,
             );
         });
-        // this.drawingService.selectedAreaCtx.setTransform(1, 0, 0, 1, 0, 0);
-        this.topLeftCorner.x = this.initialTopLeftCorner.x - this.moveOffset.x;
-        this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x + 'px';
-        // this.drawingService.selectedAreaCtx.putImageData(this.imageData, 0, 0, 0, 0, this.width, this.height);
-        console.log(rapport);
     }
 
     private initialize(): void {

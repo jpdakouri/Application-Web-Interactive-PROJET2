@@ -1,4 +1,4 @@
-export const enum SelectionStatus {
+export enum SelectionStatus {
     OFF = 0,
     TOP_LEFT_BOX = 1,
     TOP_MIDDLE_BOX = 2,

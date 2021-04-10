@@ -13,6 +13,7 @@ import { SelectionResizerService } from '@app/services/tools/selection-resizer-s
 import { MIN_ERASER_THICKNESS } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { Status } from '@app/utils/enums/canvas-resizer-status';
+import { SelectionStatus } from '@app/utils/enums/selection-resizer-status';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 import { EraserCursor } from '@app/utils/interfaces/eraser-cursor';
 
@@ -41,6 +42,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     canvasResizerService: CanvasResizerService;
     selectionResizerService: SelectionResizerService;
     toolsNames: typeof ToolsNames = ToolsNames;
+    selectionStatus: typeof SelectionStatus = SelectionStatus;
 
     eraserCursor: EraserCursor = {
         cursor: 'none',
@@ -251,9 +253,9 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.canvasResizerService.onMiddleBottomResizerClick();
     }
 
-    onMiddleLeftBoxClick(): void {
+    onSelectionBoxClick(status: SelectionStatus): void {
         this.toolManagerService.emitToolChange(this.toolsNames.SelectionResizer);
-        this.selectionResizerService.onMiddleLeftBoxClick();
+        this.selectionResizerService.setStatus(status);
     }
 
     emitEditorMinWidth(): void {
