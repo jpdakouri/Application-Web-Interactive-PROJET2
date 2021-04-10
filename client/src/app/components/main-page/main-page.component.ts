@@ -40,7 +40,7 @@ export class MainPageComponent {
             .subscribe(this.message);
     }
 
-    getLocalStorage(): string | null {
+    getDataFromLocalStorage(): string | null {
         // console.log(localStorage.getItem('canvasInfo'));
         return localStorage.getItem('canvasInfo');
     }
@@ -57,8 +57,9 @@ export class MainPageComponent {
     onContinueDrawing(): void {
         this.drawingService.continueDrawing();
     }
-
-    // clearStorage(): void {
-    //     localStorage.clear();
-    // }
+    testCondition(): boolean {
+        // console.log('canvasBlank ' + this.drawingService.isCanvasBlank());
+        console.log('localStorage ' + (this.getDataFromLocalStorage() !== null));
+        return this.getDataFromLocalStorage() !== null;
+    }
 }

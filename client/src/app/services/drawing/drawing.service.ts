@@ -33,7 +33,7 @@ export class DrawingService {
     }
 
     restoreCanvas(): void {
-        console.log('restore');
+        console.log('restoreCanvas');
         const canvasInfo = localStorage.getItem('canvasInfo');
         const info = JSON.parse(canvasInfo as string);
         if (info[0]) {
@@ -44,11 +44,12 @@ export class DrawingService {
             };
             img.src = drawingData.dataURL as string;
             this.newDrawing.emit({ x: drawingData.width, y: drawingData.height } as Vec2);
-            this.saveCanvas();
         }
+        this.saveCanvas();
     }
 
     restoreDrawing(): void {
+        console.log('restoreDrawing');
         const canvasInfo = localStorage.getItem('canvasInfo');
         const info = JSON.parse(canvasInfo as string);
         const dataURL = info[0];
@@ -94,8 +95,10 @@ export class DrawingService {
             if (confirm("Le canvas n'est pas vide! Voulez-vous procéder tout de même?")) {
                 this.clearCanvas(this.previewCtx);
                 this.clearCanvas(this.baseCtx);
-                localStorage.clear();
                 this.saveCanvas();
+                console.log('localStorage cleared!');
+                localStorage.clear();
+                this.emitCreateNewDrawing();
                 return true;
             } else if (localStorage.getItem('canvasInfo') && !this.isCanvasBlank()) {
                 this.continueDrawing();
@@ -103,6 +106,8 @@ export class DrawingService {
                 return true;
             }
         }
+        // console.log('faux false ');
+        console.log('is canvas blank ' + this.isCanvasBlank());
         return false;
     }
 
@@ -113,16 +118,18 @@ export class DrawingService {
             const image = new Image();
             image.src = dataURL as string;
             if (dataURL) {
-                const drawingData: DrawingData = new DrawingData('', '', [], dataURL, this.canvas.width, this.canvas.height);
-                const img = new Image();
-                img.onload = () => {
-                    this.canvas.getContext('2d')?.drawImage(img, 0, 0);
-                };
-                img.src = drawingData.dataURL as string;
-                this.newDrawing.emit({ x: drawingData.width, y: drawingData.height } as Vec2);
+                // const drawingData: DrawingData = new DrawingData('', '', [], dataURL, this.canvas.width, this.canvas.height);
+                // const img = new Image();
+                // img.onload = () => {
+                //     this.canvas.getContext('2d')?.drawImage(img, 0, 0);
+                // };
+                // img.src = drawingData.dataURL as string;
+                // this.newDrawing.emit({ x: drawingData.width, y: drawingData.height } as Vec2);
+                this.restoreCanvas();
             }
-            this.restoreCanvas();
         }
+        this.restoreDrawing();
+        this.restoreCanvas();
     }
 
     emitCreateNewDrawing(): void {
