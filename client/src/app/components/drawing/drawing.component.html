@@ -152,6 +152,8 @@
             top: getSelectedAreaSizeRectangle().y / 2 - 2.5 + 'px',
             transform: 'translate(' + getTopLeftCornerRectangle().x + 'px, ' + getTopLeftCornerRectangle().y + 'px)'
         }"
+        (mousedown)="onSelectionBoxClick(selectionStatus.MIDDLE_RIGHT_BOX)"
+        (mouseup)="this.toolManagerService.emitToolChange(this.toolsNames.SelectBox)"
         *ngIf="selectionRectangleService.selectionActive"
     ></div>
 
@@ -163,6 +165,8 @@
             top: getSelectedAreaSizeRectangle().y + 'px',
             transform: 'translate(' + getTopLeftCornerRectangle().x + 'px, ' + getTopLeftCornerRectangle().y + 'px)'
         }"
+        (mousedown)="onSelectionBoxClick(selectionStatus.BOTTOM_RIGHT_BOX)"
+        (mouseup)="this.toolManagerService.emitToolChange(this.toolsNames.SelectBox)"
         *ngIf="selectionRectangleService.selectionActive"
     ></div>
 
@@ -174,6 +178,8 @@
             top: getSelectedAreaSizeRectangle().y + 'px',
             transform: 'translate(' + getTopLeftCornerRectangle().x + 'px, ' + getTopLeftCornerRectangle().y + 'px)'
         }"
+        (mousedown)="onSelectionBoxClick(selectionStatus.BOTTOM_MIDDLE_BOX)"
+        (mouseup)="this.toolManagerService.emitToolChange(this.toolsNames.SelectBox)"
         *ngIf="selectionRectangleService.selectionActive"
     ></div>
 
@@ -185,6 +191,8 @@
             top: -2 + 'px',
             transform: 'translate(' + getTopLeftCornerRectangle().x + 'px, ' + getTopLeftCornerRectangle().y + 'px)'
         }"
+        (mousedown)="onSelectionBoxClick(selectionStatus.TOP_LEFT_BOX)"
+        (mouseup)="this.toolManagerService.emitToolChange(this.toolsNames.SelectBox)"
         *ngIf="selectionRectangleService.selectionActive"
     ></div>
 
@@ -196,6 +204,8 @@
             top: -2 + 'px',
             transform: 'translate(' + getTopLeftCornerRectangle().x + 'px, ' + getTopLeftCornerRectangle().y + 'px)'
         }"
+        (mousedown)="onSelectionBoxClick(selectionStatus.TOP_MIDDLE_BOX)"
+        (mouseup)="this.toolManagerService.emitToolChange(this.toolsNames.SelectBox)"
         *ngIf="selectionRectangleService.selectionActive"
     ></div>
 
@@ -207,6 +217,8 @@
             top: -2 + 'px',
             transform: 'translate(' + getTopLeftCornerRectangle().x + 'px, ' + getTopLeftCornerRectangle().y + 'px)'
         }"
+        (mousedown)="onSelectionBoxClick(selectionStatus.TOP_RIGHT_BOX)"
+        (mouseup)="this.toolManagerService.emitToolChange(this.toolsNames.SelectBox)"
         *ngIf="selectionRectangleService.selectionActive"
     ></div>
 
@@ -218,7 +230,7 @@
             top: getSelectedAreaSizeRectangle().y / 2 + 2 + 'px',
             transform: 'translate(' + getTopLeftCornerRectangle().x + 'px, ' + getTopLeftCornerRectangle().y + 'px)'
         }"
-        (mousedown)="onSelectionBoxClick(this.selectionStatus.MIDDLE_LEFT_BOX)"
+        (mousedown)="onSelectionBoxClick(selectionStatus.MIDDLE_LEFT_BOX)"
         (mouseup)="this.toolManagerService.emitToolChange(this.toolsNames.SelectBox)"
         *ngIf="selectionRectangleService.selectionActive"
     ></div>
@@ -231,6 +243,8 @@
             top: getSelectedAreaSizeRectangle().y - 2 + 'px',
             transform: 'translate(' + getTopLeftCornerRectangle().x + 'px, ' + getTopLeftCornerRectangle().y + 'px)'
         }"
+        (mousedown)="onSelectionBoxClick(selectionStatus.BOTTOM_LEFT_BOX)"
+        (mouseup)="this.toolManagerService.emitToolChange(this.toolsNames.SelectBox)"
         *ngIf="selectionRectangleService.selectionActive"
     ></div>
 </div>

@@ -91,11 +91,11 @@ export class SelectionResizerService extends SelectionService {
                 this.status = SelectionStatus.MIDDLE_LEFT_BOX;
                 break;
         }
+        this.initialize();
     }
 
     onMiddleLeftBoxClick(): void {
         this.setStatus(SelectionStatus.MIDDLE_LEFT_BOX);
-        this.initialize();
     }
 
     private resizeSelection(): void {
