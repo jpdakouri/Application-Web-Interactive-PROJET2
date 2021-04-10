@@ -171,9 +171,7 @@ export class DrawingComponent implements AfterViewInit, OnInit, OnDestroy {
     @HostListener('window:beforeunload', ['$event'])
     unloadHandler(): void {
         console.log('load');
-        this.drawingService.restoreDrawing();
         this.drawingService.saveCanvas();
-        this.undoRedo.saveInitialState();
     }
 
     @HostListener('mousemove', ['$event'])

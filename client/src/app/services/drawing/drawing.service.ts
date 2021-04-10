@@ -106,7 +106,6 @@ export class DrawingService {
                 return true;
             }
         }
-        // console.log('faux false ');
         console.log('is canvas blank ' + this.isCanvasBlank());
         return false;
     }
@@ -118,25 +117,12 @@ export class DrawingService {
             const image = new Image();
             image.src = dataURL as string;
             if (dataURL) {
-                // const drawingData: DrawingData = new DrawingData('', '', [], dataURL, this.canvas.width, this.canvas.height);
-                // const img = new Image();
-                // img.onload = () => {
-                //     this.canvas.getContext('2d')?.drawImage(img, 0, 0);
-                // };
-                // img.src = drawingData.dataURL as string;
-                // this.newDrawing.emit({ x: drawingData.width, y: drawingData.height } as Vec2);
                 this.restoreCanvas();
             }
         }
-        this.restoreDrawing();
-        this.restoreCanvas();
     }
 
     emitCreateNewDrawing(): void {
         this.createNewDrawingEmitter.emit(true);
     }
-
-    // emitContinuerawing(): void {
-    //     this.createNewDrawingEmitter.emit(true);
-    // }
 }
