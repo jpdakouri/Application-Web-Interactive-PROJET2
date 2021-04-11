@@ -197,4 +197,24 @@ fdescribe('DrawingService', () => {
         const ctx = service.getBaseContext();
         expect(service.getBaseContext()).toEqual(ctx);
     });
+
+    xit('createNewDrawing calls continue the drawing when there is already a drawing', () => {
+        // const RECTANGLE_OFFSET = 2;
+        // const RECTANGLE_DIMENSIONS = 2;
+
+        service.baseCtx.beginPath();
+        service.baseCtx.rect(0, 0, 150, 150);
+        service.baseCtx.stroke();
+
+        const canvasDataURL = service.canvas.toDataURL();
+        localStorage.setItem('canvasInfo', canvasDataURL);
+
+        spyOn(window, 'confirm').and.returnValue(false);
+
+        service.createNewDrawing(false);
+        // tslint:disable-next-line:no-any
+        // const continueDrawingSpy = spyOn<any>(service, 'continueDrawing').and.callThrough();
+
+        expect(service.createNewDrawing(false)).toBeTrue();
+    });
 });
