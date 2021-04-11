@@ -87,6 +87,7 @@ export class DrawingService {
         };
         img.src = drawing.dataURL as string;
         this.newDrawing.emit({ x: drawing.width, y: drawing.height } as Vec2);
+        this.saveCanvas();
     }
 
     createNewDrawing(showConfirmDialog?: boolean): boolean {
@@ -118,6 +119,7 @@ export class DrawingService {
             image.src = dataURL as string;
             if (dataURL) {
                 this.restoreCanvas();
+                this.restoreDrawing();
             }
         }
     }
