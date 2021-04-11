@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { RGB_BEGIN_INDICATOR, RGB_END_INDICATOR } from '@app/components/components-constants';
 import { ColorHistoryService } from '@app/services/color-history/color-history.service';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 
@@ -25,8 +26,6 @@ export class ColorHistoryComponent {
     }
 
     private filterRGB(color: string): string {
-        const rgbBeginIndicator = '(';
-        const rgbEndIndicator = ')';
-        return color.substring(color.indexOf(rgbBeginIndicator) + 1, color.indexOf(rgbEndIndicator));
+        return color.substring(color.indexOf(RGB_BEGIN_INDICATOR) + 1, color.indexOf(RGB_END_INDICATOR));
     }
 }
