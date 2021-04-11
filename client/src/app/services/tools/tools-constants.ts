@@ -77,7 +77,8 @@ export const BASE_STAMP_IMAGE_PATH = '../../assets/stamps/';
 export const SMALL_ANGLE_CHANGE = 1;
 export const BIG_ANGLE_CHANGE = 15;
 export const STAMP_IMAGE_EXTENSION = '.png';
-export const HALF_CIRCLE_DEG = 180;
+export const FULL_CIRCLE_DEG = 360;
+export const HALF_CIRCLE_DEG = FULL_CIRCLE_DEG / 2;
 export const DEG_TO_RAD_RATIO = Math.PI / HALF_CIRCLE_DEG;
 
 /**********************/
