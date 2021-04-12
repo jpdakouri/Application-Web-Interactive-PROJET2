@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
-import { MagnetismServiceService } from './magnetism-service.service';
+import { MagnetismService } from './magnetism.service';
 
 describe('MagnetismServiceService', () => {
-    let service: MagnetismServiceService;
+    let service: MagnetismService;
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
-        service = TestBed.inject(MagnetismServiceService);
+        service = TestBed.inject(MagnetismService);
     });
 
     it('should be created', () => {

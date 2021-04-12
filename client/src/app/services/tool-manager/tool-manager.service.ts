@@ -4,6 +4,7 @@ import { AerosolService } from '@app/services/tools/aerosol-service/aerosol.serv
 import { EllipseService } from '@app/services/tools/ellipse-service/ellipse.service';
 import { EraserService } from '@app/services/tools/eraser-service/eraser.service';
 import { LineService } from '@app/services/tools/line-service/line.service';
+import { MagnetismService } from '@app/services/tools/magnetism-service/magnetism.service';
 import { PaintBucketService } from '@app/services/tools/paint-bucket-service/paint-bucket.service';
 import { PencilService } from '@app/services/tools/pencil-service/pencil.service';
 import { PipetteService } from '@app/services/tools/pipette-service/pipette.service';
@@ -47,6 +48,7 @@ export class ToolManagerService {
         paintBucket: PaintBucketService,
         stampService: StampService,
         selectPolygonalLassoService: SelectionPolygonalLassoService,
+        magnetismService: MagnetismService,
     ) {
         this.toolBox = {
             Pencil: pencilService,
@@ -63,6 +65,7 @@ export class ToolManagerService {
             PaintBucket: paintBucket,
             Stamp: stampService,
             Text: textService,
+            Magnetism: magnetismService,
         };
         this.currentAttributes = {
             LineThickness: 1,

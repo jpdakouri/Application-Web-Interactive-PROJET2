@@ -149,10 +149,13 @@ export abstract class SelectionService extends Tool {
         this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
     }
 
-    updateArrowPosition(): void {
+    updateArrowPosition(isMagnetismActivated?: boolean): void {
         if (this.selectionActive && this.upPressed) {
             this.topLeftCorner.y -= PIXELS_ARROW_STEPS;
             this.firstGrid.y -= PIXELS_ARROW_STEPS;
+        } else if (this.selectionActive && this.upPressed && isMagnetismActivated) {
+            this.topLeftCorner.y -= 100;
+            this.firstGrid.y -= 100;
         }
         if (this.selectionActive && this.downPressed) {
             this.topLeftCorner.y += PIXELS_ARROW_STEPS;
