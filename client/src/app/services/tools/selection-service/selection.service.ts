@@ -150,13 +150,14 @@ export abstract class SelectionService extends Tool {
     }
 
     updateArrowPosition(isMagnetismActivated?: boolean): void {
-        if (this.selectionActive && this.upPressed) {
-            this.topLeftCorner.y -= PIXELS_ARROW_STEPS;
-            this.firstGrid.y -= PIXELS_ARROW_STEPS;
-        } else if (this.selectionActive && this.upPressed && isMagnetismActivated) {
+        if (this.selectionActive && this.upPressed && isMagnetismActivated) {
             this.topLeftCorner.y -= 100;
             this.firstGrid.y -= 100;
+        } else if (this.selectionActive && this.upPressed) {
+            this.topLeftCorner.y -= PIXELS_ARROW_STEPS;
+            this.firstGrid.y -= PIXELS_ARROW_STEPS;
         }
+
         if (this.selectionActive && this.downPressed) {
             this.topLeftCorner.y += PIXELS_ARROW_STEPS;
             this.firstGrid.y += PIXELS_ARROW_STEPS;

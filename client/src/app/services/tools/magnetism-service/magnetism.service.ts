@@ -23,6 +23,7 @@ export class MagnetismService extends SelectionService {
     }
 
     onKeyDown(event: KeyboardEvent): void {
+        this.isMagnetismActivated = true;
         switch (event.key) {
             case KeyboardButtons.Up: {
                 this.updateArrowPosition(this.isMagnetismActivated);
