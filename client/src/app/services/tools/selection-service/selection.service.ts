@@ -80,10 +80,6 @@ export abstract class SelectionService extends Tool {
                 break;
             }
             case KeyboardButtons.Escape: {
-                this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                this.clearPath();
-            }
-            case KeyboardButtons.Escape: {
                 this.clearPath();
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.topLeftCorner = { x: 0, y: 0 };

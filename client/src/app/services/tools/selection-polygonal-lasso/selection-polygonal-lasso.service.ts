@@ -69,7 +69,6 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
             closedSegment,
         );
         this.clipArea();
-        // this.clearPath();
     }
 
     clipArea(): void {
@@ -81,35 +80,37 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
         const imageData = this.drawingService.baseCtx.getImageData(coords[0].x, coords[0].y, size.x, size.y);
 
         createImageBitmap(imageData).then((imgBitmap) => {
-            // const bottomRightCorner: Vec2 = { x: imageData.width, y: imageData.height };
-            // this.replaceEmptyPixels(imageData);
-            // this.drawingService.selectedAreaCtx.strokeStyle = 'rgba(255,255,255,0)';
-
             this.drawingService.selectedAreaCtx.save();
-
-            this.drawingService.selectedAreaCtx.beginPath();
-            this.drawingService.selectedAreaCtx.moveTo(this.pathData[0].x, this.pathData[0].y);
-            for (const point of this.pathData) this.drawingService.selectedAreaCtx.lineTo(point.x, point.y);
-            this.drawingService.selectedAreaCtx.lineTo(this.pathData[0].x, this.pathData[0].y);
+            this.drawShape(this.drawingService.selectedAreaCtx);
             this.drawingService.selectedAreaCtx.stroke();
-
             this.drawingService.selectedAreaCtx.clip();
-
             this.drawingService.selectedAreaCtx.drawImage(imgBitmap, coords[0].x, coords[0].y);
             this.drawingService.selectedAreaCtx.restore();
         });
+        this.updateSelectedCtx(coords, size);
+        this.updateBaseCtx();
+        // this.clearPath();
+    }
+
+    drawShape(ctx: CanvasRenderingContext2D): void {
+        ctx.beginPath();
+        ctx.moveTo(this.pathData[0].x, this.pathData[0].y);
+        for (const point of this.pathData) ctx.lineTo(point.x, point.y);
+        ctx.lineTo(this.pathData[0].x, this.pathData[0].y);
+    }
+
+    updateSelectedCtx(coords: Vec2[], size: Vec2): void {
         this.drawingService.selectedAreaCtx.canvas.height = size.y;
         this.drawingService.selectedAreaCtx.canvas.width = size.x;
         this.drawingService.selectedAreaCtx.translate(-coords[0].x, -coords[0].y);
         this.drawingService.selectedAreaCtx.canvas.style.top = coords[0].y - 1 + 'px';
         this.drawingService.selectedAreaCtx.canvas.style.left = coords[0].x - 1 + 'px';
+    }
 
+    updateBaseCtx(): void {
         this.drawingService.baseCtx.fillStyle = 'white';
         // this.drawingService.baseCtx.strokeStyle = 'rgba(255,255,255,0)';
-        this.drawingService.baseCtx.beginPath();
-        this.drawingService.baseCtx.moveTo(this.pathData[0].x, this.pathData[0].y);
-        for (const point of this.pathData) this.drawingService.baseCtx.lineTo(point.x, point.y);
-        this.drawingService.baseCtx.lineTo(this.pathData[0].x, this.pathData[0].y);
+        this.drawShape(this.drawingService.baseCtx);
         this.drawingService.baseCtx.fill();
     }
 
