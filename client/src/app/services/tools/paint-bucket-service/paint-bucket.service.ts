@@ -4,7 +4,16 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { ALPHA, ARRAY_OFFSET, MAX_PIXEL_VALUE } from '@app/services/services-constants';
+import {
+    ALPHA,
+    ARRAY_OFFSET,
+    HALF_OPACITY_127,
+    HALF_OPACITY_128,
+    INCREASE_FACTOR,
+    MAX_PIXEL_VALUE,
+    N_COORD_3,
+    TRANSPARENT_THRESHOLD,
+} from '@app/services/services-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
@@ -26,15 +35,18 @@ export class PaintBucketService extends Tool {
     bucketTolerance: number = 0;
     canvas: HTMLCanvasElement;
     baseCtx: CanvasRenderingContext2D;
+    previewCtx: CanvasRenderingContext2D;
 
     onMouseDown(event: MouseEvent): void {
-        this.mouseDown = event.button === MouseButtons.Left;
+        const clickedLeft = event.button === MouseButtons.Left;
+        const clickedRight = event.button === MouseButtons.Right;
+        this.mouseDown = clickedLeft || clickedRight;
         if (this.mouseDown) {
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.getCanvas();
             this.setFillColor();
             this.setStartColor();
-            this.bfs();
+            clickedLeft ? this.bfs(true) : this.bfs(false);
         }
     }
 
@@ -48,7 +60,7 @@ export class PaintBucketService extends Tool {
         return true;
     }
 
-    bfs(): void {
+    bfs(isContiguous: boolean): void {
         const width = this.canvas.width;
         const height = this.canvas.height;
         const x = this.mouseDownCoord.x;
@@ -65,13 +77,26 @@ export class PaintBucketService extends Tool {
         visited[x][y] = 1;
         const bfsQueue: Vec2[] = [];
         bfsQueue.push({ x, y });
-        while (bfsQueue.length > 0) {
-            const coord: Vec2 = bfsQueue[0];
-            this.putRGBAInArray(coord.x, coord.y);
-            bfsQueue.shift();
-            this.visit(visited, bfsQueue, coord.x, coord.y);
+        if (isContiguous) {
+            while (bfsQueue.length > 0) {
+                const coord: Vec2 = bfsQueue[0];
+                this.putRGBAInArray(coord.x, coord.y);
+                bfsQueue.shift();
+                this.visit(visited, bfsQueue, coord.x, coord.y);
+            }
+        } else {
+            while (bfsQueue.length > 0) {
+                const coord: Vec2 = bfsQueue[0];
+                const color = this.getRGBAFromCoord(coord.x, coord.y);
+                if (this.isSimilarColor(color)) {
+                    this.putRGBAInArray(coord.x, coord.y);
+                }
+                bfsQueue.shift();
+                this.visitNotContiguous(visited, bfsQueue, coord.x, coord.y);
+            }
         }
         this.baseCtx.putImageData(this.newCanvasImageData, 0, 0);
+        this.previewCtx.putImageData(this.newCanvasImageData, 0, 0);
     }
 
     visit(visited: number[][], bfsQueue: Vec2[], x: number, y: number): void {
@@ -99,18 +124,41 @@ export class PaintBucketService extends Tool {
         }
     }
 
+    visitNotContiguous(visited: number[][], bfsQueue: Vec2[], x: number, y: number): void {
+        if (this.isValidCoord(x + 1, y) && visited[x + 1][y] !== 1) {
+            bfsQueue.push({ x: x + 1, y });
+            visited[x + 1][y] = 1;
+        }
+
+        if (this.isValidCoord(x - 1, y) && visited[x - 1][y] !== 1) {
+            bfsQueue.push({ x: x - 1, y });
+            visited[x - 1][y] = 1;
+        }
+        if (this.isValidCoord(x, y + 1) && visited[x][y + 1] !== 1) {
+            bfsQueue.push({ x, y: y + 1 });
+            visited[x][y + 1] = 1;
+        }
+
+        if (this.isValidCoord(x, y - 1) && visited[x][y - 1] !== 1) {
+            bfsQueue.push({ x, y: y - 1 });
+            visited[x][y - 1] = 1;
+        }
+    }
+
     getCanvas(): void {
         this.baseCtx = this.drawingService.getBaseContext();
+        this.previewCtx = this.drawingService.getPreviewContext();
         this.canvas = this.drawingService.getCanvas();
         this.newCanvasImageData = this.canvasImageData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
     }
 
     isTransparent(color: Color): boolean {
-        return color.A === 0;
-    }
-    isHalfOpacity(color: Color): boolean {
-        const A = color.A === 128 || color.A === 127;
-        return A;
+        const condition =
+            (color.A === HALF_OPACITY_127 || color.A === HALF_OPACITY_128) &&
+            color.R < TRANSPARENT_THRESHOLD &&
+            color.G < TRANSPARENT_THRESHOLD &&
+            color.B < TRANSPARENT_THRESHOLD;
+        return color.A === 0 || condition;
     }
 
     getRGBAFromCoord(x: number, y: number): Color {
@@ -121,7 +169,7 @@ export class PaintBucketService extends Tool {
         const B = data[y * (width * ARRAY_OFFSET) + x * ARRAY_OFFSET + 2];
         const A = data[y * (width * ARRAY_OFFSET) + x * ARRAY_OFFSET + ALPHA];
         let color: Color = { R, G, B, A };
-        if (this.isTransparent(color) || this.isHalfOpacity(color)) {
+        if (this.isTransparent(color)) {
             color = { R: 255, G: 255, B: 255, A: 255 };
         }
         return color;
@@ -142,7 +190,7 @@ export class PaintBucketService extends Tool {
         this.startColor.G = startPixel[1];
         this.startColor.B = startPixel[2];
         this.startColor.A = startPixel[ALPHA];
-        if (this.isTransparent(this.startColor) || this.isHalfOpacity(this.startColor)) {
+        if (this.isTransparent(this.startColor)) {
             this.startColor = { R: 255, G: 255, B: 255, A: 255 };
         }
     }
@@ -159,17 +207,19 @@ export class PaintBucketService extends Tool {
     }
     isSimilarColor(colorA: Color): boolean {
         const colorB = this.startColor;
-        const threshold = (this.bucketTolerance / 100) * MAX_PIXEL_VALUE;
         const R = Math.abs(colorA.R - colorB.R);
         const G = Math.abs(colorA.G - colorB.G);
         const B = Math.abs(colorA.B - colorB.B);
         const A = Math.abs(colorA.A - colorB.A);
-        if (colorA.R === 0 && colorA.G === 0 && colorA.B === 0 && colorA.A < 255) {
-            return A < threshold + 50;
-        } else if (threshold === 0) {
+        const euclidianDistance = Math.sqrt(R * R + G * G + B * B);
+        const maxDistance = Math.sqrt(MAX_PIXEL_VALUE * MAX_PIXEL_VALUE * N_COORD_3);
+        const diffPercentage = (euclidianDistance * INCREASE_FACTOR) / maxDistance;
+        const diffPercentageAlpha = (A * INCREASE_FACTOR) / MAX_PIXEL_VALUE;
+
+        if (this.bucketTolerance === 0) {
             return R === 0 && G === 0 && B === 0 && A === 0;
         } else {
-            return R < threshold && G < threshold && B < threshold && A < threshold;
+            return diffPercentage < this.bucketTolerance && diffPercentageAlpha < this.bucketTolerance;
         }
     }
 }

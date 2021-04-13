@@ -27,6 +27,10 @@ export class DrawingService {
         return this.baseCtx;
     }
 
+    getPreviewContext(): CanvasRenderingContext2D {
+        return this.previewCtx;
+    }
+
     restoreCanvas(): void {
         const dataURL = sessionStorage.getItem('canvasBuffer');
         const image = new Image();

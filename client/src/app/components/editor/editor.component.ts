@@ -44,7 +44,8 @@ export class EditorComponent implements AfterViewInit {
             .set(KeyboardButtons.SelectionRectangle, ToolsNames.SelectBox)
             .set(KeyboardButtons.SelectionEllipse, ToolsNames.SelectEllipse)
             .set(KeyboardButtons.Polygon, ToolsNames.Polygon)
-            .set(KeyboardButtons.Pipette, ToolsNames.Pipette);
+            .set(KeyboardButtons.Pipette, ToolsNames.Pipette)
+            .set(KeyboardButtons.PaintBucket, ToolsNames.PaintBucket);
     }
 
     ngAfterViewInit(): void {

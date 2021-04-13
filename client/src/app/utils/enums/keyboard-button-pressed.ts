@@ -27,4 +27,5 @@ export enum KeyboardButtons {
     grid = 'g',
     gridUp = '=',
     gripDown = '-',
+    PaintBucket = 'b',
 }
