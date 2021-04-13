@@ -32,7 +32,6 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
         for (let i = 0; i < pathLength - 1; i++) {
             const drawnLine: Vec2[] = [this.pathData[i], this.pathData[i + 1]];
             if (this.verifiyCrossedLines(drawnLine, lineToVerify)) {
-                console.log('ye');
                 this.validePoint = false;
                 return false;
             }
@@ -69,40 +68,50 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
             this.lineThickness || DEFAULT_MIN_THICKNESS,
             closedSegment,
         );
-        // this.drawingService.baseCtx.save();
-        // this.clipArea();
-        // this.drawingService.baseCtx.restore();
-        this.clearPath();
+        this.clipArea();
+        // this.clearPath();
     }
 
-    // clipArea(): void {
-    //     this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
+    clipArea(): void {
+        this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
 
-    //     const coords = this.getClippedCoords();
-    //     const size = this.getClippedSize(coords);
+        const coords = this.getClippedCoords();
+        const size = this.getClippedSize(coords);
 
-    //     const imageData = this.drawingService.baseCtx.getImageData(coords[0].x, coords[0].y, size.x, size.y);
-    //     const bottomRightCorner: Vec2 = { x: imageData.width, y: imageData.height };
-    //     // this.replaceEmptyPixels(imageData);
-    //     createImageBitmap(imageData).then((imgBitmap) => {
-    //         this.drawingService.selectedAreaCtx.save();
-    //         this.drawingService.selectedAreaCtx.beginPath();
-    //         this.drawingService.selectedAreaCtx.moveTo(this.pathData[0].x, this.pathData[0].y);
-    //         for (const point of this.pathData) this.drawingService.baseCtx.lineTo(point.x, point.y);
-    //         this.drawingService.selectedAreaCtx.lineTo(this.pathData[0].x, this.pathData[0].y);
-    //         this.drawingService.selectedAreaCtx.stroke();
+        const imageData = this.drawingService.baseCtx.getImageData(coords[0].x, coords[0].y, size.x, size.y);
 
-    //         this.drawingService.selectedAreaCtx.clip();
-    //         this.drawingService.selectedAreaCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
-    //         this.drawingService.selectedAreaCtx.restore();
-    //     });
+        createImageBitmap(imageData).then((imgBitmap) => {
+            // const bottomRightCorner: Vec2 = { x: imageData.width, y: imageData.height };
+            // this.replaceEmptyPixels(imageData);
+            // this.drawingService.selectedAreaCtx.strokeStyle = 'rgba(255,255,255,0)';
 
-    //     // this.drawingService.selectedAreaCtx.translate(-coords[0].x, -coords[0].y);
-    //     // this.drawingService.selectedAreaCtx.canvas.height = size.y;
-    //     // this.drawingService.selectedAreaCtx.canvas.width = size.x;
-    // tslint:disable-next-line:max-line-length
-    //     // this.drawingService.selectedAreaCtx.putImageData(this.drawingService.baseCtx.getImageData(coords[0].x, coords[0].y, size.x, size.y), 0, 0);
-    // }
+            this.drawingService.selectedAreaCtx.save();
+
+            this.drawingService.selectedAreaCtx.beginPath();
+            this.drawingService.selectedAreaCtx.moveTo(this.pathData[0].x, this.pathData[0].y);
+            for (const point of this.pathData) this.drawingService.selectedAreaCtx.lineTo(point.x, point.y);
+            this.drawingService.selectedAreaCtx.lineTo(this.pathData[0].x, this.pathData[0].y);
+            this.drawingService.selectedAreaCtx.stroke();
+
+            this.drawingService.selectedAreaCtx.clip();
+
+            this.drawingService.selectedAreaCtx.drawImage(imgBitmap, coords[0].x, coords[0].y);
+            this.drawingService.selectedAreaCtx.restore();
+        });
+        this.drawingService.selectedAreaCtx.canvas.height = size.y;
+        this.drawingService.selectedAreaCtx.canvas.width = size.x;
+        this.drawingService.selectedAreaCtx.translate(-coords[0].x, -coords[0].y);
+        this.drawingService.selectedAreaCtx.canvas.style.top = coords[0].y - 1 + 'px';
+        this.drawingService.selectedAreaCtx.canvas.style.left = coords[0].x - 1 + 'px';
+
+        this.drawingService.baseCtx.fillStyle = 'white';
+        // this.drawingService.baseCtx.strokeStyle = 'rgba(255,255,255,0)';
+        this.drawingService.baseCtx.beginPath();
+        this.drawingService.baseCtx.moveTo(this.pathData[0].x, this.pathData[0].y);
+        for (const point of this.pathData) this.drawingService.baseCtx.lineTo(point.x, point.y);
+        this.drawingService.baseCtx.lineTo(this.pathData[0].x, this.pathData[0].y);
+        this.drawingService.baseCtx.fill();
+    }
 
     getClippedSize(coords: Vec2[]): Vec2 {
         const height = Math.abs(coords[1].y - coords[0].y);
