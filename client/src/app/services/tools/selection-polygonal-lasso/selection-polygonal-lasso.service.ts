@@ -69,6 +69,7 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
             closedSegment,
         );
         this.clipArea();
+        this.selectionActive = true;
     }
 
     clipArea(): void {

@@ -4,11 +4,8 @@ import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ALPHA_POS, BLUE_POS, GREEN_POS, MAX_BYTE_VALUE, RED_POS } from '@app/services/services-constants';
-import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
 import { PIXELS_ARROW_STEPS } from '@app/services/tools/tools-constants';
-import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
-import { ToolCommand } from '@app/utils/interfaces/tool-command';
 
 @Injectable({
     providedIn: 'root',
@@ -26,29 +23,23 @@ export abstract class SelectionService extends Tool {
     downPressed: boolean;
     leftPressed: boolean;
     rightPressed: boolean;
-    mousePositionHandler: MousePositionHandlerService;
     initialTopLeftCorner: Vec2;
     height: number;
     width: number;
     isSelectionDone: boolean;
 
     currentColorService: CurrentColorService;
-    constructor(
-        drawingService: DrawingService,
-        currentColorService: CurrentColorService,
-        mousePositionHandler: MousePositionHandlerService,
-        undoRedo: UndoRedoService,
-    ) {
+    constructor(drawingService: DrawingService, currentColorService: CurrentColorService) {
         super(drawingService, currentColorService);
         this.currentColorService = currentColorService;
         this.topLeftCorner = { x: 0, y: 0 };
         this.offset = { x: 0, y: 0 };
         this.selectionActive = this.dragActive = false;
         this.drawingService.selectedAreaCtx = this.drawingService.baseCtx;
-        this.mousePositionHandler = mousePositionHandler;
     }
 
     onKeyDown(event: KeyboardEvent): void {
+        event.preventDefault();
         switch (event.key) {
             case KeyboardButtons.Up: {
                 if (this.selectionActive) {
@@ -114,13 +105,12 @@ export abstract class SelectionService extends Tool {
                 }
                 break;
             }
-            case KeyboardButtons.Shift: {
-                this.shiftDown = false;
-                this.updatePreview();
-                break;
-            }
+            default:
+                this.defaultOnKeyDown(event);
         }
     }
+
+    abstract defaultOnKeyDown(event: KeyboardEvent): void;
 
     updateTopLeftCorner(): void {
         if (this.firstGridClip.x > this.finalGridClip.x) {
@@ -192,6 +182,4 @@ export abstract class SelectionService extends Tool {
     }
 
     abstract updatePreview(): void;
-
-    abstract executeCommand(command: ToolCommand): void;
 }

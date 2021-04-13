@@ -7,12 +7,14 @@ import { MousePositionHandlerService } from '@app/services/tools/mouse-position-
 import { SelectionService } from '@app/services/tools/selection-service/selection.service';
 import { LINE_DASH } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
+import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 @Injectable({
     providedIn: 'root',
 })
 export class SelectionEllipseService extends SelectionService {
     currentColorService: CurrentColorService;
+    mousePositionHandler: MousePositionHandlerService;
 
     constructor(
         drawingService: DrawingService,
@@ -20,7 +22,7 @@ export class SelectionEllipseService extends SelectionService {
         mousePositionHandler: MousePositionHandlerService,
         private undoRedo: UndoRedoService,
     ) {
-        super(drawingService, currentColorService, mousePositionHandler, undoRedo);
+        super(drawingService, currentColorService);
         this.currentColorService = currentColorService;
         this.topLeftCorner = { x: 0, y: 0 };
         this.offset = { x: 0, y: 0 };
@@ -137,6 +139,13 @@ export class SelectionEllipseService extends SelectionService {
         this.drawingService.baseCtx.fillStyle = 'white';
         this.drawEllipse(this.drawingService.baseCtx, finalGrid);
         this.drawingService.baseCtx.fill();
+    }
+
+    defaultOnKeyDown(event: KeyboardEvent): void {
+        if (event.key === KeyboardButtons.Shift) {
+            this.shiftDown = false;
+            this.updatePreview();
+        }
     }
 
     updatePreview(): void {

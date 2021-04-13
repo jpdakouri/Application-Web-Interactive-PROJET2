@@ -6,6 +6,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection.service';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
+import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { Sign } from '@app/utils/enums/rgb-settings';
 
@@ -13,13 +14,14 @@ import { Sign } from '@app/utils/enums/rgb-settings';
     providedIn: 'root',
 })
 export class SelectionRectangleService extends SelectionService {
+    mousePositionHandler: MousePositionHandlerService;
     constructor(
         drawingService: DrawingService,
         currentColorService: CurrentColorService,
         mousePositionHandler: MousePositionHandlerService,
         private undoRedo: UndoRedoService,
     ) {
-        super(drawingService, currentColorService, mousePositionHandler, undoRedo);
+        super(drawingService, currentColorService);
         this.currentColorService = currentColorService;
         this.topLeftCorner = { x: 0, y: 0 };
         this.offset = { x: 0, y: 0 };
@@ -146,6 +148,13 @@ export class SelectionRectangleService extends SelectionService {
         }
         this.drawRectanglePerimeter(this.drawingService.previewCtx, currentCoord);
         this.drawingService.previewCtx.closePath();
+    }
+
+    defaultOnKeyDown(event: KeyboardEvent): void {
+        if (event.key === KeyboardButtons.Shift) {
+            this.shiftDown = false;
+            this.updatePreview();
+        }
     }
 
     selectAll(): void {
