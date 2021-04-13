@@ -73,7 +73,6 @@ export const OUT_OF_BOUND_COLOR_RGBA = 'rgba(100,100,100,1)';
 /***STAMP CONSTANTS**/
 /***********************/
 export const STAMP_SIZE = 100;
-export const BASE_STAMP_IMAGE_PATH = '../../assets/stamps/';
 export const SMALL_ANGLE_CHANGE = 1;
 export const BIG_ANGLE_CHANGE = 15;
 export const STAMP_IMAGE_EXTENSION = '.png';
