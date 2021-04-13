@@ -4,14 +4,7 @@ import { StampCommand } from '@app/classes/tool-commands/stamp-command';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import {
-    BASE_STAMP_IMAGE_PATH,
-    BIG_ANGLE_CHANGE,
-    DEG_TO_RAD_RATIO,
-    SMALL_ANGLE_CHANGE,
-    STAMP_IMAGE_EXTENSION,
-    STAMP_SIZE,
-} from '@app/services/tools/tools-constants';
+import { BIG_ANGLE_CHANGE, DEG_TO_RAD_RATIO, SMALL_ANGLE_CHANGE, STAMP_IMAGE_EXTENSION, STAMP_SIZE } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { Stamp } from '@app/utils/enums/stamp';
@@ -62,6 +55,7 @@ export class StampService extends Tool {
 
     private drawPreview(rotationAngle: number, scalingFactor: number, position: Vec2, stamp: Stamp): void {
         const stampImage = new Image(STAMP_SIZE, STAMP_SIZE);
+        const BASE_STAMP_IMAGE_PATH = '../../assets/stamps/';
         stampImage.src = BASE_STAMP_IMAGE_PATH + stamp + STAMP_IMAGE_EXTENSION;
 
         const stampCenterAngleFromOrigin = Math.atan(position.y / position.x);
