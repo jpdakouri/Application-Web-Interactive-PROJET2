@@ -5,7 +5,6 @@ import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import {
-    BASE_STAMP_IMAGE_PATH,
     BIG_ANGLE_CHANGE,
     DEG_TO_RAD_RATIO,
     FULL_CIRCLE_DEG,
@@ -64,6 +63,7 @@ export class StampService extends Tool {
 
     private drawPreview(rotationAngle: number, scalingFactor: number, position: Vec2, stamp: Stamp): void {
         const stampImage = new Image(STAMP_SIZE, STAMP_SIZE);
+        const BASE_STAMP_IMAGE_PATH = '../../assets/stamps/';
         stampImage.src = BASE_STAMP_IMAGE_PATH + stamp + STAMP_IMAGE_EXTENSION;
 
         const stampCenterAngleFromOrigin = Math.atan(position.y / position.x);
