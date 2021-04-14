@@ -81,7 +81,7 @@ export abstract class LineCreatorService extends SelectionService {
         }
     }
 
-    defaultOnKeyDown(event: KeyboardEvent): void {
+    onKeyDown(event: KeyboardEvent): void {
         if (this.started)
             switch (event.key) {
                 case KeyboardButtons.Shift:
@@ -100,16 +100,15 @@ export abstract class LineCreatorService extends SelectionService {
                     this.previewUpdate();
                     event.preventDefault();
                     break;
-                default:
-                    break;
             }
+        else this.defaultOnKeyDown(event);
     }
 
     onKeyUp(event: KeyboardEvent): void {
         if (this.shiftPressed && event.key === KeyboardButtons.Shift) {
             this.shiftPressed = false;
             this.previewUpdate();
-        }
+        } else this.defaultOnKeyUp(event);
     }
 
     abstract getPrimaryColor(): string;

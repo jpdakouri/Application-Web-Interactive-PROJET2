@@ -104,6 +104,8 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         setTimeout(() => {
             this.selectionEllipseService.height = this.drawingService.canvas.height;
             this.selectionEllipseService.width = this.drawingService.canvas.width;
+            this.selectionPolygonalLassoService.height = this.drawingService.canvas.height;
+            this.selectionPolygonalLassoService.width = this.drawingService.canvas.width;
         });
         setTimeout(() => {
             this.undoRedo.saveInitialState();
@@ -287,11 +289,15 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.eraserActive = this.currentTool.eraserActive || false;
     }
     getSelectedAreaSize(): Vec2 {
-        return { x: this.selectionEllipseService.width, y: this.selectionEllipseService.height };
+        return this.selectionEllipseService.selectionActive
+            ? { x: this.selectionEllipseService.width, y: this.selectionEllipseService.height }
+            : { x: this.selectionPolygonalLassoService.width, y: this.selectionPolygonalLassoService.height };
     }
 
     getTopLeftCorner(): Vec2 {
-        return { x: this.selectionEllipseService.topLeftCorner.x, y: this.selectionEllipseService.topLeftCorner.y };
+        return this.selectionEllipseService.selectionActive
+            ? { x: this.selectionEllipseService.topLeftCorner.x, y: this.selectionEllipseService.topLeftCorner.y }
+            : { x: this.selectionPolygonalLassoService.topLeftCorner.x, y: this.selectionPolygonalLassoService.topLeftCorner.y };
     }
 
     getSelectedAreaSizeRectangle(): Vec2 {

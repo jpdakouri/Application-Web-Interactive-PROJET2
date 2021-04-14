@@ -134,10 +134,27 @@ export class SelectionEllipseService extends SelectionService {
         this.drawingService.baseCtx.fill();
     }
 
-    defaultOnKeyDown(event: KeyboardEvent): void {
+    onKeyUp(event: KeyboardEvent): void {
         if (event.key === KeyboardButtons.Shift) {
             this.shiftDown = false;
             this.updatePreview();
+        } else this.defaultOnKeyUp(event);
+    }
+
+    onKeyDown(event: KeyboardEvent): void {
+        switch (event.key) {
+            case KeyboardButtons.Shift: {
+                this.shiftDown = true;
+                this.updatePreview();
+                break;
+            }
+            case KeyboardButtons.Escape: {
+                this.clearPath();
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                this.topLeftCorner = { x: 0, y: 0 };
+            }
+            default:
+                this.defaultOnKeyDown(event);
         }
     }
 

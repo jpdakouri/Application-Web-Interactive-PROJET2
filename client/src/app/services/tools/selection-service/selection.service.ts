@@ -62,7 +62,9 @@ export abstract class SelectionService extends Tool {
     }
     abstract registerUndo(imageData: ImageData): void;
 
-    onKeyDown(event: KeyboardEvent): void {
+    abstract onKeyDown(event: KeyboardEvent): void;
+
+    defaultOnKeyDown(event: KeyboardEvent): void {
         event.preventDefault();
         switch (event.key) {
             case KeyboardButtons.Up: {
@@ -89,21 +91,13 @@ export abstract class SelectionService extends Tool {
                 }
                 break;
             }
-            // case KeyboardButtons.Shift: {
-            //     this.shiftDown = true;
-            //     this.updatePreview();
-            //     break;
-            // }
-            // case KeyboardButtons.Escape: {
-            //     this.clearPath();
-            //     this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            //     this.topLeftCorner = { x: 0, y: 0 };
-            // }
         }
         this.updateArrowPosition();
     }
 
-    onKeyUp(event: KeyboardEvent): void {
+    abstract onKeyUp(event: KeyboardEvent): void;
+
+    defaultOnKeyUp(event: KeyboardEvent): void {
         switch (event.key) {
             case KeyboardButtons.Up: {
                 if (this.selectionActive) {
@@ -129,12 +123,8 @@ export abstract class SelectionService extends Tool {
                 }
                 break;
             }
-            default:
-                this.defaultOnKeyDown(event);
         }
     }
-
-    abstract defaultOnKeyDown(event: KeyboardEvent): void;
 
     updateTopLeftCorner(): void {
         if (this.firstGridClip.x > this.finalGridClip.x) {
@@ -181,7 +171,6 @@ export abstract class SelectionService extends Tool {
     }
 
     isClickIn(firstGrid: Vec2): boolean {
-        console.log(firstGrid, this.topLeftCorner, this.width);
         if (firstGrid.x < this.topLeftCorner.x || firstGrid.x > this.topLeftCorner.x + this.width) {
             return false;
         }
