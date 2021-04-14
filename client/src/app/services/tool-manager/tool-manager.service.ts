@@ -169,6 +169,15 @@ export class ToolManagerService {
         return this.toolBox[this.currentTool];
     }
 
+    getCurrentSelectionTool(): Tool | undefined {
+        const tool = this.toolBox[this.currentTool];
+        const isToolSelection =
+            tool === this.toolBox[ToolsNames.SelectBox] ||
+            tool === this.toolBox[ToolsNames.SelectEllipse] ||
+            tool === this.toolBox[ToolsNames.SelectPolygon];
+        return isToolSelection ? tool : undefined;
+    }
+
     setCurrentNumberOfSides(numberOfSides?: number): void {
         this.toolBox[this.currentTool].numberOfSides = numberOfSides;
         this.currentAttributes.numberOfSides = numberOfSides;
