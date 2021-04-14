@@ -16,7 +16,6 @@ export class DrawingService {
     @Output() createNewDrawingEmitter: EventEmitter<boolean> = new EventEmitter();
 
     saveCanvas(): void {
-        console.log('save');
         const value = [];
         value.push(this.canvas.toDataURL());
         value.push(this.canvas.width);
@@ -33,7 +32,6 @@ export class DrawingService {
     }
 
     restoreCanvas(): void {
-        console.log('restoreCanvas');
         const canvasInfo = localStorage.getItem('canvasInfo');
         const info = JSON.parse(canvasInfo as string);
         if (info[0]) {
@@ -49,7 +47,6 @@ export class DrawingService {
     }
 
     restoreDrawing(): void {
-        console.log('restoreDrawing');
         const canvasInfo = localStorage.getItem('canvasInfo');
         const info = JSON.parse(canvasInfo as string);
         const dataURL = info[0];
@@ -75,7 +72,6 @@ export class DrawingService {
     }
 
     openDrawing(drawing: DrawingData, showConfirmDialog?: boolean): void {
-        console.log('openD');
         this.createNewDrawing(showConfirmDialog);
         this.canvas.width = drawing.width;
         this.canvas.height = drawing.height;
@@ -91,13 +87,11 @@ export class DrawingService {
     }
 
     createNewDrawing(showConfirmDialog?: boolean): boolean {
-        console.log('clearDrawing');
         if (localStorage.getItem('canvasInfo') && !this.isCanvasBlank() && showConfirmDialog) {
             if (confirm("Le canvas n'est pas vide! Voulez-vous procéder tout de même?")) {
                 this.clearCanvas(this.previewCtx);
                 this.clearCanvas(this.baseCtx);
                 this.saveCanvas();
-                console.log('localStorage cleared!');
                 localStorage.clear();
                 this.emitCreateNewDrawing();
                 return true;
@@ -107,12 +101,11 @@ export class DrawingService {
                 return true;
             }
         }
-        console.log('is canvas blank ' + this.isCanvasBlank());
+
         return false;
     }
 
     continueDrawing(): void {
-        console.log('continue');
         if (!this.isCanvasBlank() && localStorage.getItem('canvasInfo')) {
             const dataURL = localStorage.getItem('canvasInfo');
             const image = new Image();

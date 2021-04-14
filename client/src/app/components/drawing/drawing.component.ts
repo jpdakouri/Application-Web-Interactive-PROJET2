@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, OnInit, Output, ViewChild } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DEFAULT_HEIGHT, DEFAULT_WHITE, DEFAULT_WIDTH, SIDEBAR_WIDTH, WORKING_ZONE_VISIBLE_PORTION } from '@app/components/components-constants';
@@ -21,7 +21,7 @@ import { EraserCursor } from '@app/utils/interfaces/eraser-cursor';
     templateUrl: './drawing.component.html',
     styleUrls: ['./drawing.component.scss'],
 })
-export class DrawingComponent implements AfterViewInit, OnInit, OnDestroy {
+export class DrawingComponent implements AfterViewInit, OnInit {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('gridCanvas', { static: false }) gridCanvas: ElementRef<HTMLCanvasElement>;
@@ -83,10 +83,6 @@ export class DrawingComponent implements AfterViewInit, OnInit, OnDestroy {
         this.subscribeToToolChange();
         this.subscribeToNewDrawing();
         this.subscribeToCreateNewDrawingEmitter();
-        console.log('drawingComponent initialise');
-    }
-    ngOnDestroy(): void {
-        console.log('drawingComponent');
     }
 
     ngAfterViewInit(): void {
@@ -105,7 +101,7 @@ export class DrawingComponent implements AfterViewInit, OnInit, OnDestroy {
         this.canvasResizerService.canvasPreviewHeight = this.canvasSize.y;
         // this.drawingService.restoreCanvas();
         // this.drawingService.saveCanvas();
-        // this.undoRedo.saveInitialState();
+        this.undoRedo.saveInitialState();
         setTimeout(() => {
             this.selectionEllipseService.height = this.drawingService.canvas.height;
             this.selectionEllipseService.width = this.drawingService.canvas.width;
@@ -113,9 +109,9 @@ export class DrawingComponent implements AfterViewInit, OnInit, OnDestroy {
             this.drawingService.saveCanvas();
             this.undoRedo.saveInitialState();
         });
-        // setTimeout(() => {
-        //     this.undoRedo.saveInitialState();
-        // });
+        setTimeout(() => {
+            this.undoRedo.saveInitialState();
+        });
     }
 
     subscribeToToolChange(): void {
@@ -170,7 +166,6 @@ export class DrawingComponent implements AfterViewInit, OnInit, OnDestroy {
 
     @HostListener('window:beforeunload', ['$event'])
     unloadHandler(): void {
-        console.log('load');
         this.drawingService.saveCanvas();
     }
 
