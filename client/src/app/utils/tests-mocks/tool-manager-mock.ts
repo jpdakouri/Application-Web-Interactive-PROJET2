@@ -78,4 +78,7 @@ export class ToolManagerServiceMock {
     setSelectedStamp(): void {
         /*empty*/
     }
+    getCurrentSelectionTool(): undefined {
+        return undefined;
+    }
 }
