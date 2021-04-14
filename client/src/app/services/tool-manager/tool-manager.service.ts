@@ -188,10 +188,22 @@ export class ToolManagerService {
         return stamp.selectedStamp;
     }
 
+    getStampRotationAngle(): number {
+        const stamp = this.toolBox.Stamp as StampService;
+        return stamp.rotationAngle;
+    }
+
     setStampScalingFactor(factor?: number): void {
         if (factor != undefined) {
             const stamp = this.toolBox.Stamp as StampService;
             stamp.scalingFactor = factor;
+        }
+    }
+
+    setStampRotationAngle(angle?: number): void {
+        if (angle != undefined) {
+            const stamp = this.toolBox.Stamp as StampService;
+            stamp.rotationAngle = angle;
         }
     }
 
