@@ -72,7 +72,6 @@ export class SelectionEllipseService extends SelectionService {
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown && this.selectionActive && !this.dragActive && this.mouseMoved) {
-            console.log(this.selectionActive);
             this.isSelectionDone = true;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.finalGridClip = this.getPositionFromMouse(event);

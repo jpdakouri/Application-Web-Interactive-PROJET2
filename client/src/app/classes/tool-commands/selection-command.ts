@@ -10,17 +10,20 @@ export class SelectionCommand implements ToolCommand {
     readonly finalTopLeftCorner: Vec2;
     readonly selectionSize: Vec2;
     readonly imageData: ImageData;
+    readonly path?: Vec2[];
     constructor(
         tool: SelectionRectangleService | SelectionEllipseService | SelectionPolygonalLassoService,
         initialTopLeftCorner: Vec2,
         finalTopLeftCorner: Vec2,
         selectionSize: Vec2,
         imageData: ImageData,
+        path?: Vec2[],
     ) {
         this.tool = tool;
         this.initialTopLeftCorner = initialTopLeftCorner;
         this.finalTopLeftCorner = finalTopLeftCorner;
         this.selectionSize = selectionSize;
         this.imageData = imageData;
+        this.path = path;
     }
 }

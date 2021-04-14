@@ -6,7 +6,6 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { LineCreatorService } from '@app/services/line-creator/line-creator.service';
 import { DEFAULT_DOT_RADIUS, DEFAULT_MIN_THICKNESS, MIN_ARRAY_LENGTH } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
-import { ToolCommand } from '@app/utils/interfaces/tool-command';
 @Injectable({
     providedIn: 'root',
 })
@@ -23,6 +22,7 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
             { ...this.topLeftCorner },
             { x: this.width, y: this.height },
             imageData,
+            this.pathData,
         );
         this.undoRedo.addCommand(command);
     }
@@ -34,7 +34,10 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
                 this.isSelectionDone = true;
                 this.endOfSelection();
             }
-        } else if (!this.buffer) this.buffer = true;
+        } else if (!this.buffer) {
+            this.buffer = true;
+            this.clearPath();
+        }
         this.mouseDown = this.dragActive = false;
     }
 
@@ -103,9 +106,10 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
 
         const imageData = this.drawingService.baseCtx.getImageData(coords[0].x, coords[0].y, size.x, size.y);
 
+        this.replaceEmptyPixels(imageData);
         createImageBitmap(imageData).then((imgBitmap) => {
             this.drawingService.selectedAreaCtx.save();
-            this.drawShape(this.drawingService.selectedAreaCtx);
+            this.drawShape(this.drawingService.selectedAreaCtx, this.pathData);
             this.drawingService.selectedAreaCtx.stroke();
             this.drawingService.selectedAreaCtx.clip();
             this.drawingService.selectedAreaCtx.drawImage(imgBitmap, coords[0].x, coords[0].y);
@@ -118,17 +122,19 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
         this.updateBaseCtx();
         this.updateParent(coords);
     }
+
     updateParent(coords: Vec2[]): void {
         this.firstGrid = this.firstGridClip = coords[0];
         this.finalGridClip = coords[1];
         this.updateTopLeftCorner();
+        this.initialTopLeftCorner = { ...this.topLeftCorner };
     }
 
-    drawShape(ctx: CanvasRenderingContext2D): void {
+    drawShape(ctx: CanvasRenderingContext2D, pathData: Vec2[]): void {
         ctx.beginPath();
-        ctx.moveTo(this.pathData[0].x, this.pathData[0].y);
-        for (const point of this.pathData) ctx.lineTo(point.x, point.y);
-        ctx.lineTo(this.pathData[0].x, this.pathData[0].y);
+        ctx.moveTo(pathData[0].x, pathData[0].y);
+        for (const point of pathData) ctx.lineTo(point.x, point.y);
+        ctx.lineTo(pathData[0].x, pathData[0].y);
     }
 
     updateSelectedCtx(coords: Vec2[], size: Vec2): void {
@@ -141,8 +147,8 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
 
     updateBaseCtx(): void {
         this.drawingService.baseCtx.fillStyle = 'white';
-        // this.drawingService.baseCtx.strokeStyle = 'rgba(255,255,255,0)';
-        this.drawShape(this.drawingService.baseCtx);
+        // this.drawingService.baseCtx.strokeStyle = 'rgba(255, 255, 255, 1)';
+        this.drawShape(this.drawingService.baseCtx, this.pathData);
         this.drawingService.baseCtx.fill();
     }
 
@@ -164,8 +170,14 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
         return [minCoords, maxCoords];
     }
 
-    // No need to implement it here
-    executeCommand(command: ToolCommand): void {
-        return;
+    executeCommand(command: SelectionCommand): void {
+        console.log(command.path);
+        this.drawShape(this.drawingService.baseCtx, command.path as Vec2[]);
+        this.drawingService.baseCtx.fillStyle = 'white';
+        this.drawingService.baseCtx.fill();
+        const imageData = command.imageData;
+        createImageBitmap(imageData).then((imgBitmap) => {
+            this.drawingService.baseCtx.drawImage(imgBitmap, command.finalTopLeftCorner.x, command.finalTopLeftCorner.y);
+        });
     }
 }
