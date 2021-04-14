@@ -42,7 +42,7 @@ export class SelectionRectangleService extends SelectionService {
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.clearPath();
+        this.resetFirstGrid();
         this.mouseDown = event.button === MouseButtons.Left;
         this.firstGrid = this.getPositionFromMouse(event);
         this.mouseMoved = false;
@@ -149,24 +149,11 @@ export class SelectionRectangleService extends SelectionService {
     }
 
     onKeyDown(event: KeyboardEvent): void {
-        switch (event.key) {
-            case KeyboardButtons.Shift: {
-                this.shiftDown = true;
-                this.updatePreview();
-                break;
-            }
-            case KeyboardButtons.Escape: {
-                this.clearPath();
-                this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                this.topLeftCorner = { x: 0, y: 0 };
-            }
-            default:
-                this.defaultOnKeyDown(event);
-        }
+        this.defaultOnKeyDown(event);
     }
 
     selectAll(): void {
-        this.clearPath();
+        this.resetFirstGrid();
         this.drawingService.selectedAreaCtx.canvas.style.top = Sign.Negative + 'px';
         this.drawingService.selectedAreaCtx.canvas.style.left = Sign.Negative + 'px';
         const grid: Vec2 = { x: this.drawingService.baseCtx.canvas.width, y: this.drawingService.baseCtx.canvas.height };

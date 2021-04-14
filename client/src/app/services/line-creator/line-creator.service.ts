@@ -24,9 +24,7 @@ export abstract class LineCreatorService extends SelectionService {
         this.mouseDownCoord = this.getPositionFromMouse(event);
         if (this.selectionActive) {
             this.firstGrid = this.mouseDownCoord;
-            console.log(this.pathData);
             this.defaultOnMouseDown(event);
-            console.log(this.pathData);
         }
     }
 

@@ -16,6 +16,7 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
     }
 
     registerUndo(imageData: ImageData): void {
+        console.log(this.pathData);
         const command = new SelectionCommand(
             this,
             this.initialTopLeftCorner,
@@ -146,9 +147,9 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
     }
 
     updateBaseCtx(): void {
-        this.drawingService.baseCtx.fillStyle = 'white';
         // this.drawingService.baseCtx.strokeStyle = 'rgba(255, 255, 255, 1)';
         this.drawShape(this.drawingService.baseCtx, this.pathData);
+        this.drawingService.baseCtx.fillStyle = 'white';
         this.drawingService.baseCtx.fill();
     }
 
@@ -172,8 +173,8 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
 
     executeCommand(command: SelectionCommand): void {
         console.log(command.path);
-        this.drawShape(this.drawingService.baseCtx, command.path as Vec2[]);
         this.drawingService.baseCtx.fillStyle = 'white';
+        this.drawShape(this.drawingService.baseCtx, command.path as Vec2[]);
         this.drawingService.baseCtx.fill();
         const imageData = command.imageData;
         createImageBitmap(imageData).then((imgBitmap) => {

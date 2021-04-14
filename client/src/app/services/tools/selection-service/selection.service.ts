@@ -40,8 +40,6 @@ export abstract class SelectionService extends Tool {
         this.drawingService.selectedAreaCtx = this.drawingService.baseCtx;
     }
 
-    abstract onMouseDown(event: MouseEvent): void;
-
     defaultOnMouseDown(event: MouseEvent): void {
         if (this.isClickIn(this.firstGrid)) {
             const initial = this.getPositionFromMouse(event);
@@ -61,8 +59,6 @@ export abstract class SelectionService extends Tool {
         }
     }
     abstract registerUndo(imageData: ImageData): void;
-
-    abstract onKeyDown(event: KeyboardEvent): void;
 
     defaultOnKeyDown(event: KeyboardEvent): void {
         event.preventDefault();
@@ -91,11 +87,19 @@ export abstract class SelectionService extends Tool {
                 }
                 break;
             }
+            case KeyboardButtons.Shift: {
+                this.shiftDown = true;
+                this.updatePreview();
+                break;
+            }
+            case KeyboardButtons.Escape: {
+                this.cancelSelection();
+            }
+            default:
+                this.defaultOnKeyDown(event);
         }
         this.updateArrowPosition();
     }
-
-    abstract onKeyUp(event: KeyboardEvent): void;
 
     defaultOnKeyUp(event: KeyboardEvent): void {
         switch (event.key) {
@@ -180,7 +184,14 @@ export abstract class SelectionService extends Tool {
         return true;
     }
 
-    clearPath(): void {
+    cancelSelection(): void {
+        this.drawingService.selectedAreaCtx.canvas.width = 0;
+        this.drawingService.selectedAreaCtx.canvas.height = 0;
+        this.selectionActive = false;
+        this.topLeftCorner = { x: 0, y: 0 };
+    }
+
+    resetFirstGrid(): void {
         this.firstGrid = this.mouseDownCoord = { x: 0, y: 0 };
     }
 
