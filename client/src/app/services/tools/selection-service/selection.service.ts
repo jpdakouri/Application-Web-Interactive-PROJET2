@@ -11,13 +11,13 @@ import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
     providedIn: 'root',
 })
 export abstract class SelectionService extends Tool {
+    static selectionActive: boolean;
     firstGrid: Vec2;
     topLeftCorner: Vec2;
     firstGridClip: Vec2;
     finalGridClip: Vec2;
     offset: Vec2;
     shiftDown: boolean;
-    selectionActive: boolean;
     dragActive: boolean;
     upPressed: boolean;
     downPressed: boolean;
@@ -35,7 +35,7 @@ export abstract class SelectionService extends Tool {
         this.currentColorService = currentColorService;
         this.topLeftCorner = { x: 0, y: 0 };
         this.offset = { x: 0, y: 0 };
-        this.selectionActive = this.dragActive = false;
+        SelectionService.selectionActive = this.dragActive = false;
         this.buffer = true;
         this.drawingService.selectedAreaCtx = this.drawingService.baseCtx;
     }
@@ -47,7 +47,7 @@ export abstract class SelectionService extends Tool {
             this.offset.y = this.topLeftCorner.y - initial.y;
             this.dragActive = true;
         } else {
-            this.selectionActive = false;
+            SelectionService.selectionActive = false;
             this.buffer = false;
             const imageData = this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
             createImageBitmap(imageData).then((imgBitmap) => {
@@ -64,25 +64,25 @@ export abstract class SelectionService extends Tool {
         event.preventDefault();
         switch (event.key) {
             case KeyboardButtons.Up: {
-                if (this.selectionActive) {
+                if (SelectionService.selectionActive) {
                     this.upPressed = true;
                 }
                 break;
             }
             case KeyboardButtons.Down: {
-                if (this.selectionActive) {
+                if (SelectionService.selectionActive) {
                     this.downPressed = true;
                 }
                 break;
             }
             case KeyboardButtons.Right: {
-                if (this.selectionActive) {
+                if (SelectionService.selectionActive) {
                     this.rightPressed = true;
                 }
                 break;
             }
             case KeyboardButtons.Left: {
-                if (this.selectionActive) {
+                if (SelectionService.selectionActive) {
                     this.leftPressed = true;
                 }
                 break;
@@ -95,8 +95,6 @@ export abstract class SelectionService extends Tool {
             case KeyboardButtons.Escape: {
                 this.cancelSelection();
             }
-            default:
-                this.defaultOnKeyDown(event);
         }
         this.updateArrowPosition();
     }
@@ -104,25 +102,25 @@ export abstract class SelectionService extends Tool {
     defaultOnKeyUp(event: KeyboardEvent): void {
         switch (event.key) {
             case KeyboardButtons.Up: {
-                if (this.selectionActive) {
+                if (SelectionService.selectionActive) {
                     this.upPressed = false;
                 }
                 break;
             }
             case KeyboardButtons.Down: {
-                if (this.selectionActive) {
+                if (SelectionService.selectionActive) {
                     this.downPressed = false;
                 }
                 break;
             }
             case KeyboardButtons.Right: {
-                if (this.selectionActive) {
+                if (SelectionService.selectionActive) {
                     this.rightPressed = false;
                 }
                 break;
             }
             case KeyboardButtons.Left: {
-                if (this.selectionActive) {
+                if (SelectionService.selectionActive) {
                     this.leftPressed = false;
                 }
                 break;
@@ -154,19 +152,19 @@ export abstract class SelectionService extends Tool {
     }
 
     updateArrowPosition(): void {
-        if (this.selectionActive && this.upPressed) {
+        if (SelectionService.selectionActive && this.upPressed) {
             this.topLeftCorner.y -= PIXELS_ARROW_STEPS;
             this.firstGrid.y -= PIXELS_ARROW_STEPS;
         }
-        if (this.selectionActive && this.downPressed) {
+        if (SelectionService.selectionActive && this.downPressed) {
             this.topLeftCorner.y += PIXELS_ARROW_STEPS;
             this.firstGrid.y += PIXELS_ARROW_STEPS;
         }
-        if (this.selectionActive && this.rightPressed) {
+        if (SelectionService.selectionActive && this.rightPressed) {
             this.topLeftCorner.x += PIXELS_ARROW_STEPS;
             this.firstGrid.x += PIXELS_ARROW_STEPS;
         }
-        if (this.selectionActive && this.leftPressed) {
+        if (SelectionService.selectionActive && this.leftPressed) {
             this.topLeftCorner.x -= PIXELS_ARROW_STEPS;
             this.firstGrid.x -= PIXELS_ARROW_STEPS;
         }
@@ -187,7 +185,7 @@ export abstract class SelectionService extends Tool {
     cancelSelection(): void {
         this.drawingService.selectedAreaCtx.canvas.width = 0;
         this.drawingService.selectedAreaCtx.canvas.height = 0;
-        this.selectionActive = false;
+        SelectionService.selectionActive = false;
         this.topLeftCorner = { x: 0, y: 0 };
     }
 

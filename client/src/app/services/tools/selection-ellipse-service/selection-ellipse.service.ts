@@ -26,7 +26,7 @@ export class SelectionEllipseService extends SelectionService {
         this.currentColorService = currentColorService;
         this.topLeftCorner = { x: 0, y: 0 };
         this.offset = { x: 0, y: 0 };
-        this.selectionActive = this.dragActive = false;
+        SelectionService.selectionActive = this.dragActive = false;
         this.drawingService.selectedAreaCtx = this.drawingService.baseCtx;
         this.mousePositionHandler = mousePositionHandler;
     }
@@ -43,16 +43,17 @@ export class SelectionEllipseService extends SelectionService {
     }
 
     onMouseDown(event: MouseEvent): void {
+        console.log(SelectionService.selectionActive);
         this.resetFirstGrid();
         this.mouseDown = event.button === MouseButtons.Left;
         this.firstGrid = this.getPositionFromMouse(event);
         this.mouseMoved = false;
         if (this.mouseDown) {
-            if (!this.selectionActive) {
+            if (!SelectionService.selectionActive) {
                 this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
                 this.firstGridClip = this.getPositionFromMouse(event);
                 this.updatePreview();
-                this.selectionActive = true;
+                SelectionService.selectionActive = true;
             } else {
                 this.defaultOnMouseDown(event);
             }
@@ -60,18 +61,18 @@ export class SelectionEllipseService extends SelectionService {
     }
 
     onMouseMove(event: MouseEvent): void {
-        if (this.mouseDown && this.selectionActive && !this.dragActive) {
+        if (this.mouseDown && SelectionService.selectionActive && !this.dragActive) {
             this.mouseMoved = true;
             this.mouseDownCoord.x = this.getPositionFromMouse(event).x - this.firstGrid.x;
             this.mouseDownCoord.y = this.getPositionFromMouse(event).y - this.firstGrid.y;
             this.updatePreview();
-        } else if (this.mouseDown && this.selectionActive && this.dragActive) {
+        } else if (this.mouseDown && SelectionService.selectionActive && this.dragActive) {
             this.updateDragPosition(this.getPositionFromMouse(event));
         }
     }
 
     onMouseUp(event: MouseEvent): void {
-        if (this.mouseDown && this.selectionActive && !this.dragActive && this.mouseMoved) {
+        if (this.mouseDown && SelectionService.selectionActive && !this.dragActive && this.mouseMoved) {
             this.isSelectionDone = true;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.finalGridClip = this.getPositionFromMouse(event);

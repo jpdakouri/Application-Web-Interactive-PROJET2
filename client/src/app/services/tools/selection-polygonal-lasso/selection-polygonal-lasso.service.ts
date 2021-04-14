@@ -4,6 +4,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { LineCreatorService } from '@app/services/line-creator/line-creator.service';
+import { SelectionService } from '@app/services/tools/selection-service/selection.service';
 import { DEFAULT_DOT_RADIUS, DEFAULT_MIN_THICKNESS, MIN_ARRAY_LENGTH } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 @Injectable({
@@ -29,7 +30,7 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
     }
 
     onMouseUp(event: MouseEvent): void {
-        if (this.validePoint && this.mouseDown && !this.selectionActive && this.buffer) {
+        if (this.validePoint && this.mouseDown && !SelectionService.selectionActive && this.buffer) {
             this.defaultMouseUp(event);
             if (this.pathData.length > MIN_ARRAY_LENGTH && this.verifyLastPoint(this.pathData[0])) {
                 this.isSelectionDone = true;
@@ -44,7 +45,7 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
 
     onMouseMove(event: MouseEvent): void {
         this.defaultOnMouseMove(event);
-        if (this.mouseDown && this.selectionActive && this.dragActive) {
+        if (this.mouseDown && SelectionService.selectionActive && this.dragActive) {
             this.updateDragPosition(this.getPositionFromMouse(event));
         }
     }
@@ -96,7 +97,7 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
             closedSegment,
         );
         this.clipArea();
-        this.selectionActive = true;
+        SelectionService.selectionActive = true;
     }
 
     clipArea(): void {
