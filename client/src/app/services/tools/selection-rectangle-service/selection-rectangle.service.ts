@@ -82,6 +82,20 @@ export class SelectionRectangleService extends SelectionService {
         return this.drawingService.selectedAreaCtx.canvas.width !== 0 && this.drawingService.selectedAreaCtx.canvas.height !== 0;
     }
 
+    setSelection(imageData: ImageData): void {
+        this.selectionActive = true;
+        this.isSelectionDone = true;
+        this.topLeftCorner.x = 0;
+        this.topLeftCorner.y = 0;
+        this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
+        this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
+        this.width = imageData.width;
+        this.height = imageData.height;
+        createImageBitmap(imageData).then((imgBitmap) => {
+            this.drawingService.selectedAreaCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
+        });
+    }
+
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown && this.selectionActive && !this.dragActive) {
             this.mouseMoved = true;
