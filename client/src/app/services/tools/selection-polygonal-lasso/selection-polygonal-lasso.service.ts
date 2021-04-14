@@ -3,7 +3,7 @@ import { SelectionCommand } from '@app/classes/tool-commands/selection-command';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { LineCreatorService } from '@app/services/line-creator/line-creator.service';
+import { LineCreatorService } from '@app/services/tools/line-creator/line-creator.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection.service';
 import { DEFAULT_DOT_RADIUS, DEFAULT_MIN_THICKNESS, MIN_ARRAY_LENGTH } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';

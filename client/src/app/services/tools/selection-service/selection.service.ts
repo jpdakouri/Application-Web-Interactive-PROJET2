@@ -183,6 +183,7 @@ export abstract class SelectionService extends Tool {
     }
 
     cancelSelection(): void {
+        console.log('y');
         this.drawingService.selectedAreaCtx.canvas.width = 0;
         this.drawingService.selectedAreaCtx.canvas.height = 0;
         SelectionService.selectionActive = false;

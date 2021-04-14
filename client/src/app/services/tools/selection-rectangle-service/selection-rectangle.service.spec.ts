@@ -3,9 +3,9 @@ import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { SelectionCommand } from '@app/classes/tool-commands/selection-command';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
+import { SelectionService } from '@app/services/tools/selection-service/selection.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
-import { SelectionService } from '../selection-service/selection.service';
 import { SelectionRectangleService } from './selection-rectangle.service';
 
 describe('SelectionRectangleService', () => {
@@ -139,19 +139,18 @@ describe('SelectionRectangleService', () => {
     });
 
     it('Esc key should clear the canvas when pressed', () => {
-        service.onKeyDown({
-            key: KeyboardButtons.Escape,
-        } as KeyboardEvent);
-        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Escape });
+        SelectionService.selectionActive = true;
+        service.onKeyDown(keyBordPrevent);
+        expect(SelectionService.selectionActive).toBe(false);
     });
 
     it('Shift key should call makeSquare when pressed', () => {
         service.onMouseDown(mouseEvent);
         const makeSquareSpy = spyOn<any>(serviceMousePositionHandler, 'makeSquare').and.callThrough();
         service['shiftDown'] = false;
-        service.onKeyDown({
-            key: KeyboardButtons.Shift,
-        } as KeyboardEvent);
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Shift });
+        service.onKeyDown(keyBordPrevent);
         expect(service['shiftDown']).toBeTrue();
         expect(makeSquareSpy).toHaveBeenCalled();
     });
@@ -197,9 +196,8 @@ describe('SelectionRectangleService', () => {
         SelectionService.selectionActive = true;
 
         service.topLeftCorner = { x: 200, y: 200 };
-        service.onKeyDown({
-            key: KeyboardButtons.Up,
-        } as KeyboardEvent);
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Up });
+        service.onKeyDown(keyBordPrevent);
         expect(service.topLeftCorner.y).toEqual(197);
     });
 
@@ -208,9 +206,8 @@ describe('SelectionRectangleService', () => {
         SelectionService.selectionActive = false;
 
         service.topLeftCorner = { x: 200, y: 200 };
-        service.onKeyDown({
-            key: KeyboardButtons.Up,
-        } as KeyboardEvent);
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Up });
+        service.onKeyDown(keyBordPrevent);
         expect(service.topLeftCorner.y).toEqual(200);
     });
 
@@ -219,9 +216,8 @@ describe('SelectionRectangleService', () => {
         SelectionService.selectionActive = true;
 
         service.topLeftCorner = { x: 200, y: 200 };
-        service.onKeyDown({
-            key: KeyboardButtons.Down,
-        } as KeyboardEvent);
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Down });
+        service.onKeyDown(keyBordPrevent);
         expect(service.topLeftCorner.y).toEqual(203);
     });
 
@@ -230,9 +226,8 @@ describe('SelectionRectangleService', () => {
         SelectionService.selectionActive = false;
 
         service.topLeftCorner = { x: 200, y: 200 };
-        service.onKeyDown({
-            key: KeyboardButtons.Down,
-        } as KeyboardEvent);
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Down });
+        service.onKeyDown(keyBordPrevent);
         expect(service.topLeftCorner.y).toEqual(200);
     });
 
@@ -241,9 +236,8 @@ describe('SelectionRectangleService', () => {
         SelectionService.selectionActive = true;
 
         service.topLeftCorner = { x: 200, y: 200 };
-        service.onKeyDown({
-            key: KeyboardButtons.Right,
-        } as KeyboardEvent);
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Right });
+        service.onKeyDown(keyBordPrevent);
         expect(service.topLeftCorner.x).toEqual(203);
     });
 
@@ -252,9 +246,8 @@ describe('SelectionRectangleService', () => {
         SelectionService.selectionActive = false;
 
         service.topLeftCorner = { x: 200, y: 200 };
-        service.onKeyDown({
-            key: KeyboardButtons.Right,
-        } as KeyboardEvent);
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Right });
+        service.onKeyDown(keyBordPrevent);
         expect(service.topLeftCorner.x).toEqual(200);
     });
 
@@ -263,9 +256,8 @@ describe('SelectionRectangleService', () => {
         SelectionService.selectionActive = true;
 
         service.topLeftCorner = { x: 200, y: 200 };
-        service.onKeyDown({
-            key: KeyboardButtons.Left,
-        } as KeyboardEvent);
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Left });
+        service.onKeyDown(keyBordPrevent);
         expect(service.topLeftCorner.x).toEqual(197);
     });
 
@@ -274,9 +266,8 @@ describe('SelectionRectangleService', () => {
         SelectionService.selectionActive = false;
 
         service.topLeftCorner = { x: 200, y: 200 };
-        service.onKeyDown({
-            key: KeyboardButtons.Left,
-        } as KeyboardEvent);
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Left });
+        service.onKeyDown(keyBordPrevent);
         expect(service.topLeftCorner.x).toEqual(200);
     });
 
@@ -305,10 +296,9 @@ describe('SelectionRectangleService', () => {
     it('onKeyup should not update shift state if shiftDown is false', () => {
         service['firstGrid'] = { x: 10, y: 10 };
         service.mouseDownCoord = { x: 50, y: 50 };
-
-        service.onKeyDown({
-            key: KeyboardButtons.Shift,
-        } as KeyboardEvent);
+        service['shiftDown'] = true;
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Right });
+        service.onKeyUp(keyBordPrevent);
         expect(service['shiftDown']).toBeTrue();
     });
 
