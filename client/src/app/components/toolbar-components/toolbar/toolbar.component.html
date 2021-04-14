@@ -181,15 +181,15 @@
     </div>
 
     <div class="flex-item">
-      <button
-        (click)="setCurrentTool(this.toolsNames.Text)"
-        mat-mini-fab
-        [color]="isSelected(this.toolsNames.Text) ? 'accent' : 'primary'"
-        aria-label='Text "t"'
-        title='Text "t"'
-      >
-        <mat-icon>text_fields</mat-icon>
-      </button>
+        <button
+            (click)="setCurrentTool(this.toolsNames.Text)"
+            mat-mini-fab
+            [color]="isSelected(this.toolsNames.Text) ? 'accent' : 'primary'"
+            aria-label='Text "t"'
+            title='Text "t"'
+        >
+            <mat-icon>text_fields</mat-icon>
+        </button>
     </div>
 
     <div class="flex-item">
@@ -279,6 +279,34 @@
                     </g>
                 </g>
             </svg>
+        </button>
+    </div>
+
+    <div class="flex-item">
+        <button color="primary" mat-mini-fab aria-label="Copier" title="Copier" (click)="clipboard.copy()" [disabled]="!clipboard.hasSelection()">
+            <mat-icon>content_copy</mat-icon>
+        </button>
+    </div>
+    <div class="flex-item">
+        <button color="primary" mat-mini-fab aria-label="Couper" title="Couper" (click)="clipboard.cut()" [disabled]="!clipboard.hasSelection()">
+            <mat-icon>content_cut</mat-icon>
+        </button>
+    </div>
+    <div class="flex-item">
+        <button color="primary" mat-mini-fab aria-label="Coller" title="Coller" (click)="clipboard.paste()" [disabled]="!clipboard.hasContent()">
+            <mat-icon>content_paste</mat-icon>
+        </button>
+    </div>
+    <div class="flex-item">
+        <button
+            color="primary"
+            mat-mini-fab
+            aria-label="Supprimer"
+            title="Supprimer"
+            (click)="clipboard.delete()"
+            [disabled]="!clipboard.hasSelection()"
+        >
+            <mat-icon>clear</mat-icon>
         </button>
     </div>
 </div>
