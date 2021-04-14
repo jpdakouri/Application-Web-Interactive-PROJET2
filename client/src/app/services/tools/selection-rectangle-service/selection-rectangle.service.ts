@@ -46,13 +46,9 @@ export class SelectionRectangleService extends SelectionService {
                     this.offset.y = this.topLeftCorner.y - initial.y;
                     this.dragActive = true;
                 } else {
-                    this.selectionActive = false;
                     const imageData = this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
-                    createImageBitmap(imageData).then((imgBitmap) => {
-                        this.drawingService.baseCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
-                    });
-                    this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
-                    this.isSelectionDone = false;
+                    this.drawSelectionOnBase(imageData, this.topLeftCorner);
+                    this.deselect();
                     const command = new SelectionCommand(
                         this,
                         this.initialTopLeftCorner,
@@ -64,6 +60,26 @@ export class SelectionRectangleService extends SelectionService {
                 }
             }
         }
+    }
+
+    deselect(): void {
+        this.selectionActive = false;
+        this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
+        this.isSelectionDone = false;
+    }
+
+    drawSelectionOnBase(imageData: ImageData, topLeftCorner: Vec2): void {
+        createImageBitmap(imageData).then((imgBitmap) => {
+            this.drawingService.baseCtx.drawImage(imgBitmap, topLeftCorner.x, topLeftCorner.y);
+        });
+    }
+
+    getSelectionImageData(): ImageData {
+        return this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
+    }
+
+    hasSelection(): boolean {
+        return this.drawingService.selectedAreaCtx.canvas.width !== 0 && this.drawingService.selectedAreaCtx.canvas.height !== 0;
     }
 
     onMouseMove(event: MouseEvent): void {
