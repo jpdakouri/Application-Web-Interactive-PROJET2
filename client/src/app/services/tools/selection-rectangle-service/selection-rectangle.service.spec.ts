@@ -5,6 +5,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
+import { SelectionService } from '../selection-service/selection.service';
 import { SelectionRectangleService } from './selection-rectangle.service';
 
 describe('SelectionRectangleService', () => {
@@ -68,7 +69,7 @@ describe('SelectionRectangleService', () => {
     });
 
     it(' mouseDown should activate the selection when isClickIn is true', () => {
-        service.selectionActive = true;
+        SelectionService.selectionActive = true;
 
         service.topLeftCorner = { x: 20, y: 20 };
         service.mouseDownCoord = { x: 300, y: 300 };
@@ -82,7 +83,7 @@ describe('SelectionRectangleService', () => {
     });
 
     it(' mouseDown should not activate the selection when isClickIn is false', () => {
-        service.selectionActive = true;
+        SelectionService.selectionActive = true;
         // tslint:disable:no-magic-numbers
         service.height = service.width = 100;
 
@@ -109,7 +110,7 @@ describe('SelectionRectangleService', () => {
 
     it('onMouseMove should call updateDragPosition when mouse is down and is currently selecting', () => {
         const updateDragPositionSpy = spyOn<any>(service, 'updateDragPosition').and.callThrough();
-        service.mouseDown = service.selectionActive = service['dragActive'] = true;
+        service.mouseDown = SelectionService.selectionActive = service['dragActive'] = true;
         const grid = (service.mouseDownCoord = { x: 100, y: 100 });
         service.height = service.width = 100;
         service.onMouseDown(mouseEvent);
@@ -124,7 +125,7 @@ describe('SelectionRectangleService', () => {
     });
 
     it(' onMouseUp should call selectRectangle if mouse was already down', () => {
-        service.mouseDown = service.selectionActive = service.mouseMoved = true;
+        service.mouseDown = SelectionService.selectionActive = service.mouseMoved = true;
         service['dragActive'] = false;
         service.mouseDownCoord = { x: 100, y: 100 };
         service['firstGrid'] = { x: 100, y: 100 };
@@ -157,7 +158,7 @@ describe('SelectionRectangleService', () => {
 
     it('upPressed should be false when the up key is not pressed', () => {
         service.onMouseDown(mouseEvent);
-        service.selectionActive = true;
+        SelectionService.selectionActive = true;
         service.onKeyUp({
             key: KeyboardButtons.Up,
         } as KeyboardEvent);
@@ -166,7 +167,7 @@ describe('SelectionRectangleService', () => {
 
     it('downPressed should be false when the down key is not pressed', () => {
         service.onMouseDown(mouseEvent);
-        service.selectionActive = true;
+        SelectionService.selectionActive = true;
         service.onKeyUp({
             key: KeyboardButtons.Down,
         } as KeyboardEvent);
@@ -175,7 +176,7 @@ describe('SelectionRectangleService', () => {
 
     it('rightPressed should be false when the right key is not pressed', () => {
         service.onMouseDown(mouseEvent);
-        service.selectionActive = true;
+        SelectionService.selectionActive = true;
         service.onKeyUp({
             key: KeyboardButtons.Right,
         } as KeyboardEvent);
@@ -184,7 +185,7 @@ describe('SelectionRectangleService', () => {
 
     it('leftPressed should be false when the left key is not pressed', () => {
         service.onMouseDown(mouseEvent);
-        service.selectionActive = true;
+        SelectionService.selectionActive = true;
         service.onKeyUp({
             key: KeyboardButtons.Left,
         } as KeyboardEvent);
@@ -193,7 +194,7 @@ describe('SelectionRectangleService', () => {
 
     it('selected region should move 3px higher when Up key is pressed during the selection', () => {
         service.onMouseDown(mouseEvent);
-        service.selectionActive = true;
+        SelectionService.selectionActive = true;
 
         service.topLeftCorner = { x: 200, y: 200 };
         service.onKeyDown({
@@ -204,7 +205,7 @@ describe('SelectionRectangleService', () => {
 
     it('selected region should not move 3px higher when Up key is pressed while there is no selection ', () => {
         service.onMouseDown(mouseEvent);
-        service.selectionActive = false;
+        SelectionService.selectionActive = false;
 
         service.topLeftCorner = { x: 200, y: 200 };
         service.onKeyDown({
@@ -215,7 +216,7 @@ describe('SelectionRectangleService', () => {
 
     it('selected region should move 3px lower when Down key is pressed during the selection', () => {
         service.onMouseDown(mouseEvent);
-        service.selectionActive = true;
+        SelectionService.selectionActive = true;
 
         service.topLeftCorner = { x: 200, y: 200 };
         service.onKeyDown({
@@ -226,7 +227,7 @@ describe('SelectionRectangleService', () => {
 
     it('selected region should not move 3px lower when Up key is pressed while there is no selection ', () => {
         service.onMouseDown(mouseEvent);
-        service.selectionActive = false;
+        SelectionService.selectionActive = false;
 
         service.topLeftCorner = { x: 200, y: 200 };
         service.onKeyDown({
@@ -237,7 +238,7 @@ describe('SelectionRectangleService', () => {
 
     it('selected region should move 3px to the right when Down key is pressed during the selection', () => {
         service.onMouseDown(mouseEvent);
-        service.selectionActive = true;
+        SelectionService.selectionActive = true;
 
         service.topLeftCorner = { x: 200, y: 200 };
         service.onKeyDown({
@@ -248,7 +249,7 @@ describe('SelectionRectangleService', () => {
 
     it('selected region should not move 3px to the right when Up key is pressed while there is no selection ', () => {
         service.onMouseDown(mouseEvent);
-        service.selectionActive = false;
+        SelectionService.selectionActive = false;
 
         service.topLeftCorner = { x: 200, y: 200 };
         service.onKeyDown({
@@ -259,7 +260,7 @@ describe('SelectionRectangleService', () => {
 
     it('selected region should move 3px to the left when Down key is pressed during the selection', () => {
         service.onMouseDown(mouseEvent);
-        service.selectionActive = true;
+        SelectionService.selectionActive = true;
 
         service.topLeftCorner = { x: 200, y: 200 };
         service.onKeyDown({
@@ -270,7 +271,7 @@ describe('SelectionRectangleService', () => {
 
     it('selected region should not move 3px to the left when Up key is pressed while there is no selection ', () => {
         service.onMouseDown(mouseEvent);
-        service.selectionActive = false;
+        SelectionService.selectionActive = false;
 
         service.topLeftCorner = { x: 200, y: 200 };
         service.onKeyDown({
@@ -312,7 +313,7 @@ describe('SelectionRectangleService', () => {
     });
 
     it('updateLeftCorner() should be able to update topLeftCorner in any situation', () => {
-        service.mouseDown = service.selectionActive = service.mouseMoved = true;
+        service.mouseDown = SelectionService.selectionActive = service.mouseMoved = true;
         service['dragActive'] = false;
         service.mouseDownCoord = { x: 100, y: 100 };
         service['firstGrid'] = { x: 100, y: 100 };
@@ -342,7 +343,7 @@ describe('SelectionRectangleService', () => {
         service.topLeftCorner = { x: 200, y: 200 };
         service.mouseDownCoord = { x: 300, y: 100 };
         service.selectAll();
-        expect(service['selectionActive']).toBe(true);
+        expect(SelectionService.selectionActive).toBe(true);
     });
 
     it('executeCommand calls the rectangle function for clipping', () => {
