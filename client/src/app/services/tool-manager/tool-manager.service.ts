@@ -169,13 +169,12 @@ export class ToolManagerService {
         return this.toolBox[this.currentTool];
     }
 
-    getCurrentSelectionTool(): Tool | undefined {
+    getCurrentSelectionTool(): SelectionEllipseService | SelectionRectangleService | /*SelectionPolygonalLassoService |*/ undefined {
         const tool = this.toolBox[this.currentTool];
-        const isToolSelection =
-            tool === this.toolBox[ToolsNames.SelectBox] ||
-            tool === this.toolBox[ToolsNames.SelectEllipse] ||
-            tool === this.toolBox[ToolsNames.SelectPolygon];
-        return isToolSelection ? tool : undefined;
+        if (tool === this.toolBox[ToolsNames.SelectBox]) return tool as SelectionRectangleService;
+        if (tool === this.toolBox[ToolsNames.SelectEllipse]) return tool as SelectionEllipseService;
+        /*if (tool === this.toolBox[ToolsNames.SelectPolygon]) return tool as SelectionPolygonalLassoService;*/
+        return undefined;
     }
 
     setCurrentNumberOfSides(numberOfSides?: number): void {
