@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
@@ -12,6 +13,7 @@ export class ClipboardService extends Tool {
     private clipboardContent?: ImageData;
     private pasteCount: number;
     private toolManager: ToolManagerService;
+    private pastePosition: Vec2;
     constructor(drawingService: DrawingService, currentColorService: CurrentColorService, toolManager: ToolManagerService) {
         super(drawingService, currentColorService);
         this.reset();
@@ -19,23 +21,50 @@ export class ClipboardService extends Tool {
     }
 
     copy(): void {
-        if (this.toolManager.getCurrentSelectionTool() == undefined) {
+        const selectionTool = this.toolManager.getCurrentSelectionTool();
+        if (selectionTool == undefined) {
             return;
+        }
+        if (selectionTool.hasSelection()) {
+            this.clipboardContent = selectionTool.getSelectionImageData();
+            this.pastePosition = selectionTool.topLeftCorner;
+            this.pasteCount = 0;
         }
     }
     paste(): void {
-        if (this.activeSelectionService != undefined) {
-            // TODO
+        if (!this.clipboardContent) return;
+        else {
+            const selectionTool = this.toolManager.getCurrentSelectionTool();
+            if (selectionTool == undefined) {
+                return;
+            }
+            if (selectionTool.hasSelection()) {
+                selectionTool.drawSelectionOnBase(selectionTool.getSelectionImageData(), selectionTool.topLeftCorner);
+                selectionTool.deselect();
+            }
+            selectionTool.drawSelectionOnBase(this.clipboardContent, this.pastePosition);
+            this.pasteCount += 1;
+            // TODO: changement position
         }
     }
     delete(): void {
-        if (this.toolManager.getCurrentSelectionTool() == undefined) {
+        const selectionTool = this.toolManager.getCurrentSelectionTool();
+        if (selectionTool == undefined) {
             return;
         }
+        selectionTool.deselect();
     }
+
     cut(): void {
-        if (this.toolManager.getCurrentSelectionTool() == undefined) {
+        const selectionTool = this.toolManager.getCurrentSelectionTool();
+        if (selectionTool == undefined) {
             return;
+        }
+        if (selectionTool.hasSelection()) {
+            this.clipboardContent = selectionTool.getSelectionImageData();
+            selectionTool.deselect();
+            this.pastePosition = selectionTool.topLeftCorner;
+            this.pasteCount = 0;
         }
     }
 
