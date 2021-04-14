@@ -41,7 +41,7 @@ export class ToolManagerService {
         aerosolService: AerosolService,
         pipetteService: PipetteService,
         selectBoxService: SelectionRectangleService,
-        selectEllipseService: SelectionEllipseService,
+        public selectEllipseService: SelectionEllipseService,
         polygonService: PolygonService,
         public textService: TextService,
         paintBucket: PaintBucketService,
@@ -95,6 +95,12 @@ export class ToolManagerService {
     }
 
     setCurrentTool(toolName: ToolsNames): void {
+        // if (
+        //     this.currentTool === ToolsNames.SelectPolygon ||
+        //     this.currentTool === ToolsNames.SelectBox ||
+        //     this.currentTool === ToolsNames.SelectEllipse
+        // )
+        //     this.selectEllipseService.cancelSelection();
         this.currentTool = toolName;
     }
 

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { SelectionService } from '@app/services/tools/selection-service/selection.service';
 import { DEFAULT_DOT_RADIUS, DEFAULT_MIN_THICKNESS, PIXEL_DISTANCE, SHIFT_ANGLE_45, SHIFT_ANGLE_HALF_45 } from '@app/services/tools/tools-constants';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
@@ -10,7 +10,7 @@ import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 @Injectable({
     providedIn: 'root',
 })
-export abstract class LineCreatorService extends Tool {
+export abstract class LineCreatorService extends SelectionService {
     started: boolean;
     pathData: Vec2[];
     shiftPressed: boolean;
@@ -22,9 +22,11 @@ export abstract class LineCreatorService extends Tool {
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButtons.Left;
         this.mouseDownCoord = this.getPositionFromMouse(event);
+        if (SelectionService.selectionActive) {
+            this.firstGrid = this.mouseDownCoord;
+            this.defaultOnMouseDown(event);
+        }
     }
-
-    abstract onMouseUp(event: MouseEvent): void;
 
     defaultMouseUp(event: MouseEvent): void {
         this.mouseDownCoord = this.getPositionFromMouse(event);
@@ -45,13 +47,14 @@ export abstract class LineCreatorService extends Tool {
         this.started = true;
     }
 
-    onMouseMove(event: MouseEvent): void {
+    defaultOnMouseMove(event: MouseEvent): void {
         if (this.started) {
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.verifyValideLine(this.mouseDownCoord);
             this.previewUpdate();
         }
     }
+
     verifyValideLine(courrentPosition: Vec2): boolean {
         return true;
     }
@@ -92,16 +95,15 @@ export abstract class LineCreatorService extends Tool {
                     this.previewUpdate();
                     event.preventDefault();
                     break;
-                default:
-                    break;
             }
+        else this.defaultOnKeyDown(event);
     }
 
     onKeyUp(event: KeyboardEvent): void {
         if (this.shiftPressed && event.key === KeyboardButtons.Shift) {
             this.shiftPressed = false;
             this.previewUpdate();
-        }
+        } else this.defaultOnKeyUp(event);
     }
 
     abstract getPrimaryColor(): string;
@@ -206,5 +208,9 @@ export abstract class LineCreatorService extends Tool {
     verifyLastPoint(dotToVerify: Vec2): boolean {
         const lastDot = this.pathData[this.pathData.length - 1];
         return Math.abs(lastDot.x - dotToVerify.x) <= PIXEL_DISTANCE && Math.abs(lastDot.y - dotToVerify.y) <= PIXEL_DISTANCE;
+    }
+
+    updatePreview(): void {
+        return;
     }
 }

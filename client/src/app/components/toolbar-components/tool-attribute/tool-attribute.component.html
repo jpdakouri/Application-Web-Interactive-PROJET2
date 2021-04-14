@@ -1,32 +1,4 @@
 <div class="attribute-toolbar">
-    <div class="grid">
-        <mat-checkbox [(ngModel)]="gridService.showGrid" class="attribute-title" (change)="onGridSizeChange($event)"
-            ><h3 class="attribute-sub-title" style="margin: auto; margin-top: 5px">Grille de prévisualisation</h3>
-            <small class="small-text">Afficher une grille à la zone de dessin</small>
-        </mat-checkbox>
-        <div *ngIf="gridService.showGrid">
-            <h3 class="attribute-sub-title">Taille des grilles: {{ gridService.gridSize }} pixels</h3>
-            <mat-slider
-                [value]="gridService.gridSize"
-                #heightSlider
-                color="primary"
-                [min]="gridService.minGridSize"
-                [max]="gridService.maxGridSize"
-                step="20"
-                (input)="onGridSizeChange($event)"
-            ></mat-slider>
-            <h3 class="attribute-sub-title">Opacité de la grille: {{ gridService.gridOpacity | percent }}</h3>
-            <mat-slider
-                [value]="gridService.gridOpacity"
-                #heightSlider
-                color="primary"
-                [min]="gridService.minOpacity"
-                [max]="gridService.maxOpacity"
-                step="0.1"
-                (input)="onGridOpacityChange($event)"
-            ></mat-slider>
-        </div>
-    </div>
     <mat-divider></mat-divider>
     <div *ngIf="showLineThickness()">
         <div class="line-thickness">
@@ -234,35 +206,63 @@
         <mat-divider></mat-divider>
     </div>
     <div *ngIf="showStampAttributes()">
-            <h3 class="attribute-title">Facteur de mise à échelle: {{ this.getStampScalingFactor() }}</h3>
-            <mat-slider
-                [value]="this.getStampScalingFactor()"
-                #stampScalingFactorSlider
-                color="primary"
-                min="0.1"
-                max="10"
-                (input)="onStampScalingFactorChange($event)"
-                (change)="onStampScalingFactorChange($event)"
-                step="0.1"
-            ></mat-slider>
-            <h3 class="attribute-title">Angle de rotation: {{ this.getStampRotationAngle() }}</h3>
-            <mat-slider
-                [value]="this.getStampRotationAngle()"
-                #stampRotationAngleSlider
-                color="primary"
-                min="0"
-                max="359"
-                (input)="onStampRotationAngleChange($event)"
-                (change)="onStampRotationAngleChange($event)"
-                step="1"
-            ></mat-slider>
-            <img width = "50" height = "50" src = "../../assets/stamps/house.png" (click) = "onSelectedStampChange('house')">
-            <img width = "50" height = "50" src = "../../assets/stamps/smile.png" (click) = "onSelectedStampChange('smile')">
-            <img width = "50" height = "50" src = "../../assets/stamps/hashtag.png" (click) = "onSelectedStampChange('hashtag')">
-            <img width = "50" height = "50" src = "../../assets/stamps/star.png" (click) = "onSelectedStampChange('star')">
-            <img width = "50" height = "50" src = "../../assets/stamps/letter.png" (click) = "onSelectedStampChange('letter')">
+        <h3 class="attribute-title">Facteur de mise à échelle: {{ this.getStampScalingFactor() }}</h3>
+        <mat-slider
+            [value]="this.getStampScalingFactor()"
+            #stampScalingFactorSlider
+            color="primary"
+            min="0.1"
+            max="10"
+            (input)="onStampScalingFactorChange($event)"
+            (change)="onStampScalingFactorChange($event)"
+            step="0.1"
+        ></mat-slider>
+        <h3 class="attribute-title">Angle de rotation: {{ this.getStampRotationAngle() }}</h3>
+        <mat-slider
+            [value]="this.getStampRotationAngle()"
+            #stampRotationAngleSlider
+            color="primary"
+            min="0"
+            max="359"
+            (input)="onStampRotationAngleChange($event)"
+            (change)="onStampRotationAngleChange($event)"
+            step="1"
+        ></mat-slider>
+        <img width="50" height="50" src="../../assets/stamps/house.png" (click)="onSelectedStampChange('house')" />
+        <img width="50" height="50" src="../../assets/stamps/smile.png" (click)="onSelectedStampChange('smile')" />
+        <img width="50" height="50" src="../../assets/stamps/hashtag.png" (click)="onSelectedStampChange('hashtag')" />
+        <img width="50" height="50" src="../../assets/stamps/star.png" (click)="onSelectedStampChange('star')" />
+        <img width="50" height="50" src="../../assets/stamps/letter.png" (click)="onSelectedStampChange('letter')" />
         <mat-divider></mat-divider>
     </div>
     <app-color-selector></app-color-selector>
     <mat-divider></mat-divider>
+    <div class="grid">
+        <mat-checkbox [(ngModel)]="gridService.showGrid" class="attribute-title" (change)="onGridSizeChange($event)"
+            ><h3 class="attribute-sub-title" style="margin: auto; margin-top: 5px">Grille de prévisualisation</h3>
+            <small class="small-text">Afficher une grille à la zone de dessin</small>
+        </mat-checkbox>
+        <div *ngIf="gridService.showGrid">
+            <h3 class="attribute-sub-title">Taille des grilles: {{ gridService.gridSize }} pixels</h3>
+            <mat-slider
+                [value]="gridService.gridSize"
+                #heightSlider
+                color="primary"
+                [min]="gridService.minGridSize"
+                [max]="gridService.maxGridSize"
+                step="20"
+                (input)="onGridSizeChange($event)"
+            ></mat-slider>
+            <h3 class="attribute-sub-title">Opacité de la grille: {{ gridService.gridOpacity | percent }}</h3>
+            <mat-slider
+                [value]="gridService.gridOpacity"
+                #heightSlider
+                color="primary"
+                [min]="gridService.minOpacity"
+                [max]="gridService.maxOpacity"
+                step="0.1"
+                (input)="onGridOpacityChange($event)"
+            ></mat-slider>
+        </div>
+    </div>
 </div>
