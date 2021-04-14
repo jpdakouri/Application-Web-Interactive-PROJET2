@@ -91,6 +91,8 @@ export class SelectionRectangleService extends SelectionService {
         this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
         this.width = imageData.width;
         this.height = imageData.height;
+        this.drawingService.selectedAreaCtx.canvas.width = this.width;
+        this.drawingService.selectedAreaCtx.canvas.height = this.height;
         createImageBitmap(imageData).then((imgBitmap) => {
             this.drawingService.selectedAreaCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
         });

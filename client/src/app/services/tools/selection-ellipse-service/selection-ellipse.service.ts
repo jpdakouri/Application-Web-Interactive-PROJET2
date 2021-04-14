@@ -95,7 +95,6 @@ export class SelectionEllipseService extends SelectionService {
     }
 
     setSelection(imageData: ImageData): void {
-        console.log(imageData.width, imageData.height);
         this.selectionActive = true;
         this.isSelectionDone = true;
         this.topLeftCorner.x = 0;
