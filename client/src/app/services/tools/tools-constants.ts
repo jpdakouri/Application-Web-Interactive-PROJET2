@@ -49,7 +49,10 @@ export const DEFAULT_JET_DIAMETER = 50;
 
 export const MS_PER_S = 1000;
 
-export const MIN_GRID_SIZE = 50;
+/**********************/
+/****GRID CONSTANTS****/
+/**********************/
+export const MIN_GRID_SIZE = 10;
 export const MAX_GRID_SIZE = 300;
 export const MIN_GRID_OPACITY = 0.1;
 export const MAX_GRID_OPACITY = 1;
@@ -73,11 +76,11 @@ export const OUT_OF_BOUND_COLOR_RGBA = 'rgba(100,100,100,1)';
 /***STAMP CONSTANTS**/
 /***********************/
 export const STAMP_SIZE = 100;
-export const BASE_STAMP_IMAGE_PATH = '../../assets/stamps/';
 export const SMALL_ANGLE_CHANGE = 1;
 export const BIG_ANGLE_CHANGE = 15;
 export const STAMP_IMAGE_EXTENSION = '.png';
-export const HALF_CIRCLE_DEG = 180;
+export const FULL_CIRCLE_DEG = 360;
+export const HALF_CIRCLE_DEG = FULL_CIRCLE_DEG / 2;
 export const DEG_TO_RAD_RATIO = Math.PI / HALF_CIRCLE_DEG;
 
 /**********************/

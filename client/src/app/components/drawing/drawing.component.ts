@@ -8,7 +8,9 @@ import { GridService } from '@app/services/grid/grid.service';
 import { SaveDrawingService } from '@app/services/save-drawing/save-drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-ellipse-service/selection-ellipse.service';
+import { SelectionPolygonalLassoService } from '@app/services/tools/selection-polygonal-lasso/selection-polygonal-lasso.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
+import { SelectionService } from '@app/services/tools/selection-service/selection.service';
 import { TextService } from '@app/services/tools/text/text.service';
 import { MIN_ERASER_THICKNESS } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
@@ -56,6 +58,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     };
     selectionEllipseService: SelectionEllipseService;
     selectionRectangleService: SelectionRectangleService;
+    selectionPolygonalLassoService: SelectionPolygonalLassoService;
     textService: TextService;
 
     constructor(
@@ -67,6 +70,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         toolManagerService: ToolManagerService,
         canvasResizerService: CanvasResizerService,
         selectionEllipseService: SelectionEllipseService,
+        selectionPolygonalLassoService: SelectionPolygonalLassoService,
         selectionRectangleService: SelectionRectangleService,
         textService: TextService,
     ) {
@@ -74,6 +78,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.canvasResizerService = canvasResizerService;
         this.selectionEllipseService = selectionEllipseService;
         this.selectionRectangleService = selectionRectangleService;
+        this.selectionPolygonalLassoService = selectionPolygonalLassoService;
         this.textService = textService;
     }
 
@@ -105,6 +110,8 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         setTimeout(() => {
             this.selectionEllipseService.height = this.drawingService.canvas.height;
             this.selectionEllipseService.width = this.drawingService.canvas.width;
+            this.selectionPolygonalLassoService.height = this.drawingService.canvas.height;
+            this.selectionPolygonalLassoService.width = this.drawingService.canvas.width;
         });
         setTimeout(() => {
             this.undoRedo.saveInitialState();
@@ -287,19 +294,16 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.eraserCursor.top = mousePosition.y + 'px';
         this.eraserActive = this.currentTool.eraserActive || false;
     }
+
+    isActiveSelection(): boolean {
+        return SelectionService.selectionActive;
+    }
+
     getSelectedAreaSize(): Vec2 {
-        return { x: this.selectionEllipseService.width, y: this.selectionEllipseService.height };
+        return { x: this.drawingService.selectedAreaCtx.canvas.width, y: this.drawingService.selectedAreaCtx.canvas.height };
     }
 
     getTopLeftCorner(): Vec2 {
-        return { x: this.selectionEllipseService.topLeftCorner.x, y: this.selectionEllipseService.topLeftCorner.y };
-    }
-
-    getSelectedAreaSizeRectangle(): Vec2 {
-        return { x: this.selectionRectangleService.width, y: this.selectionRectangleService.height };
-    }
-
-    getTopLeftCornerRectangle(): Vec2 {
-        return { x: this.selectionRectangleService.topLeftCorner.x, y: this.selectionRectangleService.topLeftCorner.y };
+        return { x: this.drawingService.selectedAreaCtx.canvas.offsetLeft, y: this.drawingService.selectedAreaCtx.canvas.offsetTop };
     }
 }

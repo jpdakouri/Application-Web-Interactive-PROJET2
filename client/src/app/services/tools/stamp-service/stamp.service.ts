@@ -5,9 +5,9 @@ import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import {
-    BASE_STAMP_IMAGE_PATH,
     BIG_ANGLE_CHANGE,
     DEG_TO_RAD_RATIO,
+    FULL_CIRCLE_DEG,
     SMALL_ANGLE_CHANGE,
     STAMP_IMAGE_EXTENSION,
     STAMP_SIZE,
@@ -21,7 +21,7 @@ import { Stamp } from '@app/utils/enums/stamp';
 })
 export class StampService extends Tool {
     selectedStamp: Stamp;
-    private rotationAngle: number;
+    rotationAngle: number;
     scalingFactor: number;
     private undoRedo: UndoRedoService;
     constructor(drawingService: DrawingService, currentColorService: CurrentColorService, undoRedo: UndoRedoService) {
@@ -52,6 +52,7 @@ export class StampService extends Tool {
         } else {
             this.rotationAngle += event.deltaY > 0 ? BIG_ANGLE_CHANGE : -BIG_ANGLE_CHANGE;
         }
+        this.rotationAngle = (this.rotationAngle + FULL_CIRCLE_DEG) % FULL_CIRCLE_DEG;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawPreview(this.rotationAngle, this.scalingFactor, this.getPositionFromMouse(event), this.selectedStamp);
     }
@@ -62,6 +63,7 @@ export class StampService extends Tool {
 
     private drawPreview(rotationAngle: number, scalingFactor: number, position: Vec2, stamp: Stamp): void {
         const stampImage = new Image(STAMP_SIZE, STAMP_SIZE);
+        const BASE_STAMP_IMAGE_PATH = '../../assets/stamps/';
         stampImage.src = BASE_STAMP_IMAGE_PATH + stamp + STAMP_IMAGE_EXTENSION;
 
         const stampCenterAngleFromOrigin = Math.atan(position.y / position.x);

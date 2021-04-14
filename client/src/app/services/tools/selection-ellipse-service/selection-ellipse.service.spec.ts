@@ -3,8 +3,10 @@ import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { SelectionCommand } from '@app/classes/tool-commands/selection-command';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
+import { SelectionService } from '@app/services/tools/selection-service/selection.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
+import { MousePositionHandlerMock } from '@app/utils/tests-mocks/mouse-position-handler-mock';
 import { SelectionEllipseService } from './selection-ellipse.service';
 
 describe('SelectionEllipseService', () => {
@@ -18,12 +20,17 @@ describe('SelectionEllipseService', () => {
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let selectedAreaCtxStub: CanvasRenderingContext2D;
+    let mouseHanlerMock: MousePositionHandlerMock;
 
     beforeEach(() => {
+        mouseHanlerMock = new MousePositionHandlerMock();
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
 
         TestBed.configureTestingModule({
-            providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
+            providers: [
+                { provide: DrawingService, useValue: drawServiceSpy },
+                { provide: MousePositionHandlerService, useValue: mouseHanlerMock },
+            ],
         });
         canvasTestHelper = TestBed.inject(CanvasTestHelper);
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -69,7 +76,7 @@ describe('SelectionEllipseService', () => {
     });
 
     it(' mouseDown should activate the selection when isClickIn is true', () => {
-        service.selectionActive = true;
+        SelectionService.selectionActive = true;
 
         service.topLeftCorner = { x: 20, y: 20 };
         service.mouseDownCoord = { x: 300, y: 300 };
@@ -83,7 +90,7 @@ describe('SelectionEllipseService', () => {
     });
 
     it(' mouseDown should not activate the selection when isClickIn is false', () => {
-        service.selectionActive = true;
+        SelectionService.selectionActive = true;
         // tslint:disable:no-magic-numbers
         service.height = service.width = 100;
         service.topLeftCorner = { x: 200, y: 200 };
@@ -107,7 +114,7 @@ describe('SelectionEllipseService', () => {
 
     it('onMouseMove should call updateDragPosition when mouse is down and is currently selecting', () => {
         const updateDragPositionSpy = spyOn<any>(service, 'updateDragPosition').and.callThrough();
-        service.mouseDown = service.selectionActive = service['dragActive'] = true;
+        service.mouseDown = SelectionService.selectionActive = service['dragActive'] = true;
         const grid = (service.mouseDownCoord = { x: 100, y: 100 });
         service.height = service.width = 100;
         service.onMouseDown(mouseEvent);
@@ -122,7 +129,7 @@ describe('SelectionEllipseService', () => {
     });
 
     it(' onMouseUp should call drawEllipse and selectEllipse if mouse was already down', () => {
-        service.mouseDown = service.selectionActive = service.mouseMoved = true;
+        service.mouseDown = SelectionService.selectionActive = service.mouseMoved = true;
         service['dragActive'] = false;
         service.mouseDownCoord = { x: 100, y: 100 };
         // const grid = service.mouseDownCoord;
@@ -137,26 +144,25 @@ describe('SelectionEllipseService', () => {
     });
 
     it('Esc key should clear the canvas when pressed', () => {
-        service.onKeyDown({
-            key: KeyboardButtons.Escape,
-        } as KeyboardEvent);
-        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Escape });
+        SelectionService.selectionActive = true;
+        service.onKeyDown(keyBordPrevent);
+        expect(SelectionService.selectionActive).toBe(false);
     });
 
     it('Shift key should call makeCircle when pressed', () => {
         service.onMouseDown(mouseEvent);
         const makeCircleSpy = spyOn<any>(serviceMousePositionHandler, 'makeCircle').and.callThrough();
         service['shiftDown'] = true;
-        service.onKeyDown({
-            key: KeyboardButtons.Shift,
-        } as KeyboardEvent);
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Shift });
+        service.onKeyDown(keyBordPrevent);
         expect(service['shiftDown']).toBeTrue();
         expect(makeCircleSpy).toHaveBeenCalled();
     });
 
     it('upPressed should be false when the up key is not pressed', () => {
         service.onMouseDown(mouseEvent);
-        service.selectionActive = true;
+        SelectionService.selectionActive = true;
         service.onKeyUp({
             key: KeyboardButtons.Up,
         } as KeyboardEvent);
@@ -165,7 +171,7 @@ describe('SelectionEllipseService', () => {
 
     it('downPressed should be false when the down key is not pressed', () => {
         service.onMouseDown(mouseEvent);
-        service.selectionActive = true;
+        SelectionService.selectionActive = true;
         service.onKeyUp({
             key: KeyboardButtons.Down,
         } as KeyboardEvent);
@@ -174,7 +180,7 @@ describe('SelectionEllipseService', () => {
 
     it('rightPressed should be false when the right key is not pressed', () => {
         service.onMouseDown(mouseEvent);
-        service.selectionActive = true;
+        SelectionService.selectionActive = true;
         service.onKeyUp({
             key: KeyboardButtons.Right,
         } as KeyboardEvent);
@@ -183,7 +189,7 @@ describe('SelectionEllipseService', () => {
 
     it('leftPressed should be false when the left key is not pressed', () => {
         service.onMouseDown(mouseEvent);
-        service.selectionActive = true;
+        SelectionService.selectionActive = true;
         service.onKeyUp({
             key: KeyboardButtons.Left,
         } as KeyboardEvent);
@@ -192,89 +198,81 @@ describe('SelectionEllipseService', () => {
 
     it('selected region should move 3px higher when Up key is pressed during the selection', () => {
         service.onMouseDown(mouseEvent);
-        service.selectionActive = true;
+        SelectionService.selectionActive = true;
 
         service.topLeftCorner = { x: 200, y: 200 };
-        service.onKeyDown({
-            key: KeyboardButtons.Up,
-        } as KeyboardEvent);
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Up });
+        service.onKeyDown(keyBordPrevent);
         expect(service.topLeftCorner.y).toEqual(197);
     });
 
     it('selected region should not move 3px higher when Up key is pressed while there is no selection ', () => {
         service.onMouseDown(mouseEvent);
-        service.selectionActive = false;
+        SelectionService.selectionActive = false;
 
         service.topLeftCorner = { x: 200, y: 200 };
-        service.onKeyDown({
-            key: KeyboardButtons.Up,
-        } as KeyboardEvent);
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Up });
+        service.onKeyDown(keyBordPrevent);
         expect(service.topLeftCorner.y).toEqual(200);
     });
 
     it('selected region should move 3px lower when Down key is pressed during the selection', () => {
         service.onMouseDown(mouseEvent);
-        service.selectionActive = true;
+        SelectionService.selectionActive = true;
 
         service.topLeftCorner = { x: 200, y: 200 };
-        service.onKeyDown({
-            key: KeyboardButtons.Down,
-        } as KeyboardEvent);
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Down });
+        service.onKeyDown(keyBordPrevent);
         expect(service.topLeftCorner.y).toEqual(203);
     });
 
     it('selected region should not move 3px lower when Up key is pressed while there is no selection ', () => {
         service.onMouseDown(mouseEvent);
-        service.selectionActive = false;
+        SelectionService.selectionActive = false;
 
         service.topLeftCorner = { x: 200, y: 200 };
-        service.onKeyDown({
-            key: KeyboardButtons.Down,
-        } as KeyboardEvent);
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Down });
+        service.onKeyDown(keyBordPrevent);
         expect(service.topLeftCorner.y).toEqual(200);
     });
 
     it('selected region should move 3px to the right when Down key is pressed during the selection', () => {
         service.onMouseDown(mouseEvent);
-        service.selectionActive = true;
+        SelectionService.selectionActive = true;
 
         service.topLeftCorner = { x: 200, y: 200 };
-        service.onKeyDown({
-            key: KeyboardButtons.Right,
-        } as KeyboardEvent);
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Right });
+        service.onKeyDown(keyBordPrevent);
         expect(service.topLeftCorner.x).toEqual(203);
     });
 
     it('selected region should not move 3px to the right when Up key is pressed while there is no selection ', () => {
         service.onMouseDown(mouseEvent);
-        service.selectionActive = false;
+        SelectionService.selectionActive = false;
 
         service.topLeftCorner = { x: 200, y: 200 };
-        service.onKeyDown({
-            key: KeyboardButtons.Right,
-        } as KeyboardEvent);
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Right });
+        service.onKeyDown(keyBordPrevent);
         expect(service.topLeftCorner.x).toEqual(200);
     });
 
     it('selected region should move 3px to the left when Down key is pressed during the selection', () => {
         service.onMouseDown(mouseEvent);
-        service.selectionActive = true;
+        SelectionService.selectionActive = true;
 
         service.topLeftCorner = { x: 200, y: 200 };
-        service.onKeyDown({
-            key: KeyboardButtons.Left,
-        } as KeyboardEvent);
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Left });
+        service.onKeyDown(keyBordPrevent);
         expect(service.topLeftCorner.x).toEqual(197);
     });
 
     it('selected region should not move 3px to the left when Up key is pressed while there is no selection ', () => {
         service.onMouseDown(mouseEvent);
-        service.selectionActive = false;
+        SelectionService.selectionActive = false;
 
         service.topLeftCorner = { x: 200, y: 200 };
-        service.onKeyDown({
-            key: KeyboardButtons.Left,
-        } as KeyboardEvent);
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Left });
+        service.onKeyDown(keyBordPrevent);
         expect(service.topLeftCorner.x).toEqual(200);
     });
 
@@ -303,15 +301,13 @@ describe('SelectionEllipseService', () => {
     it('onKeyup should not update shift state if shiftDown is false', () => {
         service['firstGrid'] = { x: 10, y: 10 };
         service.mouseDownCoord = { x: 50, y: 50 };
-
-        service.onKeyDown({
-            key: KeyboardButtons.Shift,
-        } as KeyboardEvent);
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Shift });
+        service.onKeyDown(keyBordPrevent);
         expect(service['shiftDown']).toBeTrue();
     });
 
     it('updateLeftCorner() should be able to update topLeftCorner in any situation', () => {
-        service.mouseDown = service.selectionActive = service.mouseMoved = true;
+        service.mouseDown = SelectionService.selectionActive = service.mouseMoved = true;
         service['dragActive'] = false;
         service.mouseDownCoord = { x: 100, y: 100 };
         service['firstGrid'] = { x: 100, y: 100 };

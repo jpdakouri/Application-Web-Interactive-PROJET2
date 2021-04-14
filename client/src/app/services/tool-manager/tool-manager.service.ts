@@ -42,7 +42,7 @@ export class ToolManagerService {
         aerosolService: AerosolService,
         pipetteService: PipetteService,
         selectBoxService: SelectionRectangleService,
-        selectEllipseService: SelectionEllipseService,
+        public selectEllipseService: SelectionEllipseService,
         polygonService: PolygonService,
         public textService: TextService,
         paintBucket: PaintBucketService,
@@ -98,6 +98,12 @@ export class ToolManagerService {
     }
 
     setCurrentTool(toolName: ToolsNames): void {
+        // if (
+        //     this.currentTool === ToolsNames.SelectPolygon ||
+        //     this.currentTool === ToolsNames.SelectBox ||
+        //     this.currentTool === ToolsNames.SelectEllipse
+        // )
+        //     this.selectEllipseService.cancelSelection();
         this.currentTool = toolName;
     }
 
@@ -191,10 +197,22 @@ export class ToolManagerService {
         return stamp.selectedStamp;
     }
 
+    getStampRotationAngle(): number {
+        const stamp = this.toolBox.Stamp as StampService;
+        return stamp.rotationAngle;
+    }
+
     setStampScalingFactor(factor?: number): void {
         if (factor != undefined) {
             const stamp = this.toolBox.Stamp as StampService;
             stamp.scalingFactor = factor;
+        }
+    }
+
+    setStampRotationAngle(angle?: number): void {
+        if (angle != undefined) {
+            const stamp = this.toolBox.Stamp as StampService;
+            stamp.rotationAngle = angle;
         }
     }
 
