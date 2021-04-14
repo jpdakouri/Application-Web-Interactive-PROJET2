@@ -4,7 +4,14 @@ import { StampCommand } from '@app/classes/tool-commands/stamp-command';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { BIG_ANGLE_CHANGE, DEG_TO_RAD_RATIO, SMALL_ANGLE_CHANGE, STAMP_IMAGE_EXTENSION, STAMP_SIZE } from '@app/services/tools/tools-constants';
+import {
+    BIG_ANGLE_CHANGE,
+    DEG_TO_RAD_RATIO,
+    FULL_CIRCLE_DEG,
+    SMALL_ANGLE_CHANGE,
+    STAMP_IMAGE_EXTENSION,
+    STAMP_SIZE,
+} from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { Stamp } from '@app/utils/enums/stamp';
@@ -14,7 +21,7 @@ import { Stamp } from '@app/utils/enums/stamp';
 })
 export class StampService extends Tool {
     selectedStamp: Stamp;
-    private rotationAngle: number;
+    rotationAngle: number;
     scalingFactor: number;
     private undoRedo: UndoRedoService;
     constructor(drawingService: DrawingService, currentColorService: CurrentColorService, undoRedo: UndoRedoService) {
@@ -45,6 +52,7 @@ export class StampService extends Tool {
         } else {
             this.rotationAngle += event.deltaY > 0 ? BIG_ANGLE_CHANGE : -BIG_ANGLE_CHANGE;
         }
+        this.rotationAngle = (this.rotationAngle + FULL_CIRCLE_DEG) % FULL_CIRCLE_DEG;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawPreview(this.rotationAngle, this.scalingFactor, this.getPositionFromMouse(event), this.selectedStamp);
     }
