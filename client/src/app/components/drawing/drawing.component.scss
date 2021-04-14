@@ -49,3 +49,21 @@ canvas {
 .resizer.bottom-right {
     cursor: nwse-resize;
 }
+
+#textArea {
+    overflow: hidden;
+    border: solid 1px black;
+    outline: none;
+    position: relative;
+    margin: 0;
+    z-index: 100;
+    caret-color: black;
+    word-wrap: break-word;
+}
+
+.text-box {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    border: solid 0;
+}

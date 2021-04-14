@@ -8,6 +8,7 @@ export enum KeyboardButtons {
     Ellipse = '2',
     Eraser = 'e',
     Aerosol = 'a',
+    Text = 't',
     InvalidInput = 'h',
     NewDrawing = '0',
     SelectAll = 'a',

@@ -13,8 +13,11 @@ import { SelectionEllipseService } from '@app/services/tools/selection-ellipse-s
 import { SelectionPolygonalLassoService } from '@app/services/tools/selection-polygonal-lasso/selection-polygonal-lasso.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
 import { StampService } from '@app/services/tools/stamp-service/stamp.service';
+import { TextService } from '@app/services/tools/text/text.service';
+import { DEFAULT_FONT_SIZE } from '@app/services/tools/tools-constants';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { Stamp } from '@app/utils/enums/stamp';
+import { TextFont } from '@app/utils/enums/text-font.enum';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 import { CurrentAttributes } from '@app/utils/types/current-attributes';
 import { ToolBox } from '@app/utils/types/tool-box';
@@ -40,6 +43,7 @@ export class ToolManagerService {
         selectBoxService: SelectionRectangleService,
         selectEllipseService: SelectionEllipseService,
         polygonService: PolygonService,
+        public textService: TextService,
         paintBucket: PaintBucketService,
         stampService: StampService,
         selectPolygonalLassoService: SelectionPolygonalLassoService,
@@ -58,6 +62,7 @@ export class ToolManagerService {
             Polygon: polygonService,
             PaintBucket: paintBucket,
             Stamp: stampService,
+            Text: textService,
         };
         this.currentAttributes = {
             LineThickness: 1,
@@ -69,6 +74,8 @@ export class ToolManagerService {
             JetDiameter: 1,
             numberOfSides: 3,
             BucketTolerance: 0,
+            FontSize: DEFAULT_FONT_SIZE,
+            FontFace: TextFont.Arial,
         };
         this.shapeStyleSelection.set('Outline', ShapeStyle.Outline).set('Filled', ShapeStyle.Filled).set('FilledOutline', ShapeStyle.FilledOutline);
         this.toolChangeEmitter.subscribe((toolName: ToolsNames) => {
@@ -82,6 +89,8 @@ export class ToolManagerService {
             this.currentAttributes.JetDiameter = currentTool.jetDiameter;
             this.currentAttributes.DropletDiameter = currentTool.dropletDiameter;
             this.currentAttributes.BucketTolerance = currentTool.bucketTolerance;
+            this.currentAttributes.FontSize = currentTool.fontSize;
+            this.currentAttributes.FontFace = currentTool.fontFace;
         });
     }
 
@@ -169,14 +178,6 @@ export class ToolManagerService {
         return this.currentAttributes.numberOfSides;
     }
 
-    isCurrentTool(toolName: ToolsNames): boolean {
-        return this.currentTool === toolName;
-    }
-
-    emitToolChange(toolName: ToolsNames): void {
-        this.toolChangeEmitter.emit(toolName);
-    }
-
     getStampScalingFactor(): number {
         const stamp = this.toolBox.Stamp as StampService;
         return stamp.scalingFactor;
@@ -215,5 +216,31 @@ export class ToolManagerService {
                     break;
             }
         }
+    }
+
+    getCurrentFontSize(): number | undefined {
+        return this.currentAttributes.FontSize;
+    }
+
+    setCurrentFontFace(selectedFont?: string): void {
+        this.toolBox[this.currentTool].fontFace = selectedFont;
+        this.currentAttributes.FontFace = selectedFont;
+    }
+
+    setCurrentFontSize(fontSize?: number): void {
+        this.toolBox[this.currentTool].fontSize = fontSize;
+        this.currentAttributes.FontSize = fontSize;
+    }
+
+    isCurrentTool(toolName: ToolsNames): boolean {
+        return this.currentTool === toolName;
+    }
+
+    emitToolChange(toolName: ToolsNames): void {
+        if (this.currentTool === ToolsNames.Text) {
+            this.textService.showTextBox = false;
+            this.textService.drawStyledText();
+        }
+        this.toolChangeEmitter.emit(toolName);
     }
 }
