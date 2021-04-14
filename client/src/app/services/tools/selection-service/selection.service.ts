@@ -23,6 +23,7 @@ export abstract class SelectionService extends Tool {
     downPressed: boolean;
     leftPressed: boolean;
     rightPressed: boolean;
+    buffer: boolean;
     initialTopLeftCorner: Vec2;
     height: number;
     width: number;
@@ -35,8 +36,31 @@ export abstract class SelectionService extends Tool {
         this.topLeftCorner = { x: 0, y: 0 };
         this.offset = { x: 0, y: 0 };
         this.selectionActive = this.dragActive = false;
+        this.buffer = true;
         this.drawingService.selectedAreaCtx = this.drawingService.baseCtx;
     }
+
+    abstract onMouseDown(event: MouseEvent): void;
+
+    defaultOnMouseDown(event: MouseEvent): void {
+        if (this.isClickIn(this.firstGrid)) {
+            const initial = this.getPositionFromMouse(event);
+            this.offset.x = this.topLeftCorner.x - initial.x;
+            this.offset.y = this.topLeftCorner.y - initial.y;
+            this.dragActive = true;
+        } else {
+            this.selectionActive = false;
+            this.buffer = false;
+            const imageData = this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
+            createImageBitmap(imageData).then((imgBitmap) => {
+                this.drawingService.baseCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
+            });
+            this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
+            this.isSelectionDone = false;
+            this.registerUndo(imageData);
+        }
+    }
+    abstract registerUndo(imageData: ImageData): void;
 
     onKeyDown(event: KeyboardEvent): void {
         event.preventDefault();
@@ -65,16 +89,16 @@ export abstract class SelectionService extends Tool {
                 }
                 break;
             }
-            case KeyboardButtons.Shift: {
-                this.shiftDown = true;
-                this.updatePreview();
-                break;
-            }
-            case KeyboardButtons.Escape: {
-                this.clearPath();
-                this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                this.topLeftCorner = { x: 0, y: 0 };
-            }
+            // case KeyboardButtons.Shift: {
+            //     this.shiftDown = true;
+            //     this.updatePreview();
+            //     break;
+            // }
+            // case KeyboardButtons.Escape: {
+            //     this.clearPath();
+            //     this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            //     this.topLeftCorner = { x: 0, y: 0 };
+            // }
         }
         this.updateArrowPosition();
     }
@@ -157,6 +181,7 @@ export abstract class SelectionService extends Tool {
     }
 
     isClickIn(firstGrid: Vec2): boolean {
+        console.log(firstGrid, this.topLeftCorner, this.width);
         if (firstGrid.x < this.topLeftCorner.x || firstGrid.x > this.topLeftCorner.x + this.width) {
             return false;
         }

@@ -8,6 +8,7 @@ import { GridService } from '@app/services/grid/grid.service';
 import { SaveDrawingService } from '@app/services/save-drawing/save-drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-ellipse-service/selection-ellipse.service';
+import { SelectionPolygonalLassoService } from '@app/services/tools/selection-polygonal-lasso/selection-polygonal-lasso.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
 import { MIN_ERASER_THICKNESS } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
@@ -54,6 +55,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     };
     selectionEllipseService: SelectionEllipseService;
     selectionRectangleService: SelectionRectangleService;
+    selectionPolygonalLassoService: SelectionPolygonalLassoService;
 
     constructor(
         private drawingService: DrawingService,
@@ -61,6 +63,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         canvasResizerService: CanvasResizerService,
         private undoRedo: UndoRedoService,
         selectionEllipseService: SelectionEllipseService,
+        selectionPolygonalLassoService: SelectionPolygonalLassoService,
         selectionRectangleService: SelectionRectangleService,
         private saveDrawingService: SaveDrawingService,
         public saveService: SaveDrawingService,
@@ -70,6 +73,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.canvasResizerService = canvasResizerService;
         this.selectionEllipseService = selectionEllipseService;
         this.selectionRectangleService = selectionRectangleService;
+        this.selectionPolygonalLassoService = selectionPolygonalLassoService;
     }
 
     ngOnInit(): void {

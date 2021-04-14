@@ -17,11 +17,19 @@ export class LineService extends LineCreatorService {
         this.undoRedo = undoRedo;
     }
 
+    registerUndo(imageData: ImageData): void {
+        return;
+    }
+
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
             this.defaultMouseUp(event);
         }
         this.mouseDown = false;
+    }
+
+    onMouseMove(event: MouseEvent): void {
+        this.defaultOnMouseMove(event);
     }
 
     onDblClick(): void {

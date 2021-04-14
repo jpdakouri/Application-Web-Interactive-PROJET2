@@ -1,25 +1,48 @@
 import { Injectable } from '@angular/core';
+import { SelectionCommand } from '@app/classes/tool-commands/selection-command';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { LineCreatorService } from '@app/services/line-creator/line-creator.service';
 import { DEFAULT_DOT_RADIUS, DEFAULT_MIN_THICKNESS, MIN_ARRAY_LENGTH } from '@app/services/tools/tools-constants';
+import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
 @Injectable({
     providedIn: 'root',
 })
 export class SelectionPolygonalLassoService extends LineCreatorService {
     private validePoint: boolean = true;
-    constructor(drawingService: DrawingService, currentColorService: CurrentColorService) {
+    constructor(drawingService: DrawingService, currentColorService: CurrentColorService, private undoRedo: UndoRedoService) {
         super(drawingService, currentColorService);
     }
 
+    registerUndo(imageData: ImageData): void {
+        const command = new SelectionCommand(
+            this,
+            this.initialTopLeftCorner,
+            { ...this.topLeftCorner },
+            { x: this.width, y: this.height },
+            imageData,
+        );
+        this.undoRedo.addCommand(command);
+    }
+
     onMouseUp(event: MouseEvent): void {
-        if (this.validePoint && this.mouseDown) {
+        if (this.validePoint && this.mouseDown && !this.selectionActive && this.buffer) {
             this.defaultMouseUp(event);
-            if (this.pathData.length > MIN_ARRAY_LENGTH && this.verifyLastPoint(this.pathData[0])) this.endOfSelection();
+            if (this.pathData.length > MIN_ARRAY_LENGTH && this.verifyLastPoint(this.pathData[0])) {
+                this.isSelectionDone = true;
+                this.endOfSelection();
+            }
+        } else if (!this.buffer) this.buffer = true;
+        this.mouseDown = this.dragActive = false;
+    }
+
+    onMouseMove(event: MouseEvent): void {
+        this.defaultOnMouseMove(event);
+        if (this.mouseDown && this.selectionActive && this.dragActive) {
+            this.updateDragPosition(this.getPositionFromMouse(event));
         }
-        this.mouseDown = false;
     }
 
     getPrimaryColor(): string {
@@ -88,9 +111,17 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
             this.drawingService.selectedAreaCtx.drawImage(imgBitmap, coords[0].x, coords[0].y);
             this.drawingService.selectedAreaCtx.restore();
         });
+        this.height = imageData.height;
+        this.width = imageData.width;
+
         this.updateSelectedCtx(coords, size);
         this.updateBaseCtx();
-        // this.clearPath();
+        this.updateParent(coords);
+    }
+    updateParent(coords: Vec2[]): void {
+        this.firstGrid = this.firstGridClip = coords[0];
+        this.finalGridClip = coords[1];
+        this.updateTopLeftCorner();
     }
 
     drawShape(ctx: CanvasRenderingContext2D): void {

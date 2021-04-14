@@ -22,6 +22,11 @@ export abstract class LineCreatorService extends SelectionService {
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButtons.Left;
         this.mouseDownCoord = this.getPositionFromMouse(event);
+        if (this.selectionActive) {
+            this.clearPath();
+            this.firstGrid = this.mouseDownCoord;
+            this.defaultOnMouseDown(event);
+        }
     }
 
     abstract onMouseUp(event: MouseEvent): void;
@@ -45,7 +50,9 @@ export abstract class LineCreatorService extends SelectionService {
         this.started = true;
     }
 
-    onMouseMove(event: MouseEvent): void {
+    abstract onMouseMove(event: MouseEvent): void;
+
+    defaultOnMouseMove(event: MouseEvent): void {
         if (this.started) {
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.verifyValideLine(this.mouseDownCoord);

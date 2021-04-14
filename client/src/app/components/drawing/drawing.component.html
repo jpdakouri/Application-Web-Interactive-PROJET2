@@ -53,7 +53,12 @@
         #selectedArea
         [attr.width]="width"
         [attr.height]="height"
-        [ngStyle]="{ border: selectionEllipseService.selectionActive || selectionRectangleService.selectionActive ? '1px solid' : 'none' }"
+        [ngStyle]="{
+            border:
+                selectionEllipseService.selectionActive || selectionRectangleService.selectionActive || selectionPolygonalLassoService.selectionActive
+                    ? '1px solid'
+                    : 'none'
+        }"
     >
     </canvas>
     <div

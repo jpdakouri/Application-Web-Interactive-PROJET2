@@ -31,6 +31,17 @@ export class SelectionEllipseService extends SelectionService {
         this.mousePositionHandler = mousePositionHandler;
     }
 
+    registerUndo(imageData: ImageData): void {
+        const command = new SelectionCommand(
+            this,
+            this.initialTopLeftCorner,
+            { ...this.topLeftCorner },
+            { x: this.width, y: this.height },
+            imageData,
+        );
+        this.undoRedo.addCommand(command);
+    }
+
     onMouseDown(event: MouseEvent): void {
         this.clearPath();
         this.mouseDown = event.button === MouseButtons.Left;
@@ -43,28 +54,7 @@ export class SelectionEllipseService extends SelectionService {
                 this.updatePreview();
                 this.selectionActive = true;
             } else {
-                if (this.isClickIn(this.firstGrid)) {
-                    const initial = this.getPositionFromMouse(event);
-                    this.offset.x = this.topLeftCorner.x - initial.x;
-                    this.offset.y = this.topLeftCorner.y - initial.y;
-                    this.dragActive = true;
-                } else {
-                    this.selectionActive = false;
-                    const imageData = this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
-                    createImageBitmap(imageData).then((imgBitmap) => {
-                        this.drawingService.baseCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
-                    });
-                    this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
-                    this.isSelectionDone = false;
-                    const command = new SelectionCommand(
-                        this,
-                        this.initialTopLeftCorner,
-                        { ...this.topLeftCorner },
-                        { x: this.width, y: this.height },
-                        imageData,
-                    );
-                    this.undoRedo.addCommand(command);
-                }
+                this.defaultOnMouseDown(event);
             }
         }
     }
@@ -82,6 +72,7 @@ export class SelectionEllipseService extends SelectionService {
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown && this.selectionActive && !this.dragActive && this.mouseMoved) {
+            console.log(this.selectionActive);
             this.isSelectionDone = true;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.finalGridClip = this.getPositionFromMouse(event);
@@ -113,7 +104,11 @@ export class SelectionEllipseService extends SelectionService {
         ctx.closePath();
     }
 
-    // private clipArea(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {}
+    private clipArea(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+        ctx.save();
+        this.drawEllipse(ctx, finalGrid);
+        ctx.clip('evenodd');
+    }
 
     private selectEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         this.initialTopLeftCorner = { ...this.topLeftCorner };
@@ -123,9 +118,7 @@ export class SelectionEllipseService extends SelectionService {
         this.replaceEmptyPixels(imageData);
         createImageBitmap(imageData).then((imgBitmap) => {
             ctx.setLineDash([]);
-            ctx.save();
-            this.drawEllipse(ctx, finalGrid);
-            ctx.clip('evenodd');
+            this.clipArea(ctx, finalGrid);
             this.drawingService.selectedAreaCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
             ctx.restore();
         });

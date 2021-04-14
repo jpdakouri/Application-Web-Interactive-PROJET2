@@ -30,6 +30,17 @@ export class SelectionRectangleService extends SelectionService {
         this.mousePositionHandler = mousePositionHandler;
     }
 
+    registerUndo(imageData: ImageData): void {
+        const command = new SelectionCommand(
+            this,
+            this.initialTopLeftCorner,
+            { ...this.topLeftCorner },
+            { x: this.width, y: this.height },
+            imageData,
+        );
+        this.undoRedo.addCommand(command);
+    }
+
     onMouseDown(event: MouseEvent): void {
         this.clearPath();
         this.mouseDown = event.button === MouseButtons.Left;
@@ -42,28 +53,7 @@ export class SelectionRectangleService extends SelectionService {
                 this.updatePreview();
                 this.selectionActive = true;
             } else {
-                if (this.isClickIn(this.firstGrid)) {
-                    const initial = this.getPositionFromMouse(event);
-                    this.offset.x = this.topLeftCorner.x - initial.x;
-                    this.offset.y = this.topLeftCorner.y - initial.y;
-                    this.dragActive = true;
-                } else {
-                    this.selectionActive = false;
-                    const imageData = this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
-                    createImageBitmap(imageData).then((imgBitmap) => {
-                        this.drawingService.baseCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
-                    });
-                    this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
-                    this.isSelectionDone = false;
-                    const command = new SelectionCommand(
-                        this,
-                        this.initialTopLeftCorner,
-                        { ...this.topLeftCorner },
-                        { x: this.width, y: this.height },
-                        imageData,
-                    );
-                    this.undoRedo.addCommand(command);
-                }
+                this.defaultOnMouseDown(event);
             }
         }
     }
@@ -87,6 +77,7 @@ export class SelectionRectangleService extends SelectionService {
             this.finalGridClip = this.getPositionFromMouse(event);
             this.updateTopLeftCorner();
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+
             if (this.shiftDown) {
                 this.mousePositionHandler.makeSquare(this.mouseDownCoord, this.mouseDownCoord);
             }
