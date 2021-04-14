@@ -1,4 +1,4 @@
-import {Vec2} from '@app/classes/vec2';
+import { Vec2 } from '@app/classes/vec2';
 import { ClipboardService } from '@app/services/tools/clipboard-service/clipboard.service';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
 
