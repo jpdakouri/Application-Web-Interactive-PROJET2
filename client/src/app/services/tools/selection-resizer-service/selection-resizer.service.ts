@@ -26,7 +26,7 @@ export class SelectionResizerService extends SelectionService {
         mousePositionHandler: MousePositionHandlerService,
         private undoRedo: UndoRedoService,
     ) {
-        super(drawingService, currentColorService, mousePositionHandler, undoRedo);
+        super(drawingService, currentColorService);
         this.status = SelectionStatus.OFF;
         this.mouseService = mouseService;
         this.coords = { x: 0, y: 0 };
@@ -157,6 +157,10 @@ export class SelectionResizerService extends SelectionService {
             );
         });
     }
+    registerUndo(imageData: ImageData): void {
+        throw new Error('Method not implemented.');
+    }
+
     executeCommand(command: ToolCommand): void {
         throw new Error('Method not implemented.');
     }

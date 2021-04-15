@@ -118,6 +118,7 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
                 console.log(res.data);
             },
             (error) => {
+                this.closeDialog();
                 console.log('Error occurred ! ' + error);
             },
         );
