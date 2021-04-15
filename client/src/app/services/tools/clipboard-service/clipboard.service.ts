@@ -37,6 +37,7 @@ export class ClipboardService extends Tool {
             }
             if (selectionTool.hasSelection()) {
                 selectionTool.drawSelectionOnBase(selectionTool.getSelectionImageData(), { ...selectionTool.topLeftCorner });
+                selectionTool.registerUndo(selectionTool.getSelectionImageData());
                 selectionTool.deselect();
             }
             selectionTool.setSelection(this.clipboardContent);
@@ -48,6 +49,8 @@ export class ClipboardService extends Tool {
             return;
         }
         selectionTool.deselect();
+        // Dummy image data because redoing a delete command has no selection movement.
+        selectionTool.registerUndo(new ImageData(1, 1));
     }
 
     cut(): void {
@@ -58,6 +61,7 @@ export class ClipboardService extends Tool {
         if (selectionTool.hasSelection()) {
             this.clipboardContent = selectionTool.getSelectionImageData();
             selectionTool.deselect();
+            selectionTool.registerUndo(this.clipboardContent);
         }
     }
 
