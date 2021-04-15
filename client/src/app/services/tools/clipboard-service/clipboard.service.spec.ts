@@ -98,7 +98,8 @@ describe('ClipboardService', () => {
     it('hasSelection: returns true if selection tool selection and has selection, false otherwise', () => {
         expect(service.hasSelection()).toBeFalse();
         toolManager.emitToolChange(ToolsNames.SelectBox);
-        spyOn(selectionTool, 'hasSelection').and.returnValue(true);
         expect(service.hasSelection()).toBeTrue();
+        spyOn(selectionTool, 'hasSelection').and.returnValue(false);
+        expect(service.hasSelection()).toBeFalse();
     });
 });
