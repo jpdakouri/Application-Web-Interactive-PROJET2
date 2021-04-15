@@ -32,7 +32,6 @@ export class SelectionRectangleService extends SelectionService {
 
     registerUndo(imageData: ImageData): void {
         const finalTopLeftCorner: Vec2 | undefined = SelectionService.selectionActive ? { ...this.topLeftCorner } : undefined;
-        console.log(finalTopLeftCorner);
         const command = new SelectionCommand(this, { x: this.width, y: this.height }, imageData, this.initialTopLeftCorner, finalTopLeftCorner);
         this.undoRedo.addCommand(command);
     }
