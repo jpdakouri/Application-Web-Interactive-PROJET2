@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
 import { ToolsNames } from '@app/utils/enums/tools-names';
-import { ToolCommand } from '@app/utils/interfaces/tool-command';
 
 @Injectable({
     providedIn: 'root',
@@ -68,9 +67,5 @@ export class ClipboardService {
             return false;
         }
         return selectionTool.hasSelection();
-    }
-
-    executeCommand(command: ToolCommand): void {
-        // TODO
     }
 }
