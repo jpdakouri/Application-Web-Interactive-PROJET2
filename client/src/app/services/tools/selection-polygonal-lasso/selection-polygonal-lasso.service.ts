@@ -21,9 +21,9 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
         const command = new SelectionCommand(
             this,
             this.initialTopLeftCorner,
+            imageData,
             { ...this.topLeftCorner },
             { x: this.width, y: this.height },
-            imageData,
             this.pathData,
         );
         this.undoRedo.addCommand(command);

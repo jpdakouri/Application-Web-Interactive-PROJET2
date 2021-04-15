@@ -34,9 +34,9 @@ export class SelectionRectangleService extends SelectionService {
         const command = new SelectionCommand(
             this,
             this.initialTopLeftCorner,
+            imageData,
             { ...this.topLeftCorner },
             { x: this.width, y: this.height },
-            imageData,
         );
         this.undoRedo.addCommand(command);
     }
