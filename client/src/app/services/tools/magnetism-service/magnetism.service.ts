@@ -87,18 +87,38 @@ export class MagnetismService extends SelectionService {
         if (SelectionService.selectionActive && this.upPressed) {
             this.topLeftCorner.y -= this.gridService.gridSize;
             this.firstGrid.y -= this.gridService.gridSize;
+            this.setCoordToNearestCrossOnGrid(this.topLeftCorner);
+            this.setCoordToNearestCrossOnGrid({
+                x: this.drawingService.selectedAreaCtx.canvas.width,
+                y: this.drawingService.selectedAreaCtx.canvas.height,
+            });
         }
         if (SelectionService.selectionActive && this.downPressed) {
             this.topLeftCorner.y += this.gridService.gridSize;
             this.firstGrid.y += this.gridService.gridSize;
+            this.setCoordToNearestCrossOnGrid(this.topLeftCorner);
+            this.setCoordToNearestCrossOnGrid({
+                x: this.drawingService.selectedAreaCtx.canvas.width,
+                y: this.drawingService.selectedAreaCtx.canvas.height,
+            });
         }
         if (SelectionService.selectionActive && this.rightPressed) {
             this.topLeftCorner.x += this.gridService.gridSize;
             this.firstGrid.x += this.gridService.gridSize;
+            this.setCoordToNearestCrossOnGrid(this.topLeftCorner);
+            this.setCoordToNearestCrossOnGrid({
+                x: this.drawingService.selectedAreaCtx.canvas.width,
+                y: this.drawingService.selectedAreaCtx.canvas.height,
+            });
         }
         if (SelectionService.selectionActive && this.leftPressed) {
             this.topLeftCorner.x -= this.gridService.gridSize;
             this.firstGrid.x -= this.gridService.gridSize;
+            this.setCoordToNearestCrossOnGrid(this.topLeftCorner);
+            this.setCoordToNearestCrossOnGrid({
+                x: this.drawingService.selectedAreaCtx.canvas.width,
+                y: this.drawingService.selectedAreaCtx.canvas.height,
+            });
         }
         // this.setCoordToNearestCrossOnGrid({
         //     x: this.drawingService.selectedAreaCtx.canvas.width,
