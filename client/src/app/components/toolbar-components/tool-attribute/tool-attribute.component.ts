@@ -4,6 +4,7 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatSliderChange } from '@angular/material/slider';
 import { GridService } from '@app/services/grid/grid.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
+import { TextService } from '@app/services/tools/text/text.service';
 import {
     MAX_DROPLET_DIAMETER,
     MAX_FREQUENCY,
@@ -14,6 +15,8 @@ import {
 } from '@app/services/tools/tools-constants';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { Stamp } from '@app/utils/enums/stamp';
+import { TextAlign } from '@app/utils/enums/text-align.enum';
+import { TextFont } from '@app/utils/enums/text-font.enum';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 
 @Component({
@@ -33,7 +36,7 @@ export class ToolAttributeComponent {
     shapeStyle: typeof ShapeStyle = ShapeStyle;
     toolManagerService: ToolManagerService;
 
-    constructor(toolManagerService: ToolManagerService, public gridService: GridService) {
+    constructor(toolManagerService: ToolManagerService, public gridService: GridService, public textService: TextService) {
         this.toolManagerService = toolManagerService;
     }
 
@@ -61,6 +64,7 @@ export class ToolAttributeComponent {
     showLineAttributes(): boolean {
         return this.toolManagerService.isCurrentTool(ToolsNames.Line);
     }
+
     showBucketTolerance(): boolean {
         return this.toolManagerService.isCurrentTool(ToolsNames.PaintBucket);
     }
@@ -91,6 +95,10 @@ export class ToolAttributeComponent {
 
     showPipettePreview(): boolean {
         return this.toolManagerService.isCurrentTool(ToolsNames.Pipette);
+    }
+
+    showTextAttributes(): boolean {
+        return this.toolManagerService.isCurrentTool(ToolsNames.Text);
     }
 
     isChecked(shapeStyle: ShapeStyle): boolean {
@@ -129,6 +137,26 @@ export class ToolAttributeComponent {
         return this.toolManagerService.getCurrentNumberOfSides();
     }
 
+    getCurrentFontSize(): number | undefined {
+        return this.toolManagerService.getCurrentFontSize();
+    }
+
+    get textFonts(): string[] {
+        return Object.values(TextFont);
+    }
+
+    getStampScalingFactor(): number {
+        return this.toolManagerService.getStampScalingFactor();
+    }
+
+    getStampRotationAngle(): number {
+        return this.toolManagerService.getStampRotationAngle();
+    }
+
+    getSelectedStamp(): Stamp {
+        return this.toolManagerService.getSelectedStamp();
+    }
+
     onThicknessChange(event: MatSliderChange): void {
         this.toolManagerService.setCurrentLineThickness(event.value || undefined);
     }
@@ -154,6 +182,14 @@ export class ToolAttributeComponent {
         this.toolManagerService.setCurrentFrequency(event.value || undefined);
     }
 
+    onFontSizeChange(event: MatSliderChange): void {
+        this.toolManagerService.setCurrentFontSize(event.value || undefined);
+    }
+
+    onFontFaceChange(selectedFont?: string): void {
+        this.toolManagerService.setCurrentFontFace(selectedFont || undefined);
+    }
+
     onDropletDiameterChange(event: MatSliderChange): void {
         this.toolManagerService.setCurrentDropletDiameter(event.value || undefined);
     }
@@ -175,19 +211,23 @@ export class ToolAttributeComponent {
         this.gridService.changeOpacity(event.value);
     }
 
-    getStampScalingFactor(): number {
-        return this.toolManagerService.getStampScalingFactor();
-    }
-
-    getSelectedStamp(): Stamp {
-        return this.toolManagerService.getSelectedStamp();
-    }
-
     onStampScalingFactorChange(event: MatSliderChange): void {
         this.toolManagerService.setStampScalingFactor(event.value || undefined);
     }
 
+    onStampRotationAngleChange(event: MatSliderChange): void {
+        this.toolManagerService.setStampRotationAngle(event.value || undefined);
+    }
+
     onSelectedStampChange(stampName: string): void {
         this.toolManagerService.setSelectedStamp(stampName);
+    }
+
+    onTextAlignChange(value: string): void {
+        this.textService.textAlign = value as TextAlign;
+    }
+
+    onTextStyleChange(textStyle: string[]): void {
+        this.textService.textStyles = textStyle;
     }
 }

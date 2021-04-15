@@ -6,11 +6,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatOptionModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -63,6 +64,7 @@ describe('EditorComponent', () => {
     beforeEach(async(() => {
         drawingServiceSpy = new DrawingServiceMock();
         toolManagerServiceMock = new ToolManagerServiceMock();
+        toolManagerServiceMock.textService.showTextBox = false;
         TestBed.configureTestingModule({
             declarations: [
                 EditorComponent,
@@ -89,9 +91,10 @@ describe('EditorComponent', () => {
                 FormsModule,
                 MatTooltipModule,
                 HttpClientModule,
-                MatFormFieldModule,
                 MatDialogModule,
                 MatChipsModule,
+                MatOptionModule,
+                MatSelectModule,
             ],
             providers: [
                 { provide: ToolManagerService, useValue: toolManagerServiceMock },

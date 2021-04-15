@@ -1,32 +1,4 @@
 <div class="attribute-toolbar">
-    <div class="grid">
-        <mat-checkbox [(ngModel)]="gridService.showGrid" class="attribute-title" (change)="onGridSizeChange($event)"
-            ><h3 class="attribute-sub-title" style="margin: auto; margin-top: 5px">Grille de prévisualisation</h3>
-            <small class="small-text">Afficher une grille à la zone de dessin</small>
-        </mat-checkbox>
-        <div *ngIf="gridService.showGrid">
-            <h3 class="attribute-sub-title">Taille des grilles: {{ gridService.gridSize }} pixels</h3>
-            <mat-slider
-                [value]="gridService.gridSize"
-                #heightSlider
-                color="primary"
-                [min]="gridService.minGridSize"
-                [max]="gridService.maxGridSize"
-                step="20"
-                (input)="onGridSizeChange($event)"
-            ></mat-slider>
-            <h3 class="attribute-sub-title">Opacité de la grille: {{ gridService.gridOpacity | percent }}</h3>
-            <mat-slider
-                [value]="gridService.gridOpacity"
-                #heightSlider
-                color="primary"
-                [min]="gridService.minOpacity"
-                [max]="gridService.maxOpacity"
-                step="0.1"
-                (input)="onGridOpacityChange($event)"
-            ></mat-slider>
-        </div>
-    </div>
     <mat-divider></mat-divider>
     <div *ngIf="showLineThickness()">
         <div class="line-thickness">
@@ -94,6 +66,72 @@
         <div class="show-dots">
             <mat-checkbox (change)="onShowDotChange($event)">Voir les points</mat-checkbox>
         </div>
+        <mat-divider></mat-divider>
+    </div>
+
+    <div class="text-attributes" style="margin: 15px 0" *ngIf="showTextAttributes()">
+        <div class="font-selector" style="text-align: center">
+            <mat-form-field appearance="fill" style="width: 90%">
+                <mat-label>Police</mat-label>
+                <mat-select [(value)]="textService.fontFace" (selectionChange)="onFontFaceChange(textService.fontFace)">
+                    <mat-option *ngFor="let fontFace of textFonts" [value]="fontFace" [style.font-family]="fontFace" style="font-size: large">
+                        {{ fontFace }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="text-font-size">
+            <h3 class="attribute-title">Taille de la police : {{ getCurrentFontSize() }} px</h3>
+            <mat-slider
+                [value]="getCurrentFontSize()"
+                #flowSlider
+                color="primary"
+                [min]="2"
+                [max]="150"
+                step="1"
+                (input)="onFontSizeChange($event)"
+                (change)="onFontSizeChange($event)"
+            ></mat-slider>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="text-appearance">
+            <mat-button-toggle-group
+                id="fontStyleGroup"
+                name="fontStyle"
+                aria-label="Font Style"
+                multiple
+                #fontStyleGroup="matButtonToggleGroup"
+                [value]="textService.textStyles"
+                (change)="onTextStyleChange(fontStyleGroup.value)"
+            >
+                <mat-button-toggle value="bold"><mat-icon>format_bold</mat-icon></mat-button-toggle>
+                <mat-button-toggle value="italic"><mat-icon>format_italic</mat-icon></mat-button-toggle>
+            </mat-button-toggle-group>
+
+            <div class="text-alignment">
+                <mat-button-toggle-group
+                    #textAlignmentGroup="matButtonToggleGroup"
+                    [value]="textService.textAlign"
+                    (change)="onTextAlignChange(textAlignmentGroup.value)"
+                >
+                    <mat-button-toggle value="start" aria-label="Text align left">
+                        <mat-icon>format_align_left</mat-icon>
+                    </mat-button-toggle>
+                    <mat-button-toggle value="center" aria-label="Text align center">
+                        <mat-icon>format_align_center</mat-icon>
+                    </mat-button-toggle>
+                    <mat-button-toggle value="end" aria-label="Text align right">
+                        <mat-icon>format_align_right</mat-icon>
+                    </mat-button-toggle>
+                </mat-button-toggle-group>
+            </div>
+        </div>
+
         <mat-divider></mat-divider>
     </div>
 
@@ -168,24 +206,63 @@
         <mat-divider></mat-divider>
     </div>
     <div *ngIf="showStampAttributes()">
-            <h3 class="attribute-title">Facteur de mise à échelle: {{ this.getStampScalingFactor() }}</h3>
-            <mat-slider
-                [value]="this.getStampScalingFactor()"
-                #stampScalingFactorSlider
-                color="primary"
-                min="0.1"
-                max="5"
-                (input)="onStampScalingFactorChange($event)"
-                (change)="onStampScalingFactorChange($event)"
-                step="0.05"
-            ></mat-slider>
-            <img src = "../../assets/stamps/house.png" (click) = "onSelectedStampChange('house')">
-            <img src = "../../assets/stamps/smile.png" (click) = "onSelectedStampChange('smile')">
-            <img src = "../../assets/stamps/hashtag.png" (click) = "onSelectedStampChange('hashtag')">
-            <img src = "../../assets/stamps/star.png" (click) = "onSelectedStampChange('star')">
-            <img src = "../../assets/stamps/letter.png" (click) = "onSelectedStampChange('letter')">
+        <h3 class="attribute-title">Facteur de mise à échelle: {{ this.getStampScalingFactor() }}</h3>
+        <mat-slider
+            [value]="this.getStampScalingFactor()"
+            #stampScalingFactorSlider
+            color="primary"
+            min="0.1"
+            max="10"
+            (input)="onStampScalingFactorChange($event)"
+            (change)="onStampScalingFactorChange($event)"
+            step="0.1"
+        ></mat-slider>
+        <h3 class="attribute-title">Angle de rotation: {{ this.getStampRotationAngle() }}</h3>
+        <mat-slider
+            [value]="this.getStampRotationAngle()"
+            #stampRotationAngleSlider
+            color="primary"
+            min="0"
+            max="359"
+            (input)="onStampRotationAngleChange($event)"
+            (change)="onStampRotationAngleChange($event)"
+            step="1"
+        ></mat-slider>
+        <img width="50" height="50" src="../../assets/stamps/house.png" (click)="onSelectedStampChange('house')" />
+        <img width="50" height="50" src="../../assets/stamps/smile.png" (click)="onSelectedStampChange('smile')" />
+        <img width="50" height="50" src="../../assets/stamps/hashtag.png" (click)="onSelectedStampChange('hashtag')" />
+        <img width="50" height="50" src="../../assets/stamps/star.png" (click)="onSelectedStampChange('star')" />
+        <img width="50" height="50" src="../../assets/stamps/letter.png" (click)="onSelectedStampChange('letter')" />
         <mat-divider></mat-divider>
     </div>
     <app-color-selector></app-color-selector>
     <mat-divider></mat-divider>
+    <div class="grid">
+        <mat-checkbox [(ngModel)]="gridService.showGrid" class="attribute-title" (change)="onGridSizeChange($event)"
+            ><h3 class="attribute-sub-title" style="margin: auto; margin-top: 5px">Grille de prévisualisation</h3>
+            <small class="small-text">Afficher une grille à la zone de dessin</small>
+        </mat-checkbox>
+        <div *ngIf="gridService.showGrid">
+            <h3 class="attribute-sub-title">Taille des grilles: {{ gridService.gridSize }} pixels</h3>
+            <mat-slider
+                [value]="gridService.gridSize"
+                #heightSlider
+                color="primary"
+                [min]="gridService.minGridSize"
+                [max]="gridService.maxGridSize"
+                step="20"
+                (input)="onGridSizeChange($event)"
+            ></mat-slider>
+            <h3 class="attribute-sub-title">Opacité de la grille: {{ gridService.gridOpacity | percent }}</h3>
+            <mat-slider
+                [value]="gridService.gridOpacity"
+                #heightSlider
+                color="primary"
+                [min]="gridService.minOpacity"
+                [max]="gridService.maxOpacity"
+                step="0.1"
+                (input)="onGridOpacityChange($event)"
+            ></mat-slider>
+        </div>
+    </div>
 </div>
