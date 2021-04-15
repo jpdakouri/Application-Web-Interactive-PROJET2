@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
+import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { GridService } from '@app/services/grid/grid.service';
 import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
@@ -11,124 +11,115 @@ import { ToolCommand } from '@app/utils/interfaces/tool-command';
 @Injectable({
     providedIn: 'root',
 })
-export class MagnetismService extends SelectionService {
-    isMagnetismActivated: boolean;
-    gridService: GridService;
+export class MagnetismService extends Tool {
+    topLeftCorner: Vec2;
+    gridSize: number;
     mousePositionHandler: MousePositionHandlerService;
-    constructor(
-        drawingService: DrawingService,
-        currentColorService: CurrentColorService,
-        mousePositionHandler: MousePositionHandlerService,
-        gridService: GridService,
-    ) {
-        super(drawingService, currentColorService);
-        this.gridService = gridService;
+    constructor(drawingService: DrawingService, currentColor: CurrentColorService, mousePositionHandler: MousePositionHandlerService) {
+        super(drawingService, currentColor);
+        this.gridSize = this.drawingService.gridSize;
+        this.topLeftCorner = { x: this.drawingService.selectedAreaCtx.canvas.offsetLeft, y: this.drawingService.selectedAreaCtx.canvas.offsetTop };
+        this.updatePosition(this.gridSize);
         this.mousePositionHandler = mousePositionHandler;
     }
 
-    onMouseMove(event: MouseEvent): void {
-        this.updatePreview();
-    }
-
     onKeyDown(event: KeyboardEvent): void {
-        switch (event.key) {
-            case KeyboardButtons.Up: {
-                if (SelectionService.selectionActive) {
-                    this.upPressed = true;
+        if (SelectionService.selectionActive) {
+            switch (event.key) {
+                case KeyboardButtons.Up: {
+                    break;
                 }
-                break;
-            }
-            case KeyboardButtons.Down: {
-                if (SelectionService.selectionActive) {
-                    this.downPressed = true;
+                case KeyboardButtons.Down: {
+                    break;
                 }
-                break;
-            }
-            case KeyboardButtons.Right: {
-                if (SelectionService.selectionActive) {
-                    this.rightPressed = true;
+                case KeyboardButtons.Right: {
+                    this.findNearestLineRight();
+                    break;
                 }
-                break;
-            }
-            case KeyboardButtons.Left: {
-                if (SelectionService.selectionActive) {
-                    this.leftPressed = true;
+                case KeyboardButtons.Left: {
+                    this.findNearestLineLeft();
+                    break;
                 }
-                break;
             }
         }
-        this.updateArrowPositionMagnetism();
     }
 
-    onKeyUp(event: KeyboardEvent): void {
-        this.defaultOnKeyUp(event);
-        this.updatePreview();
+    findNearestLineRight(): void {
+        const topRightCornerX = this.drawingService.selectedAreaCtx.canvas.width + this.drawingService.selectedAreaCtx.canvas.offsetLeft;
+        const kThGrid = topRightCornerX / this.gridSize + 1;
+        this.drawingService.selectedAreaCtx.canvas.style.left =
+            kThGrid * this.gridSize - topRightCornerX + this.drawingService.selectedAreaCtx.canvas.offsetLeft + 'px';
     }
 
-    setCoordToNearestCrossOnGrid(coord: Vec2): void {
-        if (coord.x % this.gridService.gridSize) {
-            coord.x = coord.x + (this.gridService.gridSize - (coord.x % this.gridService.gridSize));
-        }
-
-        if (coord.y % this.gridService.gridSize) {
-            coord.y = coord.y + (this.gridService.gridSize - (coord.y % this.gridService.gridSize));
-        }
+    findNearestLineLeft(): void {
+        const kThGrid = this.drawingService.selectedAreaCtx.canvas.offsetLeft / this.gridSize;
+        this.drawingService.selectedAreaCtx.canvas.style.left = kThGrid * this.gridSize + 'px';
     }
 
-    updateCoordToCurrentValues(): void {
-        this.firstGrid = { ...this.mouseDownCoord };
-        this.topLeftCorner = { ...this.initialTopLeftCorner };
-        // this.topLeftCorner = { x: 0, y: 0 };
-        // this.updateTopLeftCorner();
+    findNearestLineTop(): void {
+        const kThGrid = this.drawingService.selectedAreaCtx.canvas.offsetTop / this.gridSize;
+        this.drawingService.selectedAreaCtx.canvas.style.top = kThGrid * this.gridSize + 'px';
     }
 
-    updateArrowPositionMagnetism(): void {
-        // this.updateCoordToCurrentValues();
-        if (SelectionService.selectionActive && this.upPressed) {
-            this.topLeftCorner.y -= this.gridService.gridSize;
-            this.firstGrid.y -= this.gridService.gridSize;
-            this.setCoordToNearestCrossOnGrid(this.topLeftCorner);
-            this.setCoordToNearestCrossOnGrid({
-                x: this.drawingService.selectedAreaCtx.canvas.width,
-                y: this.drawingService.selectedAreaCtx.canvas.height,
-            });
-        }
-        if (SelectionService.selectionActive && this.downPressed) {
-            this.topLeftCorner.y += this.gridService.gridSize;
-            this.firstGrid.y += this.gridService.gridSize;
-            this.setCoordToNearestCrossOnGrid(this.topLeftCorner);
-            this.setCoordToNearestCrossOnGrid({
-                x: this.drawingService.selectedAreaCtx.canvas.width,
-                y: this.drawingService.selectedAreaCtx.canvas.height,
-            });
-        }
-        if (SelectionService.selectionActive && this.rightPressed) {
-            this.topLeftCorner.x += this.gridService.gridSize;
-            this.firstGrid.x += this.gridService.gridSize;
-            this.setCoordToNearestCrossOnGrid(this.topLeftCorner);
-            this.setCoordToNearestCrossOnGrid({
-                x: this.drawingService.selectedAreaCtx.canvas.width,
-                y: this.drawingService.selectedAreaCtx.canvas.height,
-            });
-        }
-        if (SelectionService.selectionActive && this.leftPressed) {
-            this.topLeftCorner.x -= this.gridService.gridSize;
-            this.firstGrid.x -= this.gridService.gridSize;
-            this.setCoordToNearestCrossOnGrid(this.topLeftCorner);
-            this.setCoordToNearestCrossOnGrid({
-                x: this.drawingService.selectedAreaCtx.canvas.width,
-                y: this.drawingService.selectedAreaCtx.canvas.height,
-            });
-        }
-        // this.setCoordToNearestCrossOnGrid({
-        //     x: this.drawingService.selectedAreaCtx.canvas.width,
-        //     y: this.drawingService.selectedAreaCtx.canvas.height,
-        // });
-        console.log('grid clean ? ' + this.topLeftCorner.x + ' ' + this.topLeftCorner.y);
-        // this.setCoordToNearestCrossOnGrid(this.firstGrid);
-        this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
-        this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
+    // getCoordToNearestCrossOnGrid(coord: Vec2): void {
+    //     return { x: this.gridSize * (coord.x / this.gridSize), y: this.gridSize * (coord.y / this.gridSize) };
+    // }
+
+    // updateCoordToCurrentValues(): void {}
+
+    updatePosition(grid: number): void {
+        this.gridSize = grid;
+        this.findNearestLineLeft();
+        this.findNearestLineTop();
     }
+
+    // updateArrowPositionMagnetism(): void {
+    //     // this.updateCoordToCurrentValues();
+    //     if (SelectionService.selectionActive && this.upPressed) {
+    //         this.topLeftCorner.y -= this.gridSize;
+    //         this.firstGrid.y -= this.gridSize;
+    //         this.setCoordToNearestCrossOnGrid(this.topLeftCorner);
+    //         // this.setCoordToNearestCrossOnGrid({
+    //         //     x: this.drawingService.selectedAreaCtx.canvas.width,
+    //         //     y: this.drawingService.selectedAreaCtx.canvas.height,
+    //         // });
+    //     }
+    //     if (SelectionService.selectionActive && this.downPressed) {
+    //         this.topLeftCorner.y += this.gridSize;
+    //         this.firstGrid.y += this.gridSize;
+    //         this.setCoordToNearestCrossOnGrid(this.topLeftCorner);
+    //         // this.setCoordToNearestCrossOnGrid({
+    //         //     x: this.drawingService.selectedAreaCtx.canvas.width,
+    //         //     y: this.drawingService.selectedAreaCtx.canvas.height,
+    //         // });
+    //     }
+    //     if (SelectionService.selectionActive && this.rightPressed) {
+    //         this.topLeftCorner.x += this.gridSize;
+    //         this.firstGrid.x += this.gridSize;
+    //         this.setCoordToNearestCrossOnGrid(this.topLeftCorner);
+    //         // this.setCoordToNearestCrossOnGrid({
+    //         //     x: this.drawingService.selectedAreaCtx.canvas.width,
+    //         //     y: this.drawingService.selectedAreaCtx.canvas.height,
+    //         // });
+    //     }
+    //     if (SelectionService.selectionActive && this.leftPressed) {
+    //         this.topLeftCorner.x += this.gridSize;
+    //         this.firstGrid.x += this.gridSize;
+    //         this.setCoordToNearestCrossOnGrid(this.topLeftCorner);
+    //         // this.setCoordToNearestCrossOnGrid({
+    //         //     x: this.drawingService.selectedAreaCtx.canvas.width,
+    //         //     y: this.drawingService.selectedAreaCtx.canvas.height,
+    //         // });
+    //     }
+    //     // this.setCoordToNearestCrossOnGrid({
+    //     //     x: this.drawingService.selectedAreaCtx.canvas.width,
+    //     //     y: this.drawingService.selectedAreaCtx.canvas.height,
+    //     // });
+    //     console.log('grid clean ? ' + this.topLeftCorner.x + ' ' + this.topLeftCorner.y);
+    //     // this.setCoordToNearestCrossOnGrid(this.firstGrid);
+    //     this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
+    //     this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
+    // }
 
     // verifies if B and C are counter clock wise from A
     // private ccw(A: Vec2, B: Vec2, C: Vec2): boolean {
@@ -143,39 +134,11 @@ export class MagnetismService extends SelectionService {
     //     );
     // }
 
-    private drawRectanglePerimeter(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
-        ctx.strokeStyle = 'blue';
-        ctx.lineWidth = 1;
-
-        const startCoord = { ...this.firstGrid };
-        const width = Math.abs(finalGrid.x);
-        const height = Math.abs(finalGrid.y);
-
-        if (finalGrid.x < 0) {
-            startCoord.x += finalGrid.x;
-        }
-        if (finalGrid.y < 0) {
-            startCoord.y += finalGrid.y;
-        }
-        ctx.strokeRect(startCoord.x, startCoord.y, width, height);
-    }
-
     executeCommand(command: ToolCommand): void {
         throw new Error('Method not implemented.');
     }
 
     registerUndo(imageData: ImageData): void {
         throw new Error('Method not implemented.');
-    }
-
-    updatePreview(): void {
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        const currentCoord = { ...this.mouseDownCoord };
-        this.drawingService.previewCtx.beginPath();
-        if (this.shiftDown) {
-            this.mousePositionHandler.makeSquare(this.mouseDownCoord, currentCoord);
-        }
-        this.drawRectanglePerimeter(this.drawingService.previewCtx, currentCoord);
-        this.drawingService.previewCtx.closePath();
     }
 }

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { GRID_SIZE_CHANGE_VALUE, MAX_GRID_OPACITY, MAX_GRID_SIZE, MIN_GRID_OPACITY, MIN_GRID_SIZE } from '@app/services/tools/tools-constants';
+import { MagnetismService } from '../tools/magnetism-service/magnetism.service';
 
 @Injectable({
     providedIn: 'root',
@@ -14,7 +15,9 @@ export class GridService {
     gridOpacity: string = '1';
     showGrid: boolean = false;
 
-    constructor(private drawingService: DrawingService) {}
+    constructor(private drawingService: DrawingService, private magnetismService: MagnetismService) {
+        this.gridSize = this.drawingService.gridSize;
+    }
 
     newGrid(newSize: number | null): void {
         this.drawingService.clearCanvas(this.drawingService.gridCtx);
@@ -33,6 +36,7 @@ export class GridService {
         }
         this.drawingService.gridCtx.strokeStyle = `rgba(0, 0, 0, ${this.gridOpacity})`;
         this.drawingService.gridCtx.stroke();
+        this.magnetismService.updatePosition(this.gridSize);
     }
 
     clear(): void {
