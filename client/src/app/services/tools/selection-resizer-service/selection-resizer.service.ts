@@ -19,6 +19,8 @@ export class SelectionResizerService extends SelectionService {
     imageData: ImageData;
     private coords: Vec2;
     private moveOffset: Vec2;
+    private initialBottomRightCorner: Vec2;
+    private rapport: Vec2;
     constructor(
         mouseService: MouseHandlerService,
         drawingService: DrawingService,
@@ -31,6 +33,8 @@ export class SelectionResizerService extends SelectionService {
         this.mouseService = mouseService;
         this.coords = { x: 0, y: 0 };
         this.moveOffset = { x: 0, y: 0 };
+        this.initialBottomRightCorner = { x: 0, y: 0 };
+        this.rapport = { x: 0, y: 0 };
     }
     onMouseDown(event: MouseEvent): void {
         this.mouseService.onMouseDown(this.mouseService.eventToCoordinate(event));
@@ -140,22 +144,93 @@ export class SelectionResizerService extends SelectionService {
         this.topLeftCorner.x = this.drawingService.selectedAreaCtx.canvas.offsetLeft;
         this.topLeftCorner.y = this.drawingService.selectedAreaCtx.canvas.offsetTop;
         this.initialTopLeftCorner = this.topLeftCorner;
+        this.initialBottomRightCorner.x = this.topLeftCorner.x + this.width;
+        this.initialBottomRightCorner.y = this.topLeftCorner.y + this.height;
         this.imageData = this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
     }
 
     updatePreview(): void {
+        this.isMirror();
         this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
         this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x + 'px';
         this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y + 'px';
+        this.rapport = {
+            x: this.drawingService.selectedAreaCtx.canvas.width / this.width,
+            y: this.drawingService.selectedAreaCtx.canvas.height / this.height,
+        };
         createImageBitmap(this.imageData).then((imgBitmap) => {
+            this.drawingService.selectedAreaCtx.scale(this.rapport.x, this.rapport.y);
             this.drawingService.selectedAreaCtx.drawImage(
                 imgBitmap,
                 0,
                 0,
-                this.drawingService.selectedAreaCtx.canvas.width,
-                this.drawingService.selectedAreaCtx.canvas.height,
+                // this.drawingService.selectedAreaCtx.canvas.width,
+                // this.drawingService.selectedAreaCtx.canvas.height,
             );
+            this.drawingService.selectedAreaCtx.setTransform(1, 0, 0, 1, 0, 0);
         });
+    }
+
+    // tslint:disable-next-line:cyclomatic-complexity
+    isMirror(): void {
+        switch (this.status) {
+            case SelectionStatus.TOP_LEFT_BOX:
+                if (this.coords.x > this.initialBottomRightCorner.x) {
+                    this.topLeftCorner.x = this.initialBottomRightCorner.x;
+                    this.drawingService.selectedAreaCtx.canvas.width = Math.abs(this.width + this.offset.x);
+                    this.rapport.x = -this.rapport.x;
+                }
+                if (this.coords.y > this.initialBottomRightCorner.y) {
+                    this.topLeftCorner.y = this.initialBottomRightCorner.y;
+                    this.drawingService.selectedAreaCtx.canvas.height = Math.abs(this.height + this.offset.y);
+                    this.rapport.y = -this.rapport.y;
+                }
+                break;
+            case SelectionStatus.TOP_MIDDLE_BOX:
+                if (this.coords.y > this.initialBottomRightCorner.y) {
+                    this.topLeftCorner.y = this.initialBottomRightCorner.y;
+                    this.drawingService.selectedAreaCtx.canvas.height = Math.abs(this.height + this.offset.y);
+                    this.rapport.y = -this.rapport.y;
+                }
+                break;
+            case SelectionStatus.TOP_RIGHT_BOX:
+                if (this.coords.y > this.initialBottomRightCorner.y) {
+                    this.topLeftCorner.y = this.initialBottomRightCorner.y;
+                    this.drawingService.selectedAreaCtx.canvas.height = Math.abs(this.height + this.offset.y);
+                    this.rapport.y = -this.rapport.y;
+                }
+                break;
+            case SelectionStatus.MIDDLE_RIGHT_BOX:
+                break;
+            case SelectionStatus.BOTTOM_RIGHT_BOX:
+                if (this.coords.x < this.initialTopLeftCorner.x) {
+                    this.topLeftCorner.x = this.coords.x;
+                    this.drawingService.selectedAreaCtx.canvas.width = Math.abs(this.offset.x);
+                    this.rapport.x = -this.rapport.x;
+                }
+                if (this.coords.y < this.initialTopLeftCorner.y) {
+                    this.topLeftCorner.y = this.coords.y;
+                    this.drawingService.selectedAreaCtx.canvas.height = Math.abs(this.offset.y);
+                    this.rapport.y = -this.rapport.y;
+                }
+                break;
+            case SelectionStatus.BOTTOM_MIDDLE_BOX:
+                break;
+            case SelectionStatus.BOTTOM_LEFT_BOX:
+                if (this.coords.x > this.initialBottomRightCorner.x) {
+                    this.topLeftCorner.x = this.initialBottomRightCorner.x;
+                    this.drawingService.selectedAreaCtx.canvas.width = Math.abs(this.width + this.offset.x);
+                    this.rapport.x = -this.rapport.x;
+                }
+                break;
+            case SelectionStatus.MIDDLE_LEFT_BOX:
+                if (this.coords.x > this.initialBottomRightCorner.x) {
+                    this.topLeftCorner.x = this.initialBottomRightCorner.x;
+                    this.drawingService.selectedAreaCtx.canvas.width = Math.abs(this.width + this.offset.x);
+                    this.rapport.x = -this.rapport.x;
+                }
+                break;
+        }
     }
     registerUndo(imageData: ImageData): void {
         throw new Error('Method not implemented.');
