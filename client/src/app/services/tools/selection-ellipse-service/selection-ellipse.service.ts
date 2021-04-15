@@ -32,14 +32,12 @@ export class SelectionEllipseService extends SelectionService {
     }
 
     registerUndo(imageData: ImageData): void {
-        const command = new SelectionCommand(this, { x: this.width, y: this.height }, imageData, this.initialTopLeftCorner, {
-            ...this.topLeftCorner,
-        });
+        const finalTopLeftCorner: Vec2 | undefined = SelectionService.selectionActive ? { ...this.topLeftCorner } : undefined;
+        const command = new SelectionCommand(this, { x: this.width, y: this.height }, imageData, this.initialTopLeftCorner, finalTopLeftCorner);
         this.undoRedo.addCommand(command);
     }
 
     onMouseDown(event: MouseEvent): void {
-        console.log(SelectionService.selectionActive);
         this.resetFirstGrid();
         this.mouseDown = event.button === MouseButtons.Left;
         this.firstGrid = this.getPositionFromMouse(event);

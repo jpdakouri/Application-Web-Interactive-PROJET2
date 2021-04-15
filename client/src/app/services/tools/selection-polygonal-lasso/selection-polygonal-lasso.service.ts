@@ -17,15 +17,9 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
     }
 
     registerUndo(imageData: ImageData): void {
-        console.log(this.pathData);
-        const command = new SelectionCommand(
-            this,
-            { x: this.width, y: this.height },
-            imageData,
-            this.initialTopLeftCorner,
-            { ...this.topLeftCorner },
-            this.pathData,
-        );
+
+        const finalTopLeftCorner: Vec2 | undefined = SelectionService.selectionActive ? { ...this.topLeftCorner } : undefined;
+        const command = new SelectionCommand(this, { x: this.width, y: this.height }, imageData, this.initialTopLeftCorner, finalTopLeftCorner, this.pathData);
         this.undoRedo.addCommand(command);
     }
 
