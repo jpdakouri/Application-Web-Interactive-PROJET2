@@ -50,15 +50,48 @@ export abstract class SelectionService extends Tool {
             SelectionService.selectionActive = false;
             this.buffer = false;
             const imageData = this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
-            createImageBitmap(imageData).then((imgBitmap) => {
-                this.drawingService.baseCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
-            });
-            this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
-            this.isSelectionDone = false;
+            this.drawSelectionOnBase(imageData, this.topLeftCorner);
+            this.deselect();
             this.registerUndo(imageData);
         }
     }
     abstract registerUndo(imageData: ImageData): void;
+
+    deselect(): void {
+        SelectionService.selectionActive = false;
+        this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
+        this.isSelectionDone = false;
+    }
+
+    drawSelectionOnBase(imageData: ImageData, topLeftCorner: Vec2): void {
+        createImageBitmap(imageData).then((imgBitmap) => {
+            this.drawingService.baseCtx.drawImage(imgBitmap, topLeftCorner.x, topLeftCorner.y);
+        });
+    }
+
+    getSelectionImageData(): ImageData {
+        return this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
+    }
+
+    hasSelection(): boolean {
+        return this.drawingService.selectedAreaCtx.canvas.width !== 0 && this.drawingService.selectedAreaCtx.canvas.height !== 0;
+    }
+
+    setSelection(imageData: ImageData): void {
+        SelectionService.selectionActive = true;
+        this.isSelectionDone = true;
+        this.topLeftCorner.x = 0;
+        this.topLeftCorner.y = 0;
+        this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
+        this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
+        this.width = imageData.width;
+        this.height = imageData.height;
+        this.drawingService.selectedAreaCtx.canvas.width = this.width;
+        this.drawingService.selectedAreaCtx.canvas.height = this.height;
+        createImageBitmap(imageData).then((imgBitmap) => {
+            this.drawingService.selectedAreaCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
+        });
+    }
 
     defaultOnKeyDown(event: KeyboardEvent): void {
         event.preventDefault();
