@@ -18,6 +18,7 @@ import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { ToolAttributeComponent } from './tool-attribute.component';
 
 import SpyObj = jasmine.SpyObj;
+import { MatOptionModule } from '@angular/material/core';
 
 describe('ToolAttributeBarComponent', () => {
     let component: ToolAttributeComponent;
@@ -42,6 +43,12 @@ describe('ToolAttributeBarComponent', () => {
             'getCurrentNumberOfSides',
             'setCurrentNumberOfSides',
             'getCurrentTolerance',
+            'getStampScalingFactor',
+            'getStampRotationAngle',
+            'getSelectedStamp',
+            'setStampScalingFactor',
+            'setStampRotationAngle',
+            'setSelectedStamp',
         ]);
         TestBed.configureTestingModule({
             declarations: [
@@ -64,6 +71,7 @@ describe('ToolAttributeBarComponent', () => {
                 MatCheckboxModule,
                 FormsModule,
                 MatIconModule,
+                MatOptionModule,
             ],
         }).compileComponents();
     }));
@@ -232,11 +240,11 @@ describe('ToolAttributeBarComponent', () => {
     it('onGridSizeChange should call newGrid if showGrid is true', () => {
         spyOn(component.gridService, 'newGrid').and.stub();
         spyOn(component.gridService, 'clear').and.stub();
-        component.showGrid = true;
+        component.gridService.showGrid = true;
         component.onGridSizeChange({} as MatSliderChange);
         expect(component.gridService.newGrid).toHaveBeenCalled();
 
-        component.showGrid = false;
+        component.gridService.showGrid = false;
         component.onGridSizeChange({} as MatSliderChange);
         expect(component.gridService.clear).toHaveBeenCalled();
     });
@@ -245,5 +253,37 @@ describe('ToolAttributeBarComponent', () => {
         spyOn(component.gridService, 'changeOpacity').and.stub();
         component.onGridOpacityChange({} as MatSliderChange);
         expect(component.gridService.changeOpacity).toHaveBeenCalled();
+    });
+
+    it('onStampScalingFactorChange calls the set function of Tool manager', () => {
+        const event = new MatSliderChange();
+        component.onStampScalingFactorChange(event);
+        expect(toolManagerServiceSpy.setStampScalingFactor).toHaveBeenCalled();
+    });
+
+    it('onStampRotationAngleChange calls the set function of Tool manager', () => {
+        const event = new MatSliderChange();
+        component.onStampRotationAngleChange(event);
+        expect(toolManagerServiceSpy.setStampRotationAngle).toHaveBeenCalled();
+    });
+
+    it('onSelectedStampChange calls the set function of Tool manager', () => {
+        component.onSelectedStampChange('stub');
+        expect(toolManagerServiceSpy.setSelectedStamp).toHaveBeenCalled();
+    });
+
+    it('getStampScalingFactor calls the get function of Tool manager', () => {
+        component.getStampScalingFactor();
+        expect(toolManagerServiceSpy.getStampScalingFactor).toHaveBeenCalled();
+    });
+
+    it('getStampRotationAngle calls the get function of Tool manager', () => {
+        component.getStampRotationAngle();
+        expect(toolManagerServiceSpy.getStampRotationAngle).toHaveBeenCalled();
+    });
+
+    it('getSelectedStamp calls the get function of Tool manager', () => {
+        component.getSelectedStamp();
+        expect(toolManagerServiceSpy.getSelectedStamp).toHaveBeenCalled();
     });
 });

@@ -10,4 +10,6 @@ export type CurrentAttributes = {
     JetDiameter?: number;
     numberOfSides?: number;
     BucketTolerance?: number;
+    FontSize?: number;
+    FontFace?: string;
 };

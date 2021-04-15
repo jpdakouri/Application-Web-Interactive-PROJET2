@@ -1,4 +1,3 @@
-// color-selector-component
 /****************************/
 /***GLOBAL COLOR SELECTOR CONSTANTS***/
 /****************************/
@@ -11,8 +10,10 @@ export const MIN_TRANSPARENCY = 1;
 export const MAX_TRANSPARENCY = 100;
 
 /****************************/
-/***GLOBAL CURRENT COLOR CONSTANTS***/
+/***GLOBAL COLOR HISTORY CONSTANTS***/
 /****************************/
+export const RGB_BEGIN_INDICATOR = '(';
+export const RGB_END_INDICATOR = ')';
 
 /****************************/
 /***GLOBAL HUE SELECTOR CONSTANTS***/

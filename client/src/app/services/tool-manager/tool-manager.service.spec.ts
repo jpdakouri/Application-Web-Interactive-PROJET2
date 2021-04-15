@@ -5,7 +5,9 @@ import { EraserService } from '@app/services/tools/eraser-service/eraser.service
 import { LineService } from '@app/services/tools/line-service/line.service';
 import { PencilService } from '@app/services/tools/pencil-service/pencil.service';
 import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
+import { StampService } from '@app/services/tools/stamp-service/stamp.service';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
+import { Stamp } from '@app/utils/enums/stamp';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 import { ToolManagerService } from './tool-manager.service';
 
@@ -228,5 +230,43 @@ describe('ToolManagerService', () => {
         expect(service.currentAttributes.LineThickness).toEqual(FAKE_LINE_THICKNESS);
         expect(service.currentAttributes.DotRadius).not.toEqual(WRONG_FAKE_DOT_RADIUS);
         expect(service.currentAttributes.LineThickness).not.toEqual(WRONG_FAKE_LINE_THICKNESS);
+    });
+
+    it('getStampScalingFactor gets the scaling factor', () => {
+        TestBed.inject(StampService).scalingFactor = 2;
+        expect(service.getStampScalingFactor()).toBe(2);
+    });
+    it('getSelectedStamp gets the selected stamp', () => {
+        TestBed.inject(StampService).selectedStamp = Stamp.Hashtag;
+        expect(service.getSelectedStamp()).toBe(Stamp.Hashtag);
+    });
+    it('setStampScalingFactor sets the scaling factor', () => {
+        const stamp = TestBed.inject(StampService);
+        service.setStampScalingFactor(2);
+        expect(stamp.scalingFactor).toBe(2);
+        service.setStampScalingFactor(undefined);
+        expect(stamp.scalingFactor).toBe(2);
+    });
+
+    it('setStampRotationAngle sets the scaling factor', () => {
+        const stamp = TestBed.inject(StampService);
+        service.setStampRotationAngle(2);
+        expect(stamp.rotationAngle).toBe(2);
+        service.setStampRotationAngle(undefined);
+        expect(stamp.rotationAngle).toBe(2);
+    });
+
+    it('setSelectedStamp sets the selected stamp', () => {
+        const stamp = TestBed.inject(StampService);
+        service.setSelectedStamp('house');
+        expect(stamp.selectedStamp).toBe(Stamp.House);
+        service.setSelectedStamp('letter');
+        expect(stamp.selectedStamp).toBe(Stamp.Letter);
+        service.setSelectedStamp('smile');
+        expect(stamp.selectedStamp).toBe(Stamp.Smile);
+        service.setSelectedStamp('hashtag');
+        expect(stamp.selectedStamp).toBe(Stamp.Hashtag);
+        service.setSelectedStamp('star');
+        expect(stamp.selectedStamp).toBe(Stamp.Star);
     });
 });

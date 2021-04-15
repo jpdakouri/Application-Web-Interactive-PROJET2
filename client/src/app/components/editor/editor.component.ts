@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@
 import { ToolbarComponent } from '@app/components/toolbar-components/toolbar/toolbar.component';
 import { DialogControllerService } from '@app/services/dialog-controller/dialog-controller.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { GridService } from '@app/services/grid-service/grid.service';
+import { GridService } from '@app/services/grid/grid.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
 import { GRID_SIZE_CHANGE_VALUE } from '@app/services/tools/tools-constants';
@@ -22,7 +22,6 @@ export class EditorComponent implements AfterViewInit {
 
     private toolFinder: Map<KeyboardButtons, ToolsNames>;
     editorMinWidth: number;
-    showGrid: boolean = false;
 
     constructor(
         private toolManagerService: ToolManagerService,
@@ -43,9 +42,11 @@ export class EditorComponent implements AfterViewInit {
             .set(KeyboardButtons.Aerosol, ToolsNames.Aerosol)
             .set(KeyboardButtons.SelectionRectangle, ToolsNames.SelectBox)
             .set(KeyboardButtons.SelectionEllipse, ToolsNames.SelectEllipse)
+            .set(KeyboardButtons.SelectionPolygon, ToolsNames.SelectPolygon)
             .set(KeyboardButtons.Polygon, ToolsNames.Polygon)
             .set(KeyboardButtons.Pipette, ToolsNames.Pipette)
-            .set(KeyboardButtons.PaintBucket, ToolsNames.PaintBucket);
+            .set(KeyboardButtons.PaintBucket, ToolsNames.PaintBucket)
+            .set(KeyboardButtons.Text, ToolsNames.Text);
     }
 
     ngAfterViewInit(): void {
@@ -56,7 +57,7 @@ export class EditorComponent implements AfterViewInit {
     // tslint:disable-next-line:cyclomatic-complexity
     @HostListener('window:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
-        if (this.dialogControllerService.noDialogOpened) {
+        if (this.dialogControllerService.noDialogOpened && !this.toolManagerService.textService.showTextBox) {
             if (event.ctrlKey) {
                 if (event.key === KeyboardButtons.NewDrawing) if (this.onCreateNewDrawing()) this.undoRedo.saveInitialState();
                 if (event.key === KeyboardButtons.Carousel) this.openCarouselModal();
@@ -87,15 +88,15 @@ export class EditorComponent implements AfterViewInit {
                     this.toolManagerService.emitToolChange(toolKeyDown);
                 }
                 if (event.key === KeyboardButtons.grid) {
-                    this.showGrid = !this.showGrid;
-                    if (this.showGrid) this.gridService.newGrid(null);
+                    this.gridService.showGrid = !this.gridService.showGrid;
+                    if (this.gridService.showGrid) this.gridService.newGrid(null);
                     else this.gridService.clear();
                 }
                 if (event.key === KeyboardButtons.gridUp && this.gridService.gridSizeCanModify(true)) {
-                    if (this.showGrid) this.gridService.newGrid((this.gridService.gridSize += GRID_SIZE_CHANGE_VALUE));
+                    if (this.gridService.showGrid) this.gridService.newGrid((this.gridService.gridSize += GRID_SIZE_CHANGE_VALUE));
                 }
                 if (event.key === KeyboardButtons.gripDown && this.gridService.gridSizeCanModify(false)) {
-                    if (this.showGrid) this.gridService.newGrid((this.gridService.gridSize -= GRID_SIZE_CHANGE_VALUE));
+                    if (this.gridService.showGrid) this.gridService.newGrid((this.gridService.gridSize -= GRID_SIZE_CHANGE_VALUE));
                 }
             }
         }
