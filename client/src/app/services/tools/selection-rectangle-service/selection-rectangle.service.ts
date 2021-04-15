@@ -6,6 +6,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection.service';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
+import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { Sign } from '@app/utils/enums/rgb-settings';
 
@@ -13,110 +14,71 @@ import { Sign } from '@app/utils/enums/rgb-settings';
     providedIn: 'root',
 })
 export class SelectionRectangleService extends SelectionService {
+    mousePositionHandler: MousePositionHandlerService;
     constructor(
         drawingService: DrawingService,
         currentColorService: CurrentColorService,
         mousePositionHandler: MousePositionHandlerService,
         private undoRedo: UndoRedoService,
     ) {
-        super(drawingService, currentColorService, mousePositionHandler, undoRedo);
+        super(drawingService, currentColorService);
         this.currentColorService = currentColorService;
         this.topLeftCorner = { x: 0, y: 0 };
         this.offset = { x: 0, y: 0 };
-        this.selectionActive = this.dragActive = false;
+        SelectionService.selectionActive = this.dragActive = false;
         this.drawingService.selectedAreaCtx = this.drawingService.baseCtx;
         this.mousePositionHandler = mousePositionHandler;
     }
 
+    registerUndo(imageData: ImageData): void {
+        const command = new SelectionCommand(
+            this,
+            this.initialTopLeftCorner,
+            { ...this.topLeftCorner },
+            { x: this.width, y: this.height },
+            imageData,
+        );
+        this.undoRedo.addCommand(command);
+    }
+
     onMouseDown(event: MouseEvent): void {
-        this.clearPath();
+        console.log(SelectionService.selectionActive);
+        this.resetFirstGrid();
         this.mouseDown = event.button === MouseButtons.Left;
         this.firstGrid = this.getPositionFromMouse(event);
         this.mouseMoved = false;
         if (this.mouseDown) {
-            if (!this.selectionActive) {
+            if (!SelectionService.selectionActive) {
                 this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
                 this.firstGridClip = this.getPositionFromMouse(event);
                 this.updatePreview();
-                this.selectionActive = true;
+                SelectionService.selectionActive = true;
             } else {
-                if (this.isClickIn(this.firstGrid)) {
-                    const initial = this.getPositionFromMouse(event);
-                    this.offset.x = this.topLeftCorner.x - initial.x;
-                    this.offset.y = this.topLeftCorner.y - initial.y;
-                    this.dragActive = true;
-                } else {
-                    const imageData = this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
-                    this.drawSelectionOnBase(imageData, this.topLeftCorner);
-                    this.deselect();
-                    const command = new SelectionCommand(
-                        this,
-                        this.initialTopLeftCorner,
-                        { ...this.topLeftCorner },
-                        { x: this.width, y: this.height },
-                        imageData,
-                    );
-                    this.undoRedo.addCommand(command);
-                }
+                this.defaultOnMouseDown(event);
             }
         }
     }
 
-    deselect(): void {
-        this.selectionActive = false;
-        this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
-        this.isSelectionDone = false;
-    }
-
-    drawSelectionOnBase(imageData: ImageData, topLeftCorner: Vec2): void {
-        createImageBitmap(imageData).then((imgBitmap) => {
-            this.drawingService.baseCtx.drawImage(imgBitmap, topLeftCorner.x, topLeftCorner.y);
-        });
-    }
-
-    getSelectionImageData(): ImageData {
-        return this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
-    }
-
-    hasSelection(): boolean {
-        return this.drawingService.selectedAreaCtx.canvas.width !== 0 && this.drawingService.selectedAreaCtx.canvas.height !== 0;
-    }
-
-    setSelection(imageData: ImageData): void {
-        this.selectionActive = true;
-        this.isSelectionDone = true;
-        this.topLeftCorner.x = 0;
-        this.topLeftCorner.y = 0;
-        this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
-        this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
-        this.width = imageData.width;
-        this.height = imageData.height;
-        this.drawingService.selectedAreaCtx.canvas.width = this.width;
-        this.drawingService.selectedAreaCtx.canvas.height = this.height;
-        createImageBitmap(imageData).then((imgBitmap) => {
-            this.drawingService.selectedAreaCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
-        });
-    }
-
     onMouseMove(event: MouseEvent): void {
-        if (this.mouseDown && this.selectionActive && !this.dragActive) {
+        if (this.mouseDown && SelectionService.selectionActive && !this.dragActive) {
             this.mouseMoved = true;
             this.mouseDownCoord.x = this.getPositionFromMouse(event).x - this.firstGrid.x;
             this.mouseDownCoord.y = this.getPositionFromMouse(event).y - this.firstGrid.y;
             this.updatePreview();
-        } else if (this.mouseDown && this.selectionActive && this.dragActive) {
+        } else if (this.mouseDown && SelectionService.selectionActive && this.dragActive) {
             this.updateDragPosition(this.getPositionFromMouse(event));
         }
     }
 
     onMouseUp(event: MouseEvent): void {
-        if (this.mouseDown && this.selectionActive && !this.dragActive && this.mouseMoved) {
+        if (this.mouseDown && SelectionService.selectionActive && !this.dragActive && this.mouseMoved) {
             this.isSelectionDone = true;
 
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.finalGridClip = this.getPositionFromMouse(event);
             this.updateTopLeftCorner();
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+
             if (this.shiftDown) {
                 this.mousePositionHandler.makeSquare(this.mouseDownCoord, this.mouseDownCoord);
             }
@@ -180,13 +142,24 @@ export class SelectionRectangleService extends SelectionService {
         this.drawingService.previewCtx.closePath();
     }
 
+    onKeyUp(event: KeyboardEvent): void {
+        if (event.key === KeyboardButtons.Shift) {
+            this.shiftDown = false;
+            this.updatePreview();
+        } else this.defaultOnKeyUp(event);
+    }
+
+    onKeyDown(event: KeyboardEvent): void {
+        this.defaultOnKeyDown(event);
+    }
+
     selectAll(): void {
-        this.clearPath();
+        this.resetFirstGrid();
         this.drawingService.selectedAreaCtx.canvas.style.top = Sign.Negative + 'px';
         this.drawingService.selectedAreaCtx.canvas.style.left = Sign.Negative + 'px';
         const grid: Vec2 = { x: this.drawingService.baseCtx.canvas.width, y: this.drawingService.baseCtx.canvas.height };
         this.selectionRectangle(this.drawingService.selectedAreaCtx, grid);
-        this.selectionActive = true;
+        SelectionService.selectionActive = true;
     }
 
     executeCommand(command: SelectionCommand): void {

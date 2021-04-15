@@ -144,7 +144,15 @@
         </button>
     </div>
     <div class="flex-item">
-        <button (click)="setCurrentTool(this.toolsNames.Stamp)">Étampe</button>
+        <button
+            (click)="setCurrentTool(this.toolsNames.Stamp)"
+            mat-mini-fab
+            [color]="isSelected(this.toolsNames.Stamp) ? 'accent' : 'primary'"
+            aria-label='Étampe "D"'
+            title='Étampe "D"'
+        >
+            <mat-icon>star_border</mat-icon>
+        </button>
     </div>
     <div class="flex-item">
         <button

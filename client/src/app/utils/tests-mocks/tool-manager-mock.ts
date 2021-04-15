@@ -81,4 +81,11 @@ export class ToolManagerServiceMock {
     getCurrentSelectionTool(): undefined {
         return undefined;
     }
+    setStampRotationAngle(): void {
+        /*empty*/
+    }
+
+    getStampRotationAngle(): number {
+        return 1;
+    }
 }

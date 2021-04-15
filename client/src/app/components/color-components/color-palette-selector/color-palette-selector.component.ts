@@ -13,10 +13,12 @@ export class ColorPaletteSelectorComponent implements AfterViewInit, OnChanges {
     @Input() hue: string;
     @ViewChild('paletteCanvas') paletteCanvas: ElementRef<HTMLCanvasElement>;
     private canvasContext: CanvasRenderingContext2D;
-    private mousedown: boolean = false;
+    private mousedown: boolean;
     private selectedPosition: Vec2;
 
-    constructor(private currentColorService: CurrentColorService) {}
+    constructor(private currentColorService: CurrentColorService) {
+        this.mousedown = false;
+    }
 
     ngAfterViewInit(): void {
         this.draw();

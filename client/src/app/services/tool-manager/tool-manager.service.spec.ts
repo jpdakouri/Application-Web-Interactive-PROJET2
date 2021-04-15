@@ -248,6 +248,14 @@ describe('ToolManagerService', () => {
         expect(stamp.scalingFactor).toBe(2);
     });
 
+    it('setStampRotationAngle sets the scaling factor', () => {
+        const stamp = TestBed.inject(StampService);
+        service.setStampRotationAngle(2);
+        expect(stamp.rotationAngle).toBe(2);
+        service.setStampRotationAngle(undefined);
+        expect(stamp.rotationAngle).toBe(2);
+    });
+
     it('setSelectedStamp sets the selected stamp', () => {
         const stamp = TestBed.inject(StampService);
         service.setSelectedStamp('house');
