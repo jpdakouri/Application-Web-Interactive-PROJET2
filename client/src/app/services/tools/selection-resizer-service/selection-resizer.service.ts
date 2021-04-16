@@ -70,6 +70,7 @@ export class SelectionResizerService extends SelectionService {
     }
 
     private resizeSelection(): void {
+        if (this.initialTopLeftCorner === undefined) return;
         switch (this.status) {
             case SelectionStatus.TOP_LEFT_BOX:
                 this.drawingService.selectedAreaCtx.canvas.width = this.width + this.offset.x;
@@ -180,6 +181,7 @@ export class SelectionResizerService extends SelectionService {
     }
 
     private isMirrorTop(): void {
+        if (this.initialTopLeftCorner === undefined) return;
         if (this.coords.y < this.initialTopLeftCorner.y) {
             this.topLeftCorner.y = this.coords.y;
             this.drawingService.selectedAreaCtx.canvas.height = Math.abs(this.height - this.offset.y);
@@ -196,6 +198,7 @@ export class SelectionResizerService extends SelectionService {
     }
 
     private isMirrorLeft(): void {
+        if (this.initialTopLeftCorner === undefined) return;
         if (this.coords.x < this.initialTopLeftCorner.x) {
             this.topLeftCorner.x = this.coords.x;
             this.drawingService.selectedAreaCtx.canvas.width = Math.abs(this.width - this.offset.x);

@@ -183,6 +183,8 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         if (this.canvasResizerService.isResizing()) {
             this.eraserActive = false;
             this.canvasResizerService.onMouseMove(event);
+        } else if (this.selectionResizerService.isResizing()) {
+            this.selectionResizerService.onMouseMove(event);
         } else {
             this.currentTool.onMouseMove(event);
             this.eraserActive = this.currentTool.eraserActive || false;
@@ -194,6 +196,8 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     onMouseDown(event: MouseEvent): void {
         if (this.canvasResizerService.isResizing()) {
             this.canvasResizerService.onMouseDown(event);
+        } else if (this.selectionResizerService.isResizing()) {
+            this.selectionResizerService.onMouseDown(event);
         } else {
             this.currentTool.onMouseDown(event);
         }
@@ -214,6 +218,9 @@ export class DrawingComponent implements AfterViewInit, OnInit {
                 setTimeout(() => {
                     this.gridService.newGrid(null);
                 });
+        } else if (this.selectionResizerService.isResizing()) {
+            this.selectionResizerService.onMouseUp(event);
+            this.selectionResizerService.setStatus(SelectionStatus.OFF);
         } else {
             this.currentTool.onMouseUp(event);
         }
@@ -279,7 +286,6 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     }
 
     onSelectionBoxClick(status: SelectionStatus): void {
-        this.toolManagerService.emitToolChange(this.toolsNames.SelectionResizer);
         this.selectionResizerService.setStatus(status);
     }
 
