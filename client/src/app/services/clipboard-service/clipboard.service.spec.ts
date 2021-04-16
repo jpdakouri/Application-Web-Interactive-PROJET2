@@ -40,6 +40,15 @@ describe('ClipboardService', () => {
         expect(selectionTool.getSelectionImageData).toHaveBeenCalledTimes(1);
     });
 
+    it('If there is no selection or the current tool is not selection, copy doesnt do anything', () => {
+        spyOn(selectionTool, 'getSelectionImageData').and.returnValue(new ImageData(2, 2));
+        service.copy();
+        spyOn(selectionTool, 'hasSelection').and.returnValue(false);
+        spyOn(toolManager, 'getCurrentSelectionTool').and.returnValue(selectionTool);
+        service.copy();
+        expect(selectionTool.getSelectionImageData).toHaveBeenCalledTimes(0);
+    });
+
     it('No paste happens if the content is empty', () => {
         spyOn(selectionTool, 'setSelection');
         service.paste();
@@ -81,11 +90,15 @@ describe('ClipboardService', () => {
 
     it('cut: selection only cut if selection tool selected and with current a selection', () => {
         spyOn(selectionTool, 'deselect');
+        spyOn(selectionTool, 'getSelectionImageData');
         toolManager.emitToolChange(ToolsNames.Pencil);
-        service.delete();
+        service.cut();
         expect(selectionTool.deselect).toHaveBeenCalledTimes(0);
         toolManager.emitToolChange(ToolsNames.SelectBox);
-        service.delete();
+        service.cut();
+        expect(selectionTool.deselect).toHaveBeenCalledTimes(1);
+        spyOn(selectionTool, 'hasSelection').and.returnValue(false);
+        service.cut();
         expect(selectionTool.deselect).toHaveBeenCalledTimes(1);
     });
 
