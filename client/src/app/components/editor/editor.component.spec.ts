@@ -27,6 +27,7 @@ import { ExportDrawingComponent } from '@app/components/export-drawing/export-dr
 import { PipettePreviewComponent } from '@app/components/pipette-preview/pipette-preview.component';
 import { ToolAttributeComponent } from '@app/components/toolbar-components/tool-attribute/tool-attribute.component';
 import { ToolbarComponent } from '@app/components/toolbar-components/toolbar/toolbar.component';
+import { ClipboardService } from '@app/services/clipboard-service/clipboard.service';
 import { DialogControllerService } from '@app/services/dialog-controller/dialog-controller.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
@@ -259,5 +260,36 @@ describe('EditorComponent', () => {
         spyOn(TestBed.inject(UndoRedoService), 'redo');
         component.onKeyDown(event);
         expect(TestBed.inject(UndoRedoService).redo).toHaveBeenCalled();
+    });
+
+    it('should copy if ctrl + c is pressed', () => {
+        TestBed.inject(DialogControllerService).noDialogOpened = true;
+        const event = new KeyboardEvent('keydown', { key: 'c', ctrlKey: true });
+        spyOn(TestBed.inject(ClipboardService), 'copy');
+        component.onKeyDown(event);
+        expect(TestBed.inject(ClipboardService).copy).toHaveBeenCalled();
+    });
+
+    it('should paste if ctrl + v is pressed', () => {
+        TestBed.inject(DialogControllerService).noDialogOpened = true;
+        const event = new KeyboardEvent('keydown', { key: 'v', ctrlKey: true });
+        spyOn(TestBed.inject(ClipboardService), 'paste');
+        component.onKeyDown(event);
+        expect(TestBed.inject(ClipboardService).paste).toHaveBeenCalled();
+    });
+
+    it('should cut if ctrl + x is pressed', () => {
+        TestBed.inject(DialogControllerService).noDialogOpened = true;
+        const event = new KeyboardEvent('keydown', { key: 'x', ctrlKey: true });
+        spyOn(TestBed.inject(ClipboardService), 'cut');
+        component.onKeyDown(event);
+        expect(TestBed.inject(ClipboardService).cut).toHaveBeenCalled();
+    });
+    it('should delete if delete is pressed', () => {
+        TestBed.inject(DialogControllerService).noDialogOpened = true;
+        const event = new KeyboardEvent('keydown', { key: 'Delete' });
+        spyOn(TestBed.inject(ClipboardService), 'delete');
+        component.onKeyDown(event);
+        expect(TestBed.inject(ClipboardService).delete).toHaveBeenCalled();
     });
 });
