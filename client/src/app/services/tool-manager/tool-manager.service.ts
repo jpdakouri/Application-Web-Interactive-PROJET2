@@ -175,11 +175,11 @@ export class ToolManagerService {
         return this.toolBox[this.currentTool];
     }
 
-    getCurrentSelectionTool(): SelectionEllipseService | SelectionRectangleService | /*SelectionPolygonalLassoService |*/ undefined {
+    getCurrentSelectionTool(): SelectionEllipseService | SelectionRectangleService | SelectionPolygonalLassoService | undefined {
         const tool = this.toolBox[this.currentTool];
         if (tool === this.toolBox[ToolsNames.SelectBox]) return tool as SelectionRectangleService;
         if (tool === this.toolBox[ToolsNames.SelectEllipse]) return tool as SelectionEllipseService;
-        /*if (tool === this.toolBox[ToolsNames.SelectPolygon]) return tool as SelectionPolygonalLassoService;*/
+        if (tool === this.toolBox[ToolsNames.SelectPolygon]) return tool as SelectionPolygonalLassoService;
         return undefined;
     }
 

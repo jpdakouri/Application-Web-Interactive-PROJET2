@@ -339,7 +339,7 @@ describe('SelectionRectangleService', () => {
     it('executeCommand calls the rectangle function for clipping', () => {
         spyOn(TestBed.inject(DrawingService).baseCtx, 'fillRect');
         const data = new ImageData(1, 1);
-        const command = new SelectionCommand(service, { x: 0, y: 0 }, { x: 1, y: 1 }, { x: 2, y: 2 }, data);
+        const command = new SelectionCommand(service, { x: 0, y: 0 }, data, { x: 1, y: 1 }, { x: 2, y: 2 });
         service.executeCommand(command);
         expect(TestBed.inject(DrawingService).baseCtx.fillRect).toHaveBeenCalled();
     });

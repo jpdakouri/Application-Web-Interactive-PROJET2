@@ -24,7 +24,7 @@ export abstract class SelectionService extends Tool {
     leftPressed: boolean;
     rightPressed: boolean;
     buffer: boolean;
-    initialTopLeftCorner: Vec2;
+    initialTopLeftCorner?: Vec2;
     height: number;
     width: number;
     isSelectionDone: boolean;
@@ -47,12 +47,11 @@ export abstract class SelectionService extends Tool {
             this.offset.y = this.topLeftCorner.y - initial.y;
             this.dragActive = true;
         } else {
-            SelectionService.selectionActive = false;
             this.buffer = false;
             const imageData = this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
             this.drawSelectionOnBase(imageData, this.topLeftCorner);
-            this.deselect();
             this.registerUndo(imageData);
+            this.deselect();
         }
     }
     abstract registerUndo(imageData: ImageData): void;
@@ -88,6 +87,7 @@ export abstract class SelectionService extends Tool {
         this.height = imageData.height;
         this.drawingService.selectedAreaCtx.canvas.width = this.width;
         this.drawingService.selectedAreaCtx.canvas.height = this.height;
+        this.initialTopLeftCorner = undefined;
         createImageBitmap(imageData).then((imgBitmap) => {
             this.drawingService.selectedAreaCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
         });

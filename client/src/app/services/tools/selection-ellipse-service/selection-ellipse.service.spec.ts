@@ -336,8 +336,8 @@ describe('SelectionEllipseService', () => {
     it('executeCommand calls the ellipse function for clipping', () => {
         spyOn(TestBed.inject(DrawingService).baseCtx, 'ellipse');
         const data = new ImageData(1, 1);
-        const command = new SelectionCommand(service, { x: 0, y: 0 }, { x: 1, y: 1 }, { x: 2, y: 2 }, data);
+        const command = new SelectionCommand(service, { x: 0, y: 0 }, data, { x: 1, y: 1 }, { x: 2, y: 2 });
         service.executeCommand(command);
-        expect(TestBed.inject(DrawingService).baseCtx.ellipse).toHaveBeenCalledWith(1, 1, 1, 1, 0, 0, 2 * Math.PI, false);
+        expect(TestBed.inject(DrawingService).baseCtx.ellipse).toHaveBeenCalledWith(1, 1, 0, 0, 0, 0, 2 * Math.PI, false);
     });
 });
