@@ -6,6 +6,7 @@ import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.s
 import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection.service';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
+import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { SelectionStatus } from '@app/utils/enums/selection-resizer-status';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
 
@@ -22,6 +23,7 @@ export class SelectionResizerService extends SelectionService {
     private initialBottomRightCorner: Vec2;
     private revertX: boolean;
     private revertY: boolean;
+    private mousePositionHandler: MousePositionHandlerService;
     constructor(
         mouseService: MouseHandlerService,
         drawingService: DrawingService,
@@ -32,6 +34,7 @@ export class SelectionResizerService extends SelectionService {
         super(drawingService, currentColorService);
         this.status = SelectionStatus.OFF;
         this.mouseService = mouseService;
+        this.mousePositionHandler = mousePositionHandler;
         this.coords = { x: 0, y: 0 };
         this.initialBottomRightCorner = { x: 0, y: 0 };
     }
@@ -57,6 +60,20 @@ export class SelectionResizerService extends SelectionService {
             if (this.isResizing()) {
                 this.resizeSelection();
             }
+        }
+    }
+
+    onKeyDown(event: KeyboardEvent): void {
+        if (event.key === KeyboardButtons.Shift) {
+            this.shiftDown = true;
+            this.updatePreview();
+        }
+    }
+
+    onKeyUp(event: KeyboardEvent): void {
+        if (event.key === KeyboardButtons.Shift) {
+            this.shiftDown = false;
+            this.updatePreview();
         }
     }
 
@@ -125,6 +142,7 @@ export class SelectionResizerService extends SelectionService {
     updatePreview(): void {
         this.isMirror();
         this.isSelectionNull();
+        this.isSquare();
         this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
         this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x + 'px';
         this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y + 'px';
@@ -212,6 +230,22 @@ export class SelectionResizerService extends SelectionService {
             this.drawingService.selectedAreaCtx.canvas.width = Math.abs(this.width + this.offset.x);
             this.revertX = true;
         } else this.revertX = false;
+    }
+
+    private isSquare(): void {
+        if (this.shiftDown) {
+            switch (this.status) {
+                case SelectionStatus.TOP_LEFT_BOX:
+                    this.mousePositionHandler.makeSquare(this.initialBottomRightCorner, this.topLeftCorner);
+                    break;
+                case SelectionStatus.TOP_RIGHT_BOX:
+                    break;
+                case SelectionStatus.BOTTOM_RIGHT_BOX:
+                    break;
+                case SelectionStatus.BOTTOM_LEFT_BOX:
+                    break;
+            }
+        }
     }
 
     registerUndo(imageData: ImageData): void {

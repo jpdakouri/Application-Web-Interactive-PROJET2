@@ -260,12 +260,20 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     @HostListener('keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
-        this.currentTool.onKeyDown(event);
+        if (this.selectionResizerService.isResizing()) {
+            this.selectionResizerService.onKeyDown(event);
+        } else {
+            this.currentTool.onKeyDown(event);
+        }
     }
 
     @HostListener('keyup', ['$event'])
     onKeyUp(event: KeyboardEvent): void {
-        this.currentTool.onKeyUp(event);
+        if (this.selectionResizerService.isResizing()) {
+            this.selectionResizerService.onKeyUp(event);
+        } else {
+            this.currentTool.onKeyUp(event);
+        }
     }
 
     @HostListener('contextmenu', ['$event'])
