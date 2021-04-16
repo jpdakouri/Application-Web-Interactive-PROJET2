@@ -88,8 +88,8 @@ export const MAX_FONT_SIZE = 150;
 export const DEFAULT_FONT_SIZE = 30;
 export const FONT_HEIGHT_FACTOR = 0.025;
 
-export const DEFAULT_TEXT_BOX_WIDTH = 800;
-export const DEFAULT_TEXT_BOX_HEIGHT = 200;
+export const DEFAULT_TEXT_BOX_WIDTH = 100;
+export const DEFAULT_TEXT_BOX_HEIGHT = 100;
 
 /***************************/
 /* ERROR MESSAGE CONSTANT***/
