@@ -304,37 +304,21 @@ fdescribe('DrawingComponent', () => {
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
     });
 
-    // xit('  getSelectedAreaSize should return correct values ', () => {
-    //     component.selectionEllipseService.width = 2;
-    //     component.selectionEllipseService.height = 2;
+    it('getSelectedAreaSize should return correct values ', () => {
+        component.selectedArea.nativeElement.width = 2;
+        component.selectedArea.nativeElement.height = 2;
 
-    //     expect(component.getSelectedAreaSize().x).toEqual(2);
-    //     expect(component.getSelectedAreaSize().y).toEqual(2);
-    // });
+        expect(component.getSelectedAreaSize().x).toEqual(2);
+        expect(component.getSelectedAreaSize().y).toEqual(2);
+    });
 
-    // xit('getTopLeftCorner() should return correct values for selection Ellipse ', () => {
-    //     component.selectionEllipseService.topLeftCorner.x = 2;
-    //     component.selectionEllipseService.topLeftCorner.y = 2;
+    it(' getTopLeftCorner() should return correct values ', () => {
+        component.selectedArea.nativeElement.style.left = 2 + 'px';
+        component.selectedArea.nativeElement.style.top = 2 + 'px';
 
-    //     expect(component.getTopLeftCorner().x).toEqual(2);
-    //     expect(component.getTopLeftCorner().y).toEqual(2);
-    // });
-
-    // xit('getSelectedAreaSize should return correct values ', () => {
-    //     component.selectionRectangleService.width = 2;
-    //     component.selectionRectangleService.height = 2;
-
-    //     expect(component.getSelectedAreaSize().x).toEqual(2);
-    //     expect(component.getSelectedAreaSize().y).toEqual(2);
-    // });
-
-    // xit('getTopLeftCorner should return correct values for selection Rectangle ', () => {
-    //     component.selectionRectangleService.topLeftCorner.x = 2;
-    //     component.selectionRectangleService.topLeftCorner.y = 2;
-
-    //     expect(component.getTopLeftCorner().x).toEqual(2);
-    //     expect(component.getTopLeftCorner().y).toEqual(2);
-    // });
+        expect(component.getTopLeftCorner().x).toEqual(2);
+        expect(component.getTopLeftCorner().y).toEqual(2);
+    });
 
     it('onMouseWheelScroll delegates to the current tool', () => {
         const testTool = TestBed.inject(PencilService);
