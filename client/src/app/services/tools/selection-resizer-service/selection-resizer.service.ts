@@ -249,17 +249,16 @@ export class SelectionResizerService extends SelectionService {
                 case SelectionStatus.TOP_RIGHT_BOX:
                     this.canvasWidth = this.canvasHeigth = Math.min(this.canvasWidth, this.canvasHeigth);
                     if (this.revertX) this.topLeftCorner.x = this.initialTopLeftCorner.x - this.canvasWidth;
-                    // this.topLeftCorner.y = this.revertY ? this.initialBottomRightCorner.y : this.initialBottomRightCorner.y + this.canvasHeigth;
                     break;
                 case SelectionStatus.BOTTOM_RIGHT_BOX:
                     this.canvasWidth = this.canvasHeigth = Math.min(this.canvasWidth, this.canvasHeigth);
-                    this.topLeftCorner.x = this.revertX ? this.initialBottomRightCorner.x : this.initialBottomRightCorner.x - this.canvasWidth;
-                    this.topLeftCorner.y = this.revertY ? this.initialBottomRightCorner.y : this.initialBottomRightCorner.y - this.canvasHeigth;
+                    this.topLeftCorner.x = this.revertX ? this.initialTopLeftCorner.x - this.canvasWidth : this.initialTopLeftCorner.x;
+                    this.topLeftCorner.y = this.revertY ? this.initialTopLeftCorner.y - this.canvasHeigth : this.initialTopLeftCorner.y;
                     break;
                 case SelectionStatus.BOTTOM_LEFT_BOX:
                     this.canvasWidth = this.canvasHeigth = Math.min(this.canvasWidth, this.canvasHeigth);
                     this.topLeftCorner.x = this.revertX ? this.initialBottomRightCorner.x : this.initialBottomRightCorner.x - this.canvasWidth;
-                    this.topLeftCorner.y = this.revertY ? this.initialBottomRightCorner.y : this.initialBottomRightCorner.y - this.canvasHeigth;
+                    if (this.revertY) this.topLeftCorner.y = this.initialTopLeftCorner.y - this.canvasHeigth;
                     break;
             }
         }
