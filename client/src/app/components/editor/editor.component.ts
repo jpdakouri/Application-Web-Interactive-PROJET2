@@ -59,7 +59,6 @@ export class EditorComponent implements AfterViewInit {
     @HostListener('window:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
         event.preventDefault();
-        console.log(event.key);
         if (this.dialogControllerService.noDialogOpened && !this.toolManagerService.textService.showTextBox) {
             if (event.ctrlKey) {
                 this.manageShortCutsWithCtrl(event);
@@ -72,33 +71,31 @@ export class EditorComponent implements AfterViewInit {
     }
 
     private manageShortCutsWithCtrl(event: KeyboardEvent): void {
-        if (event.ctrlKey) {
-            if (event.key === KeyboardButtons.NewDrawing) if (this.onCreateNewDrawing()) this.undoRedo.saveInitialState();
-            if (event.key === KeyboardButtons.Carousel) this.openCarouselModal();
-            if (event.key === KeyboardButtons.Export) {
-                this.openExportDrawingModal();
-            }
-            if (event.key === KeyboardButtons.Save) {
-                this.openSaveDrawingModal();
-            }
-            if (event.key === KeyboardButtons.SelectAll) {
-                this.selectAll();
-            }
-            if (event.key === KeyboardButtons.Undo) {
-                this.undoRedo.undo();
-            }
-            if (event.key === KeyboardButtons.Redo) {
-                this.undoRedo.redo();
-            }
-            if (event.key === KeyboardButtons.Copy) {
-                this.clipBoard.copy();
-            }
-            if (event.key === KeyboardButtons.Paste) {
-                this.clipBoard.paste();
-            }
-            if (event.key === KeyboardButtons.Cut) {
-                this.clipBoard.cut();
-            }
+        if (event.key === KeyboardButtons.NewDrawing) if (this.onCreateNewDrawing()) this.undoRedo.saveInitialState();
+        if (event.key === KeyboardButtons.Carousel) this.openCarouselModal();
+        if (event.key === KeyboardButtons.Export) {
+            this.openExportDrawingModal();
+        }
+        if (event.key === KeyboardButtons.Save) {
+            this.openSaveDrawingModal();
+        }
+        if (event.key === KeyboardButtons.SelectAll) {
+            this.selectAll();
+        }
+        if (event.key === KeyboardButtons.Undo) {
+            this.undoRedo.undo();
+        }
+        if (event.key === KeyboardButtons.Redo) {
+            this.undoRedo.redo();
+        }
+        if (event.key === KeyboardButtons.Copy) {
+            this.clipBoard.copy();
+        }
+        if (event.key === KeyboardButtons.Paste) {
+            this.clipBoard.paste();
+        }
+        if (event.key === KeyboardButtons.Cut) {
+            this.clipBoard.cut();
         }
     }
 
