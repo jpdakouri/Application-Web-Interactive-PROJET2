@@ -4,7 +4,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
 import { ToolsNames } from '@app/utils/enums/tools-names';
-
+import { SelectionService } from '../selection-service/selection.service';
 import { ClipboardService } from './clipboard.service';
 
 describe('ClipboardService', () => {
@@ -34,7 +34,7 @@ describe('ClipboardService', () => {
 
     it('If there is an selection, copy changes the content', () => {
         spyOn(selectionTool, 'getSelectionImageData').and.returnValue(new ImageData(2, 2));
-        spyOn(selectionTool, 'hasSelection').and.returnValue(true);
+        SelectionService.selectionActive = true;
         spyOn(toolManager, 'getCurrentSelectionTool').and.returnValue(selectionTool);
         service.copy();
         expect(selectionTool.getSelectionImageData).toHaveBeenCalledTimes(1);
@@ -51,7 +51,7 @@ describe('ClipboardService', () => {
         // tslint:disable: no-string-literal
         service['clipboardContent'] = new ImageData(2, 2);
         spyOn(selectionTool, 'getSelectionImageData').and.returnValue(drawing.baseCtx.getImageData(0, 0, 1, 1));
-        spyOn(selectionTool, 'hasSelection').and.returnValue(false);
+        SelectionService.selectionActive = false;
         toolManager.emitToolChange(ToolsNames.SelectBox);
         service.paste();
         expect(selectionTool.setSelection).toHaveBeenCalledTimes(1);
@@ -61,7 +61,7 @@ describe('ClipboardService', () => {
         spyOn(toolManager, 'emitToolChange');
         spyOn(selectionTool, 'deselect');
         spyOn(selectionTool, 'getSelectionImageData').and.returnValue(drawing.baseCtx.getImageData(0, 0, 1, 1));
-        spyOn(selectionTool, 'hasSelection').and.returnValue(true);
+        SelectionService.selectionActive = true;
         service['clipboardContent'] = new ImageData(2, 2);
         toolManager.currentTool = ToolsNames.Pencil;
         service.paste();
@@ -96,10 +96,7 @@ describe('ClipboardService', () => {
     });
 
     it('hasSelection: returns true if selection tool selection and has selection, false otherwise', () => {
-        expect(service.hasSelection()).toBeFalse();
-        toolManager.emitToolChange(ToolsNames.SelectBox);
-        expect(service.hasSelection()).toBeTrue();
-        spyOn(selectionTool, 'hasSelection').and.returnValue(false);
+        SelectionService.selectionActive = false;
         expect(service.hasSelection()).toBeFalse();
     });
 });
