@@ -32,6 +32,11 @@ export class MagnetismService extends Tool {
     //     this.gridSize = this.drawingService.gridSize;
     // }
 
+    onMouseDown(event: MouseEvent): void {
+        const currentCoord = { ...this.getPositionFromMouse(event) };
+        const currentCornerSelected = this.cornerCurrentlySelected(currentCoord);
+    }
+
     // onMouseMove(event: MouseEvent): void {
     //     if (this.mouseDown && SelectionService.selectionActive) {
     //     }
@@ -154,6 +159,16 @@ export class MagnetismService extends Tool {
         );
     }
 
+    setCoordToNearestCrossOnGrid(mouseCoord: Vec2): void {
+        const nearestCross = { x: this.gridSize * (mouseCoord.x / this.gridSize), y: this.gridSize * (mouseCoord.y / this.gridSize) };
+        const distance = Math.abs(Math.hypot(nearestCross.x - mouseCoord.x, nearestCross.y - mouseCoord.y));
+        if (distance <= 2) {
+            this.currentSelection.canvas.style.left = nearestCross.x + 'px';
+            this.currentSelection.canvas.style.top = nearestCross.y + 'px';
+        }
+        return;
+    }
+
     cornerCurrentlySelected(mouseCoord: Vec2): controlPoints {
         if (this.isMouseOnTopLeftCorner(mouseCoord)) {
             return controlPoints.topLeft;
@@ -169,6 +184,26 @@ export class MagnetismService extends Tool {
         }
         // À revoir
         return controlPoints.bottomLeft;
+    }
+
+    bringToClosestCrossOnGrid(mouseCoord: Vec2, corner: controlPoints): void {
+        switch (corner) {
+            case controlPoints.topLeft:
+                this.setCoordToNearestCrossOnGrid(mouseCoord);
+                break;
+            case controlPoints.topRight:
+                this.setCoordToNearestCrossOnGrid(mouseCoord);
+                break;
+            case controlPoints.bottomLeft:
+                this.setCoordToNearestCrossOnGrid(mouseCoord);
+                break;
+            case controlPoints.bottomRight:
+                this.setCoordToNearestCrossOnGrid(mouseCoord);
+
+                break;
+            default:
+                break;
+        }
     }
 
     executeCommand(command: ToolCommand): void {
