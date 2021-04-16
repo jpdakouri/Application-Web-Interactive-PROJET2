@@ -155,42 +155,6 @@ describe('SelectionRectangleService', () => {
         expect(makeSquareSpy).toHaveBeenCalled();
     });
 
-    it('upPressed should be false when the up key is not pressed', () => {
-        service.onMouseDown(mouseEvent);
-        SelectionService.selectionActive = true;
-        service.onKeyUp({
-            key: KeyboardButtons.Up,
-        } as KeyboardEvent);
-        expect(service['upPressed']).toEqual(false);
-    });
-
-    it('downPressed should be false when the down key is not pressed', () => {
-        service.onMouseDown(mouseEvent);
-        SelectionService.selectionActive = true;
-        service.onKeyUp({
-            key: KeyboardButtons.Down,
-        } as KeyboardEvent);
-        expect(service['downPressed']).toEqual(false);
-    });
-
-    it('rightPressed should be false when the right key is not pressed', () => {
-        service.onMouseDown(mouseEvent);
-        SelectionService.selectionActive = true;
-        service.onKeyUp({
-            key: KeyboardButtons.Right,
-        } as KeyboardEvent);
-        expect(service['rightPressed']).toEqual(false);
-    });
-
-    it('leftPressed should be false when the left key is not pressed', () => {
-        service.onMouseDown(mouseEvent);
-        SelectionService.selectionActive = true;
-        service.onKeyUp({
-            key: KeyboardButtons.Left,
-        } as KeyboardEvent);
-        expect(service['leftPressed']).toEqual(false);
-    });
-
     it('selected region should move 3px higher when Up key is pressed during the selection', () => {
         service.onMouseDown(mouseEvent);
         SelectionService.selectionActive = true;

@@ -7,7 +7,7 @@ import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { LineCreatorService } from './line-creator.service';
 
-fdescribe('LineCreatorService', () => {
+describe('LineCreatorService', () => {
     let service: LineCreatorService;
 
     let canvasTestHelper: CanvasTestHelper;

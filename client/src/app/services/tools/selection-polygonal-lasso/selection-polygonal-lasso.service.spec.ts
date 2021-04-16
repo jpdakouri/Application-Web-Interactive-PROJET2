@@ -4,7 +4,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { SelectionService } from '@app/services/tools/selection-service/selection.service';
 import { SelectionPolygonalLassoService } from './selection-polygonal-lasso.service';
 
-fdescribe('SelectionPolygonalLassoService', () => {
+describe('SelectionPolygonalLassoService', () => {
     let service: SelectionPolygonalLassoService;
     let canvasTestHelper: CanvasTestHelper;
 

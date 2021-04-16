@@ -8,7 +8,7 @@ import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { LineService } from './line.service';
 
 // tslint:disable:no-any
-fdescribe('LineService', () => {
+describe('LineService', () => {
     const DETECTION_RANGE = 15;
     let service: LineService;
     let mouseEvent: MouseEvent;

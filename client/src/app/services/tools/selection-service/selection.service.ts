@@ -19,10 +19,7 @@ export abstract class SelectionService extends Tool {
     offset: Vec2;
     shiftDown: boolean;
     dragActive: boolean;
-    upPressed: boolean;
-    downPressed: boolean;
-    leftPressed: boolean;
-    rightPressed: boolean;
+    private activeDistance: Vec2;
     buffer: boolean;
     initialTopLeftCorner?: Vec2;
     height: number;
@@ -38,6 +35,7 @@ export abstract class SelectionService extends Tool {
         SelectionService.selectionActive = this.dragActive = false;
         this.buffer = true;
         this.drawingService.selectedAreaCtx = this.drawingService.baseCtx;
+        this.activeDistance = { x: 0, y: 0 };
     }
 
     defaultOnMouseDown(event: MouseEvent): void {
@@ -90,66 +88,43 @@ export abstract class SelectionService extends Tool {
     }
 
     defaultOnKeyUp(event: KeyboardEvent): void {
-        switch (event.key) {
-            case KeyboardButtons.Up: {
-                if (SelectionService.selectionActive) {
-                    this.upPressed = false;
+        if (SelectionService.selectionActive) {
+            switch (event.key) {
+                case KeyboardButtons.Up:
+                case KeyboardButtons.Down: {
+                    this.activeDistance.y = 0;
+                    break;
                 }
-                break;
-            }
-            case KeyboardButtons.Down: {
-                if (SelectionService.selectionActive) {
-                    this.downPressed = false;
+                case KeyboardButtons.Right:
+                case KeyboardButtons.Left: {
+                    this.activeDistance.x = 0;
+                    break;
                 }
-                break;
-            }
-            case KeyboardButtons.Right: {
-                if (SelectionService.selectionActive) {
-                    this.rightPressed = false;
-                }
-                break;
-            }
-            case KeyboardButtons.Left: {
-                if (SelectionService.selectionActive) {
-                    this.leftPressed = false;
-                }
-                break;
             }
         }
     }
 
     defaultOnKeyDown(event: KeyboardEvent): void {
         event.preventDefault();
-        switch (event.key) {
-            case KeyboardButtons.Up: {
-                if (SelectionService.selectionActive) {
-                    this.upPressed = true;
-                }
-                break;
+        if (event.key === KeyboardButtons.Escape) this.cancelSelection();
+        if (SelectionService.selectionActive) {
+            if (event.key === KeyboardButtons.Left) {
+                this.activeDistance.x = -PIXELS_ARROW_STEPS;
             }
-            case KeyboardButtons.Down: {
-                if (SelectionService.selectionActive) {
-                    this.downPressed = true;
-                }
-                break;
+            if (event.key === KeyboardButtons.Down) {
+                this.activeDistance.y = PIXELS_ARROW_STEPS;
             }
-            case KeyboardButtons.Right: {
-                if (SelectionService.selectionActive) {
-                    this.rightPressed = true;
-                }
-                break;
+            if (event.key === KeyboardButtons.Up) {
+                this.activeDistance.y = -PIXELS_ARROW_STEPS;
             }
-            case KeyboardButtons.Left: {
-                if (SelectionService.selectionActive) {
-                    this.leftPressed = true;
-                }
-                break;
+            if (event.key === KeyboardButtons.Right) {
+                this.activeDistance.x = PIXELS_ARROW_STEPS;
             }
-            case KeyboardButtons.Escape: {
-                this.cancelSelection();
-            }
+            this.firstGrid.x = this.topLeftCorner.x += this.activeDistance.x;
+            this.firstGrid.y = this.topLeftCorner.y += this.activeDistance.y;
+            this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
+            this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
         }
-        this.updateArrowPosition();
     }
 
     updateTopLeftCorner(): void {
@@ -171,27 +146,6 @@ export abstract class SelectionService extends Tool {
         const currentCoord = { ...grid };
         this.topLeftCorner.x = currentCoord.x + this.offset.x;
         this.topLeftCorner.y = currentCoord.y + this.offset.y;
-        this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
-        this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
-    }
-
-    updateArrowPosition(): void {
-        if (SelectionService.selectionActive && this.upPressed) {
-            this.topLeftCorner.y -= PIXELS_ARROW_STEPS;
-            this.firstGrid.y -= PIXELS_ARROW_STEPS;
-        }
-        if (SelectionService.selectionActive && this.downPressed) {
-            this.topLeftCorner.y += PIXELS_ARROW_STEPS;
-            this.firstGrid.y += PIXELS_ARROW_STEPS;
-        }
-        if (SelectionService.selectionActive && this.rightPressed) {
-            this.topLeftCorner.x += PIXELS_ARROW_STEPS;
-            this.firstGrid.x += PIXELS_ARROW_STEPS;
-        }
-        if (SelectionService.selectionActive && this.leftPressed) {
-            this.topLeftCorner.x -= PIXELS_ARROW_STEPS;
-            this.firstGrid.x -= PIXELS_ARROW_STEPS;
-        }
         this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
         this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
     }
