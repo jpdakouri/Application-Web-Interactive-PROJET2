@@ -32,7 +32,7 @@ export enum KeyboardButtons {
     PaintBucket = 'b',
     Paste = 'v',
     Cut = 'x',
-    Delete = 'delete',
+    Delete = 'Delete',
     Copy = 'c',
     Stamp = 'd',
 }
