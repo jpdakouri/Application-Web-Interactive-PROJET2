@@ -55,7 +55,7 @@ export const MINIMUM_HEIGHT = 250;
 export const LOWER_BOUND_WIDTH = 500;
 export const LOWER_BOUND_HEIGHT = 500;
 
-export const SIDEBAR_WIDTH = 335;
+export const SIDEBAR_WIDTH = 382;
 
 export const WORKING_ZONE_VISIBLE_PORTION = 100;
 

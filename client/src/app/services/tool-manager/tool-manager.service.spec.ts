@@ -79,6 +79,15 @@ describe('ToolManagerService', () => {
         expect(service.toolBox[service.currentTool].lineThickness).toEqual(FAKE_LINE_THICKNESS);
         expect(service.toolBox[service.currentTool].lineThickness).not.toEqual(WRONG_FAKE_LINE_THICKNESS);
     });
+    it("#setCurrentTolerance should set currentAttributes.BucketTolerance property and currentTool's bucketTolerance to correct value ", () => {
+        const BUCKET_TOLERANCE = 10;
+        const WRONG_BUCKET_TOLERANCE = 5;
+        service.setCurrentTolerance(BUCKET_TOLERANCE);
+        expect(service.currentAttributes.BucketTolerance).toEqual(BUCKET_TOLERANCE);
+        expect(service.currentAttributes.LineThickness).not.toEqual(WRONG_BUCKET_TOLERANCE);
+        expect(service.toolBox[service.currentTool].bucketTolerance).toEqual(BUCKET_TOLERANCE);
+        expect(service.toolBox[service.currentTool].bucketTolerance).not.toEqual(WRONG_BUCKET_TOLERANCE);
+    });
 
     it("#getCurrentLineThickness should return currentAttributes property's LineThickness", () => {
         const FAKE_LINE_THICKNESS = 10;
@@ -87,6 +96,15 @@ describe('ToolManagerService', () => {
         const lineThickness = service.getCurrentLineThickness();
         expect(lineThickness).toEqual(FAKE_LINE_THICKNESS);
         expect(lineThickness).not.toEqual(WRONG_FAKE_LINE_THICKNESS);
+    });
+
+    it("#getCurrentTolerance should return currentAttributes property's BucketTolerance", () => {
+        const BUCKET_TOLERANCE = 10;
+        const WRONG_BUCKET_TOLERANCE = 5;
+        service.currentAttributes.BucketTolerance = BUCKET_TOLERANCE;
+        const bucketTolerance = service.getCurrentTolerance();
+        expect(bucketTolerance).toEqual(BUCKET_TOLERANCE);
+        expect(bucketTolerance).not.toEqual(WRONG_BUCKET_TOLERANCE);
     });
 
     it("#setCurrentShowDots should set currentAttributes.showDots property and currentTool's showDots to correct value ", () => {
