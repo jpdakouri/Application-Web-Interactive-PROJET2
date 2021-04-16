@@ -52,6 +52,7 @@ export abstract class SelectionService extends Tool {
             this.deselect();
         }
     }
+
     abstract registerUndo(imageData: ImageData): void;
 
     deselect(): void {

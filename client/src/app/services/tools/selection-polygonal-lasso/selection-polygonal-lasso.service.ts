@@ -11,9 +11,10 @@ import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo
     providedIn: 'root',
 })
 export class SelectionPolygonalLassoService extends LineCreatorService {
-    private validePoint: boolean = true;
+    private validePoint: boolean;
     constructor(drawingService: DrawingService, currentColorService: CurrentColorService, private undoRedo: UndoRedoService) {
         super(drawingService, currentColorService);
+        this.validePoint = true;
     }
 
     registerUndo(imageData: ImageData): void {
@@ -148,7 +149,6 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
     }
 
     updateBaseCtx(): void {
-        // this.drawingService.baseCtx.strokeStyle = 'rgba(255, 255, 255, 1)';
         this.drawShape(this.drawingService.baseCtx, this.pathData);
         this.drawingService.baseCtx.fillStyle = 'white';
         this.drawingService.baseCtx.fill();
@@ -175,7 +175,6 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
     executeCommand(command: SelectionCommand): void {
         console.log(command.path !== undefined);
         if (command.path !== undefined) {
-            console.log('a');
             this.drawingService.baseCtx.fillStyle = 'white';
             this.drawShape(this.drawingService.baseCtx, command.path);
             this.drawingService.baseCtx.fill();

@@ -129,21 +129,20 @@ describe('SelectionPolygonalLassoService', () => {
     });
 
     it('registerUndo put undefined for final top left corner if no selection is made', () => {
-        // tslint:disable-next-line:no-unused-expression
-        TestBed.inject(UndoRedoService)['commands'][0] as SelectionCommand;
         SelectionService.selectionActive = false;
-        spyOn(service['undoRedo'], 'addCommand').and.stub();
+        const command = TestBed.inject(UndoRedoService)['commands'][0] as SelectionCommand;
         service.registerUndo(new ImageData(2, 2));
-        expect(service['undoRedo'].addCommand).toHaveBeenCalled();
+        expect(command.finalTopLeftCorner).toBeUndefined();
     });
 
     it('executeCommand does nothing if the 2 top left corners of the command are undefined', () => {
+        canvasTestHelper = TestBed.inject(CanvasTestHelper);
+        const baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         const command = new SelectionCommand(service, { x: 1, y: 1 }, new ImageData(1, 1));
-        service['drawingService'].baseCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
-        spyOn(service['drawingService'].baseCtx, 'fillRect').and.stub();
-        spyOn(service['drawingService'].baseCtx, 'drawImage').and.stub();
+        spyOn(baseCtxStub, 'fillRect');
+        spyOn(baseCtxStub, 'drawImage');
         service.executeCommand(command);
-        expect(service['drawingService'].baseCtx.fillRect).toHaveBeenCalledTimes(0);
-        expect(service['drawingService'].baseCtx.drawImage).toHaveBeenCalledTimes(0);
+        expect(baseCtxStub.fillRect).toHaveBeenCalledTimes(0);
+        expect(baseCtxStub.drawImage).toHaveBeenCalledTimes(0);
     });
 });

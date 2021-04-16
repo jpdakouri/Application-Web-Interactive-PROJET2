@@ -10,7 +10,7 @@ export enum KeyboardButtons {
     Aerosol = 'a',
     Text = 't',
     InvalidInput = 'h',
-    NewDrawing = '0',
+    NewDrawing = 'o',
     SelectAll = 'a',
     Up = 'ArrowUp',
     Down = 'ArrowDown',

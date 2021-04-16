@@ -78,12 +78,12 @@ export class EditorComponent implements AfterViewInit {
             }
 
             if (!event.shiftKey && !event.ctrlKey) {
-                this.ctrlCalls(event);
+                this.notCtrlCalls(event);
             }
         }
     }
 
-    private ctrlCalls(event: KeyboardEvent): void {
+    private notCtrlCalls(event: KeyboardEvent): void {
         const toolKeyDown = this.toolFinder.get(event.key as KeyboardButtons) as ToolsNames;
         if (!(toolKeyDown == undefined)) {
             this.toolManagerService.setCurrentTool(toolKeyDown);
