@@ -14,16 +14,15 @@ const REVERT = -1;
     providedIn: 'root',
 })
 export class SelectionResizerService extends SelectionService {
-    status: SelectionStatus;
+    private status: SelectionStatus;
     private mouseService: MouseHandlerService;
     private selectionMouseDown: boolean = false;
     imageData: ImageData;
     private coords: Vec2;
-    private moveOffset: Vec2;
     private initialBottomRightCorner: Vec2;
-    // private rapport: Vec2;
     private revertX: boolean;
     private revertY: boolean;
+    // private test: Vec2;
     constructor(
         mouseService: MouseHandlerService,
         drawingService: DrawingService,
@@ -35,9 +34,8 @@ export class SelectionResizerService extends SelectionService {
         this.status = SelectionStatus.OFF;
         this.mouseService = mouseService;
         this.coords = { x: 0, y: 0 };
-        this.moveOffset = { x: 0, y: 0 };
         this.initialBottomRightCorner = { x: 0, y: 0 };
-        // this.rapport = { x: 0, y: 0 };
+        // this.test = { x: 0, y: 0 };
     }
     onMouseDown(event: MouseEvent): void {
         this.mouseService.onMouseDown(this.mouseService.eventToCoordinate(event));
@@ -55,12 +53,9 @@ export class SelectionResizerService extends SelectionService {
     onMouseMove(event: MouseEvent): void {
         if (this.selectionMouseDown) {
             this.mouseService.onMouseMove(this.mouseService.eventToCoordinate(event));
-            const currentCoord = this.getPositionFromMouse(event);
+            const currentCoord = (this.coords = this.getPositionFromMouse(event));
             this.offset.x = this.mouseDownCoord.x - currentCoord.x;
             this.offset.y = this.mouseDownCoord.y - currentCoord.y;
-            this.moveOffset.x = this.coords.x - currentCoord.x;
-            this.moveOffset.y = this.coords.y - currentCoord.y;
-            this.coords = currentCoord;
             if (this.isResizing()) {
                 this.resizeSelection();
             }
@@ -72,32 +67,7 @@ export class SelectionResizerService extends SelectionService {
     }
 
     setStatus(status: SelectionStatus): void {
-        switch (status) {
-            case SelectionStatus.TOP_LEFT_BOX:
-                this.status = SelectionStatus.TOP_LEFT_BOX;
-                break;
-            case SelectionStatus.TOP_MIDDLE_BOX:
-                this.status = SelectionStatus.TOP_MIDDLE_BOX;
-                break;
-            case SelectionStatus.TOP_RIGHT_BOX:
-                this.status = SelectionStatus.TOP_RIGHT_BOX;
-                break;
-            case SelectionStatus.MIDDLE_RIGHT_BOX:
-                this.status = SelectionStatus.MIDDLE_RIGHT_BOX;
-                break;
-            case SelectionStatus.BOTTOM_RIGHT_BOX:
-                this.status = SelectionStatus.BOTTOM_RIGHT_BOX;
-                break;
-            case SelectionStatus.BOTTOM_MIDDLE_BOX:
-                this.status = SelectionStatus.BOTTOM_MIDDLE_BOX;
-                break;
-            case SelectionStatus.BOTTOM_LEFT_BOX:
-                this.status = SelectionStatus.BOTTOM_LEFT_BOX;
-                break;
-            case SelectionStatus.MIDDLE_LEFT_BOX:
-                this.status = SelectionStatus.MIDDLE_LEFT_BOX;
-                break;
-        }
+        this.status = status;
         this.initialize();
     }
 
@@ -105,18 +75,18 @@ export class SelectionResizerService extends SelectionService {
         switch (this.status) {
             case SelectionStatus.TOP_LEFT_BOX:
                 this.drawingService.selectedAreaCtx.canvas.width = this.width + this.offset.x;
-                this.topLeftCorner.x = this.initialTopLeftCorner.x - this.moveOffset.x;
+                this.topLeftCorner.x = this.initialTopLeftCorner.x - this.offset.x;
                 this.drawingService.selectedAreaCtx.canvas.height = this.height + this.offset.y;
-                this.topLeftCorner.y = this.initialTopLeftCorner.y - this.moveOffset.y;
+                this.topLeftCorner.y = this.initialTopLeftCorner.y - this.offset.y;
                 break;
             case SelectionStatus.TOP_MIDDLE_BOX:
                 this.drawingService.selectedAreaCtx.canvas.height = this.height + this.offset.y;
-                this.topLeftCorner.y = this.initialTopLeftCorner.y - this.moveOffset.y;
+                this.topLeftCorner.y = this.initialTopLeftCorner.y - this.offset.y;
                 break;
             case SelectionStatus.TOP_RIGHT_BOX:
                 this.drawingService.selectedAreaCtx.canvas.width = this.width - this.offset.x;
                 this.drawingService.selectedAreaCtx.canvas.height = this.height + this.offset.y;
-                this.topLeftCorner.y = this.initialTopLeftCorner.y - this.moveOffset.y;
+                this.topLeftCorner.y = this.initialTopLeftCorner.y - this.offset.y;
                 break;
             case SelectionStatus.MIDDLE_RIGHT_BOX:
                 this.drawingService.selectedAreaCtx.canvas.width = this.width - this.offset.x;
@@ -130,12 +100,12 @@ export class SelectionResizerService extends SelectionService {
                 break;
             case SelectionStatus.BOTTOM_LEFT_BOX:
                 this.drawingService.selectedAreaCtx.canvas.width = this.width + this.offset.x;
-                this.topLeftCorner.x = this.initialTopLeftCorner.x - this.moveOffset.x;
+                this.topLeftCorner.x = this.initialTopLeftCorner.x - this.offset.x;
                 this.drawingService.selectedAreaCtx.canvas.height = this.height - this.offset.y;
                 break;
             case SelectionStatus.MIDDLE_LEFT_BOX:
                 this.drawingService.selectedAreaCtx.canvas.width = this.width + this.offset.x;
-                this.topLeftCorner.x = this.initialTopLeftCorner.x - this.moveOffset.x;
+                this.topLeftCorner.x = this.initialTopLeftCorner.x - this.offset.x;
                 break;
         }
         this.updatePreview();
@@ -146,7 +116,7 @@ export class SelectionResizerService extends SelectionService {
         this.height = this.drawingService.selectedAreaCtx.canvas.height;
         this.topLeftCorner.x = this.drawingService.selectedAreaCtx.canvas.offsetLeft;
         this.topLeftCorner.y = this.drawingService.selectedAreaCtx.canvas.offsetTop;
-        this.initialTopLeftCorner = this.topLeftCorner;
+        this.initialTopLeftCorner = { ...this.topLeftCorner };
         this.initialBottomRightCorner.x = this.topLeftCorner.x + this.width;
         this.initialBottomRightCorner.y = this.topLeftCorner.y + this.height;
         this.imageData = this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
@@ -155,14 +125,10 @@ export class SelectionResizerService extends SelectionService {
 
     updatePreview(): void {
         this.isMirror();
+        this.isSelectionNull();
         this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
         this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x + 'px';
         this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y + 'px';
-        // this.rapport = {
-        //     x: this.drawingService.selectedAreaCtx.canvas.width / this.width,
-        //     y: this.drawingService.selectedAreaCtx.canvas.height / this.height,
-        // };
-        this.isMirror();
         createImageBitmap(this.imageData).then((imgBitmap) => {
             this.drawingService.selectedAreaCtx.scale(this.revertX ? REVERT : 1, this.revertY ? REVERT : 1);
             this.drawingService.selectedAreaCtx.drawImage(
@@ -176,6 +142,16 @@ export class SelectionResizerService extends SelectionService {
         });
     }
 
+    isSelectionNull(): void {
+        if (this.width === -this.offset.x || this.height === -this.offset.y || this.width === this.offset.x || this.height === this.offset.y) {
+            SelectionService.selectionActive = false;
+        } else SelectionService.selectionActive = true;
+
+        // if (this.coords.x === this.initialBottomRightCorner.y || this.coords.x < this.initialTopLeftCorner.y) {
+        //     this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
+        //     SelectionService.selectionActive = false;
+        // } else SelectionService.selectionActive = false;
+    }
     // tslint:disable-next-line:cyclomatic-complexity
     isMirror(): void {
         // if (
