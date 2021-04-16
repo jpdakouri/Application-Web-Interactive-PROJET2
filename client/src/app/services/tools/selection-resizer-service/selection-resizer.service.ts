@@ -69,12 +69,14 @@ export class SelectionResizerService extends SelectionService {
     onKeyDown(event: KeyboardEvent): void {
         if (event.key === KeyboardButtons.Shift) {
             this.shiftDown = true;
+            this.updatePreview();
         }
     }
 
     onKeyUp(event: KeyboardEvent): void {
         if (event.key === KeyboardButtons.Shift) {
             this.shiftDown = false;
+            this.updatePreview();
         }
     }
 
@@ -143,9 +145,7 @@ export class SelectionResizerService extends SelectionService {
     updatePreview(): void {
         this.isMirror();
         this.isSelectionNull();
-        if (this.shiftDown) {
-            this.canvasWidth = this.canvasHeigth = Math.min(this.canvasWidth, this.canvasHeigth);
-        }
+        this.isSquare();
         this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
         this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x + 'px';
         this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y + 'px';
@@ -237,23 +237,33 @@ export class SelectionResizerService extends SelectionService {
         } else this.revertX = false;
     }
 
-    // private isSquare(): void {
-    //     if (this.shiftDown) {
-    //         switch (this.status) {
-    //             case SelectionStatus.TOP_LEFT_BOX:
-    //                 break;
-    //             case SelectionStatus.TOP_RIGHT_BOX:
-    //                 break;
-    //             case SelectionStatus.BOTTOM_RIGHT_BOX:
-    //                 // this.offset.x = this.offset.y = Math.min(this.offset.x, this.offset.y);
-    //                 // this.canvasWidth = this.canvasHeigth = Math.min(this.canvasWidth, this.canvasHeigth);
-    //                 console.log(this.canvasWidth, this.canvasHeigth);
-    //                 break;
-    //             case SelectionStatus.BOTTOM_LEFT_BOX:
-    //                 break;
-    //         }
-    //     }
-    // }
+    private isSquare(): void {
+        if (this.initialTopLeftCorner === undefined) return;
+        if (this.shiftDown) {
+            switch (this.status) {
+                case SelectionStatus.TOP_LEFT_BOX:
+                    this.canvasWidth = this.canvasHeigth = Math.min(this.canvasWidth, this.canvasHeigth);
+                    this.topLeftCorner.x = this.revertX ? this.initialBottomRightCorner.x : this.initialBottomRightCorner.x - this.canvasWidth;
+                    this.topLeftCorner.y = this.revertY ? this.initialBottomRightCorner.y : this.initialBottomRightCorner.y - this.canvasHeigth;
+                    break;
+                case SelectionStatus.TOP_RIGHT_BOX:
+                    this.canvasWidth = this.canvasHeigth = Math.min(this.canvasWidth, this.canvasHeigth);
+                    if (this.revertX) this.topLeftCorner.x = this.initialTopLeftCorner.x - this.canvasWidth;
+                    // this.topLeftCorner.y = this.revertY ? this.initialBottomRightCorner.y : this.initialBottomRightCorner.y + this.canvasHeigth;
+                    break;
+                case SelectionStatus.BOTTOM_RIGHT_BOX:
+                    this.canvasWidth = this.canvasHeigth = Math.min(this.canvasWidth, this.canvasHeigth);
+                    this.topLeftCorner.x = this.revertX ? this.initialBottomRightCorner.x : this.initialBottomRightCorner.x - this.canvasWidth;
+                    this.topLeftCorner.y = this.revertY ? this.initialBottomRightCorner.y : this.initialBottomRightCorner.y - this.canvasHeigth;
+                    break;
+                case SelectionStatus.BOTTOM_LEFT_BOX:
+                    this.canvasWidth = this.canvasHeigth = Math.min(this.canvasWidth, this.canvasHeigth);
+                    this.topLeftCorner.x = this.revertX ? this.initialBottomRightCorner.x : this.initialBottomRightCorner.x - this.canvasWidth;
+                    this.topLeftCorner.y = this.revertY ? this.initialBottomRightCorner.y : this.initialBottomRightCorner.y - this.canvasHeigth;
+                    break;
+            }
+        }
+    }
 
     registerUndo(imageData: ImageData): void {
         throw new Error('Method not implemented.');
