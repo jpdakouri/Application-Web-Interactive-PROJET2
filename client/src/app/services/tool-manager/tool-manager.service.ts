@@ -222,25 +222,23 @@ export class ToolManagerService {
     }
 
     setSelectedStamp(stampName: string): void {
-        if (stampName != undefined) {
-            const stampTool = this.toolBox.Stamp as StampService;
-            switch (stampName) {
-                case Stamp.House:
-                    stampTool.selectedStamp = Stamp.House;
-                    break;
-                case Stamp.Letter:
-                    stampTool.selectedStamp = Stamp.Letter;
-                    break;
-                case Stamp.Star:
-                    stampTool.selectedStamp = Stamp.Star;
-                    break;
-                case Stamp.Hashtag:
-                    stampTool.selectedStamp = Stamp.Hashtag;
-                    break;
-                default:
-                    stampTool.selectedStamp = Stamp.Smile;
-                    break;
-            }
+        const stampTool = this.toolBox.Stamp as StampService;
+        switch (stampName) {
+            case Stamp.House:
+                stampTool.selectedStamp = Stamp.House;
+                break;
+            case Stamp.Letter:
+                stampTool.selectedStamp = Stamp.Letter;
+                break;
+            case Stamp.Star:
+                stampTool.selectedStamp = Stamp.Star;
+                break;
+            case Stamp.Hashtag:
+                stampTool.selectedStamp = Stamp.Hashtag;
+                break;
+            default:
+                stampTool.selectedStamp = Stamp.Smile;
+                break;
         }
     }
 

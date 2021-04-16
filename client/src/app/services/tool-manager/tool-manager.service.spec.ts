@@ -5,6 +5,9 @@ import { EraserService } from '@app/services/tools/eraser-service/eraser.service
 import { LineService } from '@app/services/tools/line-service/line.service';
 import { PencilService } from '@app/services/tools/pencil-service/pencil.service';
 import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
+import { SelectionEllipseService } from '@app/services/tools/selection-ellipse-service/selection-ellipse.service';
+import { SelectionPolygonalLassoService } from '@app/services/tools/selection-polygonal-lasso/selection-polygonal-lasso.service';
+import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
 import { StampService } from '@app/services/tools/stamp-service/stamp.service';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { Stamp } from '@app/utils/enums/stamp';
@@ -268,5 +271,22 @@ describe('ToolManagerService', () => {
         expect(stamp.selectedStamp).toBe(Stamp.Hashtag);
         service.setSelectedStamp('star');
         expect(stamp.selectedStamp).toBe(Stamp.Star);
+    });
+
+    it('getCurrentSelectionTool returns current if selection, undefined otherwise', () => {
+        service.emitToolChange(ToolsNames.SelectBox);
+        expect(service.getCurrentSelectionTool()).toBe(TestBed.inject(SelectionRectangleService));
+        service.emitToolChange(ToolsNames.SelectEllipse);
+        expect(service.getCurrentSelectionTool()).toBe(TestBed.inject(SelectionEllipseService));
+        service.emitToolChange(ToolsNames.SelectPolygon);
+        expect(service.getCurrentSelectionTool()).toBe(TestBed.inject(SelectionPolygonalLassoService));
+        service.emitToolChange(ToolsNames.Pencil);
+        expect(service.getCurrentSelectionTool()).toBe(undefined);
+    });
+
+    it('getStampRotationAngle gets the angle of the stamp', () => {
+        const tool = TestBed.inject(StampService);
+        tool.rotationAngle = 2;
+        expect(service.getStampRotationAngle()).toBe(2);
     });
 });

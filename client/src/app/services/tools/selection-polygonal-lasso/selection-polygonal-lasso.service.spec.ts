@@ -8,6 +8,11 @@ describe('SelectionPolygonalLassoService', () => {
     let service: SelectionPolygonalLassoService;
     let canvasTestHelper: CanvasTestHelper;
 
+    let baseCtxStub: CanvasRenderingContext2D;
+    let previewCtxStub: CanvasRenderingContext2D;
+    let selectedAreaCtxStub: CanvasRenderingContext2D;
+    let canvasTestHelper: CanvasTestHelper;
+
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(SelectionPolygonalLassoService);
@@ -124,5 +129,21 @@ describe('SelectionPolygonalLassoService', () => {
         service.dragActive = false;
         service.onMouseMove({} as MouseEvent);
         expect(service.updateDragPosition).not.toHaveBeenCalled();
+    });
+
+    it('registerUndo put undefined for final top left corner if no selection is made', () => {
+        SelectionService.selectionActive = false;
+        service.registerUndo(new ImageData(2, 2));
+        const command = TestBed.inject(UndoRedoService)['commands'][0] as SelectionCommand;
+        expect(command.finalTopLeftCorner).toBeUndefined();
+    });
+
+    it('executeCommand does nothing if the 2 top left corners of the command are undefined', () => {
+        const command = new SelectionCommand(service, { x: 1, y: 1 }, new ImageData(1, 1));
+        spyOn(baseCtxStub, 'fillRect');
+        spyOn(baseCtxStub, 'drawImage');
+        service.executeCommand(command);
+        expect(baseCtxStub.fillRect).toHaveBeenCalledTimes(0);
+        expect(baseCtxStub.drawImage).toHaveBeenCalledTimes(0);
     });
 });
