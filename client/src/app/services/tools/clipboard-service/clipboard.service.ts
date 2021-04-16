@@ -4,6 +4,7 @@ import { CurrentColorService } from '@app/services/current-color/current-color.s
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
+import { SelectionService } from '@app/services/tools/selection-service/selection.service';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
 
@@ -23,7 +24,7 @@ export class ClipboardService extends Tool {
         if (selectionTool == undefined) {
             return;
         }
-        if (selectionTool.hasSelection()) {
+        if (SelectionService.selectionActive) {
             this.clipboardContent = selectionTool.getSelectionImageData();
         }
     }
@@ -35,7 +36,7 @@ export class ClipboardService extends Tool {
                 this.toolManager.emitToolChange(ToolsNames.SelectBox);
                 selectionTool = this.toolManager.toolBox.SelectBox as SelectionRectangleService;
             }
-            if (selectionTool.hasSelection()) {
+            if (SelectionService.selectionActive) {
                 selectionTool.drawSelectionOnBase(selectionTool.getSelectionImageData(), { ...selectionTool.topLeftCorner });
                 selectionTool.registerUndo(selectionTool.getSelectionImageData());
                 selectionTool.deselect();
@@ -58,7 +59,7 @@ export class ClipboardService extends Tool {
         if (selectionTool == undefined) {
             return;
         }
-        if (selectionTool.hasSelection()) {
+        if (SelectionService.selectionActive) {
             this.clipboardContent = selectionTool.getSelectionImageData();
             selectionTool.deselect();
             selectionTool.registerUndo(this.clipboardContent);
@@ -70,11 +71,7 @@ export class ClipboardService extends Tool {
     }
 
     hasSelection(): boolean {
-        const selectionTool = this.toolManager.getCurrentSelectionTool();
-        if (selectionTool == undefined) {
-            return false;
-        }
-        return selectionTool.hasSelection();
+        return SelectionService.selectionActive;
     }
 
     executeCommand(command: ToolCommand): void {

@@ -72,10 +72,6 @@ export abstract class SelectionService extends Tool {
         return this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
     }
 
-    hasSelection(): boolean {
-        return this.drawingService.selectedAreaCtx.canvas.width !== 0 && this.drawingService.selectedAreaCtx.canvas.height !== 0;
-    }
-
     setSelection(imageData: ImageData): void {
         SelectionService.selectionActive = true;
         this.isSelectionDone = true;
