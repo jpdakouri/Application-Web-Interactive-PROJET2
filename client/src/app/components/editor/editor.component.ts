@@ -45,6 +45,7 @@ export class EditorComponent implements AfterViewInit {
             .set(KeyboardButtons.SelectionPolygon, ToolsNames.SelectPolygon)
             .set(KeyboardButtons.Polygon, ToolsNames.Polygon)
             .set(KeyboardButtons.Pipette, ToolsNames.Pipette)
+            .set(KeyboardButtons.PaintBucket, ToolsNames.PaintBucket)
             .set(KeyboardButtons.Text, ToolsNames.Text);
     }
 

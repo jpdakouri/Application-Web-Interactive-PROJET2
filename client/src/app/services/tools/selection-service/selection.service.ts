@@ -4,72 +4,118 @@ import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ALPHA_POS, BLUE_POS, GREEN_POS, MAX_BYTE_VALUE, RED_POS } from '@app/services/services-constants';
-import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
 import { PIXELS_ARROW_STEPS } from '@app/services/tools/tools-constants';
-import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
-import { ToolCommand } from '@app/utils/interfaces/tool-command';
 
 @Injectable({
     providedIn: 'root',
 })
 export abstract class SelectionService extends Tool {
+    static selectionActive: boolean;
     firstGrid: Vec2;
     topLeftCorner: Vec2;
     firstGridClip: Vec2;
     finalGridClip: Vec2;
     offset: Vec2;
     shiftDown: boolean;
-    selectionActive: boolean;
     dragActive: boolean;
     upPressed: boolean;
     downPressed: boolean;
     leftPressed: boolean;
     rightPressed: boolean;
-    mousePositionHandler: MousePositionHandlerService;
-    initialTopLeftCorner: Vec2;
+    buffer: boolean;
+    initialTopLeftCorner?: Vec2;
     height: number;
     width: number;
     isSelectionDone: boolean;
 
     currentColorService: CurrentColorService;
-    constructor(
-        drawingService: DrawingService,
-        currentColorService: CurrentColorService,
-        mousePositionHandler: MousePositionHandlerService,
-        undoRedo: UndoRedoService,
-    ) {
+    constructor(drawingService: DrawingService, currentColorService: CurrentColorService) {
         super(drawingService, currentColorService);
         this.currentColorService = currentColorService;
         this.topLeftCorner = { x: 0, y: 0 };
         this.offset = { x: 0, y: 0 };
-        this.selectionActive = this.dragActive = false;
+        SelectionService.selectionActive = this.dragActive = false;
+        this.buffer = true;
         this.drawingService.selectedAreaCtx = this.drawingService.baseCtx;
-        this.mousePositionHandler = mousePositionHandler;
     }
 
-    onKeyDown(event: KeyboardEvent): void {
+    defaultOnMouseDown(event: MouseEvent): void {
+        if (this.isClickIn(this.firstGrid)) {
+            const initial = this.getPositionFromMouse(event);
+            this.offset.x = this.topLeftCorner.x - initial.x;
+            this.offset.y = this.topLeftCorner.y - initial.y;
+            this.dragActive = true;
+        } else {
+            this.buffer = false;
+            const imageData = this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
+            this.drawSelectionOnBase(imageData, this.topLeftCorner);
+            this.registerUndo(imageData);
+            this.deselect();
+        }
+    }
+    abstract registerUndo(imageData: ImageData): void;
+
+    deselect(): void {
+        SelectionService.selectionActive = false;
+        this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
+        this.isSelectionDone = false;
+    }
+
+    drawSelectionOnBase(imageData: ImageData, topLeftCorner: Vec2): void {
+        createImageBitmap(imageData).then((imgBitmap) => {
+            this.drawingService.baseCtx.drawImage(imgBitmap, topLeftCorner.x, topLeftCorner.y);
+        });
+    }
+
+    getSelectionImageData(): ImageData {
+        return this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
+    }
+
+    hasSelection(): boolean {
+        return this.drawingService.selectedAreaCtx.canvas.width !== 0 && this.drawingService.selectedAreaCtx.canvas.height !== 0;
+    }
+
+    setSelection(imageData: ImageData): void {
+        SelectionService.selectionActive = true;
+        this.isSelectionDone = true;
+        this.topLeftCorner.x = 0;
+        this.topLeftCorner.y = 0;
+        this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
+        this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
+        this.width = imageData.width;
+        this.height = imageData.height;
+        this.drawingService.selectedAreaCtx.canvas.width = this.width;
+        this.drawingService.selectedAreaCtx.canvas.height = this.height;
+        this.initialTopLeftCorner = undefined;
+        createImageBitmap(imageData).then((imgBitmap) => {
+            this.drawingService.selectedAreaCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
+        });
+    }
+
+    defaultOnKeyDown(event: KeyboardEvent): void {
+        event.preventDefault();
         switch (event.key) {
             case KeyboardButtons.Up: {
-                if (this.selectionActive) {
+                if (SelectionService.selectionActive) {
                     this.upPressed = true;
                 }
                 break;
             }
             case KeyboardButtons.Down: {
-                if (this.selectionActive) {
+                if (SelectionService.selectionActive) {
                     this.downPressed = true;
                 }
                 break;
             }
             case KeyboardButtons.Right: {
-                if (this.selectionActive) {
+                if (SelectionService.selectionActive) {
                     this.rightPressed = true;
                 }
                 break;
             }
             case KeyboardButtons.Left: {
-                if (this.selectionActive) {
+                if (SelectionService.selectionActive) {
                     this.leftPressed = true;
                 }
                 break;
@@ -80,47 +126,36 @@ export abstract class SelectionService extends Tool {
                 break;
             }
             case KeyboardButtons.Escape: {
-                this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                this.clearPath();
-            }
-            case KeyboardButtons.Escape: {
-                this.clearPath();
-                this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                this.topLeftCorner = { x: 0, y: 0 };
+                this.cancelSelection();
             }
         }
         this.updateArrowPosition();
     }
 
-    onKeyUp(event: KeyboardEvent): void {
+    defaultOnKeyUp(event: KeyboardEvent): void {
         switch (event.key) {
             case KeyboardButtons.Up: {
-                if (this.selectionActive) {
+                if (SelectionService.selectionActive) {
                     this.upPressed = false;
                 }
                 break;
             }
             case KeyboardButtons.Down: {
-                if (this.selectionActive) {
+                if (SelectionService.selectionActive) {
                     this.downPressed = false;
                 }
                 break;
             }
             case KeyboardButtons.Right: {
-                if (this.selectionActive) {
+                if (SelectionService.selectionActive) {
                     this.rightPressed = false;
                 }
                 break;
             }
             case KeyboardButtons.Left: {
-                if (this.selectionActive) {
+                if (SelectionService.selectionActive) {
                     this.leftPressed = false;
                 }
-                break;
-            }
-            case KeyboardButtons.Shift: {
-                this.shiftDown = false;
-                this.updatePreview();
                 break;
             }
         }
@@ -150,19 +185,19 @@ export abstract class SelectionService extends Tool {
     }
 
     updateArrowPosition(): void {
-        if (this.selectionActive && this.upPressed) {
+        if (SelectionService.selectionActive && this.upPressed) {
             this.topLeftCorner.y -= PIXELS_ARROW_STEPS;
             this.firstGrid.y -= PIXELS_ARROW_STEPS;
         }
-        if (this.selectionActive && this.downPressed) {
+        if (SelectionService.selectionActive && this.downPressed) {
             this.topLeftCorner.y += PIXELS_ARROW_STEPS;
             this.firstGrid.y += PIXELS_ARROW_STEPS;
         }
-        if (this.selectionActive && this.rightPressed) {
+        if (SelectionService.selectionActive && this.rightPressed) {
             this.topLeftCorner.x += PIXELS_ARROW_STEPS;
             this.firstGrid.x += PIXELS_ARROW_STEPS;
         }
-        if (this.selectionActive && this.leftPressed) {
+        if (SelectionService.selectionActive && this.leftPressed) {
             this.topLeftCorner.x -= PIXELS_ARROW_STEPS;
             this.firstGrid.x -= PIXELS_ARROW_STEPS;
         }
@@ -180,7 +215,15 @@ export abstract class SelectionService extends Tool {
         return true;
     }
 
-    clearPath(): void {
+    cancelSelection(): void {
+        console.log('y');
+        this.drawingService.selectedAreaCtx.canvas.width = 0;
+        this.drawingService.selectedAreaCtx.canvas.height = 0;
+        SelectionService.selectionActive = false;
+        this.topLeftCorner = { x: 0, y: 0 };
+    }
+
+    resetFirstGrid(): void {
         this.firstGrid = this.mouseDownCoord = { x: 0, y: 0 };
     }
 
@@ -196,6 +239,4 @@ export abstract class SelectionService extends Tool {
     }
 
     abstract updatePreview(): void;
-
-    abstract executeCommand(command: ToolCommand): void;
 }

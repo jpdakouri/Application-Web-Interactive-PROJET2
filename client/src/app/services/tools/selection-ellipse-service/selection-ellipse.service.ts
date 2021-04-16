@@ -7,12 +7,14 @@ import { MousePositionHandlerService } from '@app/services/tools/mouse-position-
 import { SelectionService } from '@app/services/tools/selection-service/selection.service';
 import { LINE_DASH } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
+import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 @Injectable({
     providedIn: 'root',
 })
 export class SelectionEllipseService extends SelectionService {
     currentColorService: CurrentColorService;
+    mousePositionHandler: MousePositionHandlerService;
 
     constructor(
         drawingService: DrawingService,
@@ -20,66 +22,51 @@ export class SelectionEllipseService extends SelectionService {
         mousePositionHandler: MousePositionHandlerService,
         private undoRedo: UndoRedoService,
     ) {
-        super(drawingService, currentColorService, mousePositionHandler, undoRedo);
+        super(drawingService, currentColorService);
         this.currentColorService = currentColorService;
         this.topLeftCorner = { x: 0, y: 0 };
         this.offset = { x: 0, y: 0 };
-        this.selectionActive = this.dragActive = false;
+        SelectionService.selectionActive = this.dragActive = false;
         this.drawingService.selectedAreaCtx = this.drawingService.baseCtx;
         this.mousePositionHandler = mousePositionHandler;
     }
 
+    registerUndo(imageData: ImageData): void {
+        const finalTopLeftCorner: Vec2 | undefined = SelectionService.selectionActive ? { ...this.topLeftCorner } : undefined;
+        const command = new SelectionCommand(this, { x: this.width, y: this.height }, imageData, this.initialTopLeftCorner, finalTopLeftCorner);
+        this.undoRedo.addCommand(command);
+    }
+
     onMouseDown(event: MouseEvent): void {
-        this.clearPath();
+        this.resetFirstGrid();
         this.mouseDown = event.button === MouseButtons.Left;
         this.firstGrid = this.getPositionFromMouse(event);
         this.mouseMoved = false;
         if (this.mouseDown) {
-            if (!this.selectionActive) {
+            if (!SelectionService.selectionActive) {
                 this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
                 this.firstGridClip = this.getPositionFromMouse(event);
                 this.updatePreview();
-                this.selectionActive = true;
+                SelectionService.selectionActive = true;
             } else {
-                if (this.isClickIn(this.firstGrid)) {
-                    const initial = this.getPositionFromMouse(event);
-                    this.offset.x = this.topLeftCorner.x - initial.x;
-                    this.offset.y = this.topLeftCorner.y - initial.y;
-                    this.dragActive = true;
-                } else {
-                    this.selectionActive = false;
-                    const imageData = this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
-                    createImageBitmap(imageData).then((imgBitmap) => {
-                        this.drawingService.baseCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
-                    });
-                    this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
-                    this.isSelectionDone = false;
-                    const command = new SelectionCommand(
-                        this,
-                        this.initialTopLeftCorner,
-                        { ...this.topLeftCorner },
-                        { x: this.width, y: this.height },
-                        imageData,
-                    );
-                    this.undoRedo.addCommand(command);
-                }
+                this.defaultOnMouseDown(event);
             }
         }
     }
 
     onMouseMove(event: MouseEvent): void {
-        if (this.mouseDown && this.selectionActive && !this.dragActive) {
+        if (this.mouseDown && SelectionService.selectionActive && !this.dragActive) {
             this.mouseMoved = true;
             this.mouseDownCoord.x = this.getPositionFromMouse(event).x - this.firstGrid.x;
             this.mouseDownCoord.y = this.getPositionFromMouse(event).y - this.firstGrid.y;
             this.updatePreview();
-        } else if (this.mouseDown && this.selectionActive && this.dragActive) {
+        } else if (this.mouseDown && SelectionService.selectionActive && this.dragActive) {
             this.updateDragPosition(this.getPositionFromMouse(event));
         }
     }
 
     onMouseUp(event: MouseEvent): void {
-        if (this.mouseDown && this.selectionActive && !this.dragActive && this.mouseMoved) {
+        if (this.mouseDown && SelectionService.selectionActive && !this.dragActive && this.mouseMoved) {
             this.isSelectionDone = true;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.finalGridClip = this.getPositionFromMouse(event);
@@ -111,7 +98,11 @@ export class SelectionEllipseService extends SelectionService {
         ctx.closePath();
     }
 
-    // private clipArea(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {}
+    private clipArea(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+        ctx.save();
+        this.drawEllipse(ctx, finalGrid);
+        ctx.clip('evenodd');
+    }
 
     private selectEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         this.initialTopLeftCorner = { ...this.topLeftCorner };
@@ -121,9 +112,7 @@ export class SelectionEllipseService extends SelectionService {
         this.replaceEmptyPixels(imageData);
         createImageBitmap(imageData).then((imgBitmap) => {
             ctx.setLineDash([]);
-            ctx.save();
-            this.drawEllipse(ctx, finalGrid);
-            ctx.clip('evenodd');
+            this.clipArea(ctx, finalGrid);
             this.drawingService.selectedAreaCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
             ctx.restore();
         });
@@ -139,6 +128,17 @@ export class SelectionEllipseService extends SelectionService {
         this.drawingService.baseCtx.fill();
     }
 
+    onKeyUp(event: KeyboardEvent): void {
+        if (event.key === KeyboardButtons.Shift) {
+            this.shiftDown = false;
+            this.updatePreview();
+        } else this.defaultOnKeyUp(event);
+    }
+
+    onKeyDown(event: KeyboardEvent): void {
+        this.defaultOnKeyDown(event);
+    }
+
     updatePreview(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         const currentCoord = { ...this.mouseDownCoord };
@@ -151,31 +151,36 @@ export class SelectionEllipseService extends SelectionService {
     }
 
     executeCommand(command: SelectionCommand): void {
-        this.drawingService.selectedAreaCtx.canvas.style.top = command.finalTopLeftCorner.y + 'px';
-        this.drawingService.selectedAreaCtx.canvas.style.left = command.finalTopLeftCorner.x + 'px';
-        this.drawingService.baseCtx.fillStyle = 'white';
-        this.drawingService.baseCtx.beginPath();
-        this.drawingService.baseCtx.strokeStyle = 'rgba(255, 255, 255, 1)';
-        this.drawingService.baseCtx.lineWidth = 1;
-        const startCoord = { ...command.initialTopLeftCorner };
-        const width = command.selectionSize.x;
-        const height = command.selectionSize.y;
-        this.drawingService.baseCtx.ellipse(
-            startCoord.x + width / 2,
-            startCoord.y + height / 2,
-            Math.abs(width / 2),
-            Math.abs(height / 2),
-            0,
-            0,
-            2 * Math.PI,
-            false,
-        );
-        this.drawingService.baseCtx.closePath();
-        this.drawingService.baseCtx.fill();
-        const imageData = command.imageData;
-        createImageBitmap(imageData).then((imgBitmap) => {
-            this.drawingService.baseCtx.drawImage(imgBitmap, command.finalTopLeftCorner.x, command.finalTopLeftCorner.y);
-        });
-        this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
+        if (command.initialTopLeftCorner !== undefined) {
+            this.drawingService.baseCtx.fillStyle = 'white';
+            this.drawingService.baseCtx.beginPath();
+            this.drawingService.baseCtx.strokeStyle = 'rgba(255, 255, 255, 1)';
+            this.drawingService.baseCtx.lineWidth = 1;
+            const startCoord = { ...command.initialTopLeftCorner };
+            const width = command.selectionSize.x;
+            const height = command.selectionSize.y;
+            this.drawingService.baseCtx.ellipse(
+                startCoord.x + width / 2,
+                startCoord.y + height / 2,
+                Math.abs(width / 2),
+                Math.abs(height / 2),
+                0,
+                0,
+                2 * Math.PI,
+                false,
+            );
+            this.drawingService.baseCtx.closePath();
+            this.drawingService.baseCtx.fill();
+        }
+        if (command.finalTopLeftCorner !== undefined) {
+            this.drawingService.selectedAreaCtx.canvas.style.top = command.finalTopLeftCorner.y + 'px';
+            this.drawingService.selectedAreaCtx.canvas.style.left = command.finalTopLeftCorner.x + 'px';
+            const imageData = command.imageData;
+            createImageBitmap(imageData).then((imgBitmap) => {
+                if (command.finalTopLeftCorner !== undefined)
+                    this.drawingService.baseCtx.drawImage(imgBitmap, command.finalTopLeftCorner.x, command.finalTopLeftCorner.y);
+            });
+            this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
+        }
     }
 }

@@ -31,6 +31,10 @@ export class DrawingService {
         return this.baseCtx;
     }
 
+    getPreviewContext(): CanvasRenderingContext2D {
+        return this.previewCtx;
+    }
+
     restoreCanvas(): void {
         const canvasInfo = localStorage.getItem('canvasInfo');
         const info = JSON.parse(canvasInfo as string);

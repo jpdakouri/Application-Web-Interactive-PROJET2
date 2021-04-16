@@ -175,7 +175,7 @@ export class ToolAttributeComponent {
     }
 
     onToleranceChange(event: MatSliderChange): void {
-        this.toolManagerService.setCurrentTolerance(event.value || undefined);
+        this.toolManagerService.setCurrentTolerance(event.value || 0);
     }
 
     onFrequencyChange(event: MatSliderChange): void {

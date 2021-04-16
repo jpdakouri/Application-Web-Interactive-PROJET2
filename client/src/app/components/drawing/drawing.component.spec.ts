@@ -297,20 +297,20 @@ describe('DrawingComponent', () => {
         expect(component.getTopLeftCorner().y).toEqual(2);
     });
 
-    it('getSelectedAreaSizeRectangle should return correct values ', () => {
+    xit('getSelectedAreaSize should return correct values ', () => {
         component.selectionRectangleService.width = 2;
         component.selectionRectangleService.height = 2;
 
-        expect(component.getSelectedAreaSizeRectangle().x).toEqual(2);
-        expect(component.getSelectedAreaSizeRectangle().y).toEqual(2);
+        expect(component.getSelectedAreaSize().x).toEqual(2);
+        expect(component.getSelectedAreaSize().y).toEqual(2);
     });
 
-    it('getTopLeftCornerRectangle should return correct values ', () => {
+    xit('getTopLeftCorner should return correct values ', () => {
         component.selectionRectangleService.topLeftCorner.x = 2;
         component.selectionRectangleService.topLeftCorner.y = 2;
 
-        expect(component.getTopLeftCornerRectangle().x).toEqual(2);
-        expect(component.getTopLeftCornerRectangle().y).toEqual(2);
+        expect(component.getTopLeftCorner().x).toEqual(2);
+        expect(component.getTopLeftCorner().y).toEqual(2);
     });
 
     it('onMouseWheelScroll delegates to the current tool', () => {

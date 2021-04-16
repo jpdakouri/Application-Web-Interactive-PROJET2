@@ -39,7 +39,7 @@ describe('GridService', () => {
     });
 
     it('gridSizeCanModify should return true if the size decrease is valide', () => {
-        service.gridSize = 54;
+        service.gridSize = 14;
         let retValue = service.gridSizeCanModify(false);
         expect(retValue).toEqual(false);
 

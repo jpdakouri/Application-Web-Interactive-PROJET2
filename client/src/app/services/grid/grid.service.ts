@@ -46,8 +46,9 @@ export class GridService {
     }
 
     gridSizeCanModify(increaseSize: boolean): boolean {
-        if (increaseSize && this.gridSize + GRID_SIZE_CHANGE_VALUE <= this.maxGridSize) return true;
-        if (!increaseSize && this.gridSize - GRID_SIZE_CHANGE_VALUE >= this.minGridSize) return true;
-        return false;
+        return (
+            (increaseSize && this.gridSize + GRID_SIZE_CHANGE_VALUE <= this.maxGridSize) ||
+            (!increaseSize && this.gridSize - GRID_SIZE_CHANGE_VALUE >= this.minGridSize)
+        );
     }
 }
