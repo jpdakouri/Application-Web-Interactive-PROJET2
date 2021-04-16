@@ -46,8 +46,8 @@ export class DrawingService {
             };
             img.src = drawingData.dataURL as string;
             this.newDrawing.emit({ x: drawingData.width, y: drawingData.height } as Vec2);
-            this.saveCanvas();
         }
+        this.saveCanvas();
     }
 
     restoreDrawing(): void {
@@ -87,6 +87,7 @@ export class DrawingService {
         };
         img.src = drawing.dataURL as string;
         this.newDrawing.emit({ x: drawing.width, y: drawing.height } as Vec2);
+        this.saveCanvas();
     }
 
     createNewDrawing(showConfirmDialog?: boolean): boolean {
@@ -94,8 +95,9 @@ export class DrawingService {
             if (confirm("Le canvas n'est pas vide! Voulez-vous procéder tout de même?")) {
                 this.clearCanvas(this.previewCtx);
                 this.clearCanvas(this.baseCtx);
-                localStorage.clear();
                 this.saveCanvas();
+                localStorage.clear();
+                this.emitCreateNewDrawing();
                 return true;
             } else if (localStorage.getItem('canvasInfo') && !this.isCanvasBlank()) {
                 this.continueDrawing();
@@ -103,6 +105,7 @@ export class DrawingService {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -112,23 +115,13 @@ export class DrawingService {
             const image = new Image();
             image.src = dataURL as string;
             if (dataURL) {
-                const drawingData: DrawingData = new DrawingData('', '', [], dataURL, this.canvas.width, this.canvas.height);
-                const img = new Image();
-                img.onload = () => {
-                    this.canvas.getContext('2d')?.drawImage(img, 0, 0);
-                };
-                img.src = drawingData.dataURL as string;
-                this.newDrawing.emit({ x: drawingData.width, y: drawingData.height } as Vec2);
+                this.restoreCanvas();
+                this.restoreDrawing();
             }
-            this.restoreCanvas();
         }
     }
 
     emitCreateNewDrawing(): void {
         this.createNewDrawingEmitter.emit(true);
     }
-
-    // emitContinuerawing(): void {
-    //     this.createNewDrawingEmitter.emit(true);
-    // }
 }
