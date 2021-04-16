@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { ToolbarComponent } from '@app/components/toolbar-components/toolbar/toolbar.component';
+import { ClipboardService } from '@app/services/clipboard-service/clipboard.service';
 import { DialogControllerService } from '@app/services/dialog-controller/dialog-controller.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { GridService } from '@app/services/grid/grid.service';
@@ -30,6 +31,7 @@ export class EditorComponent implements AfterViewInit {
         private selectionRectangleService: SelectionRectangleService,
         private undoRedo: UndoRedoService,
         private gridService: GridService,
+        private clipBoard: ClipboardService,
     ) {
         this.toolFinder = new Map<KeyboardButtons, ToolsNames>();
         this.toolFinder
@@ -46,7 +48,8 @@ export class EditorComponent implements AfterViewInit {
             .set(KeyboardButtons.Polygon, ToolsNames.Polygon)
             .set(KeyboardButtons.Pipette, ToolsNames.Pipette)
             .set(KeyboardButtons.PaintBucket, ToolsNames.PaintBucket)
-            .set(KeyboardButtons.Text, ToolsNames.Text);
+            .set(KeyboardButtons.Text, ToolsNames.Text)
+            .set(KeyboardButtons.Stamp, ToolsNames.Stamp);
     }
 
     ngAfterViewInit(): void {
@@ -72,8 +75,14 @@ export class EditorComponent implements AfterViewInit {
                 if (event.key === KeyboardButtons.Undo) {
                     this.undoRedo.undo();
                 }
-                if (event.key === KeyboardButtons.Redo) {
-                    this.undoRedo.redo();
+                if (event.key === KeyboardButtons.Copy) {
+                    this.clipBoard.copy();
+                }
+                if (event.key === KeyboardButtons.Paste) {
+                    this.clipBoard.paste();
+                }
+                if (event.key === KeyboardButtons.Cut) {
+                    this.clipBoard.cut();
                 }
             }
 
@@ -99,6 +108,10 @@ export class EditorComponent implements AfterViewInit {
         }
         if (event.key === KeyboardButtons.GridDown && this.gridService.gridSizeCanModify(false)) {
             if (this.gridService.showGrid) this.gridService.newGrid((this.gridService.gridSize -= GRID_SIZE_CHANGE_VALUE));
+        }
+
+        if (event.key === KeyboardButtons.Delete) {
+            this.clipBoard.delete();
         }
     }
 
