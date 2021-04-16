@@ -87,15 +87,15 @@ export class EditorComponent implements AfterViewInit {
                     this.toolManagerService.setCurrentTool(toolKeyDown);
                     this.toolManagerService.emitToolChange(toolKeyDown);
                 }
-                if (event.key === KeyboardButtons.grid) {
+                if (event.key === KeyboardButtons.Grid) {
                     this.gridService.showGrid = !this.gridService.showGrid;
                     if (this.gridService.showGrid) this.gridService.newGrid(null);
                     else this.gridService.clear();
                 }
-                if (event.key === KeyboardButtons.gridUp && this.gridService.gridSizeCanModify(true)) {
+                if (event.key === KeyboardButtons.GridUp && this.gridService.gridSizeCanModify(true)) {
                     if (this.gridService.showGrid) this.gridService.newGrid((this.gridService.gridSize += GRID_SIZE_CHANGE_VALUE));
                 }
-                if (event.key === KeyboardButtons.gripDown && this.gridService.gridSizeCanModify(false)) {
+                if (event.key === KeyboardButtons.GridDown && this.gridService.gridSizeCanModify(false)) {
                     if (this.gridService.showGrid) this.gridService.newGrid((this.gridService.gridSize -= GRID_SIZE_CHANGE_VALUE));
                 }
             }

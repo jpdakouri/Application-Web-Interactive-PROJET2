@@ -89,45 +89,6 @@ export abstract class SelectionService extends Tool {
         });
     }
 
-    defaultOnKeyDown(event: KeyboardEvent): void {
-        event.preventDefault();
-        switch (event.key) {
-            case KeyboardButtons.Up: {
-                if (SelectionService.selectionActive) {
-                    this.upPressed = true;
-                }
-                break;
-            }
-            case KeyboardButtons.Down: {
-                if (SelectionService.selectionActive) {
-                    this.downPressed = true;
-                }
-                break;
-            }
-            case KeyboardButtons.Right: {
-                if (SelectionService.selectionActive) {
-                    this.rightPressed = true;
-                }
-                break;
-            }
-            case KeyboardButtons.Left: {
-                if (SelectionService.selectionActive) {
-                    this.leftPressed = true;
-                }
-                break;
-            }
-            case KeyboardButtons.Shift: {
-                this.shiftDown = true;
-                this.updatePreview();
-                break;
-            }
-            case KeyboardButtons.Escape: {
-                this.cancelSelection();
-            }
-        }
-        this.updateArrowPosition();
-    }
-
     defaultOnKeyUp(event: KeyboardEvent): void {
         switch (event.key) {
             case KeyboardButtons.Up: {
@@ -155,6 +116,40 @@ export abstract class SelectionService extends Tool {
                 break;
             }
         }
+    }
+
+    defaultOnKeyDown(event: KeyboardEvent): void {
+        event.preventDefault();
+        switch (event.key) {
+            case KeyboardButtons.Up: {
+                if (SelectionService.selectionActive) {
+                    this.upPressed = true;
+                }
+                break;
+            }
+            case KeyboardButtons.Down: {
+                if (SelectionService.selectionActive) {
+                    this.downPressed = true;
+                }
+                break;
+            }
+            case KeyboardButtons.Right: {
+                if (SelectionService.selectionActive) {
+                    this.rightPressed = true;
+                }
+                break;
+            }
+            case KeyboardButtons.Left: {
+                if (SelectionService.selectionActive) {
+                    this.leftPressed = true;
+                }
+                break;
+            }
+            case KeyboardButtons.Escape: {
+                this.cancelSelection();
+            }
+        }
+        this.updateArrowPosition();
     }
 
     updateTopLeftCorner(): void {
