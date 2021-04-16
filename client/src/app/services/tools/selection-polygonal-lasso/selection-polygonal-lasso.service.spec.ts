@@ -24,7 +24,6 @@ describe('SelectionPolygonalLassoService', () => {
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
         service['drawingService'].selectedAreaCtx = selectedAreaCtxStub;
-
     });
 
     it('should be created', () => {
