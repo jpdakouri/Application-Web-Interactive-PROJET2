@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
+import { SelectionService } from '@app/services/tools/selection-service/selection.service';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 
 @Injectable({
@@ -15,7 +16,7 @@ export class ClipboardService {
         if (selectionTool == undefined) {
             return;
         }
-        if (selectionTool.hasSelection()) {
+        if (SelectionService.selectionActive) {
             this.clipboardContent = selectionTool.getSelectionImageData();
         }
     }
@@ -27,7 +28,7 @@ export class ClipboardService {
                 this.toolManager.emitToolChange(ToolsNames.SelectBox);
                 selectionTool = this.toolManager.toolBox.SelectBox as SelectionRectangleService;
             }
-            if (selectionTool.hasSelection()) {
+            if (SelectionService.selectionActive) {
                 selectionTool.drawSelectionOnBase(selectionTool.getSelectionImageData(), { ...selectionTool.topLeftCorner });
                 selectionTool.registerUndo(selectionTool.getSelectionImageData());
                 selectionTool.deselect();
@@ -50,7 +51,7 @@ export class ClipboardService {
         if (selectionTool == undefined) {
             return;
         }
-        if (selectionTool.hasSelection()) {
+        if (SelectionService.selectionActive) {
             this.clipboardContent = selectionTool.getSelectionImageData();
             selectionTool.deselect();
             selectionTool.registerUndo(this.clipboardContent);
@@ -62,10 +63,6 @@ export class ClipboardService {
     }
 
     hasSelection(): boolean {
-        const selectionTool = this.toolManager.getCurrentSelectionTool();
-        if (selectionTool == undefined) {
-            return false;
-        }
-        return selectionTool.hasSelection();
+        return SelectionService.selectionActive;
     }
 }

@@ -87,7 +87,7 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.pathData.pop();
         this.drawLine(
-            this.drawingService.baseCtx,
+            this.drawingService.selectedAreaCtx,
             this.getPrimaryColor(),
             this.currentColorService.getSecondaryColorHex(),
             this.showDots || false,

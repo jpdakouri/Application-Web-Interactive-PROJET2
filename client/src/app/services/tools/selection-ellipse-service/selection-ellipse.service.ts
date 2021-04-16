@@ -136,7 +136,10 @@ export class SelectionEllipseService extends SelectionService {
     }
 
     onKeyDown(event: KeyboardEvent): void {
-        this.defaultOnKeyDown(event);
+        if (event.key === KeyboardButtons.Shift) {
+            this.shiftDown = true;
+            this.updatePreview();
+        } else this.defaultOnKeyDown(event);
     }
 
     updatePreview(): void {
