@@ -138,41 +138,42 @@ describe('EditorComponent', () => {
     });
 
     it(' #onKeyDown should call set the right tool if input is valid', () => {
-        const goodInput = { key: KeyboardButtons.Rectangle } as KeyboardEvent;
-        component.onKeyDown(goodInput);
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Pencil });
+        component.onKeyDown(keyBordPrevent);
         expect(toolManagerServiceMock.emitToolChange).toHaveBeenCalled();
     });
 
     it(' onKeyDown should not call emitToolChange if shift is pressed or the key is inalid ', () => {
-        component.onKeyDown({ shiftKey: true } as KeyboardEvent);
+        let keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { shiftKey: true });
+        component.onKeyDown(keyBordPrevent);
         expect(toolManagerServiceMock.emitToolChange).not.toHaveBeenCalled();
 
-        const badInput = { key: KeyboardButtons.InvalidInput } as KeyboardEvent;
-        component.onKeyDown(badInput);
+        keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.InvalidInput });
+        component.onKeyDown(keyBordPrevent);
         expect(toolManagerServiceMock.emitToolChange).not.toHaveBeenCalled();
     });
 
     it(' #onKeyDown should not call create new drawing if input is invalid ', () => {
-        const goodInput = { key: KeyboardButtons.NewDrawing, ctrlKey: false } as KeyboardEvent;
-        component.onKeyDown(goodInput);
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.NewDrawing, ctrlKey: false });
         spyOn(drawingServiceSpy, 'createNewDrawing').and.stub();
+        component.onKeyDown(keyBordPrevent);
         expect(drawingServiceSpy.createNewDrawing).not.toHaveBeenCalled();
     });
 
     it(' #onKeyDown should call create new drawing if input is valid, and if successful, saves initial state ', () => {
-        const goodInput = { key: KeyboardButtons.NewDrawing, ctrlKey: true } as KeyboardEvent;
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.NewDrawing, ctrlKey: true });
         const creatNewDrawing = spyOn(component, 'onCreateNewDrawing').and.stub().and.returnValue(true);
         spyOn(TestBed.inject(UndoRedoService), 'saveInitialState');
-        component.onKeyDown(goodInput);
+        component.onKeyDown(keyBordPrevent);
         expect(creatNewDrawing).toHaveBeenCalled();
         expect(TestBed.inject(UndoRedoService).saveInitialState).toHaveBeenCalled();
     });
 
     it(' #onKeyDown should call create new drawing if input is valid, and if unsuccessful, does not save initial state ', () => {
-        const goodInput = { key: KeyboardButtons.NewDrawing, ctrlKey: true } as KeyboardEvent;
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.NewDrawing, ctrlKey: true });
         const creatNewDrawing = spyOn(component, 'onCreateNewDrawing').and.stub().and.returnValue(false);
         spyOn(TestBed.inject(UndoRedoService), 'saveInitialState');
-        component.onKeyDown(goodInput);
+        component.onKeyDown(keyBordPrevent);
         expect(creatNewDrawing).toHaveBeenCalled();
         expect(TestBed.inject(UndoRedoService).saveInitialState).not.toHaveBeenCalled();
     });
@@ -199,19 +200,19 @@ describe('EditorComponent', () => {
     });
 
     it(' #onKeyDown should call openCarouselModal if input is valid ', () => {
-        const event = { key: KeyboardButtons.Carousel, ctrlKey: true } as KeyboardEvent;
         spyOn(component, 'openCarouselModal').and.stub();
-        component.onKeyDown(event);
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Carousel, ctrlKey: true });
+        component.onKeyDown(keyBordPrevent);
         expect(component.openCarouselModal).toHaveBeenCalled();
     });
 
     it(" #onKeyDown shouldn'n call openSaveDrawingModal if a dialog is open ", () => {
-        const event = { key: KeyboardButtons.Save, ctrlKey: true } as KeyboardEvent;
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Save, ctrlKey: true });
         // tslint:disable-next-line:no-string-literal
         component['dialogControllerService'].noDialogOpened = false;
         spyOn(component, 'openSaveDrawingModal').and.stub();
         spyOn(component, 'openCarouselModal').and.stub();
-        component.onKeyDown(event);
+        component.onKeyDown(keyBordPrevent);
         expect(component.openSaveDrawingModal).not.toHaveBeenCalled();
     });
 

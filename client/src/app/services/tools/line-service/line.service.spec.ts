@@ -47,28 +47,7 @@ describe('LineService', () => {
         expect(service).toBeTruthy();
     });
 
-    it(' mouseDown should set mouseDownCoord to correct position', () => {
-        const expectedResult: Vec2 = { x: 100, y: 100 };
-        service.onMouseDown(mouseEvent);
-        expect(service.mouseDownCoord).toEqual(expectedResult);
-    });
-
-    it(' mouseDown should set mouseDown property to true on left click', () => {
-        service.onMouseDown(mouseEvent);
-        expect(service.mouseDown).toEqual(true);
-    });
-
-    it(' mouseDown should set mouseDown property to false on right click', () => {
-        const mouseEventRClick = {
-            offsetX: 25,
-            offsetY: 25,
-            button: MouseButtons.Right,
-        } as MouseEvent;
-        service.onMouseDown(mouseEventRClick);
-        expect(service.mouseDown).toEqual(false);
-    });
-
-    it(' onMouseUp should call drawLine if mouse was already down', () => {
+    it(' defaultMouseUp should call drawLine if mouse was already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
         const drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
@@ -77,7 +56,7 @@ describe('LineService', () => {
         expect(drawLineSpy).toHaveBeenCalled();
     });
 
-    it(' onMouseUp should not call drawLine if mouse was not down', () => {
+    it(' defaultMouseUp should not call drawLine if mouse was not down', () => {
         service.mouseDown = false;
         const drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
 
@@ -85,21 +64,20 @@ describe('LineService', () => {
         expect(drawLineSpy).not.toHaveBeenCalled();
     });
 
-    it(' onMouseUp should not call desiredAngle if mouse was already down and shift not pressed', () => {
+    it(' defaultMouseUp should not call desiredAngle if mouse was already down and shift not pressed', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
-        const keyboardEventFalse = {
-            key: KeyboardButtons.InvalidInput,
-        } as KeyboardEvent;
+        // const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.InvalidInput });
+
         const desiredAngleSpy = spyOn<any>(service, 'desiredAngle').and.callThrough();
 
         service.onMouseUp(mouseEvent);
-        service.onKeyDown(keyboardEventFalse);
+        service.shiftPressed = false;
 
         expect(desiredAngleSpy).not.toHaveBeenCalled();
     });
 
-    it(' onMouseUp should call desiredAngle if mouse was already down and shift pressed', () => {
+    it(' defaultMouseUp should call desiredAngle if mouse was already down and shift pressed', () => {
         mouseEvent = {
             offsetX: 40,
             offsetY: 40,
@@ -115,17 +93,6 @@ describe('LineService', () => {
 
         service.onMouseUp(mouseEvent);
         expect(desiredAngleSpy).toHaveBeenCalled();
-    });
-
-    it(' desiredAngle shoulld return the right value', () => {
-        service['pathData'].push({ x: 0, y: 0 });
-        expect(service['desiredAngle']({ x: 2, y: -3 })).toEqual({ x: 2, y: -2 });
-
-        service['pathData'].push({ x: 0, y: 0 });
-        expect(service['desiredAngle']({ x: -10, y: 7 })).toEqual({ x: -10, y: 10 });
-
-        service['pathData'].push({ x: 0, y: 0 });
-        expect(service['desiredAngle']({ x: 1, y: -3 })).toEqual({ x: 0, y: -3 });
     });
 
     it('onMouseMove should call previewUpdate if the drawing has started', () => {
@@ -287,6 +254,17 @@ describe('LineService', () => {
         service.executeCommand(command);
         expect(TestBed.inject(DrawingService).baseCtx.lineTo).toHaveBeenCalledTimes(2);
     });
+
+    it('previewUpdate should call desiredAngle if shift is pressed', () => {
+        service.mouseDownCoord = { x: 0, y: 0 } as Vec2;
+        service.pathData.push(service.mouseDownCoord);
+        spyOn<any>(service, 'drawLine').and.stub();
+        service.shiftPressed = true;
+        spyOn<any>(service, 'drawPreviewLine').and.stub();
+        service['previewUpdate']();
+        expect(service['drawPreviewLine']).toHaveBeenCalled();
+    });
+
     it('onmouseup uses default dot radius and thickness if undefined', () => {
         service.dotRadius = undefined;
         service.lineThickness = undefined;
@@ -332,5 +310,4 @@ describe('LineService', () => {
         const expectedWidth = 1;
         expect(TestBed.inject(DrawingService).previewCtx.lineWidth).toBe(expectedWidth);
     });
-    // tslint:disable-next-line:max-file-line-count
 });
