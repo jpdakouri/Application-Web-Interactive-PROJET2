@@ -7,13 +7,19 @@ import { LineCreatorService } from '@app/services/tools/line-creator/line-creato
 import { SelectionService } from '@app/services/tools/selection-service/selection.service';
 import { DEFAULT_DOT_RADIUS, DEFAULT_MIN_THICKNESS, MIN_ARRAY_LENGTH } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
+import { MagnetismService } from '../magnetism-service/magnetism.service';
 @Injectable({
     providedIn: 'root',
 })
 export class SelectionPolygonalLassoService extends LineCreatorService {
     private validePoint: boolean = true;
-    constructor(drawingService: DrawingService, currentColorService: CurrentColorService, private undoRedo: UndoRedoService) {
-        super(drawingService, currentColorService);
+    constructor(
+        drawingService: DrawingService,
+        currentColorService: CurrentColorService,
+        private undoRedo: UndoRedoService,
+        magnetismeService: MagnetismService,
+    ) {
+        super(drawingService, currentColorService, magnetismeService);
     }
 
     registerUndo(imageData: ImageData): void {

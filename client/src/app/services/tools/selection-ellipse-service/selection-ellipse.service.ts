@@ -9,6 +9,7 @@ import { LINE_DASH } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
+import { MagnetismService } from '../magnetism-service/magnetism.service';
 @Injectable({
     providedIn: 'root',
 })
@@ -21,8 +22,9 @@ export class SelectionEllipseService extends SelectionService {
         currentColorService: CurrentColorService,
         mousePositionHandler: MousePositionHandlerService,
         private undoRedo: UndoRedoService,
+        magnetismeService: MagnetismService,
     ) {
-        super(drawingService, currentColorService);
+        super(drawingService, currentColorService, magnetismeService);
         this.currentColorService = currentColorService;
         this.topLeftCorner = { x: 0, y: 0 };
         this.offset = { x: 0, y: 0 };

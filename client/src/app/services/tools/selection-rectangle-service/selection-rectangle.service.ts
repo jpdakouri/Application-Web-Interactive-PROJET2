@@ -9,6 +9,7 @@ import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { Sign } from '@app/utils/enums/rgb-settings';
+import { MagnetismService } from '../magnetism-service/magnetism.service';
 
 @Injectable({
     providedIn: 'root',
@@ -20,8 +21,9 @@ export class SelectionRectangleService extends SelectionService {
         currentColorService: CurrentColorService,
         mousePositionHandler: MousePositionHandlerService,
         private undoRedo: UndoRedoService,
+        magnetismeService: MagnetismService,
     ) {
-        super(drawingService, currentColorService);
+        super(drawingService, currentColorService, magnetismeService);
         this.currentColorService = currentColorService;
         this.topLeftCorner = { x: 0, y: 0 };
         this.offset = { x: 0, y: 0 };

@@ -4,6 +4,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ALPHA_POS, BLUE_POS, GREEN_POS, MAX_BYTE_VALUE, RED_POS } from '@app/services/services-constants';
+import { MagnetismService } from '@app/services/tools/magnetism-service/magnetism.service';
 import { PIXELS_ARROW_STEPS } from '@app/services/tools/tools-constants';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 
@@ -17,6 +18,7 @@ export abstract class SelectionService extends Tool {
     firstGridClip: Vec2;
     finalGridClip: Vec2;
     offset: Vec2;
+    isMagnetismOff: boolean = true;
     shiftDown: boolean;
     dragActive: boolean;
     upPressed: boolean;
@@ -29,10 +31,8 @@ export abstract class SelectionService extends Tool {
     width: number;
     isSelectionDone: boolean;
 
-    currentColorService: CurrentColorService;
-    constructor(drawingService: DrawingService, currentColorService: CurrentColorService) {
+    constructor(drawingService: DrawingService, public currentColorService: CurrentColorService, public magnetismeService: MagnetismService) {
         super(drawingService, currentColorService);
-        this.currentColorService = currentColorService;
         this.topLeftCorner = { x: 0, y: 0 };
         this.offset = { x: 0, y: 0 };
         SelectionService.selectionActive = this.dragActive = false;
@@ -60,40 +60,67 @@ export abstract class SelectionService extends Tool {
     }
     abstract registerUndo(imageData: ImageData): void;
 
+    // tslint:disable-next-line:cyclomatic-complexity
     defaultOnKeyDown(event: KeyboardEvent): void {
         event.preventDefault();
-        switch (event.key) {
-            case KeyboardButtons.Up: {
-                if (SelectionService.selectionActive) {
-                    this.upPressed = true;
+        if (event.key === KeyboardButtons.Magnetism && SelectionService.selectionActive) {
+            this.magnetismeService.startKeys(this.drawingService.selectedAreaCtx);
+            this.isMagnetismOff = !this.isMagnetismOff;
+        }
+        if (this.isMagnetismOff) {
+            switch (event.key) {
+                case KeyboardButtons.Up: {
+                    if (SelectionService.selectionActive) {
+                        this.upPressed = true;
+                    }
+                    break;
                 }
-                break;
-            }
-            case KeyboardButtons.Down: {
-                if (SelectionService.selectionActive) {
-                    this.downPressed = true;
+                case KeyboardButtons.Down: {
+                    if (SelectionService.selectionActive) {
+                        this.downPressed = true;
+                    }
+                    break;
                 }
-                break;
-            }
-            case KeyboardButtons.Right: {
-                if (SelectionService.selectionActive) {
-                    this.rightPressed = true;
+                case KeyboardButtons.Right: {
+                    if (SelectionService.selectionActive) {
+                        this.rightPressed = true;
+                    }
+                    break;
                 }
-                break;
-            }
-            case KeyboardButtons.Left: {
-                if (SelectionService.selectionActive) {
-                    this.leftPressed = true;
+                case KeyboardButtons.Left: {
+                    if (SelectionService.selectionActive) {
+                        this.leftPressed = true;
+                    }
+                    break;
                 }
-                break;
+                case KeyboardButtons.Shift: {
+                    this.shiftDown = true;
+                    this.updatePreview();
+                    break;
+                }
+                case KeyboardButtons.Escape: {
+                    this.cancelSelection();
+                    break;
+                }
             }
-            case KeyboardButtons.Shift: {
-                this.shiftDown = true;
-                this.updatePreview();
-                break;
-            }
-            case KeyboardButtons.Escape: {
-                this.cancelSelection();
+        } else {
+            switch (event.key) {
+                case KeyboardButtons.Up: {
+                    this.magnetismeService.findNearestLineTop();
+                    break;
+                }
+                case KeyboardButtons.Down: {
+                    this.magnetismeService.findNearestLineDown();
+                    break;
+                }
+                case KeyboardButtons.Right: {
+                    this.magnetismeService.findNearestLineRight();
+                    break;
+                }
+                case KeyboardButtons.Left: {
+                    this.magnetismeService.findNearestLineLeft();
+                    break;
+                }
             }
         }
         this.updateArrowPosition();

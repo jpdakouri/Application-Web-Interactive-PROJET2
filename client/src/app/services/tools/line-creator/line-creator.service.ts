@@ -6,6 +6,7 @@ import { SelectionService } from '@app/services/tools/selection-service/selectio
 import { DEFAULT_DOT_RADIUS, DEFAULT_MIN_THICKNESS, PIXEL_DISTANCE, SHIFT_ANGLE_45, SHIFT_ANGLE_HALF_45 } from '@app/services/tools/tools-constants';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
+import { MagnetismService } from '../magnetism-service/magnetism.service';
 
 @Injectable({
     providedIn: 'root',
@@ -14,8 +15,8 @@ export abstract class LineCreatorService extends SelectionService {
     started: boolean;
     pathData: Vec2[];
     shiftPressed: boolean;
-    constructor(drawingService: DrawingService, currentColorService: CurrentColorService) {
-        super(drawingService, currentColorService);
+    constructor(drawingService: DrawingService, currentColorService: CurrentColorService, magnetismeService: MagnetismService) {
+        super(drawingService, currentColorService, magnetismeService);
         this.clearPath();
     }
 

@@ -45,8 +45,7 @@ export class EditorComponent implements AfterViewInit {
             .set(KeyboardButtons.SelectionPolygon, ToolsNames.SelectPolygon)
             .set(KeyboardButtons.Polygon, ToolsNames.Polygon)
             .set(KeyboardButtons.Pipette, ToolsNames.Pipette)
-            .set(KeyboardButtons.Text, ToolsNames.Text)
-            .set(KeyboardButtons.Magnetism, ToolsNames.Magnetism);
+            .set(KeyboardButtons.Text, ToolsNames.Text);
     }
 
     ngAfterViewInit(): void {
@@ -93,10 +92,10 @@ export class EditorComponent implements AfterViewInit {
                     else this.gridService.clear();
                 }
                 if (event.key === KeyboardButtons.gridUp && this.gridService.gridSizeCanModify(true)) {
-                    if (this.gridService.showGrid) this.gridService.newGrid((this.gridService.gridSize += GRID_SIZE_CHANGE_VALUE));
+                    if (this.gridService.showGrid) this.gridService.newGrid((this.drawingService.gridSize += GRID_SIZE_CHANGE_VALUE));
                 }
                 if (event.key === KeyboardButtons.gripDown && this.gridService.gridSizeCanModify(false)) {
-                    if (this.gridService.showGrid) this.gridService.newGrid((this.gridService.gridSize -= GRID_SIZE_CHANGE_VALUE));
+                    if (this.gridService.showGrid) this.gridService.newGrid((this.drawingService.gridSize -= GRID_SIZE_CHANGE_VALUE));
                 }
             }
         }

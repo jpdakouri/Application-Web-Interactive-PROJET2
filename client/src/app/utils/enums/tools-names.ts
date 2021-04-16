@@ -13,5 +13,4 @@ export enum ToolsNames {
     SelectBox = 'SelectBox',
     SelectEllipse = 'SelectEllipse',
     SelectPolygon = 'SelectPolygon',
-    Magnetism = 'Magnetism',
 }
