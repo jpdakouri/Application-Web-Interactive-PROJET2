@@ -18,6 +18,7 @@ export abstract class SelectionService extends Tool {
     firstGridClip: Vec2;
     finalGridClip: Vec2;
     offset: Vec2;
+    initialTopLeftCorner: Vec2;
     isMagnetismOff: boolean = true;
     shiftDown: boolean;
     dragActive: boolean;
@@ -26,7 +27,6 @@ export abstract class SelectionService extends Tool {
     leftPressed: boolean;
     rightPressed: boolean;
     buffer: boolean;
-    initialTopLeftCorner: Vec2;
     height: number;
     width: number;
     isSelectionDone: boolean;

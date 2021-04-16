@@ -6,6 +6,10 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
 
+// export enum controlPoints {
+//     topLeft
+// }
+
 @Injectable({
     providedIn: 'root',
 })
@@ -17,10 +21,29 @@ export class MagnetismService extends Tool {
     constructor(drawingService: DrawingService, currentColor: CurrentColorService, mousePositionHandler: MousePositionHandlerService) {
         super(drawingService, currentColor);
         this.mousePositionHandler = mousePositionHandler;
+        this.currentSelection = this.drawingService.baseCtx;
     }
 
+    // startMove(): void {}
+
+    // onMouseDown(event: MouseEvent): void {
+    //     console.log('allo');
+    //     this.mouseDownCoord = this.getPositionFromMouse(event);
+    //     // if (this.isClickIn(this.mouseDownCoord)) {
+
+    //     // }
+    //     console.log('init coord ' + this.mouseDownCoord.x + ' ' + this.mouseDownCoord.y);
+    // }
+
+    onMouseMove(event: MouseEvent): void {
+        this.mouseDownCoord = this.getPositionFromMouse(event);
+        console.log('init coord ' + this.mouseDownCoord.x + ' ' + this.mouseDownCoord.y);
+    }
+
+    // onMouseUp(event: MouseEvent): void {}
+
     startKeys(ctx: CanvasRenderingContext2D): void {
-        console.log('Magne Start');
+        console.log('Magnetism Start');
 
         this.currentSelection = ctx;
         this.gridSize = this.drawingService.gridSize;
@@ -35,15 +58,17 @@ export class MagnetismService extends Tool {
         // console.log(topRightCornerX);
         // console.log(kThGrid, num + this.currentSelection.canvas.width);
         this.currentSelection.canvas.style.left = num + 'px';
-        console.log('rightAfter ' + this.currentSelection);
+        console.log('rightAfter ' + this.currentSelection.canvas.style.left);
     }
 
     findNearestLineLeft(): void {
         const kThGrid = Math.floor(this.currentSelection.canvas.offsetLeft / this.gridSize);
-        const num = String(kThGrid * this.gridSize);
+        const num = kThGrid * this.gridSize;
         // console.log(this.currentSelection.canvas.offsetLeft);
         // console.log(kThGrid, num);
-        this.currentSelection.canvas.style.left = num;
+        this.currentSelection.translate(num - this.currentSelection.canvas.offsetLeft, 0);
+        console.log(' in left ' + this.currentSelection.canvas.offsetLeft);
+        // this.currentSelection.canvas.style.left = num;
     }
 
     findNearestLineTop(): void {
@@ -69,6 +94,16 @@ export class MagnetismService extends Tool {
         this.currentSelection.canvas.style.top = this.lastPosition.y + 'px';
         this.findNearestLineLeft();
         this.findNearestLineTop();
+    }
+
+    isClickIn(firstGrid: Vec2): boolean {
+        if (firstGrid.x < this.lastPosition.x || firstGrid.x > this.lastPosition.x + this.currentSelection.canvas.width) {
+            return false;
+        }
+        if (firstGrid.y < this.lastPosition.y || firstGrid.y > this.lastPosition.y + this.currentSelection.canvas.height) {
+            return false;
+        }
+        return true;
     }
 
     executeCommand(command: ToolCommand): void {

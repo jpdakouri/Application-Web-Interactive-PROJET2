@@ -44,7 +44,6 @@ export class SelectionRectangleService extends SelectionService {
     }
 
     onMouseDown(event: MouseEvent): void {
-        console.log(SelectionService.selectionActive);
         this.resetFirstGrid();
         this.mouseDown = event.button === MouseButtons.Left;
         this.firstGrid = this.getPositionFromMouse(event);
