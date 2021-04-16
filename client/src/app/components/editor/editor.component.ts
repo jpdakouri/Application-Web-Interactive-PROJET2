@@ -53,8 +53,6 @@ export class EditorComponent implements AfterViewInit {
         this.setEditorMinWidth();
     }
 
-    // faudra creer un manager de shortcut
-    // tslint:disable-next-line:cyclomatic-complexity
     @HostListener('window:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
         if (this.dialogControllerService.noDialogOpened && !this.toolManagerService.textService.showTextBox) {
@@ -62,7 +60,6 @@ export class EditorComponent implements AfterViewInit {
                 if (event.key === KeyboardButtons.NewDrawing) if (this.onCreateNewDrawing()) this.undoRedo.saveInitialState();
                 if (event.key === KeyboardButtons.Carousel) this.openCarouselModal();
                 if (event.key === KeyboardButtons.Export) {
-                    event.preventDefault();
                     this.openExportDrawingModal();
                 }
                 if (event.key === KeyboardButtons.Save) {
@@ -82,23 +79,27 @@ export class EditorComponent implements AfterViewInit {
             }
 
             if (!event.shiftKey && !event.ctrlKey) {
-                const toolKeyDown = this.toolFinder.get(event.key as KeyboardButtons) as ToolsNames;
-                if (!(toolKeyDown == undefined)) {
-                    this.toolManagerService.setCurrentTool(toolKeyDown);
-                    this.toolManagerService.emitToolChange(toolKeyDown);
-                }
-                if (event.key === KeyboardButtons.Grid) {
-                    this.gridService.showGrid = !this.gridService.showGrid;
-                    if (this.gridService.showGrid) this.gridService.newGrid(null);
-                    else this.gridService.clear();
-                }
-                if (event.key === KeyboardButtons.GridUp && this.gridService.gridSizeCanModify(true)) {
-                    if (this.gridService.showGrid) this.gridService.newGrid((this.gridService.gridSize += GRID_SIZE_CHANGE_VALUE));
-                }
-                if (event.key === KeyboardButtons.GridDown && this.gridService.gridSizeCanModify(false)) {
-                    if (this.gridService.showGrid) this.gridService.newGrid((this.gridService.gridSize -= GRID_SIZE_CHANGE_VALUE));
-                }
+                this.ctrlCalls(event);
             }
+        }
+    }
+
+    private ctrlCalls(event: KeyboardEvent): void {
+        const toolKeyDown = this.toolFinder.get(event.key as KeyboardButtons) as ToolsNames;
+        if (!(toolKeyDown == undefined)) {
+            this.toolManagerService.setCurrentTool(toolKeyDown);
+            this.toolManagerService.emitToolChange(toolKeyDown);
+        }
+        if (event.key === KeyboardButtons.Grid) {
+            this.gridService.showGrid = !this.gridService.showGrid;
+            if (this.gridService.showGrid) this.gridService.newGrid(null);
+            else this.gridService.clear();
+        }
+        if (event.key === KeyboardButtons.GridUp && this.gridService.gridSizeCanModify(true)) {
+            if (this.gridService.showGrid) this.gridService.newGrid((this.gridService.gridSize += GRID_SIZE_CHANGE_VALUE));
+        }
+        if (event.key === KeyboardButtons.GridDown && this.gridService.gridSizeCanModify(false)) {
+            if (this.gridService.showGrid) this.gridService.newGrid((this.gridService.gridSize -= GRID_SIZE_CHANGE_VALUE));
         }
     }
 

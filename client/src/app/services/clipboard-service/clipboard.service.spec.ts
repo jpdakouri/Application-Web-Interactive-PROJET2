@@ -3,8 +3,8 @@ import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
+import { SelectionService } from '@app/services/tools/selection-service/selection.service';
 import { ToolsNames } from '@app/utils/enums/tools-names';
-import { SelectionService } from '../selection-service/selection.service';
 import { ClipboardService } from './clipboard.service';
 
 describe('ClipboardService', () => {
@@ -43,7 +43,7 @@ describe('ClipboardService', () => {
     it('If there is no selection or the current tool is not selection, copy doesnt do anything', () => {
         spyOn(selectionTool, 'getSelectionImageData').and.returnValue(new ImageData(2, 2));
         service.copy();
-        spyOn(selectionTool, 'hasSelection').and.returnValue(false);
+        SelectionService.selectionActive = false;
         spyOn(toolManager, 'getCurrentSelectionTool').and.returnValue(selectionTool);
         service.copy();
         expect(selectionTool.getSelectionImageData).toHaveBeenCalledTimes(0);
@@ -94,10 +94,11 @@ describe('ClipboardService', () => {
         toolManager.emitToolChange(ToolsNames.Pencil);
         service.cut();
         expect(selectionTool.deselect).toHaveBeenCalledTimes(0);
+        SelectionService.selectionActive = true;
         toolManager.emitToolChange(ToolsNames.SelectBox);
         service.cut();
         expect(selectionTool.deselect).toHaveBeenCalledTimes(1);
-        spyOn(selectionTool, 'hasSelection').and.returnValue(false);
+        SelectionService.selectionActive = false;
         service.cut();
         expect(selectionTool.deselect).toHaveBeenCalledTimes(1);
     });
