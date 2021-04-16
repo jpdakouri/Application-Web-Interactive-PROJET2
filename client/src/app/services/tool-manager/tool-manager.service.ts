@@ -178,6 +178,14 @@ export class ToolManagerService {
         return this.toolBox[this.currentTool];
     }
 
+    getCurrentSelectionTool(): SelectionEllipseService | SelectionRectangleService | SelectionPolygonalLassoService | undefined {
+        const tool = this.toolBox[this.currentTool];
+        if (tool === this.toolBox[ToolsNames.SelectBox]) return tool as SelectionRectangleService;
+        if (tool === this.toolBox[ToolsNames.SelectEllipse]) return tool as SelectionEllipseService;
+        if (tool === this.toolBox[ToolsNames.SelectPolygon]) return tool as SelectionPolygonalLassoService;
+        return undefined;
+    }
+
     setCurrentNumberOfSides(numberOfSides?: number): void {
         this.toolBox[this.currentTool].numberOfSides = numberOfSides;
         this.currentAttributes.numberOfSides = numberOfSides;
@@ -217,25 +225,23 @@ export class ToolManagerService {
     }
 
     setSelectedStamp(stampName: string): void {
-        if (stampName != undefined) {
-            const stampTool = this.toolBox.Stamp as StampService;
-            switch (stampName) {
-                case Stamp.House:
-                    stampTool.selectedStamp = Stamp.House;
-                    break;
-                case Stamp.Letter:
-                    stampTool.selectedStamp = Stamp.Letter;
-                    break;
-                case Stamp.Star:
-                    stampTool.selectedStamp = Stamp.Star;
-                    break;
-                case Stamp.Hashtag:
-                    stampTool.selectedStamp = Stamp.Hashtag;
-                    break;
-                default:
-                    stampTool.selectedStamp = Stamp.Smile;
-                    break;
-            }
+        const stampTool = this.toolBox.Stamp as StampService;
+        switch (stampName) {
+            case Stamp.House:
+                stampTool.selectedStamp = Stamp.House;
+                break;
+            case Stamp.Letter:
+                stampTool.selectedStamp = Stamp.Letter;
+                break;
+            case Stamp.Star:
+                stampTool.selectedStamp = Stamp.Star;
+                break;
+            case Stamp.Hashtag:
+                stampTool.selectedStamp = Stamp.Hashtag;
+                break;
+            default:
+                stampTool.selectedStamp = Stamp.Smile;
+                break;
         }
     }
 

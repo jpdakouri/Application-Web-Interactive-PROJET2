@@ -32,18 +32,12 @@ export class SelectionEllipseService extends SelectionService {
     }
 
     registerUndo(imageData: ImageData): void {
-        const command = new SelectionCommand(
-            this,
-            this.initialTopLeftCorner,
-            { ...this.topLeftCorner },
-            { x: this.width, y: this.height },
-            imageData,
-        );
+        const finalTopLeftCorner: Vec2 | undefined = SelectionService.selectionActive ? { ...this.topLeftCorner } : undefined;
+        const command = new SelectionCommand(this, { x: this.width, y: this.height }, imageData, this.initialTopLeftCorner, finalTopLeftCorner);
         this.undoRedo.addCommand(command);
     }
 
     onMouseDown(event: MouseEvent): void {
-        console.log(SelectionService.selectionActive);
         this.resetFirstGrid();
         this.mouseDown = event.button === MouseButtons.Left;
         this.firstGrid = this.getPositionFromMouse(event);
@@ -157,31 +151,36 @@ export class SelectionEllipseService extends SelectionService {
     }
 
     executeCommand(command: SelectionCommand): void {
-        this.drawingService.selectedAreaCtx.canvas.style.top = command.finalTopLeftCorner.y + 'px';
-        this.drawingService.selectedAreaCtx.canvas.style.left = command.finalTopLeftCorner.x + 'px';
-        this.drawingService.baseCtx.fillStyle = 'white';
-        this.drawingService.baseCtx.beginPath();
-        this.drawingService.baseCtx.strokeStyle = 'rgba(255, 255, 255, 1)';
-        this.drawingService.baseCtx.lineWidth = 1;
-        const startCoord = { ...command.initialTopLeftCorner };
-        const width = command.selectionSize.x;
-        const height = command.selectionSize.y;
-        this.drawingService.baseCtx.ellipse(
-            startCoord.x + width / 2,
-            startCoord.y + height / 2,
-            Math.abs(width / 2),
-            Math.abs(height / 2),
-            0,
-            0,
-            2 * Math.PI,
-            false,
-        );
-        this.drawingService.baseCtx.closePath();
-        this.drawingService.baseCtx.fill();
-        const imageData = command.imageData;
-        createImageBitmap(imageData).then((imgBitmap) => {
-            this.drawingService.baseCtx.drawImage(imgBitmap, command.finalTopLeftCorner.x, command.finalTopLeftCorner.y);
-        });
-        this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
+        if (command.initialTopLeftCorner !== undefined) {
+            this.drawingService.baseCtx.fillStyle = 'white';
+            this.drawingService.baseCtx.beginPath();
+            this.drawingService.baseCtx.strokeStyle = 'rgba(255, 255, 255, 1)';
+            this.drawingService.baseCtx.lineWidth = 1;
+            const startCoord = { ...command.initialTopLeftCorner };
+            const width = command.selectionSize.x;
+            const height = command.selectionSize.y;
+            this.drawingService.baseCtx.ellipse(
+                startCoord.x + width / 2,
+                startCoord.y + height / 2,
+                Math.abs(width / 2),
+                Math.abs(height / 2),
+                0,
+                0,
+                2 * Math.PI,
+                false,
+            );
+            this.drawingService.baseCtx.closePath();
+            this.drawingService.baseCtx.fill();
+        }
+        if (command.finalTopLeftCorner !== undefined) {
+            this.drawingService.selectedAreaCtx.canvas.style.top = command.finalTopLeftCorner.y + 'px';
+            this.drawingService.selectedAreaCtx.canvas.style.left = command.finalTopLeftCorner.x + 'px';
+            const imageData = command.imageData;
+            createImageBitmap(imageData).then((imgBitmap) => {
+                if (command.finalTopLeftCorner !== undefined)
+                    this.drawingService.baseCtx.drawImage(imgBitmap, command.finalTopLeftCorner.x, command.finalTopLeftCorner.y);
+            });
+            this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
+        }
     }
 }

@@ -18,7 +18,12 @@ describe('ToolbarComponent', () => {
 
     beforeEach(async(() => {
         drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['createNewDrawing', 'isCanvasBlank']);
-        toolManagerServiceSpy = jasmine.createSpyObj('ToolManagerService', ['setCurrentTool', 'emitToolChange', 'isCurrentTool']);
+        toolManagerServiceSpy = jasmine.createSpyObj('ToolManagerService', [
+            'setCurrentTool',
+            'emitToolChange',
+            'isCurrentTool',
+            'getCurrentSelectionTool',
+        ]);
 
         TestBed.configureTestingModule({
             declarations: [ToolbarComponent],
