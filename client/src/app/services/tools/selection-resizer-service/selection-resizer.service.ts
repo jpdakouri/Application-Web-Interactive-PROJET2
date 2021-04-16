@@ -14,7 +14,7 @@ const REVERT = -1;
     providedIn: 'root',
 })
 export class SelectionResizerService extends SelectionService {
-    private status: SelectionStatus;
+    status: SelectionStatus;
     private mouseService: MouseHandlerService;
     private selectionMouseDown: boolean = false;
     imageData: ImageData;
@@ -22,7 +22,6 @@ export class SelectionResizerService extends SelectionService {
     private initialBottomRightCorner: Vec2;
     private revertX: boolean;
     private revertY: boolean;
-    // private test: Vec2;
     constructor(
         mouseService: MouseHandlerService,
         drawingService: DrawingService,
@@ -35,7 +34,6 @@ export class SelectionResizerService extends SelectionService {
         this.mouseService = mouseService;
         this.coords = { x: 0, y: 0 };
         this.initialBottomRightCorner = { x: 0, y: 0 };
-        // this.test = { x: 0, y: 0 };
     }
     onMouseDown(event: MouseEvent): void {
         this.mouseService.onMouseDown(this.mouseService.eventToCoordinate(event));
@@ -146,47 +144,9 @@ export class SelectionResizerService extends SelectionService {
         if (this.width === -this.offset.x || this.height === -this.offset.y || this.width === this.offset.x || this.height === this.offset.y) {
             SelectionService.selectionActive = false;
         } else SelectionService.selectionActive = true;
-
-        // if (this.coords.x === this.initialBottomRightCorner.y || this.coords.x < this.initialTopLeftCorner.y) {
-        //     this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
-        //     SelectionService.selectionActive = false;
-        // } else SelectionService.selectionActive = false;
     }
     // tslint:disable-next-line:cyclomatic-complexity
     isMirror(): void {
-        // if (
-        //     this.status === SelectionStatus.MIDDLE_RIGHT_BOX ||
-        //     this.status === SelectionStatus.BOTTOM_RIGHT_BOX ||
-        //     this.status === SelectionStatus.TOP_RIGHT_BOX
-        // ) {
-        //     if (this.coords.x < this.initialTopLeftCorner.x) {
-        //         this.topLeftCorner.x = this.coords.x;
-        //         this.drawingService.selectedAreaCtx.canvas.width = Math.abs(this.width - this.offset.x);
-        //         // this.rapport.x = -this.rapport.x;
-        //     }
-        // }
-        // if (
-        //     this.status === SelectionStatus.BOTTOM_MIDDLE_BOX ||
-        //     this.status === SelectionStatus.BOTTOM_LEFT_BOX ||
-        //     this.status === SelectionStatus.BOTTOM_RIGHT_BOX
-        // ) {
-        //     if (this.coords.y < this.initialTopLeftCorner.y) {
-        //         this.topLeftCorner.y = this.coords.y;
-        //         this.drawingService.selectedAreaCtx.canvas.height = Math.abs(this.height - this.offset.y);
-        //         // this.rapport.y = -this.rapport.y;
-        //     }
-        // }
-        // if (this.coords.x > this.initialBottomRightCorner.x) {
-        //     this.topLeftCorner.x = this.initialBottomRightCorner.x;
-        //     this.drawingService.selectedAreaCtx.canvas.width = Math.abs(this.width + this.offset.x);
-        //     // this.rapport.x = -this.rapport.x;
-        // }
-
-        // if (this.coords.y > this.initialBottomRightCorner.y) {
-        //     this.topLeftCorner.y = this.initialBottomRightCorner.y;
-        //     this.drawingService.selectedAreaCtx.canvas.height = Math.abs(this.height + this.offset.y);
-        //     // this.rapport.y = -this.rapport.y;
-        // }
         switch (this.status) {
             case SelectionStatus.TOP_LEFT_BOX:
                 if (this.coords.x > this.initialBottomRightCorner.x) {
