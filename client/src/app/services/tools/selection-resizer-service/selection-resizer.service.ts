@@ -140,13 +140,13 @@ export class SelectionResizerService extends SelectionService {
         });
     }
 
-    isSelectionNull(): void {
+    private isSelectionNull(): void {
         if (this.width === -this.offset.x || this.height === -this.offset.y || this.width === this.offset.x || this.height === this.offset.y) {
             SelectionService.selectionActive = false;
         } else SelectionService.selectionActive = true;
     }
 
-    isMirror(): void {
+    private isMirror(): void {
         switch (this.status) {
             case SelectionStatus.TOP_LEFT_BOX:
                 this.isMirrorRight();
@@ -179,7 +179,7 @@ export class SelectionResizerService extends SelectionService {
         }
     }
 
-    isMirrorTop(): void {
+    private isMirrorTop(): void {
         if (this.coords.y < this.initialTopLeftCorner.y) {
             this.topLeftCorner.y = this.coords.y;
             this.drawingService.selectedAreaCtx.canvas.height = Math.abs(this.height - this.offset.y);
@@ -187,7 +187,7 @@ export class SelectionResizerService extends SelectionService {
         } else this.revertY = false;
     }
 
-    isMirrorBottom(): void {
+    private isMirrorBottom(): void {
         if (this.coords.y > this.initialBottomRightCorner.y) {
             this.topLeftCorner.y = this.initialBottomRightCorner.y;
             this.drawingService.selectedAreaCtx.canvas.height = Math.abs(this.height + this.offset.y);
@@ -195,7 +195,7 @@ export class SelectionResizerService extends SelectionService {
         } else this.revertY = false;
     }
 
-    isMirrorLeft(): void {
+    private isMirrorLeft(): void {
         if (this.coords.x < this.initialTopLeftCorner.x) {
             this.topLeftCorner.x = this.coords.x;
             this.drawingService.selectedAreaCtx.canvas.width = Math.abs(this.width - this.offset.x);
@@ -203,7 +203,7 @@ export class SelectionResizerService extends SelectionService {
         } else this.revertX = false;
     }
 
-    isMirrorRight(): void {
+    private isMirrorRight(): void {
         if (this.coords.x > this.initialBottomRightCorner.x) {
             this.topLeftCorner.x = this.initialBottomRightCorner.x;
             this.drawingService.selectedAreaCtx.canvas.width = Math.abs(this.width + this.offset.x);
