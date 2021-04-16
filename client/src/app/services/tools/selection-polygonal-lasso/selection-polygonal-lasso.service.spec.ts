@@ -128,13 +128,13 @@ describe('SelectionPolygonalLassoService', () => {
         expect(service.updateDragPosition).not.toHaveBeenCalled();
     });
 
-    xit('registerUndo put undefined for final top left corner if no selection is made', () => {
+    it('registerUndo put undefined for final top left corner if no selection is made', () => {
         // tslint:disable-next-line:no-unused-expression
         TestBed.inject(UndoRedoService)['commands'][0] as SelectionCommand;
         SelectionService.selectionActive = false;
         spyOn(service['undoRedo'], 'addCommand').and.stub();
         service.registerUndo(new ImageData(2, 2));
-        expect(service['undoRedo'].addCommand).toBeUndefined();
+        expect(service['undoRedo'].addCommand).toHaveBeenCalled();
     });
 
     it('executeCommand does nothing if the 2 top left corners of the command are undefined', () => {

@@ -55,6 +55,7 @@ export class EditorComponent implements AfterViewInit {
 
     @HostListener('window:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
+        event.preventDefault();
         if (this.dialogControllerService.noDialogOpened && !this.toolManagerService.textService.showTextBox) {
             if (event.ctrlKey) {
                 if (event.key === KeyboardButtons.NewDrawing) if (this.onCreateNewDrawing()) this.undoRedo.saveInitialState();
@@ -63,11 +64,9 @@ export class EditorComponent implements AfterViewInit {
                     this.openExportDrawingModal();
                 }
                 if (event.key === KeyboardButtons.Save) {
-                    event.preventDefault();
                     this.openSaveDrawingModal();
                 }
                 if (event.key === KeyboardButtons.SelectAll) {
-                    event.preventDefault();
                     this.selectAll();
                 }
                 if (event.key === KeyboardButtons.Undo) {
