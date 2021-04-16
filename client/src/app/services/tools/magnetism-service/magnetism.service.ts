@@ -5,10 +5,11 @@ import { CurrentColorService } from '@app/services/current-color/current-color.s
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
+import { SelectionService } from '../selection-service/selection.service';
 
-// export enum controlPoints {
-//     topLeft
-// }
+export enum controlPoints {
+    topLeft,
+}
 
 @Injectable({
     providedIn: 'root',
@@ -24,23 +25,15 @@ export class MagnetismService extends Tool {
         this.currentSelection = this.drawingService.baseCtx;
     }
 
-    // startMove(): void {}
-
-    // onMouseDown(event: MouseEvent): void {
-    //     console.log('allo');
-    //     this.mouseDownCoord = this.getPositionFromMouse(event);
-    //     // if (this.isClickIn(this.mouseDownCoord)) {
-
-    //     // }
-    //     console.log('init coord ' + this.mouseDownCoord.x + ' ' + this.mouseDownCoord.y);
+    // startMove(ctx: CanvasRenderingContext2D): void {
+    //     this.currentSelection = ctx;
+    //     this.gridSize = this.drawingService.gridSize;
     // }
 
     onMouseMove(event: MouseEvent): void {
-        this.mouseDownCoord = this.getPositionFromMouse(event);
-        console.log('init coord ' + this.mouseDownCoord.x + ' ' + this.mouseDownCoord.y);
+        if (this.mouseDown && SelectionService.selectionActive) {
+        }
     }
-
-    // onMouseUp(event: MouseEvent): void {}
 
     startKeys(ctx: CanvasRenderingContext2D): void {
         console.log('Magnetism Start');
@@ -97,13 +90,24 @@ export class MagnetismService extends Tool {
     }
 
     isClickIn(firstGrid: Vec2): boolean {
-        if (firstGrid.x < this.lastPosition.x || firstGrid.x > this.lastPosition.x + this.currentSelection.canvas.width) {
-            return false;
-        }
-        if (firstGrid.y < this.lastPosition.y || firstGrid.y > this.lastPosition.y + this.currentSelection.canvas.height) {
-            return false;
-        }
+        // if (firstGrid.x < this.lastPosition.x || firstGrid.x > this.lastPosition.x + this.currentSelection.canvas.width) {
+        //     return false;
+        // }
+        // if (firstGrid.y < this.lastPosition.y || firstGrid.y > this.lastPosition.y + this.currentSelection.canvas.height) {
+        //     return false;
+        // }
         return true;
+    }
+
+    cornerSelected(coord: Vec2): Vec2 {
+        switch (coord) {
+            case topRight:
+                break;
+
+            default:
+                break;
+        }
+        return { x: 0, y: 0 };
     }
 
     executeCommand(command: ToolCommand): void {

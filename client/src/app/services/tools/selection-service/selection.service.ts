@@ -59,7 +59,6 @@ export abstract class SelectionService extends Tool {
         }
     }
     abstract registerUndo(imageData: ImageData): void;
-
     // tslint:disable-next-line:cyclomatic-complexity
     defaultOnKeyDown(event: KeyboardEvent): void {
         event.preventDefault();
@@ -171,11 +170,16 @@ export abstract class SelectionService extends Tool {
     }
 
     updateDragPosition(grid: Vec2): void {
-        const currentCoord = { ...grid };
-        this.topLeftCorner.x = currentCoord.x + this.offset.x;
-        this.topLeftCorner.y = currentCoord.y + this.offset.y;
-        this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
-        this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
+        if (this.isMagnetismOff) {
+            const currentCoord = { ...grid };
+            this.topLeftCorner.x = currentCoord.x + this.offset.x;
+            this.topLeftCorner.y = currentCoord.y + this.offset.y;
+            this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
+            this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
+        } else {
+            this.drawingService.selectedAreaCtx.canvas.style.top = 10 + 'px';
+            this.drawingService.selectedAreaCtx.canvas.style.left = 10 + 'px';
+        }
     }
 
     updateArrowPosition(): void {
