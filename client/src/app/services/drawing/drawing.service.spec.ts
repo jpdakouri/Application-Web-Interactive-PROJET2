@@ -39,7 +39,7 @@ describe('DrawingService', () => {
         expect(service.isCanvasBlank()).toBeFalse();
     });
 
-    xit('#saveCanvas should save the canvas to local storage', () => {
+    it('#saveCanvas should save the canvas to local storage', () => {
         const RECTANGLE_OFFSET = 20;
         const RECTANGLE_DIMENSIONS = 20;
         service.baseCtx.beginPath();
@@ -48,7 +48,8 @@ describe('DrawingService', () => {
         service.saveCanvas();
         const expectedCanvasDataURL = service.canvas.toDataURL();
         const canvasDataURL = localStorage.getItem('canvasInfo');
-        expect(canvasDataURL).toEqual(expectedCanvasDataURL);
+        const info = JSON.parse(canvasDataURL as string);
+        expect(info[0]).toEqual(expectedCanvasDataURL);
         service.baseCtx.beginPath();
         service.baseCtx.rect(RECTANGLE_OFFSET + 1, RECTANGLE_OFFSET + 1, RECTANGLE_DIMENSIONS + 1, RECTANGLE_DIMENSIONS + 1);
         service.baseCtx.stroke();
@@ -56,7 +57,7 @@ describe('DrawingService', () => {
         expect(canvasDataURL).not.toEqual(differentCanvasURL);
     });
 
-    xit('#restoreCanvas should restore canvas from session storage', async (done) => {
+    it('#restoreCanvas should restore canvas from session storage', async (done) => {
         // tslint:disable:no-magic-numbers
         service.canvas.width = 10;
         service.canvas.height = 10;
@@ -65,8 +66,11 @@ describe('DrawingService', () => {
         service.baseCtx.beginPath();
         service.baseCtx.rect(RECTANGLE_OFFSET, RECTANGLE_OFFSET, RECTANGLE_DIMENSIONS, RECTANGLE_DIMENSIONS);
         service.baseCtx.stroke();
-        const canvasDataURL = service.canvas.toDataURL();
-        localStorage.setItem('canvasInfo', canvasDataURL);
+        const canvasDataURL = [];
+        canvasDataURL.push(service.canvas.toDataURL());
+        canvasDataURL.push(service.canvas.width);
+        canvasDataURL.push(service.canvas.height);
+        localStorage.setItem('canvasInfo', JSON.stringify(canvasDataURL));
         const canvasImageData = service.baseCtx.getImageData(0, 0, service.canvas.width, service.canvas.height);
         const originalPixels = canvasImageData.data;
 
@@ -196,25 +200,5 @@ describe('DrawingService', () => {
     it('getBaseContext returns the context when called', () => {
         const ctx = service.getBaseContext();
         expect(service.getBaseContext()).toEqual(ctx);
-    });
-
-    xit('createNewDrawing calls continue the drawing when there is already a drawing', () => {
-        // const RECTANGLE_OFFSET = 2;
-        // const RECTANGLE_DIMENSIONS = 2;
-
-        service.baseCtx.beginPath();
-        service.baseCtx.rect(0, 0, 150, 150);
-        service.baseCtx.stroke();
-
-        const canvasDataURL = service.canvas.toDataURL();
-        localStorage.setItem('canvasInfo', canvasDataURL);
-
-        spyOn(window, 'confirm').and.returnValue(false);
-
-        service.createNewDrawing(false);
-        // tslint:disable-next-line:no-any
-        // const continueDrawingSpy = spyOn<any>(service, 'continueDrawing').and.callThrough();
-
-        expect(service.createNewDrawing(false)).toBeTrue();
     });
 });

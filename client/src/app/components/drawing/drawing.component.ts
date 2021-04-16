@@ -110,11 +110,11 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         setTimeout(() => {
             this.selectionEllipseService.height = this.drawingService.canvas.height;
             this.selectionEllipseService.width = this.drawingService.canvas.width;
+            this.selectionPolygonalLassoService.height = this.drawingService.canvas.height;
+            this.selectionPolygonalLassoService.width = this.drawingService.canvas.width;
             this.drawingService.restoreCanvas();
             this.drawingService.saveCanvas();
             this.undoRedo.saveInitialState();
-            this.selectionPolygonalLassoService.height = this.drawingService.canvas.height;
-            this.selectionPolygonalLassoService.width = this.drawingService.canvas.width;
         });
         setTimeout(() => {
             this.undoRedo.saveInitialState();
