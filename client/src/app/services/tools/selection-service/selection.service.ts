@@ -8,6 +8,12 @@ import { MagnetismService } from '@app/services/tools/magnetism-service/magnetis
 import { PIXELS_ARROW_STEPS } from '@app/services/tools/tools-constants';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 
+export enum controlPoints {
+    topLeft = 'topLeft',
+    topRight = 'topRight',
+    bottomLeft = 'bottomLeft',
+    bottomRight = 'bottomRight',
+}
 @Injectable({
     providedIn: 'root',
 })
@@ -18,6 +24,7 @@ export abstract class SelectionService extends Tool {
     firstGridClip: Vec2;
     finalGridClip: Vec2;
     offset: Vec2;
+    currentCornerSelected: controlPoints;
     initialTopLeftCorner: Vec2;
     isMagnetismOff: boolean = true;
     shiftDown: boolean;
@@ -31,31 +38,40 @@ export abstract class SelectionService extends Tool {
     width: number;
     isSelectionDone: boolean;
 
-    constructor(drawingService: DrawingService, public currentColorService: CurrentColorService, public magnetismeService: MagnetismService) {
+    constructor(drawingService: DrawingService, public currentColorService: CurrentColorService, public magnetismService: MagnetismService) {
         super(drawingService, currentColorService);
         this.topLeftCorner = { x: 0, y: 0 };
         this.offset = { x: 0, y: 0 };
+        this.currentCornerSelected = controlPoints.bottomLeft;
         SelectionService.selectionActive = this.dragActive = false;
         this.buffer = true;
         this.drawingService.selectedAreaCtx = this.drawingService.baseCtx;
     }
 
     defaultOnMouseDown(event: MouseEvent): void {
-        if (this.isClickIn(this.firstGrid)) {
+        if (this.isMagnetismOff) {
+            if (this.isClickIn(this.firstGrid)) {
+                const initial = this.getPositionFromMouse(event);
+                this.offset.x = this.topLeftCorner.x - initial.x;
+                this.offset.y = this.topLeftCorner.y - initial.y;
+                this.dragActive = true;
+            } else {
+                SelectionService.selectionActive = false;
+                this.buffer = false;
+                const imageData = this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
+                createImageBitmap(imageData).then((imgBitmap) => {
+                    this.drawingService.baseCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
+                });
+                this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
+                this.isSelectionDone = false;
+                this.registerUndo(imageData);
+            }
+        } else if (this.isClickIn(this.firstGrid)) {
             const initial = this.getPositionFromMouse(event);
             this.offset.x = this.topLeftCorner.x - initial.x;
             this.offset.y = this.topLeftCorner.y - initial.y;
             this.dragActive = true;
-        } else {
-            SelectionService.selectionActive = false;
-            this.buffer = false;
-            const imageData = this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
-            createImageBitmap(imageData).then((imgBitmap) => {
-                this.drawingService.baseCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
-            });
-            this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
-            this.isSelectionDone = false;
-            this.registerUndo(imageData);
+            this.currentCornerSelected = this.magnetismService.cornerCurrentlySelected(initial);
         }
     }
     abstract registerUndo(imageData: ImageData): void;
@@ -63,7 +79,7 @@ export abstract class SelectionService extends Tool {
     defaultOnKeyDown(event: KeyboardEvent): void {
         event.preventDefault();
         if (event.key === KeyboardButtons.Magnetism && SelectionService.selectionActive) {
-            this.magnetismeService.startKeys(this.drawingService.selectedAreaCtx);
+            this.magnetismService.startKeys(this.drawingService.selectedAreaCtx);
             this.isMagnetismOff = !this.isMagnetismOff;
         }
         if (this.isMagnetismOff) {
@@ -105,19 +121,19 @@ export abstract class SelectionService extends Tool {
         } else {
             switch (event.key) {
                 case KeyboardButtons.Up: {
-                    this.magnetismeService.findNearestLineTop();
+                    this.magnetismService.findNearestLineTop();
                     break;
                 }
                 case KeyboardButtons.Down: {
-                    this.magnetismeService.findNearestLineDown();
+                    this.magnetismService.findNearestLineDown();
                     break;
                 }
                 case KeyboardButtons.Right: {
-                    this.magnetismeService.findNearestLineRight();
+                    this.magnetismService.findNearestLineRight();
                     break;
                 }
                 case KeyboardButtons.Left: {
-                    this.magnetismeService.findNearestLineLeft();
+                    this.magnetismService.findNearestLineLeft();
                     break;
                 }
             }
@@ -176,11 +192,9 @@ export abstract class SelectionService extends Tool {
             this.topLeftCorner.y = currentCoord.y + this.offset.y;
             this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
             this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
+        } else {
+            this.magnetismService.bringToClosestCrossOnGrid(grid, this.currentCornerSelected);
         }
-        //  else {
-        //     this.drawingService.selectedAreaCtx.canvas.style.top = 10 + 'px';
-        //     this.drawingService.selectedAreaCtx.canvas.style.left = 10 + 'px';
-        // }
     }
 
     updateArrowPosition(): void {
