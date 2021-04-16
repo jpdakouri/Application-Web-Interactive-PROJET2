@@ -5,10 +5,12 @@ import { CurrentColorService } from '@app/services/current-color/current-color.s
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
-import { SelectionService } from '../selection-service/selection.service';
 
 export enum controlPoints {
-    topLeft,
+    topLeft = 'topLeft',
+    topRight = 'topRight',
+    bottomLeft = 'bottomLeft',
+    bottomRight = 'bottomRight',
 }
 
 @Injectable({
@@ -30,10 +32,10 @@ export class MagnetismService extends Tool {
     //     this.gridSize = this.drawingService.gridSize;
     // }
 
-    onMouseMove(event: MouseEvent): void {
-        if (this.mouseDown && SelectionService.selectionActive) {
-        }
-    }
+    // onMouseMove(event: MouseEvent): void {
+    //     if (this.mouseDown && SelectionService.selectionActive) {
+    //     }
+    // }
 
     startKeys(ctx: CanvasRenderingContext2D): void {
         console.log('Magnetism Start');
@@ -99,15 +101,74 @@ export class MagnetismService extends Tool {
         return true;
     }
 
-    cornerSelected(coord: Vec2): Vec2 {
-        switch (coord) {
-            case topRight:
-                break;
+    isMouseOnTopLeftCorner(mouseCoord: Vec2): boolean {
+        const topLeftCorner = { x: this.currentSelection.canvas.offsetLeft, y: this.currentSelection.canvas.offsetTop };
 
-            default:
-                break;
+        return (
+            topLeftCorner.x - 2 < mouseCoord.x &&
+            mouseCoord.x < topLeftCorner.x + 2 &&
+            topLeftCorner.y - 2 < mouseCoord.y &&
+            mouseCoord.y < topLeftCorner.y + 2
+        );
+    }
+
+    isMouseOnTopRightCorner(mouseCoord: Vec2): boolean {
+        const topRightCorner = {
+            x: this.currentSelection.canvas.offsetLeft + this.currentSelection.canvas.width,
+            y: this.currentSelection.canvas.height,
+        };
+
+        return (
+            topRightCorner.x - 2 < mouseCoord.x &&
+            mouseCoord.x < topRightCorner.x + 2 &&
+            topRightCorner.y - 2 < mouseCoord.y &&
+            mouseCoord.y < topRightCorner.y + 2
+        );
+    }
+
+    isMouseOnBottomLeftCorner(mouseCoord: Vec2): boolean {
+        const bottomLeftCorner = {
+            x: this.currentSelection.canvas.offsetLeft,
+            y: this.currentSelection.canvas.height + this.currentSelection.canvas.height,
+        };
+
+        return (
+            bottomLeftCorner.x - 2 < mouseCoord.x &&
+            mouseCoord.x < bottomLeftCorner.x + 2 &&
+            bottomLeftCorner.y - 2 < mouseCoord.y &&
+            mouseCoord.y < bottomLeftCorner.y + 2
+        );
+    }
+
+    isMouseOnBottomRightCorner(mouseCoord: Vec2): boolean {
+        const bottomRightCorner = {
+            x: this.currentSelection.canvas.offsetLeft + this.currentSelection.canvas.width,
+            y: this.currentSelection.canvas.height + this.currentSelection.canvas.height,
+        };
+
+        return (
+            bottomRightCorner.x - 2 < mouseCoord.x &&
+            mouseCoord.x < bottomRightCorner.x + 2 &&
+            bottomRightCorner.y - 2 < mouseCoord.y &&
+            mouseCoord.y < bottomRightCorner.y + 2
+        );
+    }
+
+    cornerCurrentlySelected(mouseCoord: Vec2): controlPoints {
+        if (this.isMouseOnTopLeftCorner(mouseCoord)) {
+            return controlPoints.topLeft;
         }
-        return { x: 0, y: 0 };
+        if (this.isMouseOnTopRightCorner(mouseCoord)) {
+            return controlPoints.topRight;
+        }
+        if (this.isMouseOnBottomLeftCorner(mouseCoord)) {
+            return controlPoints.bottomLeft;
+        }
+        if (this.isMouseOnBottomRightCorner(mouseCoord)) {
+            return controlPoints.bottomRight;
+        }
+        // À revoir
+        return controlPoints.bottomLeft;
     }
 
     executeCommand(command: ToolCommand): void {

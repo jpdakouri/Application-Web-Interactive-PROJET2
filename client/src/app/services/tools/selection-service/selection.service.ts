@@ -176,10 +176,11 @@ export abstract class SelectionService extends Tool {
             this.topLeftCorner.y = currentCoord.y + this.offset.y;
             this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
             this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
-        } else {
-            this.drawingService.selectedAreaCtx.canvas.style.top = 10 + 'px';
-            this.drawingService.selectedAreaCtx.canvas.style.left = 10 + 'px';
         }
+        //  else {
+        //     this.drawingService.selectedAreaCtx.canvas.style.top = 10 + 'px';
+        //     this.drawingService.selectedAreaCtx.canvas.style.left = 10 + 'px';
+        // }
     }
 
     updateArrowPosition(): void {
