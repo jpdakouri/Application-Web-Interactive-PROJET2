@@ -145,82 +145,72 @@ export class SelectionResizerService extends SelectionService {
             SelectionService.selectionActive = false;
         } else SelectionService.selectionActive = true;
     }
-    // tslint:disable-next-line:cyclomatic-complexity
+
     isMirror(): void {
         switch (this.status) {
             case SelectionStatus.TOP_LEFT_BOX:
-                if (this.coords.x > this.initialBottomRightCorner.x) {
-                    this.topLeftCorner.x = this.initialBottomRightCorner.x;
-                    this.drawingService.selectedAreaCtx.canvas.width = Math.abs(this.width + this.offset.x);
-                    this.revertX = true;
-                } else this.revertX = false;
-                if (this.coords.y > this.initialBottomRightCorner.y) {
-                    this.topLeftCorner.y = this.initialBottomRightCorner.y;
-                    this.drawingService.selectedAreaCtx.canvas.height = Math.abs(this.height + this.offset.y);
-                    this.revertY = true;
-                } else this.revertY = false;
+                this.isMirrorRight();
+                this.isMirrorBottom();
                 break;
             case SelectionStatus.TOP_MIDDLE_BOX:
-                if (this.coords.y > this.initialBottomRightCorner.y) {
-                    this.topLeftCorner.y = this.initialBottomRightCorner.y;
-                    this.drawingService.selectedAreaCtx.canvas.height = Math.abs(this.height + this.offset.y);
-                    this.revertY = true;
-                } else this.revertY = false;
+                this.isMirrorBottom();
                 break;
             case SelectionStatus.TOP_RIGHT_BOX:
-                if (this.coords.x < this.initialTopLeftCorner.x) {
-                    this.topLeftCorner.x = this.coords.x;
-                    this.drawingService.selectedAreaCtx.canvas.width = Math.abs(this.width - this.offset.x);
-                    this.revertX = true;
-                } else this.revertX = false;
-                if (this.coords.y > this.initialBottomRightCorner.y) {
-                    this.topLeftCorner.y = this.initialBottomRightCorner.y;
-                    this.drawingService.selectedAreaCtx.canvas.height = Math.abs(this.height + this.offset.y);
-                    this.revertY = true;
-                } else this.revertY = false;
+                this.isMirrorLeft();
+                this.isMirrorBottom();
                 break;
             case SelectionStatus.MIDDLE_RIGHT_BOX:
-                if (this.coords.x < this.initialTopLeftCorner.x) {
-                    this.topLeftCorner.x = this.coords.x;
-                    this.drawingService.selectedAreaCtx.canvas.width = Math.abs(this.width - this.offset.x);
-                    this.revertX = true;
-                } else this.revertX = false;
+                this.isMirrorLeft();
                 break;
             case SelectionStatus.BOTTOM_RIGHT_BOX:
-                if (this.coords.x < this.initialTopLeftCorner.x) {
-                    this.topLeftCorner.x = this.coords.x;
-                    this.drawingService.selectedAreaCtx.canvas.width = Math.abs(this.width - this.offset.x);
-                    this.revertX = true;
-                } else this.revertX = false;
-                if (this.coords.y < this.initialTopLeftCorner.y) {
-                    this.topLeftCorner.y = this.coords.y;
-                    this.drawingService.selectedAreaCtx.canvas.height = Math.abs(this.height - this.offset.y);
-                    this.revertY = true;
-                } else this.revertY = false;
+                this.isMirrorLeft();
+                this.isMirrorTop();
                 break;
             case SelectionStatus.BOTTOM_MIDDLE_BOX:
-                if (this.coords.y < this.initialTopLeftCorner.y) {
-                    this.topLeftCorner.y = this.coords.y;
-                    this.drawingService.selectedAreaCtx.canvas.height = Math.abs(this.height - this.offset.y);
-                    this.revertY = true;
-                } else this.revertY = false;
+                this.isMirrorTop();
                 break;
             case SelectionStatus.BOTTOM_LEFT_BOX:
-                if (this.coords.x > this.initialBottomRightCorner.x) {
-                    this.topLeftCorner.x = this.initialBottomRightCorner.x;
-                    this.drawingService.selectedAreaCtx.canvas.width = Math.abs(this.width + this.offset.x);
-                    this.revertX = true;
-                } else this.revertX = false;
+                this.isMirrorRight();
+                this.isMirrorTop();
                 break;
             case SelectionStatus.MIDDLE_LEFT_BOX:
-                if (this.coords.x > this.initialBottomRightCorner.x) {
-                    this.topLeftCorner.x = this.initialBottomRightCorner.x;
-                    this.drawingService.selectedAreaCtx.canvas.width = Math.abs(this.width + this.offset.x);
-                    this.revertX = true;
-                } else this.revertX = false;
+                this.isMirrorRight();
                 break;
         }
     }
+
+    isMirrorTop(): void {
+        if (this.coords.y < this.initialTopLeftCorner.y) {
+            this.topLeftCorner.y = this.coords.y;
+            this.drawingService.selectedAreaCtx.canvas.height = Math.abs(this.height - this.offset.y);
+            this.revertY = true;
+        } else this.revertY = false;
+    }
+
+    isMirrorBottom(): void {
+        if (this.coords.y > this.initialBottomRightCorner.y) {
+            this.topLeftCorner.y = this.initialBottomRightCorner.y;
+            this.drawingService.selectedAreaCtx.canvas.height = Math.abs(this.height + this.offset.y);
+            this.revertY = true;
+        } else this.revertY = false;
+    }
+
+    isMirrorLeft(): void {
+        if (this.coords.x < this.initialTopLeftCorner.x) {
+            this.topLeftCorner.x = this.coords.x;
+            this.drawingService.selectedAreaCtx.canvas.width = Math.abs(this.width - this.offset.x);
+            this.revertX = true;
+        } else this.revertX = false;
+    }
+
+    isMirrorRight(): void {
+        if (this.coords.x > this.initialBottomRightCorner.x) {
+            this.topLeftCorner.x = this.initialBottomRightCorner.x;
+            this.drawingService.selectedAreaCtx.canvas.width = Math.abs(this.width + this.offset.x);
+            this.revertX = true;
+        } else this.revertX = false;
+    }
+
     registerUndo(imageData: ImageData): void {
         throw new Error('Method not implemented.');
     }
