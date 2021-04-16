@@ -104,14 +104,17 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.drawingService.canvas.style.backgroundColor = DEFAULT_WHITE;
         this.canvasResizerService.canvasPreviewWidth = this.canvasSize.x;
         this.canvasResizerService.canvasPreviewHeight = this.canvasSize.y;
-        this.drawingService.restoreCanvas();
-        this.drawingService.saveCanvas();
+        // this.drawingService.restoreCanvas();
+        // this.drawingService.saveCanvas();
         this.undoRedo.saveInitialState();
         setTimeout(() => {
             this.selectionEllipseService.height = this.drawingService.canvas.height;
             this.selectionEllipseService.width = this.drawingService.canvas.width;
             this.selectionPolygonalLassoService.height = this.drawingService.canvas.height;
             this.selectionPolygonalLassoService.width = this.drawingService.canvas.width;
+            this.drawingService.restoreCanvas();
+            this.drawingService.saveCanvas();
+            this.undoRedo.saveInitialState();
         });
         setTimeout(() => {
             this.undoRedo.saveInitialState();
@@ -146,6 +149,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     }
 
     resizeCanvas(): void {
+        this.drawingService.saveCanvas();
         this.canvasSize = this.canvasResizerService.calculateNewCanvasSize(this.canvasSize);
         this.drawingService.restoreDrawing();
         this.emitEditorMinWidth();

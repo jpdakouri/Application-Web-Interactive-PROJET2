@@ -30,4 +30,9 @@ export enum KeyboardButtons {
     GridUp = '=',
     GridDown = '-',
     PaintBucket = 'b',
+    Paste = 'v',
+    Cut = 'x',
+    Delete = 'Delete',
+    Copy = 'c',
+    Stamp = 'd',
 }
