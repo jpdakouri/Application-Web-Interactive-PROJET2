@@ -91,6 +91,8 @@ export const FONT_HEIGHT_FACTOR = 0.025;
 export const DEFAULT_TEXT_BOX_WIDTH = 100;
 export const DEFAULT_TEXT_BOX_HEIGHT = 100;
 
+export const NEW_LINE_SEPARATOR = '\n';
+
 /***************************/
 /* ERROR MESSAGE CONSTANT***/
 /***************************/

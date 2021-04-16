@@ -3,7 +3,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { DEFAULT_FONT_SIZE, FONT_HEIGHT_FACTOR } from '@app/services/tools/tools-constants';
+import { DEFAULT_FONT_SIZE, FONT_HEIGHT_FACTOR, NEW_LINE_SEPARATOR } from '@app/services/tools/tools-constants';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { TextAlign } from '@app/utils/enums/text-align.enum';
 import { TextFont } from '@app/utils/enums/text-font.enum';
@@ -41,11 +41,12 @@ export class TextService extends Tool {
         console.log(this.text);
         if (event.key === KeyboardButtons.Escape && this.showTextBox) {
             this.showTextBox = false;
+            this.text = '';
         }
     }
 
     onKeyUp(event: KeyboardEvent): void {
-        this.numberOfRows = this.calculateNumberOfLines();
+        this.numberOfRows = this.calculateNumberOfLines(this.text);
         // const textArea = document.getElementById('textArea') as HTMLTextAreaElement;
         // console.log(textArea.clientWidth);
     }
@@ -66,7 +67,7 @@ export class TextService extends Tool {
         this.fillTextMultiLine(this.drawingService.baseCtx, this.text, textFinalPosition);
     }
 
-    getTextFinalPosition(currentPosition: Vec2): Vec2 {
+    private getTextFinalPosition(currentPosition: Vec2): Vec2 {
         const textPosition = { ...currentPosition };
         let textAreaWidth = 0;
         const textArea = document.getElementById('textArea') as HTMLTextAreaElement;
@@ -93,7 +94,7 @@ export class TextService extends Tool {
         context.textAlign = this.textAlign;
         position.y += fontHeight;
 
-        const lines = text.split('\n');
+        const lines = this.splitTextInToLines(text);
         lines.forEach((line: string) => {
             context.fillText(line, position.x, position.y);
             position.y += fontHeight + FONT_HEIGHT_FACTOR * fontHeight;
@@ -105,15 +106,19 @@ export class TextService extends Tool {
         return metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
     }
 
-    calculateNumberOfLines(): number {
-        return this.text.split('\n').length;
+    private calculateNumberOfLines(text: string): number {
+        return this.splitTextInToLines(text).length;
+    }
+
+    private splitTextInToLines(text: string): string[] {
+        return text.split(NEW_LINE_SEPARATOR);
     }
 
     calculateNumberOfCols(): number {
-        const maxLineLength = this.calculateMaxLineLength();
+        const maxLineLength = this.calculateMaxLineLength(this.text);
         // const maxLineLength = this.drawingService.baseCtx.measureText(this.text).width;
         // console.log('maxLength :' + maxLineLength);
-        const lines = this.text.split('\n');
+        const lines = this.splitTextInToLines(this.text);
         const currentLine = lines[lines.length - 1];
         // @ts-ignore
         let previousLine = currentLine;
@@ -131,8 +136,8 @@ export class TextService extends Tool {
         return numberOfCols;
     }
 
-    private calculateMaxLineLength(): number {
-        const lines = this.text.split('\n');
+    private calculateMaxLineLength(text: string): number {
+        const lines = this.splitTextInToLines(text);
         let maxLineLength = lines[0].length;
         for (const line of lines) {
             if (line.length > maxLineLength) {
