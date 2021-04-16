@@ -46,6 +46,8 @@ export class TextService extends Tool {
 
     onKeyUp(event: KeyboardEvent): void {
         this.numberOfRows = this.calculateNumberOfLines();
+        // const textArea = document.getElementById('textArea') as HTMLTextAreaElement;
+        // console.log(textArea.clientWidth);
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -66,16 +68,19 @@ export class TextService extends Tool {
 
     getTextFinalPosition(currentPosition: Vec2): Vec2 {
         const textPosition = { ...currentPosition };
+        let textAreaWidth = 0;
+        const textArea = document.getElementById('textArea') as HTMLTextAreaElement;
+        if (textArea !== null) textAreaWidth = textArea.clientWidth;
         switch (this.textAlign) {
             case TextAlign.Start:
                 break;
 
             case TextAlign.Center:
-                textPosition.x += this.textBoxSize.x / 2;
+                textPosition.x += (this.textBoxSize.x + textAreaWidth) / 2;
                 break;
 
             case TextAlign.End:
-                textPosition.x += this.textBoxSize.x;
+                textPosition.x += this.textBoxSize.x + textAreaWidth;
                 break;
         }
         return textPosition;
@@ -107,7 +112,7 @@ export class TextService extends Tool {
     calculateNumberOfCols(): number {
         const maxLineLength = this.calculateMaxLineLength();
         // const maxLineLength = this.drawingService.baseCtx.measureText(this.text).width;
-        console.log('maxLength :' + maxLineLength);
+        // console.log('maxLength :' + maxLineLength);
         const lines = this.text.split('\n');
         const currentLine = lines[lines.length - 1];
         // @ts-ignore
@@ -121,7 +126,7 @@ export class TextService extends Tool {
         if (currentLine.length > maxLineLength) {
             numberOfCols = currentLine.length;
         }
-        console.log('number of cols : ' + numberOfCols);
+        // console.log('number of cols : ' + numberOfCols);
         // console.log(currentLine);
         return numberOfCols;
     }
