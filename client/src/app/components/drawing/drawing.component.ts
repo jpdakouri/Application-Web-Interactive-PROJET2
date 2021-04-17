@@ -191,7 +191,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             this.selectionResizerService.onMouseMove(event);
         } else {
             this.currentTool.onMouseMove(event);
-            this.eraserActive = this.currentTool.eraserActive || false;
+            this.eraserActive = this.toolManagerService.eraserActive() || false;
             this.updateEraserCursor(event);
         }
     }
@@ -241,7 +241,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         } else {
             this.currentTool.onMouseLeave(event);
         }
-        this.eraserActive = this.currentTool.eraserActive || false;
+        this.eraserActive = this.toolManagerService.eraserActive() || false;
     }
 
     @HostListener('mouseenter', ['$event'])
@@ -323,7 +323,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         const mousePosition = this.currentTool.getPositionFromMouse(event);
         this.eraserCursor.left = mousePosition.x + 'px';
         this.eraserCursor.top = mousePosition.y + 'px';
-        this.eraserActive = this.currentTool.eraserActive || false;
+        this.eraserActive = this.toolManagerService.eraserActive() || false;
     }
 
     isActiveSelection(): boolean {
