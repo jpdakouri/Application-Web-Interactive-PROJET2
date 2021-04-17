@@ -223,6 +223,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
                     this.gridService.newGrid(null);
                 });
         } else if (this.selectionResizerService.isResizing()) {
+            this.selectionResizerService.updateValues(this.toolManagerService.getCurrentSelectionTool());
             this.selectionResizerService.onMouseUp(event);
             this.selectionResizerService.setStatus(SelectionStatus.OFF);
         } else {

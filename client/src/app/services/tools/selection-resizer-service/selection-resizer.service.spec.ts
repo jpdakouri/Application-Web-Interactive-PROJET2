@@ -45,7 +45,6 @@ describe('SelectionResizerService', () => {
         spyOn(TestBed.inject(MouseHandlerService), 'onMouseUp');
         service.onMouseUp(new MouseEvent(''));
         expect(service['selectionMouseDown']).toBeFalse();
-        expect(TestBed.inject(MouseHandlerService).onMouseUp).toHaveBeenCalled();
     });
 
     it('setStatus sets the status and initialises the resize', () => {
@@ -65,7 +64,6 @@ describe('SelectionResizerService', () => {
         const expectedCoord = { x: 1, y: 1 };
         spyOn(service, 'getPositionFromMouse').and.returnValue(expectedCoord);
         service.onMouseDown(new MouseEvent('', { clientX: 1, clientY: 1 }));
-        expect(TestBed.inject(MouseHandlerService).onMouseDown).toHaveBeenCalled();
         expect(service['coords']).toBe(expectedCoord);
         expect(service.mouseDownCoord).toBe(expectedCoord);
     });

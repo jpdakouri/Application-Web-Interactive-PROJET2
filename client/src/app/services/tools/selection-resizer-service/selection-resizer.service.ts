@@ -4,6 +4,9 @@ import { CurrentColorService } from '@app/services/current-color/current-color.s
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.service';
 import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
+import { SelectionEllipseService } from '@app/services/tools/selection-ellipse-service/selection-ellipse.service';
+import { SelectionPolygonalLassoService } from '@app/services/tools/selection-polygonal-lasso/selection-polygonal-lasso.service';
+import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection.service';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
@@ -16,7 +19,7 @@ const REVERT = -1;
 })
 export class SelectionResizerService extends SelectionService {
     status: SelectionStatus;
-    private mouseService: MouseHandlerService;
+    // private mouseService: MouseHandlerService;
     private selectionMouseDown: boolean = false;
     imageData: ImageData;
     private coords: Vec2;
@@ -35,28 +38,24 @@ export class SelectionResizerService extends SelectionService {
     ) {
         super(drawingService, currentColorService);
         this.status = SelectionStatus.OFF;
-        this.mouseService = mouseService;
-        // this.mousePositionHandler = mousePositionHandler;
         this.coords = { x: 0, y: 0 };
         this.initialBottomRightCorner = { x: 0, y: 0 };
         this.canvasWidth = this.canvasHeigth = 0;
     }
     onMouseDown(event: MouseEvent): void {
-        this.mouseService.onMouseDown(this.mouseService.eventToCoordinate(event));
         this.selectionMouseDown = true;
         this.mouseDownCoord = this.coords = this.getPositionFromMouse(event);
+        this.initialize();
         // LIGNE SUIVANTE A CHANGER, JUSTE LA POUR REGLER UN PROBLEME DE COMPILATION !!!
         this.undoRedo = this.undoRedo;
     }
 
     onMouseUp(event: MouseEvent): void {
-        this.mouseService.onMouseUp(this.mouseService.eventToCoordinate(event));
         this.selectionMouseDown = false;
     }
 
     onMouseMove(event: MouseEvent): void {
         if (this.selectionMouseDown) {
-            this.mouseService.onMouseMove(this.mouseService.eventToCoordinate(event));
             const currentCoord = (this.coords = this.getPositionFromMouse(event));
             this.offset.x = this.mouseDownCoord.x - currentCoord.x;
             this.offset.y = this.mouseDownCoord.y - currentCoord.y;
@@ -86,7 +85,6 @@ export class SelectionResizerService extends SelectionService {
 
     setStatus(status: SelectionStatus): void {
         this.status = status;
-        this.initialize();
     }
 
     private resizeSelection(): void {
@@ -133,6 +131,8 @@ export class SelectionResizerService extends SelectionService {
     private initialize(): void {
         this.width = this.drawingService.selectedAreaCtx.canvas.width;
         this.height = this.drawingService.selectedAreaCtx.canvas.height;
+        this.canvasWidth = this.width;
+        this.canvasHeigth = this.height;
         this.topLeftCorner.x = this.drawingService.selectedAreaCtx.canvas.offsetLeft;
         this.topLeftCorner.y = this.drawingService.selectedAreaCtx.canvas.offsetTop;
         this.initialTopLeftCorner = { ...this.topLeftCorner };
@@ -147,6 +147,7 @@ export class SelectionResizerService extends SelectionService {
         this.isSelectionNull();
         this.isSquare();
         this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
+        console.log(this.canvasWidth, this.canvasHeigth);
         this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x + 'px';
         this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y + 'px';
         this.drawingService.selectedAreaCtx.canvas.height = this.canvasHeigth;
@@ -262,6 +263,20 @@ export class SelectionResizerService extends SelectionService {
                     break;
             }
         }
+    }
+
+    updateValues(selectionService: SelectionService | undefined): void {
+        if (
+            selectionService instanceof SelectionRectangleService ||
+            selectionService instanceof SelectionEllipseService ||
+            selectionService instanceof SelectionPolygonalLassoService
+        ) {
+            selectionService.topLeftCorner.x = this.drawingService.selectedAreaCtx.canvas.offsetLeft;
+            selectionService.topLeftCorner.y = this.drawingService.selectedAreaCtx.canvas.offsetTop;
+            selectionService.height = this.drawingService.selectedAreaCtx.canvas.height;
+            selectionService.width = this.drawingService.selectedAreaCtx.canvas.width;
+        }
+        console.log('blabla');
     }
 
     registerUndo(imageData: ImageData): void {
