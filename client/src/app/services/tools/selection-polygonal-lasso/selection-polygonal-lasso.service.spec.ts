@@ -3,7 +3,6 @@ import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { SelectionCommand } from '@app/classes/tool-commands/selection-command';
 import { Vec2 } from '@app/classes/vec2';
 import { SelectionService } from '@app/services/tools/selection-service/selection.service';
-import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { SelectionPolygonalLassoService } from './selection-polygonal-lasso.service';
 
 describe('SelectionPolygonalLassoService', () => {
@@ -53,7 +52,14 @@ describe('SelectionPolygonalLassoService', () => {
 
     it('registerUndo should add a command to undo redo', () => {
         // tslint:disable:no-any
+        spyOn<any>(service, 'moveBorderPreview').and.stub();
         spyOn<any>(service['undoRedo'], 'addCommand').and.stub();
+        service.registerUndo(('' as unknown) as ImageData);
+        expect(service['undoRedo'].addCommand).not.toHaveBeenCalled();
+        service.initialTopLeftCorner = { x: 0, y: 0 };
+        service.registerUndo(('' as unknown) as ImageData);
+        expect(service['undoRedo'].addCommand).toHaveBeenCalled();
+        SelectionService.selectionActive = true;
         service.registerUndo(('' as unknown) as ImageData);
         expect(service['undoRedo'].addCommand).toHaveBeenCalled();
     });
@@ -71,6 +77,7 @@ describe('SelectionPolygonalLassoService', () => {
         service.pathData.push({ x: 0, y: 0 });
         spyOn<any>(service, 'verifyLastPoint').and.returnValue(true);
         spyOn<any>(service, 'endOfSelection').and.callThrough();
+        spyOn<any>(service, 'drawLine').and.stub();
         spyOn<any>(service, 'defaultMouseUp').and.stub();
         spyOn<any>(service['drawingService'], 'clearCanvas').and.stub();
         service.onMouseUp({} as MouseEvent);
@@ -97,7 +104,7 @@ describe('SelectionPolygonalLassoService', () => {
         expect(service.buffer).toEqual(true);
     });
 
-    it('mouseUp does nothing if buffer and SelectionActive at true ', () => {
+    it('mouseUp does nothing if buffer and selectionActive at true ', () => {
         spyOn<any>(service, 'endOfSelection').and.stub();
         SelectionService.selectionActive = false;
         service.buffer = true;
@@ -128,22 +135,23 @@ describe('SelectionPolygonalLassoService', () => {
         expect(service.updateDragPosition).not.toHaveBeenCalled();
     });
 
-    it('registerUndo put undefined for final top left corner if no selection is made', () => {
-        // tslint:disable-next-line:no-unused-expression
-        TestBed.inject(UndoRedoService)['commands'][0] as SelectionCommand;
-        SelectionService.selectionActive = false;
-        spyOn(service['undoRedo'], 'addCommand').and.stub();
-        service.registerUndo(new ImageData(2, 2));
-        expect(service['undoRedo'].addCommand).toHaveBeenCalled();
-    });
+    // it('registerUndo put undefined for final top left corner if no selection is made', () => {
+    //     service.initialTopLeftCorner = { x: 0, y: 0 };
+    //     spyOn<any>(service, 'moveBorderPreview').and.stub();
+    //     SelectionService.selectionActive = false;
+    //     const command = TestBed.inject(UndoRedoService)['commands'][0] as SelectionCommand;
+    //     service.registerUndo(new ImageData(2, 2));
+    //     expect(command.finalTopLeftCorner).toBeUndefined();
+    // });
 
     it('executeCommand does nothing if the 2 top left corners of the command are undefined', () => {
+        canvasTestHelper = TestBed.inject(CanvasTestHelper);
+        const baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         const command = new SelectionCommand(service, { x: 1, y: 1 }, new ImageData(1, 1));
-        service['drawingService'].baseCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
-        spyOn(service['drawingService'].baseCtx, 'fillRect').and.stub();
-        spyOn(service['drawingService'].baseCtx, 'drawImage').and.stub();
+        spyOn(baseCtxStub, 'fillRect');
+        spyOn(baseCtxStub, 'drawImage');
         service.executeCommand(command);
-        expect(service['drawingService'].baseCtx.fillRect).toHaveBeenCalledTimes(0);
-        expect(service['drawingService'].baseCtx.drawImage).toHaveBeenCalledTimes(0);
+        expect(baseCtxStub.fillRect).toHaveBeenCalledTimes(0);
+        expect(baseCtxStub.drawImage).toHaveBeenCalledTimes(0);
     });
 });

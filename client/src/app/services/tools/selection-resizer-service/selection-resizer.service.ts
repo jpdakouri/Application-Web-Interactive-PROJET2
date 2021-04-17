@@ -27,6 +27,7 @@ export class SelectionResizerService extends SelectionService {
     private revertY: boolean;
     private canvasWidth: number;
     private canvasHeigth: number;
+    private currentSelection: SelectionService;
     constructor(
         drawingService: DrawingService,
         currentColorService: CurrentColorService,
@@ -58,9 +59,13 @@ export class SelectionResizerService extends SelectionService {
             this.offset.x = this.mouseDownCoord.x - currentCoord.x;
             this.offset.y = this.mouseDownCoord.y - currentCoord.y;
             if (this.isResizing()) {
+                this.updateValues(this.currentSelection);
                 this.resizeSelection();
             }
         }
+    }
+    moveBorderPreview(newPos: Vec2): void {
+        throw new Error('Method not implemented.');
     }
 
     onKeyDown(event: KeyboardEvent): void {
@@ -268,18 +273,20 @@ export class SelectionResizerService extends SelectionService {
             selectionService instanceof SelectionEllipseService ||
             selectionService instanceof SelectionPolygonalLassoService
         ) {
+            this.currentSelection = selectionService;
             selectionService.topLeftCorner.x = this.drawingService.selectedAreaCtx.canvas.offsetLeft;
             selectionService.topLeftCorner.y = this.drawingService.selectedAreaCtx.canvas.offsetTop;
             selectionService.height = this.drawingService.selectedAreaCtx.canvas.height;
             selectionService.width = this.drawingService.selectedAreaCtx.canvas.width;
+            this.currentSelection.moveBorderPreview();
         }
     }
 
     registerUndo(imageData: ImageData): void {
-        throw new Error('Method not implemented.');
+        return;
     }
 
     executeCommand(command: ToolCommand): void {
-        throw new Error('Method not implemented.');
+        return;
     }
 }

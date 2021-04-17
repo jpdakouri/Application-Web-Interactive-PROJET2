@@ -11,7 +11,7 @@ export enum KeyboardButtons {
     Magnetism = 'm',
     Text = 't',
     InvalidInput = 'h',
-    NewDrawing = '0',
+    NewDrawing = 'o',
     SelectAll = 'a',
     Up = 'ArrowUp',
     Down = 'ArrowDown',
@@ -36,4 +36,5 @@ export enum KeyboardButtons {
     Delete = 'Delete',
     Copy = 'c',
     Stamp = 'd',
+    F = 'F',
 }

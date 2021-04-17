@@ -205,6 +205,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         if (this.canvasResizerService.isResizing()) {
             this.canvasResizerService.onMouseDown(event);
         } else if (this.selectionResizerService.isResizing() && this.toolManagerService.getCurrentSelectionTool()?.isMagnetismOff) {
+            this.selectionResizerService.updateValues(this.toolManagerService.getCurrentSelectionTool());
             this.selectionResizerService.onMouseDown(event);
         } else {
             this.currentTool.onMouseDown(event);
