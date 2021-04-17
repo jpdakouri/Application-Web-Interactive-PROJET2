@@ -72,14 +72,16 @@ export class MagnetismService extends Tool {
     }
 
     findNearestLineLeft(): number {
-        const kThGrid = Math.floor(this.currentSelection.canvas.offsetLeft / this.gridSize);
+        const kThGrid = Math.floor(this.currentSelection.canvas.offsetLeft / this.gridSize) - 1 / 100;
         const num = kThGrid * this.gridSize;
         this.currentSelection.canvas.style.left = num + 'px';
+        console.log('leftAfter ' + this.currentSelection.canvas.style.left);
         return num;
     }
 
     findNearestLineTop(): number {
-        const kThGrid = Math.floor(this.currentSelection.canvas.offsetTop / this.gridSize);
+        console.log('top');
+        const kThGrid = Math.floor(this.currentSelection.canvas.offsetTop / this.gridSize) - 1 / 100;
         const num = kThGrid * this.gridSize;
         this.currentSelection.canvas.style.top = num + 'px';
         return num;
@@ -90,7 +92,7 @@ export class MagnetismService extends Tool {
         const kThGrid = Math.floor(bottom / this.gridSize) + 1;
         const num = this.currentSelection.canvas.offsetTop - bottom + kThGrid * this.gridSize;
         this.currentSelection.canvas.style.top = num + 'px';
-        console.log('leftAfter ' + this.currentSelection.canvas.style.left);
+        console.log('DownAfter ' + this.currentSelection.canvas.style.left);
     }
 
     updatePosition(grid: number): void {
@@ -103,7 +105,6 @@ export class MagnetismService extends Tool {
 
     isMouseOnTopLeftCorner(mouseCoord: Vec2): boolean {
         const topLeftCorner = { x: this.currentSelection.canvas.offsetLeft, y: this.currentSelection.canvas.offsetTop };
-
         return (
             topLeftCorner.x - RANGE < mouseCoord.x &&
             mouseCoord.x < topLeftCorner.x + RANGE &&
@@ -168,14 +169,6 @@ export class MagnetismService extends Tool {
             x: this.gridSize * Math.floor(mouseCoord.x / this.gridSize),
             y: this.gridSize * Math.floor(mouseCoord.y / this.gridSize),
         };
-
-        // switch (SelectionStatus) {
-        //     case value:
-        //         break;
-
-        //     default:
-        //         break;
-        // }
 
         const distance = Math.hypot(nearestCross.x - mouseCoord.x, nearestCross.y - mouseCoord.y);
         if (distance <= 2) {
