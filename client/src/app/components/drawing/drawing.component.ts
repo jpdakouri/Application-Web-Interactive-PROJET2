@@ -10,11 +10,13 @@ import { ToolManagerService } from '@app/services/tool-manager/tool-manager.serv
 import { SelectionEllipseService } from '@app/services/tools/selection-ellipse-service/selection-ellipse.service';
 import { SelectionPolygonalLassoService } from '@app/services/tools/selection-polygonal-lasso/selection-polygonal-lasso.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
+import { SelectionResizerService } from '@app/services/tools/selection-resizer-service/selection-resizer.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection.service';
 import { TextService } from '@app/services/tools/text/text.service';
 import { MIN_ERASER_THICKNESS } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { Status } from '@app/utils/enums/canvas-resizer-status';
+import { SelectionStatus } from '@app/utils/enums/selection-resizer-status';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 import { EraserCursor } from '@app/utils/interfaces/eraser-cursor';
 
@@ -42,7 +44,9 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     currentTool: Tool;
     toolManagerService: ToolManagerService;
     canvasResizerService: CanvasResizerService;
+    selectionResizerService: SelectionResizerService;
     toolsNames: typeof ToolsNames = ToolsNames;
+    selectionStatus: typeof SelectionStatus = SelectionStatus;
 
     eraserCursor: EraserCursor = {
         cursor: 'none',
@@ -67,6 +71,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         private saveDrawingService: SaveDrawingService,
         public saveService: SaveDrawingService,
         public gridService: GridService,
+        selectionResizerService: SelectionResizerService,
         toolManagerService: ToolManagerService,
         canvasResizerService: CanvasResizerService,
         selectionEllipseService: SelectionEllipseService,
@@ -76,6 +81,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     ) {
         this.toolManagerService = toolManagerService;
         this.canvasResizerService = canvasResizerService;
+        this.selectionResizerService = selectionResizerService;
         this.selectionEllipseService = selectionEllipseService;
         this.selectionRectangleService = selectionRectangleService;
         this.selectionPolygonalLassoService = selectionPolygonalLassoService;
@@ -181,6 +187,8 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         if (this.canvasResizerService.isResizing()) {
             this.eraserActive = false;
             this.canvasResizerService.onMouseMove(event);
+        } else if (this.selectionResizerService.isResizing()) {
+            this.selectionResizerService.onMouseMove(event);
         } else {
             this.currentTool.onMouseMove(event);
             this.eraserActive = this.currentTool.eraserActive || false;
@@ -192,6 +200,8 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     onMouseDown(event: MouseEvent): void {
         if (this.canvasResizerService.isResizing()) {
             this.canvasResizerService.onMouseDown(event);
+        } else if (this.selectionResizerService.isResizing()) {
+            this.selectionResizerService.onMouseDown(event);
         } else {
             this.currentTool.onMouseDown(event);
         }
@@ -212,6 +222,10 @@ export class DrawingComponent implements AfterViewInit, OnInit {
                 setTimeout(() => {
                     this.gridService.newGrid(null);
                 });
+        } else if (this.selectionResizerService.isResizing()) {
+            this.selectionResizerService.updateValues(this.toolManagerService.getCurrentSelectionTool());
+            this.selectionResizerService.onMouseUp(event);
+            this.selectionResizerService.setStatus(SelectionStatus.OFF);
         } else {
             this.currentTool.onMouseUp(event);
         }
@@ -247,12 +261,20 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     @HostListener('keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
-        this.currentTool.onKeyDown(event);
+        if (this.selectionResizerService.isResizing()) {
+            this.selectionResizerService.onKeyDown(event);
+        } else {
+            this.currentTool.onKeyDown(event);
+        }
     }
 
     @HostListener('keyup', ['$event'])
     onKeyUp(event: KeyboardEvent): void {
-        this.currentTool.onKeyUp(event);
+        if (this.selectionResizerService.isResizing()) {
+            this.selectionResizerService.onKeyUp(event);
+        } else {
+            this.currentTool.onKeyUp(event);
+        }
     }
 
     @HostListener('contextmenu', ['$event'])
@@ -274,6 +296,10 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     onMiddleBottomResizerClick(): void {
         this.drawingService.saveCanvas();
         this.canvasResizerService.onMiddleBottomResizerClick();
+    }
+
+    onSelectionBoxClick(status: SelectionStatus): void {
+        this.selectionResizerService.setStatus(status);
     }
 
     emitEditorMinWidth(): void {

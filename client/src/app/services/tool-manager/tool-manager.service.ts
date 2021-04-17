@@ -12,6 +12,7 @@ import { RectangleService } from '@app/services/tools/rectangle-service/rectangl
 import { SelectionEllipseService } from '@app/services/tools/selection-ellipse-service/selection-ellipse.service';
 import { SelectionPolygonalLassoService } from '@app/services/tools/selection-polygonal-lasso/selection-polygonal-lasso.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
+import { SelectionResizerService } from '@app/services/tools/selection-resizer-service/selection-resizer.service';
 import { StampService } from '@app/services/tools/stamp-service/stamp.service';
 import { TextService } from '@app/services/tools/text/text.service';
 import { DEFAULT_FONT_SIZE } from '@app/services/tools/tools-constants';
@@ -45,6 +46,7 @@ export class ToolManagerService {
         polygonService: PolygonService,
         public textService: TextService,
         paintBucket: PaintBucketService,
+        selectionResizer: SelectionResizerService,
         stampService: StampService,
         selectPolygonalLassoService: SelectionPolygonalLassoService,
     ) {
@@ -61,6 +63,7 @@ export class ToolManagerService {
             SelectPolygon: selectPolygonalLassoService,
             Polygon: polygonService,
             PaintBucket: paintBucket,
+            SelectionResizer: selectionResizer,
             Stamp: stampService,
             Text: textService,
         };
