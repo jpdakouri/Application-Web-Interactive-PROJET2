@@ -67,11 +67,11 @@ export abstract class SelectionService extends Tool {
                 this.registerUndo(imageData);
             }
         } else if (this.isClickIn(this.firstGrid)) {
-            const initial = this.getPositionFromMouse(event);
-            this.offset.x = this.topLeftCorner.x - initial.x;
-            this.offset.y = this.topLeftCorner.y - initial.y;
-            this.dragActive = true;
-            this.currentCornerSelected = this.magnetismService.cornerCurrentlySelected(initial);
+            // const initial = this.getPositionFromMouse(event);
+            // this.offset.x = this.topLeftCorner.x - initial.x;
+            // this.offset.y = this.topLeftCorner.y - initial.y;
+            // this.dragActive = true;
+            // this.currentCornerSelected = this.magnetismService.cornerCurrentlySelected(initial);
         }
     }
     abstract registerUndo(imageData: ImageData): void;

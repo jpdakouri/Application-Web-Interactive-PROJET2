@@ -11,12 +11,19 @@ export enum controlPoints {
     topRight = 'topRight',
     bottomLeft = 'bottomLeft',
     bottomRight = 'bottomRight',
+    midLeft = 'midLeft',
+    midTop = 'midTop',
+    midRight = 'midRight',
+    midBottom = 'bmidBottom',
 }
+const RANGE = 30;
 
 @Injectable({
     providedIn: 'root',
 })
 export class MagnetismService extends Tool {
+    private resizers: Map<controlPoints, Vec2>;
+
     gridSize: number;
     lastPosition: Vec2;
     mousePositionHandler: MousePositionHandlerService;
@@ -25,22 +32,48 @@ export class MagnetismService extends Tool {
         super(drawingService, currentColor);
         this.mousePositionHandler = mousePositionHandler;
         this.currentSelection = this.drawingService.baseCtx;
+        this.resizers = new Map<controlPoints, Vec2>();
+        this.resizers
+            .set(controlPoints.topLeft, {
+                x: this.currentSelection.canvas.offsetLeft,
+                y: this.currentSelection.canvas.offsetTop,
+            })
+            .set(controlPoints.topRight, {
+                x: this.currentSelection.canvas.offsetLeft + this.currentSelection.canvas.width,
+                y: this.currentSelection.canvas.offsetTop,
+            })
+            .set(controlPoints.bottomLeft, {
+                x: this.currentSelection.canvas.offsetLeft,
+                y: this.currentSelection.canvas.offsetTop + this.currentSelection.canvas.height,
+            })
+            .set(controlPoints.bottomRight, {
+                x: this.currentSelection.canvas.offsetLeft + this.currentSelection.canvas.width,
+                y: this.currentSelection.canvas.offsetTop + this.currentSelection.canvas.height,
+            })
+            .set(controlPoints.midLeft, {
+                x: this.currentSelection.canvas.offsetLeft,
+                y: this.currentSelection.canvas.offsetTop + (1 / 2) * this.currentSelection.canvas.height,
+            })
+            .set(controlPoints.midTop, {
+                x: this.currentSelection.canvas.offsetLeft + (1 / 2) * this.currentSelection.canvas.width,
+                y: this.currentSelection.canvas.offsetTop,
+            })
+            .set(controlPoints.midRight, {
+                x: this.currentSelection.canvas.offsetLeft + this.currentSelection.canvas.width,
+                y: this.currentSelection.canvas.offsetTop + (1 / 2) * this.currentSelection.canvas.height,
+            })
+            .set(controlPoints.midBottom, {
+                x: this.currentSelection.canvas.offsetLeft + (1 / 2) * this.currentSelection.canvas.width,
+                y: this.currentSelection.canvas.offsetTop + this.currentSelection.canvas.height,
+            });
     }
 
-    // startMove(ctx: CanvasRenderingContext2D): void {
-    //     this.currentSelection = ctx;
-    //     this.gridSize = this.drawingService.gridSize;
-    // }
-
-    // onMouseDown(event: MouseEvent): void {
-    //     const currentCoord = { ...this.getPositionFromMouse(event) };
-    //     const currentCornerSelected = this.cornerCurrentlySelected(currentCoord);
-    // }
-
-    // onMouseMove(event: MouseEvent): void {
-    //     if (this.mouseDown && SelectionService.selectionActive) {
-    //     }
-    // }
+    onMouseMove(event: MouseEvent): void {
+        if (this.mouseDown) {
+            console.log('test');
+            this.verifyInRangeCross(this.getPositionFromMouse(event));
+        }
+    }
 
     startKeys(ctx: CanvasRenderingContext2D): void {
         console.log('Magnetism Start');
@@ -61,22 +94,25 @@ export class MagnetismService extends Tool {
         console.log('rightAfter ' + this.currentSelection.canvas.style.left);
     }
 
-    findNearestLineLeft(): void {
+    findNearestLineLeft(): number {
         const kThGrid = Math.floor(this.currentSelection.canvas.offsetLeft / this.gridSize);
         const num = kThGrid * this.gridSize;
         // console.log(this.currentSelection.canvas.offsetLeft);
         // console.log(kThGrid, num);
-        this.currentSelection.translate(num - this.currentSelection.canvas.offsetLeft, 0);
-        console.log(' in left ' + this.currentSelection.canvas.offsetLeft);
+        // this.currentSelection.canvas.style.left = num + 'px';
+        return num;
+        // this.currentSelection.translate(num - this.currentSelection.canvas.offsetLeft, 0);
+        // console.log(' in left ' + this.currentSelection.canvas.offsetLeft);
         // this.currentSelection.canvas.style.left = num;
     }
 
-    findNearestLineTop(): void {
+    findNearestLineTop(): number {
         const kThGrid = Math.floor(this.currentSelection.canvas.offsetTop / this.gridSize);
         const num = kThGrid * this.gridSize;
         // console.log(this.currentSelection.canvas.offsetTop);
         // console.log(kThGrid, num);
-        this.currentSelection.canvas.style.top = num + 'px';
+        // this.currentSelection.canvas.style.top = num + 'px';
+        return num;
     }
 
     findNearestLineDown(): void {
@@ -96,24 +132,14 @@ export class MagnetismService extends Tool {
         this.findNearestLineTop();
     }
 
-    isClickIn(firstGrid: Vec2): boolean {
-        // if (firstGrid.x < this.lastPosition.x || firstGrid.x > this.lastPosition.x + this.currentSelection.canvas.width) {
-        //     return false;
-        // }
-        // if (firstGrid.y < this.lastPosition.y || firstGrid.y > this.lastPosition.y + this.currentSelection.canvas.height) {
-        //     return false;
-        // }
-        return true;
-    }
-
     isMouseOnTopLeftCorner(mouseCoord: Vec2): boolean {
         const topLeftCorner = { x: this.currentSelection.canvas.offsetLeft, y: this.currentSelection.canvas.offsetTop };
 
         return (
-            topLeftCorner.x - 2 < mouseCoord.x &&
-            mouseCoord.x < topLeftCorner.x + 2 &&
-            topLeftCorner.y - 2 < mouseCoord.y &&
-            mouseCoord.y < topLeftCorner.y + 2
+            topLeftCorner.x - RANGE < mouseCoord.x &&
+            mouseCoord.x < topLeftCorner.x + RANGE &&
+            topLeftCorner.y - RANGE < mouseCoord.y &&
+            mouseCoord.y < topLeftCorner.y + RANGE
         );
     }
 
@@ -124,10 +150,10 @@ export class MagnetismService extends Tool {
         };
 
         return (
-            topRightCorner.x - 2 < mouseCoord.x &&
-            mouseCoord.x < topRightCorner.x + 2 &&
-            topRightCorner.y - 2 < mouseCoord.y &&
-            mouseCoord.y < topRightCorner.y + 2
+            topRightCorner.x - RANGE < mouseCoord.x &&
+            mouseCoord.x < topRightCorner.x + RANGE &&
+            topRightCorner.y - RANGE < mouseCoord.y &&
+            mouseCoord.y < topRightCorner.y + RANGE
         );
     }
 
@@ -138,10 +164,10 @@ export class MagnetismService extends Tool {
         };
 
         return (
-            bottomLeftCorner.x - 2 < mouseCoord.x &&
-            mouseCoord.x < bottomLeftCorner.x + 2 &&
-            bottomLeftCorner.y - 2 < mouseCoord.y &&
-            mouseCoord.y < bottomLeftCorner.y + 2
+            bottomLeftCorner.x - RANGE < mouseCoord.x &&
+            mouseCoord.x < bottomLeftCorner.x + RANGE &&
+            bottomLeftCorner.y - RANGE < mouseCoord.y &&
+            mouseCoord.y < bottomLeftCorner.y + RANGE
         );
     }
 
@@ -152,20 +178,27 @@ export class MagnetismService extends Tool {
         };
 
         return (
-            bottomRightCorner.x - 2 < mouseCoord.x &&
-            mouseCoord.x < bottomRightCorner.x + 2 &&
-            bottomRightCorner.y - 2 < mouseCoord.y &&
-            mouseCoord.y < bottomRightCorner.y + 2
+            bottomRightCorner.x - RANGE < mouseCoord.x &&
+            mouseCoord.x < bottomRightCorner.x + RANGE &&
+            bottomRightCorner.y - RANGE < mouseCoord.y &&
+            mouseCoord.y < bottomRightCorner.y + RANGE
         );
+    }
+
+    verifyInRangeCross(mouseCoord: Vec2): boolean {
+        return Math.abs(mouseCoord.x) <= RANGE && Math.abs(mouseCoord.y) <= RANGE;
     }
 
     setCoordToNearestCrossOnGrid(mouseCoord: Vec2): void {
         const nearestCross = {
-            x: Math.floor(this.gridSize * (mouseCoord.x / this.gridSize)),
-            y: Math.floor(this.gridSize * (mouseCoord.y / this.gridSize)),
+            x: this.gridSize * Math.floor(mouseCoord.x / this.gridSize),
+            y: this.gridSize * Math.floor(mouseCoord.y / this.gridSize),
         };
+
         const distance = Math.hypot(nearestCross.x - mouseCoord.x, nearestCross.y - mouseCoord.y);
         if (distance <= 2) {
+            console.log('distance ' + distance);
+            // console.log('we in this bitch nigga');
             this.currentSelection.canvas.style.left = nearestCross.x + 'px';
             this.currentSelection.canvas.style.top = nearestCross.y + 'px';
         }
