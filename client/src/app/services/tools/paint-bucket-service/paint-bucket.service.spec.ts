@@ -1,8 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
+import { Color } from '@app/classes/color';
+import { BucketCommand } from '@app/classes/tool-commands/bucket-command';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { PaintBucketService } from './paint-bucket.service';
 // tslint:disable: no-magic-numbers
 
@@ -23,14 +26,16 @@ describe('PaintBucketService', () => {
     let fillSpy = jasmine.createSpy();
     let drawingServiceSpy: jasmine.SpyObj<DrawingService>;
     let currentColorSpy: jasmine.SpyObj<CurrentColorService>;
+    let undoRedoSpy: jasmine.SpyObj<UndoRedoService>;
     beforeEach(() => {
         drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['getCanvas', 'getBaseContext', 'getPreviewContext']);
         currentColorSpy = jasmine.createSpyObj('CurrentColorService', ['getPrimaryColorRgba']);
-
+        undoRedoSpy = jasmine.createSpyObj('UndoRedoService', ['addCommand']);
         TestBed.configureTestingModule({
             providers: [
                 { provide: DrawingService, useValue: drawingServiceSpy },
                 { provide: CurrentColorService, useValue: currentColorSpy },
+                { provide: UndoRedoService, useValue: undoRedoSpy },
             ],
         });
         currentColorSpy.getPrimaryColorRgba.and.returnValue('rgba(255, 16, 16, 1)');
@@ -235,5 +240,19 @@ describe('PaintBucketService', () => {
         const expectFalse = service.isSimilarColor({ R: 220, G: 220, B: 219, A: 255 });
         expect(expectTrue).toEqual(true);
         expect(expectFalse).toEqual(false);
+    });
+
+    it('#onMouseDown should call undeRedoService #addCommand', () => {
+        service.startColor = { R: 1, G: 1, B: 1, A: 1 };
+        service.fillColor = { R: 1, G: 1, B: 1, A: 1 };
+        const event = { button: 0 } as MouseEvent;
+        service.onMouseDown(event);
+        expect(undoRedoSpy.addCommand).toHaveBeenCalled();
+    });
+
+    it('#executeCommand should call #bfs', () => {
+        const command = new BucketCommand(service, {} as Color, {} as Color, 1, false, {} as Vec2);
+        service.executeCommand(command);
+        expect(service.bfs).toHaveBeenCalled();
     });
 });
