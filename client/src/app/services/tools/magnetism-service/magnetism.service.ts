@@ -22,7 +22,7 @@ const RANGE = 30;
     providedIn: 'root',
 })
 export class MagnetismService extends Tool {
-    private resizers: Map<controlPoints, Vec2>;
+    // private resizers: Map<controlPoints, Vec2>;
 
     gridSize: number;
     lastPosition: Vec2;
@@ -32,40 +32,40 @@ export class MagnetismService extends Tool {
         super(drawingService, currentColor);
         this.mousePositionHandler = mousePositionHandler;
         this.currentSelection = this.drawingService.baseCtx;
-        this.resizers = new Map<controlPoints, Vec2>();
-        this.resizers
-            .set(controlPoints.topLeft, {
-                x: this.currentSelection.canvas.offsetLeft,
-                y: this.currentSelection.canvas.offsetTop,
-            })
-            .set(controlPoints.topRight, {
-                x: this.currentSelection.canvas.offsetLeft + this.currentSelection.canvas.width,
-                y: this.currentSelection.canvas.offsetTop,
-            })
-            .set(controlPoints.bottomLeft, {
-                x: this.currentSelection.canvas.offsetLeft,
-                y: this.currentSelection.canvas.offsetTop + this.currentSelection.canvas.height,
-            })
-            .set(controlPoints.bottomRight, {
-                x: this.currentSelection.canvas.offsetLeft + this.currentSelection.canvas.width,
-                y: this.currentSelection.canvas.offsetTop + this.currentSelection.canvas.height,
-            })
-            .set(controlPoints.midLeft, {
-                x: this.currentSelection.canvas.offsetLeft,
-                y: this.currentSelection.canvas.offsetTop + (1 / 2) * this.currentSelection.canvas.height,
-            })
-            .set(controlPoints.midTop, {
-                x: this.currentSelection.canvas.offsetLeft + (1 / 2) * this.currentSelection.canvas.width,
-                y: this.currentSelection.canvas.offsetTop,
-            })
-            .set(controlPoints.midRight, {
-                x: this.currentSelection.canvas.offsetLeft + this.currentSelection.canvas.width,
-                y: this.currentSelection.canvas.offsetTop + (1 / 2) * this.currentSelection.canvas.height,
-            })
-            .set(controlPoints.midBottom, {
-                x: this.currentSelection.canvas.offsetLeft + (1 / 2) * this.currentSelection.canvas.width,
-                y: this.currentSelection.canvas.offsetTop + this.currentSelection.canvas.height,
-            });
+        // this.resizers = new Map<controlPoints, Vec2>();
+        // this.resizers
+        //     .set(controlPoints.topLeft, {
+        //         x: this.currentSelection.canvas.offsetLeft,
+        //         y: this.currentSelection.canvas.offsetTop,
+        //     })
+        //     .set(controlPoints.topRight, {
+        //         x: this.currentSelection.canvas.offsetLeft + this.currentSelection.canvas.width,
+        //         y: this.currentSelection.canvas.offsetTop,
+        //     })
+        //     .set(controlPoints.bottomLeft, {
+        //         x: this.currentSelection.canvas.offsetLeft,
+        //         y: this.currentSelection.canvas.offsetTop + this.currentSelection.canvas.height,
+        //     })
+        //     .set(controlPoints.bottomRight, {
+        //         x: this.currentSelection.canvas.offsetLeft + this.currentSelection.canvas.width,
+        //         y: this.currentSelection.canvas.offsetTop + this.currentSelection.canvas.height,
+        //     })
+        //     .set(controlPoints.midLeft, {
+        //         x: this.currentSelection.canvas.offsetLeft,
+        //         y: this.currentSelection.canvas.offsetTop + (1 / 2) * this.currentSelection.canvas.height,
+        //     })
+        //     .set(controlPoints.midTop, {
+        //         x: this.currentSelection.canvas.offsetLeft + (1 / 2) * this.currentSelection.canvas.width,
+        //         y: this.currentSelection.canvas.offsetTop,
+        //     })
+        //     .set(controlPoints.midRight, {
+        //         x: this.currentSelection.canvas.offsetLeft + this.currentSelection.canvas.width,
+        //         y: this.currentSelection.canvas.offsetTop + (1 / 2) * this.currentSelection.canvas.height,
+        //     })
+        //     .set(controlPoints.midBottom, {
+        //         x: this.currentSelection.canvas.offsetLeft + (1 / 2) * this.currentSelection.canvas.width,
+        //         y: this.currentSelection.canvas.offsetTop + this.currentSelection.canvas.height,
+        //     });
     }
 
     onMouseMove(event: MouseEvent): void {

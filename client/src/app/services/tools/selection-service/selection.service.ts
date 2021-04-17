@@ -25,15 +25,13 @@ export abstract class SelectionService extends Tool {
     finalGridClip: Vec2;
     offset: Vec2;
     currentCornerSelected: controlPoints;
-    initialTopLeftCorner: Vec2;
+
     isMagnetismOff: boolean = true;
     shiftDown: boolean;
     dragActive: boolean;
-    upPressed: boolean;
-    downPressed: boolean;
-    leftPressed: boolean;
-    rightPressed: boolean;
+    private activeDistance: Vec2;
     buffer: boolean;
+    initialTopLeftCorner?: Vec2;
     height: number;
     width: number;
     isSelectionDone: boolean;
@@ -46,127 +44,95 @@ export abstract class SelectionService extends Tool {
         SelectionService.selectionActive = this.dragActive = false;
         this.buffer = true;
         this.drawingService.selectedAreaCtx = this.drawingService.baseCtx;
+        this.activeDistance = { x: 0, y: 0 };
     }
 
     defaultOnMouseDown(event: MouseEvent): void {
-        if (this.isMagnetismOff) {
-            if (this.isClickIn(this.firstGrid)) {
-                const initial = this.getPositionFromMouse(event);
-                this.offset.x = this.topLeftCorner.x - initial.x;
-                this.offset.y = this.topLeftCorner.y - initial.y;
-                this.dragActive = true;
-            } else {
-                SelectionService.selectionActive = false;
-                this.buffer = false;
-                const imageData = this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
-                createImageBitmap(imageData).then((imgBitmap) => {
-                    this.drawingService.baseCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
-                });
-                this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
-                this.isSelectionDone = false;
-                this.registerUndo(imageData);
-            }
-        } else if (this.isClickIn(this.firstGrid)) {
-            // const initial = this.getPositionFromMouse(event);
-            // this.offset.x = this.topLeftCorner.x - initial.x;
-            // this.offset.y = this.topLeftCorner.y - initial.y;
-            // this.dragActive = true;
-            // this.currentCornerSelected = this.magnetismService.cornerCurrentlySelected(initial);
+        if (this.isClickIn(this.firstGrid)) {
+            const initial = this.getPositionFromMouse(event);
+            this.offset.x = this.topLeftCorner.x - initial.x;
+            this.offset.y = this.topLeftCorner.y - initial.y;
+            this.dragActive = true;
+        } else {
+            this.buffer = false;
+            const imageData = this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
+            this.drawSelectionOnBase(imageData, this.topLeftCorner);
+            this.registerUndo(imageData);
+            this.deselect();
         }
     }
     abstract registerUndo(imageData: ImageData): void;
-    // tslint:disable-next-line:cyclomatic-complexity
-    defaultOnKeyDown(event: KeyboardEvent): void {
-        event.preventDefault();
-        if (event.key === KeyboardButtons.Magnetism && SelectionService.selectionActive) {
-            this.magnetismService.startKeys(this.drawingService.selectedAreaCtx);
-            this.isMagnetismOff = !this.isMagnetismOff;
-        }
-        if (this.isMagnetismOff) {
-            switch (event.key) {
-                case KeyboardButtons.Up: {
-                    if (SelectionService.selectionActive) {
-                        this.upPressed = true;
-                    }
-                    break;
-                }
-                case KeyboardButtons.Down: {
-                    if (SelectionService.selectionActive) {
-                        this.downPressed = true;
-                    }
-                    break;
-                }
-                case KeyboardButtons.Right: {
-                    if (SelectionService.selectionActive) {
-                        this.rightPressed = true;
-                    }
-                    break;
-                }
-                case KeyboardButtons.Left: {
-                    if (SelectionService.selectionActive) {
-                        this.leftPressed = true;
-                    }
-                    break;
-                }
-                case KeyboardButtons.Shift: {
-                    this.shiftDown = true;
-                    this.updatePreview();
-                    break;
-                }
-                case KeyboardButtons.Escape: {
-                    this.cancelSelection();
-                    break;
-                }
-            }
-        } else {
-            switch (event.key) {
-                case KeyboardButtons.Up: {
-                    this.magnetismService.findNearestLineTop();
-                    break;
-                }
-                case KeyboardButtons.Down: {
-                    this.magnetismService.findNearestLineDown();
-                    break;
-                }
-                case KeyboardButtons.Right: {
-                    this.magnetismService.findNearestLineRight();
-                    break;
-                }
-                case KeyboardButtons.Left: {
-                    this.magnetismService.findNearestLineLeft();
-                    break;
-                }
-            }
-        }
-        this.updateArrowPosition();
+
+    deselect(): void {
+        SelectionService.selectionActive = false;
+        this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
+        this.isSelectionDone = false;
+    }
+
+    drawSelectionOnBase(imageData: ImageData, topLeftCorner: Vec2): void {
+        createImageBitmap(imageData).then((imgBitmap) => {
+            this.drawingService.baseCtx.drawImage(imgBitmap, topLeftCorner.x, topLeftCorner.y);
+        });
+    }
+
+    getSelectionImageData(): ImageData {
+        return this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
+    }
+
+    setSelection(imageData: ImageData): void {
+        SelectionService.selectionActive = true;
+        this.isSelectionDone = true;
+        this.topLeftCorner.x = 0;
+        this.topLeftCorner.y = 0;
+        this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
+        this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
+        this.width = imageData.width;
+        this.height = imageData.height;
+        this.drawingService.selectedAreaCtx.canvas.width = this.width;
+        this.drawingService.selectedAreaCtx.canvas.height = this.height;
+        this.initialTopLeftCorner = undefined;
+        createImageBitmap(imageData).then((imgBitmap) => {
+            this.drawingService.selectedAreaCtx.drawImage(imgBitmap, this.topLeftCorner.x, this.topLeftCorner.y);
+        });
     }
 
     defaultOnKeyUp(event: KeyboardEvent): void {
-        switch (event.key) {
-            case KeyboardButtons.Up: {
-                if (SelectionService.selectionActive) {
-                    this.upPressed = false;
+        if (SelectionService.selectionActive) {
+            switch (event.key) {
+                case KeyboardButtons.Up:
+                case KeyboardButtons.Down: {
+                    this.activeDistance.y = 0;
+                    break;
                 }
-                break;
-            }
-            case KeyboardButtons.Down: {
-                if (SelectionService.selectionActive) {
-                    this.downPressed = false;
+                case KeyboardButtons.Right:
+                case KeyboardButtons.Left: {
+                    this.activeDistance.x = 0;
+                    break;
                 }
-                break;
             }
-            case KeyboardButtons.Right: {
-                if (SelectionService.selectionActive) {
-                    this.rightPressed = false;
-                }
-                break;
+        }
+    }
+
+    defaultOnKeyDown(event: KeyboardEvent): void {
+        event.preventDefault();
+        if (event.key === KeyboardButtons.Escape) this.cancelSelection();
+        if (SelectionService.selectionActive) {
+            if (event.key === KeyboardButtons.Left) {
+                this.activeDistance.x = -PIXELS_ARROW_STEPS;
             }
-            case KeyboardButtons.Left: {
-                if (SelectionService.selectionActive) {
-                    this.leftPressed = false;
-                }
-                break;
+            if (event.key === KeyboardButtons.Down) {
+                this.activeDistance.y = PIXELS_ARROW_STEPS;
             }
+            if (event.key === KeyboardButtons.Up) {
+                this.activeDistance.y = -PIXELS_ARROW_STEPS;
+            }
+            if (event.key === KeyboardButtons.Right) {
+                this.activeDistance.x = PIXELS_ARROW_STEPS;
+            }
+            this.firstGrid.x = this.topLeftCorner.x += this.activeDistance.x;
+            this.firstGrid.y = this.topLeftCorner.y += this.activeDistance.y;
+            this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
+            this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
         }
     }
 
@@ -195,27 +161,6 @@ export abstract class SelectionService extends Tool {
         } else {
             this.magnetismService.bringToClosestCrossOnGrid(grid, this.currentCornerSelected);
         }
-    }
-
-    updateArrowPosition(): void {
-        if (SelectionService.selectionActive && this.upPressed) {
-            this.topLeftCorner.y -= PIXELS_ARROW_STEPS;
-            this.firstGrid.y -= PIXELS_ARROW_STEPS;
-        }
-        if (SelectionService.selectionActive && this.downPressed) {
-            this.topLeftCorner.y += PIXELS_ARROW_STEPS;
-            this.firstGrid.y += PIXELS_ARROW_STEPS;
-        }
-        if (SelectionService.selectionActive && this.rightPressed) {
-            this.topLeftCorner.x += PIXELS_ARROW_STEPS;
-            this.firstGrid.x += PIXELS_ARROW_STEPS;
-        }
-        if (SelectionService.selectionActive && this.leftPressed) {
-            this.topLeftCorner.x -= PIXELS_ARROW_STEPS;
-            this.firstGrid.x -= PIXELS_ARROW_STEPS;
-        }
-        this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
-        this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
     }
 
     isClickIn(firstGrid: Vec2): boolean {

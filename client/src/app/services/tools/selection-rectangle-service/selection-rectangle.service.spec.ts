@@ -4,6 +4,7 @@ import { SelectionCommand } from '@app/classes/tool-commands/selection-command';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection.service';
+import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { SelectionRectangleService } from './selection-rectangle.service';
@@ -155,42 +156,6 @@ describe('SelectionRectangleService', () => {
         expect(makeSquareSpy).toHaveBeenCalled();
     });
 
-    it('upPressed should be false when the up key is not pressed', () => {
-        service.onMouseDown(mouseEvent);
-        SelectionService.selectionActive = true;
-        service.onKeyUp({
-            key: KeyboardButtons.Up,
-        } as KeyboardEvent);
-        expect(service['upPressed']).toEqual(false);
-    });
-
-    it('downPressed should be false when the down key is not pressed', () => {
-        service.onMouseDown(mouseEvent);
-        SelectionService.selectionActive = true;
-        service.onKeyUp({
-            key: KeyboardButtons.Down,
-        } as KeyboardEvent);
-        expect(service['downPressed']).toEqual(false);
-    });
-
-    it('rightPressed should be false when the right key is not pressed', () => {
-        service.onMouseDown(mouseEvent);
-        SelectionService.selectionActive = true;
-        service.onKeyUp({
-            key: KeyboardButtons.Right,
-        } as KeyboardEvent);
-        expect(service['rightPressed']).toEqual(false);
-    });
-
-    it('leftPressed should be false when the left key is not pressed', () => {
-        service.onMouseDown(mouseEvent);
-        SelectionService.selectionActive = true;
-        service.onKeyUp({
-            key: KeyboardButtons.Left,
-        } as KeyboardEvent);
-        expect(service['leftPressed']).toEqual(false);
-    });
-
     it('selected region should move 3px higher when Up key is pressed during the selection', () => {
         service.onMouseDown(mouseEvent);
         SelectionService.selectionActive = true;
@@ -339,9 +304,25 @@ describe('SelectionRectangleService', () => {
     it('executeCommand calls the rectangle function for clipping', () => {
         spyOn(TestBed.inject(DrawingService).baseCtx, 'fillRect');
         const data = new ImageData(1, 1);
-        const command = new SelectionCommand(service, { x: 0, y: 0 }, { x: 1, y: 1 }, { x: 2, y: 2 }, data);
+        const command = new SelectionCommand(service, { x: 0, y: 0 }, data, { x: 1, y: 1 }, { x: 2, y: 2 });
         service.executeCommand(command);
         expect(TestBed.inject(DrawingService).baseCtx.fillRect).toHaveBeenCalled();
+    });
+
+    it('registerUndo put undefined for final top left corner if no selection is made', () => {
+        SelectionService.selectionActive = false;
+        service.registerUndo(new ImageData(2, 2));
+        const command = TestBed.inject(UndoRedoService)['commands'][0] as SelectionCommand;
+        expect(command.finalTopLeftCorner).toBeUndefined();
+    });
+
+    it('executeCommand does nothing if the 2 top left corners of the command are undefined', () => {
+        const command = new SelectionCommand(service, { x: 1, y: 1 }, new ImageData(1, 1));
+        spyOn(baseCtxStub, 'fillRect');
+        spyOn(baseCtxStub, 'drawImage');
+        service.executeCommand(command);
+        expect(baseCtxStub.fillRect).toHaveBeenCalledTimes(0);
+        expect(baseCtxStub.drawImage).toHaveBeenCalledTimes(0);
     });
     // tslint:disable-next-line:max-file-line-count
 });

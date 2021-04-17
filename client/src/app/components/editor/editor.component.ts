@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { ToolbarComponent } from '@app/components/toolbar-components/toolbar/toolbar.component';
+import { ClipboardService } from '@app/services/clipboard-service/clipboard.service';
 import { DialogControllerService } from '@app/services/dialog-controller/dialog-controller.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { GridService } from '@app/services/grid/grid.service';
@@ -30,6 +31,7 @@ export class EditorComponent implements AfterViewInit {
         private selectionRectangleService: SelectionRectangleService,
         private undoRedo: UndoRedoService,
         private gridService: GridService,
+        private clipBoard: ClipboardService,
     ) {
         this.toolFinder = new Map<KeyboardButtons, ToolsNames>();
         this.toolFinder
@@ -45,59 +47,78 @@ export class EditorComponent implements AfterViewInit {
             .set(KeyboardButtons.SelectionPolygon, ToolsNames.SelectPolygon)
             .set(KeyboardButtons.Polygon, ToolsNames.Polygon)
             .set(KeyboardButtons.Pipette, ToolsNames.Pipette)
-            .set(KeyboardButtons.Text, ToolsNames.Text);
+            .set(KeyboardButtons.PaintBucket, ToolsNames.PaintBucket)
+            .set(KeyboardButtons.Text, ToolsNames.Text)
+            .set(KeyboardButtons.Stamp, ToolsNames.Stamp);
     }
 
     ngAfterViewInit(): void {
         this.setEditorMinWidth();
     }
 
-    // faudra creer un manager de shortcut
-    // tslint:disable-next-line:cyclomatic-complexity
     @HostListener('window:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
+        event.preventDefault();
         if (this.dialogControllerService.noDialogOpened && !this.toolManagerService.textService.showTextBox) {
             if (event.ctrlKey) {
-                if (event.key === KeyboardButtons.NewDrawing) if (this.onCreateNewDrawing()) this.undoRedo.saveInitialState();
-                if (event.key === KeyboardButtons.Carousel) this.openCarouselModal();
-                if (event.key === KeyboardButtons.Export) {
-                    event.preventDefault();
-                    this.openExportDrawingModal();
-                }
-                if (event.key === KeyboardButtons.Save) {
-                    event.preventDefault();
-                    this.openSaveDrawingModal();
-                }
-                if (event.key === KeyboardButtons.SelectAll) {
-                    event.preventDefault();
-                    this.selectAll();
-                }
-                if (event.key === KeyboardButtons.Undo) {
-                    this.undoRedo.undo();
-                }
-                if (event.key === KeyboardButtons.Redo) {
-                    this.undoRedo.redo();
-                }
+                this.manageShortCutsWithCtrl(event);
             }
 
             if (!event.shiftKey && !event.ctrlKey) {
-                const toolKeyDown = this.toolFinder.get(event.key as KeyboardButtons) as ToolsNames;
-                if (!(toolKeyDown == undefined)) {
-                    this.toolManagerService.setCurrentTool(toolKeyDown);
-                    this.toolManagerService.emitToolChange(toolKeyDown);
-                }
-                if (event.key === KeyboardButtons.grid) {
-                    this.gridService.showGrid = !this.gridService.showGrid;
-                    if (this.gridService.showGrid) this.gridService.newGrid(null);
-                    else this.gridService.clear();
-                }
-                if (event.key === KeyboardButtons.gridUp && this.gridService.gridSizeCanModify(true)) {
-                    if (this.gridService.showGrid) this.gridService.newGrid((this.drawingService.gridSize += GRID_SIZE_CHANGE_VALUE));
-                }
-                if (event.key === KeyboardButtons.gripDown && this.gridService.gridSizeCanModify(false)) {
-                    if (this.gridService.showGrid) this.gridService.newGrid((this.drawingService.gridSize -= GRID_SIZE_CHANGE_VALUE));
-                }
+                this.manageShortCutsWithoutCtrl(event);
             }
+        }
+    }
+
+    private manageShortCutsWithCtrl(event: KeyboardEvent): void {
+        if (event.key === KeyboardButtons.NewDrawing) if (this.onCreateNewDrawing()) this.undoRedo.saveInitialState();
+        if (event.key === KeyboardButtons.Carousel) this.openCarouselModal();
+        if (event.key === KeyboardButtons.Export) {
+            this.openExportDrawingModal();
+        }
+        if (event.key === KeyboardButtons.Save) {
+            this.openSaveDrawingModal();
+        }
+        if (event.key === KeyboardButtons.SelectAll) {
+            this.selectAll();
+        }
+        if (event.key === KeyboardButtons.Undo) {
+            this.undoRedo.undo();
+        }
+        if (event.key === KeyboardButtons.Redo) {
+            this.undoRedo.redo();
+        }
+        if (event.key === KeyboardButtons.Copy) {
+            this.clipBoard.copy();
+        }
+        if (event.key === KeyboardButtons.Paste) {
+            this.clipBoard.paste();
+        }
+        if (event.key === KeyboardButtons.Cut) {
+            this.clipBoard.cut();
+        }
+    }
+
+    private manageShortCutsWithoutCtrl(event: KeyboardEvent): void {
+        const toolKeyDown = this.toolFinder.get(event.key as KeyboardButtons) as ToolsNames;
+        if (!(toolKeyDown == undefined)) {
+            this.toolManagerService.setCurrentTool(toolKeyDown);
+            this.toolManagerService.emitToolChange(toolKeyDown);
+        }
+        if (event.key === KeyboardButtons.Grid) {
+            this.gridService.showGrid = !this.gridService.showGrid;
+            if (this.gridService.showGrid) this.gridService.newGrid(null);
+            else this.gridService.clear();
+        }
+        if (event.key === KeyboardButtons.GridUp && this.gridService.gridSizeCanModify(true)) {
+            if (this.gridService.showGrid) this.gridService.newGrid((this.gridService.gridSize += GRID_SIZE_CHANGE_VALUE));
+        }
+        if (event.key === KeyboardButtons.GridDown && this.gridService.gridSizeCanModify(false)) {
+            if (this.gridService.showGrid) this.gridService.newGrid((this.gridService.gridSize -= GRID_SIZE_CHANGE_VALUE));
+        }
+
+        if (event.key === KeyboardButtons.Delete) {
+            this.clipBoard.delete();
         }
     }
 
@@ -110,7 +131,7 @@ export class EditorComponent implements AfterViewInit {
     }
 
     onCreateNewDrawing(): boolean {
-        return this.drawingService.createNewDrawing();
+        return this.drawingService.createNewDrawing(true);
     }
 
     openSaveDrawingModal(): void {

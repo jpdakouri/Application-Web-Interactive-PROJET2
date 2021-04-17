@@ -6,17 +6,17 @@ import { ToolCommand } from '@app/utils/interfaces/tool-command';
 
 export class SelectionCommand implements ToolCommand {
     readonly tool: SelectionRectangleService | SelectionEllipseService | SelectionPolygonalLassoService;
-    readonly initialTopLeftCorner: Vec2;
-    readonly finalTopLeftCorner: Vec2;
+    readonly initialTopLeftCorner?: Vec2;
+    readonly finalTopLeftCorner?: Vec2;
     readonly selectionSize: Vec2;
     readonly imageData: ImageData;
     readonly path?: Vec2[];
     constructor(
         tool: SelectionRectangleService | SelectionEllipseService | SelectionPolygonalLassoService,
-        initialTopLeftCorner: Vec2,
-        finalTopLeftCorner: Vec2,
         selectionSize: Vec2,
         imageData: ImageData,
+        initialTopLeftCorner?: Vec2,
+        finalTopLeftCorner?: Vec2,
         path?: Vec2[],
     ) {
         this.tool = tool;

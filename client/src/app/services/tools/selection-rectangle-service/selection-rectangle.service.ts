@@ -33,13 +33,8 @@ export class SelectionRectangleService extends SelectionService {
     }
 
     registerUndo(imageData: ImageData): void {
-        const command = new SelectionCommand(
-            this,
-            this.initialTopLeftCorner,
-            { ...this.topLeftCorner },
-            { x: this.width, y: this.height },
-            imageData,
-        );
+        const finalTopLeftCorner: Vec2 | undefined = SelectionService.selectionActive ? { ...this.topLeftCorner } : undefined;
+        const command = new SelectionCommand(this, { x: this.width, y: this.height }, imageData, this.initialTopLeftCorner, finalTopLeftCorner);
         this.undoRedo.addCommand(command);
     }
 
@@ -151,7 +146,10 @@ export class SelectionRectangleService extends SelectionService {
     }
 
     onKeyDown(event: KeyboardEvent): void {
-        this.defaultOnKeyDown(event);
+        if (event.key === KeyboardButtons.Shift) {
+            this.shiftDown = true;
+            this.updatePreview();
+        } else this.defaultOnKeyDown(event);
     }
 
     selectAll(): void {
@@ -164,11 +162,21 @@ export class SelectionRectangleService extends SelectionService {
     }
 
     executeCommand(command: SelectionCommand): void {
-        this.drawingService.baseCtx.fillStyle = 'white';
-        this.drawingService.baseCtx.fillRect(command.initialTopLeftCorner.x, command.initialTopLeftCorner.y, this.width, this.height);
-        const imageData = command.imageData;
-        createImageBitmap(imageData).then((imgBitmap) => {
-            this.drawingService.baseCtx.drawImage(imgBitmap, command.finalTopLeftCorner.x, command.finalTopLeftCorner.y);
-        });
+        if (command.initialTopLeftCorner !== undefined) {
+            this.drawingService.baseCtx.fillStyle = 'white';
+            this.drawingService.baseCtx.fillRect(
+                command.initialTopLeftCorner.x,
+                command.initialTopLeftCorner.y,
+                command.selectionSize.x,
+                command.selectionSize.y,
+            );
+        }
+        if (command.finalTopLeftCorner !== undefined) {
+            const imageData = command.imageData;
+            createImageBitmap(imageData).then((imgBitmap) => {
+                if (command.finalTopLeftCorner !== undefined)
+                    this.drawingService.baseCtx.drawImage(imgBitmap, command.finalTopLeftCorner.x, command.finalTopLeftCorner.y);
+            });
+        }
     }
 }

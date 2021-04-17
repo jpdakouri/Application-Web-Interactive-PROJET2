@@ -18,7 +18,7 @@ export const MINIMUM_HEIGHT = 250;
 export const LOWER_BOUND_WIDTH = 500;
 export const LOWER_BOUND_HEIGHT = 500;
 
-export const SIDEBAR_WIDTH = 335;
+export const SIDEBAR_WIDTH = 382;
 
 export const WORKING_ZONE_VISIBLE_PORTION = 100;
 
@@ -53,3 +53,13 @@ export const MAX_PIXEL_VALUE = 255;
 export const ALPHA = 3;
 
 export const ARRAY_OFFSET = 4;
+
+export const INCREASE_FACTOR = 120;
+
+export const N_COORD_3 = 3;
+
+export const HALF_OPACITY_128 = 128;
+
+export const HALF_OPACITY_127 = 127;
+
+export const TRANSPARENT_THRESHOLD = 100;

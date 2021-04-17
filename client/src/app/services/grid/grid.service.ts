@@ -11,7 +11,8 @@ export class GridService {
     readonly maxGridSize: number = MAX_GRID_SIZE;
     readonly minOpacity: number = MIN_GRID_OPACITY;
     readonly maxOpacity: number = MAX_GRID_OPACITY;
-    gridOpacity: string = '1';
+    gridSize: number = this.minGridSize;
+    gridOpacity: string = this.maxOpacity.toString();
     showGrid: boolean = false;
 
     constructor(private drawingService: DrawingService, private magnetismService: MagnetismService) {
@@ -40,7 +41,7 @@ export class GridService {
 
     clear(): void {
         this.drawingService.clearCanvas(this.drawingService.gridCtx);
-        this.gridOpacity = this.maxOpacity + 'px';
+        this.gridOpacity = this.maxOpacity.toString();
     }
 
     changeOpacity(value: number | null): void {

@@ -23,7 +23,7 @@ export abstract class LineCreatorService extends SelectionService {
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButtons.Left;
         this.mouseDownCoord = this.getPositionFromMouse(event);
-        if (SelectionService.selectionActive) {
+        if (SelectionService.selectionActive && this.mouseDown) {
             this.firstGrid = this.mouseDownCoord;
             this.defaultOnMouseDown(event);
         }
@@ -88,6 +88,7 @@ export abstract class LineCreatorService extends SelectionService {
                     this.drawingService.clearCanvas(this.drawingService.previewCtx);
                     this.clearPath();
                     this.started = false;
+                    this.defaultOnKeyDown(event);
                     break;
                 case KeyboardButtons.Backspace:
                     if (this.pathData.length > 1) {
