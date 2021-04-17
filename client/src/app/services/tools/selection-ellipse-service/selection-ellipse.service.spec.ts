@@ -77,7 +77,7 @@ describe('SelectionEllipseService', () => {
     });
 
     it(' mouseDown should activate the selection when isClickIn is true', () => {
-        SelectionService.selectionActive = true;
+        SelectionService.isSelectionStarted = true;
 
         service.topLeftCorner = { x: 20, y: 20 };
         service.mouseDownCoord = { x: 300, y: 300 };
@@ -91,7 +91,7 @@ describe('SelectionEllipseService', () => {
     });
 
     it(' mouseDown should not activate the selection when isClickIn is false', () => {
-        SelectionService.selectionActive = true;
+        SelectionService.isSelectionStarted = true;
         // tslint:disable:no-magic-numbers
         service.height = service.width = 100;
         service.topLeftCorner = { x: 200, y: 200 };
@@ -115,7 +115,7 @@ describe('SelectionEllipseService', () => {
 
     it('onMouseMove should call updateDragPosition when mouse is down and is currently selecting', () => {
         const updateDragPositionSpy = spyOn<any>(service, 'updateDragPosition').and.callThrough();
-        service.mouseDown = SelectionService.selectionActive = service['dragActive'] = true;
+        service.mouseDown = SelectionService.isSelectionStarted = service['dragActive'] = true;
         const grid = (service.mouseDownCoord = { x: 100, y: 100 });
         service.height = service.width = 100;
         service.onMouseDown(mouseEvent);
@@ -130,7 +130,7 @@ describe('SelectionEllipseService', () => {
     });
 
     it(' onMouseUp should call drawEllipse and selectEllipse if mouse was already down', () => {
-        service.mouseDown = SelectionService.selectionActive = service.mouseMoved = true;
+        service.mouseDown = SelectionService.isSelectionStarted = service.mouseMoved = true;
         service['dragActive'] = false;
         service.mouseDownCoord = { x: 100, y: 100 };
         // const grid = service.mouseDownCoord;
@@ -144,11 +144,12 @@ describe('SelectionEllipseService', () => {
         expect(service['dragActive']).toBeFalse();
     });
 
-    it('Esc key should clear the canvas when pressed', () => {
+    it('Esc key should end selection', () => {
         const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Escape });
-        SelectionService.selectionActive = true;
+        spyOn<any>(service, 'updatePreview').and.stub();
+        spyOn<any>(service, 'cancelSelection').and.stub();
         service.onKeyDown(keyBordPrevent);
-        expect(SelectionService.selectionActive).toBe(false);
+        expect(service.cancelSelection).toHaveBeenCalled();
     });
 
     it('Shift key should call makeCircle when pressed', () => {
@@ -163,7 +164,7 @@ describe('SelectionEllipseService', () => {
 
     it('selected region should move 3px higher when Up key is pressed during the selection', () => {
         service.onMouseDown(mouseEvent);
-        SelectionService.selectionActive = true;
+        SelectionService.isSelectionStarted = true;
 
         service.topLeftCorner = { x: 200, y: 200 };
         const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Up });
@@ -173,7 +174,7 @@ describe('SelectionEllipseService', () => {
 
     it('selected region should not move 3px higher when Up key is pressed while there is no selection ', () => {
         service.onMouseDown(mouseEvent);
-        SelectionService.selectionActive = false;
+        SelectionService.isSelectionStarted = false;
 
         service.topLeftCorner = { x: 200, y: 200 };
         const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Up });
@@ -183,7 +184,7 @@ describe('SelectionEllipseService', () => {
 
     it('selected region should move 3px lower when Down key is pressed during the selection', () => {
         service.onMouseDown(mouseEvent);
-        SelectionService.selectionActive = true;
+        SelectionService.isSelectionStarted = true;
 
         service.topLeftCorner = { x: 200, y: 200 };
         const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Down });
@@ -193,7 +194,7 @@ describe('SelectionEllipseService', () => {
 
     it('selected region should not move 3px lower when Up key is pressed while there is no selection ', () => {
         service.onMouseDown(mouseEvent);
-        SelectionService.selectionActive = false;
+        SelectionService.isSelectionStarted = false;
 
         service.topLeftCorner = { x: 200, y: 200 };
         const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Down });
@@ -203,7 +204,7 @@ describe('SelectionEllipseService', () => {
 
     it('selected region should move 3px to the right when Down key is pressed during the selection', () => {
         service.onMouseDown(mouseEvent);
-        SelectionService.selectionActive = true;
+        SelectionService.isSelectionStarted = true;
 
         service.topLeftCorner = { x: 200, y: 200 };
         const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Right });
@@ -213,7 +214,7 @@ describe('SelectionEllipseService', () => {
 
     it('selected region should not move 3px to the right when Up key is pressed while there is no selection ', () => {
         service.onMouseDown(mouseEvent);
-        SelectionService.selectionActive = false;
+        SelectionService.isSelectionStarted = false;
 
         service.topLeftCorner = { x: 200, y: 200 };
         const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Right });
@@ -223,7 +224,7 @@ describe('SelectionEllipseService', () => {
 
     it('selected region should move 3px to the left when Down key is pressed during the selection', () => {
         service.onMouseDown(mouseEvent);
-        SelectionService.selectionActive = true;
+        SelectionService.isSelectionStarted = true;
 
         service.topLeftCorner = { x: 200, y: 200 };
         const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Left });
@@ -233,7 +234,7 @@ describe('SelectionEllipseService', () => {
 
     it('selected region should not move 3px to the left when Up key is pressed while there is no selection ', () => {
         service.onMouseDown(mouseEvent);
-        SelectionService.selectionActive = false;
+        SelectionService.isSelectionStarted = false;
 
         service.topLeftCorner = { x: 200, y: 200 };
         const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Left });
@@ -272,7 +273,7 @@ describe('SelectionEllipseService', () => {
     });
 
     it('updateLeftCorner() should be able to update topLeftCorner in any situation', () => {
-        service.mouseDown = SelectionService.selectionActive = service.mouseMoved = true;
+        service.mouseDown = SelectionService.isSelectionStarted = service.mouseMoved = true;
         service['dragActive'] = false;
         service.mouseDownCoord = { x: 100, y: 100 };
         service['firstGrid'] = { x: 100, y: 100 };
@@ -307,7 +308,7 @@ describe('SelectionEllipseService', () => {
     });
 
     it('registerUndo put undefined for final top left corner if no selection is made', () => {
-        SelectionService.selectionActive = false;
+        SelectionService.isSelectionStarted = false;
         service.registerUndo(new ImageData(2, 2));
         const command = TestBed.inject(UndoRedoService)['commands'][0] as SelectionCommand;
         expect(command.finalTopLeftCorner).toBeUndefined();

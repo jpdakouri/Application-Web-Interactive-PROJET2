@@ -54,9 +54,9 @@ describe('ToolbarComponent', () => {
         // tslint:disable: no-magic-numbers
         component.isSelected(ToolsNames.Pencil);
         expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(0)).toEqual([ToolsNames.Pencil]);
-        expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(2)).toEqual([ToolsNames.Eraser]);
-        expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(4)).toEqual([ToolsNames.Polygon]);
-        expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(6)).toEqual([ToolsNames.SelectEllipse]);
+        expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(2)).toEqual([ToolsNames.Aerosol]);
+        expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(4)).toEqual([ToolsNames.Line]);
+        expect(toolManagerServiceSpy.isCurrentTool.calls.argsFor(6)).toEqual([ToolsNames.Rectangle]);
     });
 
     it('should create new drawing when new drawing button is clicked with true if successful', () => {

@@ -26,13 +26,13 @@ export class SelectionEllipseService extends SelectionService {
         this.currentColorService = currentColorService;
         this.topLeftCorner = { x: 0, y: 0 };
         this.offset = { x: 0, y: 0 };
-        SelectionService.selectionActive = this.dragActive = false;
+        SelectionService.isSelectionStarted = this.dragActive = false;
         this.drawingService.selectedAreaCtx = this.drawingService.baseCtx;
         this.mousePositionHandler = mousePositionHandler;
     }
 
     registerUndo(imageData: ImageData): void {
-        const finalTopLeftCorner: Vec2 | undefined = SelectionService.selectionActive ? { ...this.topLeftCorner } : undefined;
+        const finalTopLeftCorner: Vec2 | undefined = SelectionService.isSelectionStarted ? { ...this.topLeftCorner } : undefined;
         const command = new SelectionCommand(this, { x: this.width, y: this.height }, imageData, this.initialTopLeftCorner, finalTopLeftCorner);
         this.undoRedo.addCommand(command);
     }
@@ -43,11 +43,11 @@ export class SelectionEllipseService extends SelectionService {
         this.firstGrid = this.getPositionFromMouse(event);
         this.mouseMoved = false;
         if (this.mouseDown) {
-            if (!SelectionService.selectionActive) {
+            if (!SelectionService.isSelectionStarted) {
                 this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
                 this.firstGridClip = this.getPositionFromMouse(event);
                 this.updatePreview();
-                SelectionService.selectionActive = true;
+                SelectionService.isSelectionStarted = true;
             } else {
                 this.defaultOnMouseDown(event);
             }
@@ -55,19 +55,19 @@ export class SelectionEllipseService extends SelectionService {
     }
 
     onMouseMove(event: MouseEvent): void {
-        if (this.mouseDown && SelectionService.selectionActive && !this.dragActive) {
+        if (this.mouseDown && SelectionService.isSelectionStarted && !this.dragActive) {
             this.mouseMoved = true;
             this.mouseDownCoord.x = this.getPositionFromMouse(event).x - this.firstGrid.x;
             this.mouseDownCoord.y = this.getPositionFromMouse(event).y - this.firstGrid.y;
             this.updatePreview();
-        } else if (this.mouseDown && SelectionService.selectionActive && this.dragActive) {
+        } else if (this.mouseDown && SelectionService.isSelectionStarted && this.dragActive) {
             this.updateDragPosition(this.getPositionFromMouse(event));
         }
     }
 
     onMouseUp(event: MouseEvent): void {
-        if (this.mouseDown && SelectionService.selectionActive && !this.dragActive && this.mouseMoved) {
-            this.isSelectionDone = true;
+        if (this.mouseDown && SelectionService.isSelectionStarted && !this.dragActive && this.mouseMoved) {
+            SelectionService.selectionActive = true;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.finalGridClip = this.getPositionFromMouse(event);
             this.updateTopLeftCorner();
@@ -76,13 +76,19 @@ export class SelectionEllipseService extends SelectionService {
                 this.mousePositionHandler.makeCircle(this.mouseDownCoord, this.mouseDownCoord);
             }
             this.selectEllipse(this.drawingService.selectedAreaCtx, this.mouseDownCoord);
-            this.drawEllipse(this.drawingService.selectedAreaCtx, this.mouseDownCoord);
-            this.drawingService.selectedAreaCtx.stroke();
-            this.drawingService.selectedAreaCtx.setLineDash([]);
-            this.drawingService.previewCtx.setLineDash([]);
-            this.drawingService.baseCtx.setLineDash([]);
+            this.moveBorderPreview();
         }
         this.mouseDown = this.dragActive = this.mouseMoved = false;
+    }
+
+    moveBorderPreview(newPos?: Vec2): void {
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.firstGrid = this.topLeftCorner;
+        this.drawEllipse(this.drawingService.previewCtx, { x: this.width, y: this.height });
+        this.drawingService.previewCtx.stroke();
+        this.drawingService.selectedAreaCtx.setLineDash([]);
+        this.drawingService.previewCtx.setLineDash([]);
+        this.drawingService.baseCtx.setLineDash([]);
     }
 
     private drawEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {

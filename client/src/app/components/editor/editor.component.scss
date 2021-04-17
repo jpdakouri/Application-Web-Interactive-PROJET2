@@ -6,7 +6,7 @@
 .drawing-container {
     min-height: 100vh;
 
-    overflow: auto;
+    overflow-y: auto;
     flex: 1 1 auto;
     background-color: rgba(179, 179, 179, 0.6);
 }
@@ -14,7 +14,7 @@
 .sidebar-container {
     min-height: 100vh;
     border-right: 1px solid black;
-    width: 382px;
+    width: 360px;
     display: flex;
     flex-direction: row;
 }
