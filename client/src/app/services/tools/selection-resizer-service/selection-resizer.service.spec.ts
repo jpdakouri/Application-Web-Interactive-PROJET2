@@ -11,6 +11,8 @@ fdescribe('SelectionResizerService', () => {
     let service: SelectionResizerService;
     let canvasTestHelper: CanvasTestHelper;
     let mouseEvent: MouseEvent;
+    // let drawServiceSpy: jasmine.SpyObj<DrawingService>;
+    let mouseMoveEvent: MouseEvent;
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
@@ -20,19 +22,20 @@ fdescribe('SelectionResizerService', () => {
     let resizeSelectionSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
+        jasmine.createSpyObj('DrawingService', ['clearCanvas']);
         TestBed.configureTestingModule({});
         service = TestBed.inject(SelectionResizerService);
 
         canvasTestHelper = TestBed.inject(CanvasTestHelper);
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
-        selectedAreaCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+        selectedAreaCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
 
         // tslint:disable:no-string-literal
         drawing = TestBed.inject(DrawingService);
         drawing.baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         drawing.previewCtx = previewCtxStub;
-        drawing.selectedAreaCtx = selectedAreaCtxStub;
+        service['drawingService'].selectedAreaCtx = selectedAreaCtxStub;
         spyOn<any>(service, 'getPositionFromMouse').and.returnValue({ x: 100, y: 100 });
         resizeSelectionSpy = spyOn<any>(service, 'resizeSelection').and.callThrough();
 
@@ -97,12 +100,9 @@ fdescribe('SelectionResizerService', () => {
 
     it('onKeyDown should update shift state', () => {
         service['shiftDown'] = false;
-        // tslint:disable:no-magic-numbers
-        service['width'] = service['height'] = 100;
-        selectedAreaCtxStub.canvas.height = selectedAreaCtxStub.canvas.width = 100;
-        spyOn<any>(service, 'initialize').and.callThrough();
-
+        spyOn<any>(service, 'updatePreview').and.stub();
         service.mouseDownCoord = { x: 0, y: 0 };
+        service.onMouseDown(mouseEvent);
         service.onKeyDown({
             key: KeyboardButtons.Shift,
         } as KeyboardEvent);
@@ -112,20 +112,153 @@ fdescribe('SelectionResizerService', () => {
     it('onKeyup should update shift state', () => {
         service['shiftDown'] = true;
         service.mouseDownCoord = { x: 0, y: 0 };
+        spyOn<any>(service, 'updatePreview').and.stub();
         service.onKeyUp({
             key: KeyboardButtons.Shift,
         } as KeyboardEvent);
-
         expect(service['shiftDown']).toBeFalse();
     });
 
-    it('onKeyup not call updatePreview when shift is not down', () => {
-        service['shiftDown'] = false;
+    it('onKeyup call updatePreview when shift is not down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
+        spyOn<any>(service, 'updatePreview').and.stub();
         service.onKeyUp({
             key: KeyboardButtons.Shift,
         } as KeyboardEvent);
-        const updatePreviewSpy = spyOn<any>(service, 'updatePreview').and.stub();
-        expect(updatePreviewSpy).not.toHaveBeenCalled();
+        expect(service['updatePreview']).toHaveBeenCalled();
+    });
+
+    it('resizeSelection should set the right values for TopLeftBox', () => {
+        service.status = SelectionStatus.TOP_LEFT_BOX;
+        service.mouseDownCoord = { x: 0, y: 0 };
+        mouseMoveEvent = {
+            offsetX: 50,
+            offsetY: 50,
+            button: MouseButtons.Left,
+        } as MouseEvent;
+        const expectedResult = 100;
+        const expectedTopLeftCorner = { x: 0, y: 0 };
+        spyOn<any>(service, 'updatePreview').and.stub();
+        service.onMouseDown(mouseEvent);
+        service.onMouseMove(mouseMoveEvent);
+        expect(service['canvasHeight']).toEqual(expectedResult);
+        expect(service['canvasWidth']).toEqual(expectedResult);
+        expect(service['topLeftCorner']).toEqual(expectedTopLeftCorner);
+    });
+
+    it('resizeSelection should set the right values for TopMiddleBox', () => {
+        service.status = SelectionStatus.TOP_MIDDLE_BOX;
+        service.mouseDownCoord = { x: 0, y: 0 };
+        mouseMoveEvent = {
+            offsetX: 50,
+            offsetY: 50,
+            button: MouseButtons.Left,
+        } as MouseEvent;
+        const expectedResult = 100;
+        const expectedTopLeftCorner = { x: 0, y: 0 };
+        spyOn<any>(service, 'updatePreview').and.stub();
+        service.onMouseDown(mouseEvent);
+        service.onMouseMove(mouseMoveEvent);
+        expect(service['canvasHeight']).toEqual(expectedResult);
+        expect(service['topLeftCorner']).toEqual(expectedTopLeftCorner);
+    });
+
+    it('resizeSelection should set the right values for TopRightBox', () => {
+        service.status = SelectionStatus.TOP_RIGHT_BOX;
+        service.mouseDownCoord = { x: 0, y: 0 };
+        mouseMoveEvent = {
+            offsetX: 50,
+            offsetY: 50,
+            button: MouseButtons.Left,
+        } as MouseEvent;
+        const expectedResult = 100;
+        const expectedTopLeftCorner = { x: 0, y: 0 };
+        spyOn<any>(service, 'updatePreview').and.stub();
+        service.onMouseDown(mouseEvent);
+        service.onMouseMove(mouseMoveEvent);
+        expect(service['canvasHeight']).toEqual(expectedResult);
+        expect(service['canvasWidth']).toEqual(expectedResult);
+        expect(service['topLeftCorner']).toEqual(expectedTopLeftCorner);
+    });
+
+    it('resizeSelection should set the right values for MiddleRightBox', () => {
+        service.status = SelectionStatus.MIDDLE_RIGHT_BOX;
+        service.mouseDownCoord = { x: 0, y: 0 };
+        mouseMoveEvent = {
+            offsetX: 50,
+            offsetY: 50,
+            button: MouseButtons.Left,
+        } as MouseEvent;
+        const expectedResult = 100;
+        spyOn<any>(service, 'updatePreview').and.stub();
+        service.onMouseDown(mouseEvent);
+        service.onMouseMove(mouseMoveEvent);
+        expect(service['canvasWidth']).toEqual(expectedResult);
+    });
+
+    it('resizeSelection should set the right values for BottomRightBox', () => {
+        service.status = SelectionStatus.BOTTOM_RIGHT_BOX;
+        service.mouseDownCoord = { x: 0, y: 0 };
+        mouseMoveEvent = {
+            offsetX: 50,
+            offsetY: 50,
+            button: MouseButtons.Left,
+        } as MouseEvent;
+        const expectedResult = 100;
+        spyOn<any>(service, 'updatePreview').and.stub();
+        service.onMouseDown(mouseEvent);
+        service.onMouseMove(mouseMoveEvent);
+        expect(service['canvasHeight']).toEqual(expectedResult);
+        expect(service['canvasWidth']).toEqual(expectedResult);
+    });
+
+    it('resizeSelection should set the right values for TopRightBox', () => {
+        service.status = SelectionStatus.BOTTOM_MIDDLE_BOX;
+        service.mouseDownCoord = { x: 0, y: 0 };
+        mouseMoveEvent = {
+            offsetX: 50,
+            offsetY: 50,
+            button: MouseButtons.Left,
+        } as MouseEvent;
+        const expectedResult = 100;
+        spyOn<any>(service, 'updatePreview').and.stub();
+        service.onMouseDown(mouseEvent);
+        service.onMouseMove(mouseMoveEvent);
+        expect(service['canvasHeight']).toEqual(expectedResult);
+    });
+
+    it('resizeSelection should set the right values for BottomRightBox', () => {
+        service.status = SelectionStatus.BOTTOM_LEFT_BOX;
+        service.mouseDownCoord = { x: 0, y: 0 };
+        mouseMoveEvent = {
+            offsetX: 50,
+            offsetY: 50,
+            button: MouseButtons.Left,
+        } as MouseEvent;
+        const expectedResult = 100;
+        const expectedTopLeftCorner = { x: 0, y: 0 };
+        spyOn<any>(service, 'updatePreview').and.stub();
+        service.onMouseDown(mouseEvent);
+        service.onMouseMove(mouseMoveEvent);
+        expect(service['canvasHeight']).toEqual(expectedResult);
+        expect(service['canvasWidth']).toEqual(expectedResult);
+        expect(service['topLeftCorner']).toEqual(expectedTopLeftCorner);
+    });
+
+    it('resizeSelection should set the right values for MiddleLeftBox', () => {
+        service.status = SelectionStatus.MIDDLE_LEFT_BOX;
+        service.mouseDownCoord = { x: 0, y: 0 };
+        mouseMoveEvent = {
+            offsetX: 50,
+            offsetY: 50,
+            button: MouseButtons.Left,
+        } as MouseEvent;
+        const expectedResult = 100;
+        const expectedTopLeftCorner = { x: 0, y: 0 };
+        spyOn<any>(service, 'updatePreview').and.stub();
+        service.onMouseDown(mouseEvent);
+        service.onMouseMove(mouseMoveEvent);
+        expect(service['canvasWidth']).toEqual(expectedResult);
+        expect(service['topLeftCorner']).toEqual(expectedTopLeftCorner);
     });
 });
