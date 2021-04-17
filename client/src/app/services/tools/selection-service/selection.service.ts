@@ -121,14 +121,14 @@ export abstract class SelectionService extends Tool {
 
     defaultOnKeyDown(event: KeyboardEvent): void {
         event.preventDefault();
+        if (event.key === KeyboardButtons.Escape) this.cancelSelection();
         if (event.key === KeyboardButtons.Magnetism && SelectionService.selectionActive) {
             this.magnetismService.startKeys(this.drawingService.selectedAreaCtx);
             this.isMagnetismOff = !this.isMagnetismOff;
         }
-        if (this.isMagnetismOff) {
+        if (SelectionService.isSelectionStarted) {
             console.log('Magnetism OFF');
-            if (event.key === KeyboardButtons.Escape) this.cancelSelection();
-            if (SelectionService.isSelectionStarted) {
+            if (this.isMagnetismOff) {
                 if (event.key === KeyboardButtons.Left) {
                     this.activeDistance.x = -PIXELS_ARROW_STEPS;
                 }
@@ -145,26 +145,28 @@ export abstract class SelectionService extends Tool {
                 this.firstGrid.y = this.topLeftCorner.y += this.activeDistance.y;
                 this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
                 this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
+            } else {
+                switch (event.key) {
+                    case KeyboardButtons.Up: {
+                        this.magnetismService.findNearestLineTop();
+                        break;
+                    }
+                    case KeyboardButtons.Down: {
+                        this.magnetismService.findNearestLineDown();
+                        break;
+                    }
+                    case KeyboardButtons.Right: {
+                        this.magnetismService.findNearestLineRight();
+                        break;
+                    }
+                    case KeyboardButtons.Left: {
+                        this.magnetismService.findNearestLineLeft();
+                        break;
+                    }
+                }
             }
-        } else {
-            switch (event.key) {
-                case KeyboardButtons.Up: {
-                    this.magnetismService.findNearestLineTop();
-                    break;
-                }
-                case KeyboardButtons.Down: {
-                    this.magnetismService.findNearestLineDown();
-                    break;
-                }
-                case KeyboardButtons.Right: {
-                    this.magnetismService.findNearestLineRight();
-                    break;
-                }
-                case KeyboardButtons.Left: {
-                    this.magnetismService.findNearestLineLeft();
-                    break;
-                }
-            }
+
+            this.moveBorderPreview(this.activeDistance);
         }
     }
 

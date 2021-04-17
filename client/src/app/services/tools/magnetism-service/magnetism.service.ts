@@ -5,6 +5,7 @@ import { CurrentColorService } from '@app/services/current-color/current-color.s
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
 import { SelectionStatus } from '@app/utils/enums/selection-resizer-status';
+import { ToolCommand } from '@app/utils/interfaces/tool-command';
 
 export enum controlPoints {
     topLeft = 'topLeft',
@@ -33,7 +34,8 @@ export class MagnetismService extends Tool {
     constructor(drawingService: DrawingService, currentColor: CurrentColorService, mousePositionHandler: MousePositionHandlerService) {
         super(drawingService, currentColor);
         this.mousePositionHandler = mousePositionHandler;
-        this.currentSelection = this.drawingService.baseCtx;
+        this.status = SelectionStatus.TOP_LEFT_BOX;
+        this.currentSelection = this.drawingService.selectedAreaCtx;
         this.resizers = new Map<SelectionStatus, Vec2>();
         this.resizers
             .set(SelectionStatus.TOP_LEFT_BOX, { x: 0, y: 0 })
@@ -46,10 +48,10 @@ export class MagnetismService extends Tool {
             .set(SelectionStatus.BOTTOM_MIDDLE_BOX, { x: 1 / 2, y: 1 });
     }
 
-    onMouseDown(event: MouseEvent): void {
-        this.mouseDown = true;
-        this.setCoordToNearestCrossOnGrid(this.getPositionFromMouse(event));
-    }
+    // onMouseDown(event: MouseEvent): void {
+    //     this.mouseDown = true;
+    //     this.setCoordToNearestCrossOnGrid();
+    // }
 
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
@@ -58,11 +60,11 @@ export class MagnetismService extends Tool {
         }
     }
 
-    onMouseUp(event: MouseEvent): void {
-        if (this.mouseDown) {
-            this.mouseDown = false;
-        }
-    }
+    // onMouseUp(event: MouseEvent): void {
+    //     if (this.mouseDown) {
+    //         this.mouseDown = false;
+    //     }
+    // }
 
     startKeys(ctx: CanvasRenderingContext2D): void {
         console.log('Magnetism ON');
@@ -74,34 +76,36 @@ export class MagnetismService extends Tool {
     }
 
     findNearestLineRight(): number {
-        const topRightCornerX = this.currentSelection.canvas.width + this.currentSelection.canvas.offsetLeft;
-        const kThGrid = Math.floor(topRightCornerX / this.gridSize) + 1;
-        const num = kThGrid * this.gridSize - topRightCornerX + this.currentSelection.canvas.offsetLeft;
-        this.currentSelection.canvas.style.left = num + 'px';
-        return num;
+        const lockedResizer = this.findLockedResizer();
+        const kThGrid = Math.floor(lockedResizer.x / this.gridSize) + 1;
+        const distance = kThGrid * this.gridSize - lockedResizer.x;
+        this.currentSelection.canvas.style.left = distance + this.currentSelection.canvas.offsetLeft + 'px';
+        return distance;
     }
 
     findNearestLineLeft(): number {
-        const kThGrid = Math.floor(this.currentSelection.canvas.offsetLeft / this.gridSize) - 1 / 100;
-        const num = kThGrid * this.gridSize;
-        this.currentSelection.canvas.style.left = num + 'px';
-        return num;
+        const lockedResizer = this.findLockedResizer();
+        const kThGrid = Math.floor(lockedResizer.x / this.gridSize);
+        const distance = kThGrid * this.gridSize - lockedResizer.x;
+        this.currentSelection.canvas.style.left = this.currentSelection.canvas.offsetTop - distance + 'px';
+        return distance;
     }
 
     findNearestLineTop(): number {
         console.log('top');
-        const kThGrid = Math.floor(this.currentSelection.canvas.offsetTop / this.gridSize) - 1 / 100;
-        const num = kThGrid * this.gridSize;
-        this.currentSelection.canvas.style.top = num + 'px';
-        return num;
+        const lockedResizer = this.findLockedResizer();
+        const kThGrid = Math.floor(lockedResizer.y / this.gridSize);
+        const distance = kThGrid * this.gridSize - lockedResizer.y;
+        this.currentSelection.canvas.style.top = this.currentSelection.canvas.offsetTop - distance + 'px';
+        return distance;
     }
 
     findNearestLineDown(): number {
-        const bottom = this.currentSelection.canvas.height + this.currentSelection.canvas.offsetTop;
-        const kThGrid = Math.floor(bottom / this.gridSize) + 1;
-        const num = this.currentSelection.canvas.offsetTop - bottom + kThGrid * this.gridSize;
-        this.currentSelection.canvas.style.top = num + 'px';
-        return num;
+        const lockedResizer = this.findLockedResizer();
+        const kThGrid = Math.floor(lockedResizer.y / this.gridSize) + 1;
+        const distance = kThGrid * this.gridSize - lockedResizer.y;
+        this.currentSelection.canvas.style.top = distance + this.currentSelection.canvas.offsetTop + 'px';
+        return distance;
     }
 
     updatePosition(grid: number): void {
@@ -174,41 +178,9 @@ export class MagnetismService extends Tool {
         this.status = status;
     }
 
-    setCoordToNearestCrossOnGrid(mouseCoord: Vec2): void {
-        switch (this.status) {
-            case SelectionStatus.TOP_LEFT_BOX:
-                console.log(' we in this bitch');
-                const nearestCross = {
-                    x: this.gridSize * Math.floor(mouseCoord.x / this.gridSize),
-                    y: this.gridSize * Math.floor(mouseCoord.y / this.gridSize),
-                };
-
-                const distance = Math.hypot(nearestCross.x - mouseCoord.x, nearestCross.y - mouseCoord.y);
-                if (distance <= 2) {
-                    console.log('distance ' + distance);
-                    // console.log('we in this bitch nigga');
-                    this.currentSelection.canvas.style.left = nearestCross.x + 'px';
-                    this.currentSelection.canvas.style.top = nearestCross.y + 'px';
-                }
-                break;
-            case SelectionStatus.TOP_MIDDLE_BOX:
-                break;
-            case SelectionStatus.TOP_RIGHT_BOX:
-                break;
-            case SelectionStatus.MIDDLE_LEFT_BOX:
-                break;
-            case SelectionStatus.MIDDLE_RIGHT_BOX:
-                break;
-            case SelectionStatus.BOTTOM_LEFT_BOX:
-                break;
-            case SelectionStatus.BOTTOM_MIDDLE_BOX:
-                break;
-            case SelectionStatus.BOTTOM_RIGHT_BOX:
-                break;
-            default:
-                break;
-        }
-        return;
+    findLockedResizer(): Vec2 {
+        const nearestCross = { x: this.resizers.get(this.status)?.x, y: this.resizers.get(this.status)?.y } as Vec2;
+        return { x: nearestCross.x * this.currentSelection.canvas.width, y: nearestCross.y * this.currentSelection.canvas.height };
     }
 
     executeCommand(command: ToolCommand): void {
