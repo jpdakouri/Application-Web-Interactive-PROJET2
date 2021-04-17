@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { MouseHandlerService } from '@app/services/mouse-handler/mouse-handler.service';
 import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-ellipse-service/selection-ellipse.service';
 import { SelectionPolygonalLassoService } from '@app/services/tools/selection-polygonal-lasso/selection-polygonal-lasso.service';
@@ -19,7 +18,6 @@ const REVERT = -1;
 })
 export class SelectionResizerService extends SelectionService {
     status: SelectionStatus;
-    // private mouseService: MouseHandlerService;
     private selectionMouseDown: boolean = false;
     imageData: ImageData;
     private coords: Vec2;
@@ -28,9 +26,7 @@ export class SelectionResizerService extends SelectionService {
     private revertY: boolean;
     private canvasWidth: number;
     private canvasHeigth: number;
-    // private mousePositionHandler: MousePositionHandlerService;
     constructor(
-        mouseService: MouseHandlerService,
         drawingService: DrawingService,
         currentColorService: CurrentColorService,
         mousePositionHandler: MousePositionHandlerService,
@@ -147,7 +143,6 @@ export class SelectionResizerService extends SelectionService {
         this.isSelectionNull();
         this.isSquare();
         this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
-        console.log(this.canvasWidth, this.canvasHeigth);
         this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x + 'px';
         this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y + 'px';
         this.drawingService.selectedAreaCtx.canvas.height = this.canvasHeigth;
@@ -276,7 +271,6 @@ export class SelectionResizerService extends SelectionService {
             selectionService.height = this.drawingService.selectedAreaCtx.canvas.height;
             selectionService.width = this.drawingService.selectedAreaCtx.canvas.width;
         }
-        console.log('blabla');
     }
 
     registerUndo(imageData: ImageData): void {
