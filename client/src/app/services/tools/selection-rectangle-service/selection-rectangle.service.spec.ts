@@ -9,7 +9,7 @@ import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { SelectionRectangleService } from './selection-rectangle.service';
 
-describe('SelectionRectangleService', () => {
+fdescribe('SelectionRectangleService', () => {
     let service: SelectionRectangleService;
     let serviceMousePositionHandler: MousePositionHandlerService;
     let mouseEvent: MouseEvent;

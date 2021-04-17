@@ -35,4 +35,5 @@ export enum KeyboardButtons {
     Delete = 'Delete',
     Copy = 'c',
     Stamp = 'd',
+    F = 'F',
 }
