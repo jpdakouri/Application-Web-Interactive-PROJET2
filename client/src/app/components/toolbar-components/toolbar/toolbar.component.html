@@ -13,17 +13,6 @@
         </div>
         <div class="flex-item">
             <button
-                (click)="setCurrentTool(this.toolsNames.Aerosol)"
-                mat-mini-fab
-                [color]="isSelected(this.toolsNames.Aerosol) ? 'accent' : 'primary'"
-                aria-label='Aérosol "A"'
-                title='Aérosol "A"'
-            >
-                <mat-icon>blur_on</mat-icon>
-            </button>
-        </div>
-        <div class="flex-item">
-            <button
                 (click)="setCurrentTool(this.toolsNames.Eraser)"
                 mat-mini-fab
                 [color]="isSelected(this.toolsNames.Eraser) ? 'accent' : 'primary'"
@@ -57,6 +46,17 @@
                 </svg>
             </button>
         </div>
+        <div class="flex-item">
+            <button
+                (click)="setCurrentTool(this.toolsNames.Aerosol)"
+                mat-mini-fab
+                [color]="isSelected(this.toolsNames.Aerosol) ? 'accent' : 'primary'"
+                aria-label='Aérosol "A"'
+                title='Aérosol "A"'
+            >
+                <mat-icon>blur_on</mat-icon>
+            </button>
+        </div>
 
         <div class="flex-item">
             <button
@@ -69,106 +69,6 @@
                 <mat-icon>colorize</mat-icon>
             </button>
         </div>
-    </div>
-    <mat-divider></mat-divider>
-    <div class="box 2">
-        <div class="flex-item">
-            <button
-                aria-label="Polygone"
-                title="Polygone"
-                [color]="isSelected(this.toolsNames.Polygon) ? 'accent' : 'primary'"
-                (click)="setCurrentTool(this.toolsNames.Polygon)"
-                mat-mini-fab
-            >
-                <mat-icon>change_history</mat-icon>
-            </button>
-        </div>
-
-        <div class="flex-item">
-            <button
-                aria-label='Selection rectangle "r"'
-                title='Selection rectangle "r"'
-                [color]="isSelected(this.toolsNames.SelectBox) ? 'accent' : 'primary'"
-                (click)="setCurrentTool(this.toolsNames.SelectBox)"
-                mat-mini-fab
-            >
-                <mat-icon>crop</mat-icon>
-            </button>
-        </div>
-
-        <div class="flex-item">
-            <button
-                aria-label='Selection ellipse "s"'
-                title='Selection ellipse "s"'
-                [color]="isSelected(this.toolsNames.SelectEllipse) ? 'accent' : 'primary'"
-                (click)="setCurrentTool(this.toolsNames.SelectEllipse)"
-                mat-mini-fab
-            >
-                <mat-icon>all_out</mat-icon>
-            </button>
-        </div>
-
-        <div class="flex-item">
-            <button
-                aria-label='Selection polygonale "v"'
-                title='Selection polygonale "v"'
-                [color]="isSelected(this.toolsNames.SelectPolygon) ? 'accent' : 'primary'"
-                (click)="setCurrentTool(this.toolsNames.SelectPolygon)"
-                mat-mini-fab
-            >
-                <mat-icon>lasso</mat-icon>
-            </button>
-        </div>
-    </div>
-    <mat-divider></mat-divider>
-    <div class="box 3">
-        <div class="flex-item">
-            <button
-                aria-label="Tout selectionner"
-                title="Tout selectionner (Ctrl + A)"
-                [color]="'primary'"
-                (click)="onClickSelectedAll()"
-                mat-mini-fab
-            >
-                <mat-icon>crop_free</mat-icon>
-            </button>
-        </div>
-        <div class="flex-item">
-            <button
-                (click)="setCurrentTool(this.toolsNames.Rectangle)"
-                mat-mini-fab
-                [color]="isSelected(this.toolsNames.Rectangle) ? 'accent' : 'primary'"
-                aria-label='Rectangle "1"'
-                title='Rectangle "1"'
-            >
-                <mat-icon>crop_5_4</mat-icon>
-            </button>
-        </div>
-        <div class="flex-item">
-            <button
-                (click)="setCurrentTool(this.toolsNames.Ellipse)"
-                mat-mini-fab
-                [color]="isSelected(this.toolsNames.Ellipse) ? 'accent' : 'primary'"
-                aria-label='Ellipse "2"'
-                title='Ellipse "2"'
-            >
-                <mat-icon>panorama_fish_eye</mat-icon>
-            </button>
-        </div>
-        <div class="flex-item">
-            <button
-                (click)="setCurrentTool(this.toolsNames.Stamp)"
-                mat-mini-fab
-                [color]="isSelected(this.toolsNames.Stamp) ? 'accent' : 'primary'"
-                aria-label='Étampe "D"'
-                title='Étampe "D"'
-            >
-                <mat-icon>star_border</mat-icon>
-            </button>
-        </div>
-    </div>
-    <mat-divider></mat-divider>
-    <div class="box 4">
         <div class="flex-item">
             <button
                 (click)="setCurrentTool(this.toolsNames.Line)"
@@ -214,65 +114,50 @@
                 <mat-icon>text_fields</mat-icon>
             </button>
         </div>
-
         <div class="flex-item">
             <button
-                color="primary"
-                (click)="onCreateNewDrawing()"
+                (click)="setCurrentTool(this.toolsNames.Rectangle)"
                 mat-mini-fab
-                aria-label='Nouveau dessin "Ctrl + 0"'
-                title='Nouveau dessin "Ctrl + 0"'
-                [disabled]="drawingService.isCanvasBlank()"
+                [color]="isSelected(this.toolsNames.Rectangle) ? 'accent' : 'primary'"
+                aria-label='Rectangle "1"'
+                title='Rectangle "1"'
             >
-                <mat-icon>add</mat-icon>
-            </button>
-        </div>
-
-        <div class="flex-item">
-            <button color="primary" mat-mini-fab aria-label="Sauvegarder (Ctrl + S)" title="Sauvegarder (Ctrl + S)" (click)="saveDrawing()">
-                <mat-icon>save</mat-icon>
-            </button>
-        </div>
-    </div>
-    <mat-divider></mat-divider>
-    <div class="box 5">
-        <div class="flex-item">
-            <button color="primary" mat-mini-fab aria-label="Carroussel (Ctrl + G)" title="Carroussel (Ctrl + G)" (click)="openCarousel()">
-                <mat-icon>view_carousel</mat-icon>
-            </button>
-        </div>
-        <div class="flex-item">
-            <button color="primary" mat-mini-fab aria-label="Exporter (Ctrl + E)" title="Exporter (Ctrl + E)" (click)="onExport()">
-                <mat-icon>import_export</mat-icon>
+                <mat-icon>crop_5_4</mat-icon>
             </button>
         </div>
         <div class="flex-item">
             <button
-                color="primary"
+                aria-label="Polygone"
+                title="Polygone"
+                [color]="isSelected(this.toolsNames.Polygon) ? 'accent' : 'primary'"
+                (click)="setCurrentTool(this.toolsNames.Polygon)"
                 mat-mini-fab
-                aria-label="Annuler"
-                title="Annuler"
-                (click)="this.undoRedo.undo()"
-                [disabled]="!undoRedo.canUndoCommands()"
             >
-                <mat-icon>undo</mat-icon>
+                <mat-icon>change_history</mat-icon>
             </button>
         </div>
         <div class="flex-item">
             <button
-                color="primary"
+                (click)="setCurrentTool(this.toolsNames.Ellipse)"
                 mat-mini-fab
-                aria-label="Refaire"
-                title="Refaire"
-                (click)="this.undoRedo.redo()"
-                [disabled]="!undoRedo.canRedoCommands()"
+                [color]="isSelected(this.toolsNames.Ellipse) ? 'accent' : 'primary'"
+                aria-label='Ellipse "2"'
+                title='Ellipse "2"'
             >
-                <mat-icon>redo</mat-icon>
+                <mat-icon>panorama_fish_eye</mat-icon>
             </button>
         </div>
-    </div>
-    <mat-divider></mat-divider>
-    <div class="box 6">
+        <div class="flex-item">
+            <button
+                (click)="setCurrentTool(this.toolsNames.Stamp)"
+                mat-mini-fab
+                [color]="isSelected(this.toolsNames.Stamp) ? 'accent' : 'primary'"
+                aria-label='Étampe "D"'
+                title='Étampe "D"'
+            >
+                <mat-icon>star_border</mat-icon>
+            </button>
+        </div>
         <div class="flex-item">
             <button
                 color="primary"
@@ -309,7 +194,62 @@
                 </svg>
             </button>
         </div>
+    </div>
 
+    <mat-divider></mat-divider>
+
+    <div class="box 2">
+        <div class="flex-item">
+            <button
+                aria-label='Selection rectangle "r"'
+                title='Selection rectangle "r"'
+                [color]="isSelected(this.toolsNames.SelectBox) ? 'accent' : 'primary'"
+                (click)="setCurrentTool(this.toolsNames.SelectBox)"
+                mat-mini-fab
+            >
+                <mat-icon>crop</mat-icon>
+            </button>
+        </div>
+
+        <div class="flex-item">
+            <button
+                aria-label='Selection ellipse "s"'
+                title='Selection ellipse "s"'
+                [color]="isSelected(this.toolsNames.SelectEllipse) ? 'accent' : 'primary'"
+                (click)="setCurrentTool(this.toolsNames.SelectEllipse)"
+                mat-mini-fab
+            >
+                <mat-icon>all_out</mat-icon>
+            </button>
+        </div>
+
+        <div class="flex-item">
+            <button
+                aria-label='Selection polygonale "v"'
+                title='Selection polygonale "v"'
+                [color]="isSelected(this.toolsNames.SelectPolygon) ? 'accent' : 'primary'"
+                (click)="setCurrentTool(this.toolsNames.SelectPolygon)"
+                mat-mini-fab
+            >
+                <mat-icon>lasso</mat-icon>
+            </button>
+        </div>
+        <div class="flex-item">
+            <button
+                aria-label="Tout selectionner"
+                title="Tout selectionner (Ctrl + A)"
+                [color]="'primary'"
+                (click)="onClickSelectedAll()"
+                mat-mini-fab
+            >
+                <mat-icon>crop_free</mat-icon>
+            </button>
+        </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div class="box 3">
         <div class="flex-item">
             <button color="primary" mat-mini-fab aria-label="Copier" title="Copier" (click)="clipboard.copy()" [disabled]="!clipboard.hasSelection()">
                 <mat-icon>content_copy</mat-icon>
@@ -325,9 +265,6 @@
                 <mat-icon>content_paste</mat-icon>
             </button>
         </div>
-    </div>
-    <mat-divider></mat-divider>
-    <div class="box 7">
         <div class="flex-item">
             <button
                 color="primary"
@@ -340,5 +277,66 @@
                 <mat-icon>clear</mat-icon>
             </button>
         </div>
+        <div class="flex-item">
+            <button
+                color="primary"
+                mat-mini-fab
+                aria-label="Annuler"
+                title="Annuler"
+                (click)="this.undoRedo.undo()"
+                [disabled]="!undoRedo.canUndoCommands()"
+            >
+                <mat-icon>undo</mat-icon>
+            </button>
+        </div>
+        <div class="flex-item">
+            <button
+                color="primary"
+                mat-mini-fab
+                aria-label="Refaire"
+                title="Refaire"
+                (click)="this.undoRedo.redo()"
+                [disabled]="!undoRedo.canRedoCommands()"
+            >
+                <mat-icon>redo</mat-icon>
+            </button>
+        </div>
     </div>
+
+    <mat-divider></mat-divider>
+
+    <div class="box 4">
+        <div class="flex-item">
+            <button color="primary" mat-mini-fab aria-label="Carroussel (Ctrl + G)" title="Carroussel (Ctrl + G)" (click)="openCarousel()">
+                <mat-icon>view_carousel</mat-icon>
+            </button>
+        </div>
+        <div class="flex-item">
+            <button
+                color="primary"
+                (click)="onCreateNewDrawing()"
+                mat-mini-fab
+                aria-label='Nouveau dessin "Ctrl + 0"'
+                title='Nouveau dessin "Ctrl + 0"'
+                [disabled]="drawingService.isCanvasBlank()"
+            >
+                <mat-icon>add</mat-icon>
+            </button>
+        </div>
+
+        <div class="flex-item">
+            <button color="primary" mat-mini-fab aria-label="Sauvegarder (Ctrl + S)" title="Sauvegarder (Ctrl + S)" (click)="saveDrawing()">
+                <mat-icon>save</mat-icon>
+            </button>
+        </div>
+        <div class="flex-item">
+            <button color="primary" mat-mini-fab aria-label="Exporter (Ctrl + E)" title="Exporter (Ctrl + E)" (click)="onExport()">
+                <mat-icon>import_export</mat-icon>
+            </button>
+        </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div class="box 5"></div>
 </div>

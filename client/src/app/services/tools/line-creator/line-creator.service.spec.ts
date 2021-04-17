@@ -76,10 +76,10 @@ describe('LineCreatorService', () => {
         service.mouseDownCoord = { x: 20, y: 20 };
         service.pathData.push({ x: 0, y: 0 }, service.mouseDownCoord);
         // tslint:disable:no-any
-        spyOn<any>(service, 'previewUpdate').and.stub();
+        spyOn<any>(service, 'updatePreview').and.stub();
         let keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Shift });
         service.onKeyDown(keyBordPrevent);
-        expect(service.shiftPressed).toBeTrue();
+        expect(service.shiftDown).toBeTrue();
 
         spyOn<any>(service, 'defaultOnKeyDown').and.stub();
         keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Escape });
@@ -89,7 +89,7 @@ describe('LineCreatorService', () => {
         service.pathData.push({ x: 0, y: 0 }, service.mouseDownCoord);
         keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Backspace });
         service.onKeyDown(keyBordPrevent);
-        expect(service['previewUpdate']).toHaveBeenCalled();
+        expect(service['updatePreview']).toHaveBeenCalled();
     });
 
     it(' backspace should perform his task', () => {
@@ -97,12 +97,12 @@ describe('LineCreatorService', () => {
         service.mouseDownCoord = { x: 20, y: 20 };
         service.pathData.push({ x: 0, y: 0 }, service.mouseDownCoord);
         // tslint:disable:no-any
-        spyOn<any>(service, 'previewUpdate').and.stub();
+        spyOn<any>(service, 'updatePreview').and.stub();
 
         service.pathData.push({ x: 0, y: 0 }, service.mouseDownCoord);
         const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Backspace });
         service.onKeyDown(keyBordPrevent);
-        expect(service['previewUpdate']).toHaveBeenCalled();
+        expect(service['updatePreview']).toHaveBeenCalled();
     });
 
     it(' desiredAngle shoulld return the right value', () => {

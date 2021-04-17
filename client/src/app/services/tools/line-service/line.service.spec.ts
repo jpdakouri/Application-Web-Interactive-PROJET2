@@ -72,7 +72,7 @@ describe('LineService', () => {
         const desiredAngleSpy = spyOn<any>(service, 'desiredAngle').and.callThrough();
 
         service.onMouseUp(mouseEvent);
-        service.shiftPressed = false;
+        service.shiftDown = false;
 
         expect(desiredAngleSpy).not.toHaveBeenCalled();
     });
@@ -88,33 +88,33 @@ describe('LineService', () => {
         // spyOn<any>(service, 'getPositionFromMouse').and.returnValue({ x: 100, y: 100 });
         service['pathData'].push({ x: 0, y: 0 });
         service.mouseDown = true;
-        service['shiftPressed'] = true;
+        service['shiftDown'] = true;
         const desiredAngleSpy = spyOn<any>(service, 'desiredAngle').and.callThrough();
 
         service.onMouseUp(mouseEvent);
         expect(desiredAngleSpy).toHaveBeenCalled();
     });
 
-    it('onMouseMove should call previewUpdate if the drawing has started', () => {
+    it('onMouseMove should call updatePreview if the drawing has started', () => {
         service.mouseDown = true;
         const mouseStartEvent = {
             offsetX: 0,
             offsetY: 0,
             button: MouseButtons.Left,
         } as MouseEvent;
-        const previewUpdateSpy = spyOn<any>(service, 'previewUpdate').and.callThrough();
+        const updatePreviewSpy = spyOn<any>(service, 'updatePreview').and.callThrough();
         service.onMouseUp(mouseStartEvent);
         service.onMouseMove(mouseEvent);
 
-        expect(previewUpdateSpy).toHaveBeenCalled();
+        expect(updatePreviewSpy).toHaveBeenCalled();
     });
 
-    it('onMouseMove should not call previewUpdate if the drawing has not started', () => {
+    it('onMouseMove should not call updatePreview if the drawing has not started', () => {
         service.mouseDown = false;
-        const previewUpdateSpy = spyOn<any>(service, 'previewUpdate').and.callThrough();
+        const updatePreviewSpy = spyOn<any>(service, 'updatePreview').and.callThrough();
         service.onMouseMove(mouseEvent);
 
-        expect(previewUpdateSpy).not.toHaveBeenCalled();
+        expect(updatePreviewSpy).not.toHaveBeenCalled();
     });
 
     it('onMouseLeave should stop the preview if drawing has started ', () => {
@@ -216,7 +216,7 @@ describe('LineService', () => {
     });
 
     it('onKeyup should update shift state', () => {
-        service['shiftPressed'] = true;
+        service['shiftDown'] = true;
         service.mouseDownCoord = { x: 20, y: 20 };
         service['lineThickness'] = undefined;
         service['pathData'].push({ x: 0, y: 0 }, service.mouseDownCoord);
@@ -224,17 +224,17 @@ describe('LineService', () => {
         service.onKeyUp({
             key: KeyboardButtons.Shift,
         } as KeyboardEvent);
-        expect(service['shiftPressed']).toBeFalse();
+        expect(service['shiftDown']).toBeFalse();
     });
 
-    it('onKeyup should not call previewUpdate if shift isnt pressed', () => {
-        service['shiftPressed'] = false;
-        const previewUpdateSpy = spyOn<any>(service, 'previewUpdate').and.callThrough();
+    it('onKeyup should not call updatePreview if shift isnt pressed', () => {
+        service['shiftDown'] = false;
+        const updatePreviewSpy = spyOn<any>(service, 'updatePreview').and.callThrough();
 
         service.onKeyUp({
             key: KeyboardButtons.InvalidInput,
         } as KeyboardEvent);
-        expect(previewUpdateSpy).not.toHaveBeenCalled();
+        expect(updatePreviewSpy).not.toHaveBeenCalled();
     });
 
     it('executeCommand draws a line for each point in path', () => {
@@ -255,13 +255,13 @@ describe('LineService', () => {
         expect(TestBed.inject(DrawingService).baseCtx.lineTo).toHaveBeenCalledTimes(2);
     });
 
-    it('previewUpdate should call desiredAngle if shift is pressed', () => {
+    it('updatePreview should call desiredAngle if shift is pressed', () => {
         service.mouseDownCoord = { x: 0, y: 0 } as Vec2;
         service.pathData.push(service.mouseDownCoord);
         spyOn<any>(service, 'drawLine').and.stub();
-        service.shiftPressed = true;
+        service.shiftDown = true;
         spyOn<any>(service, 'drawPreviewLine').and.stub();
-        service['previewUpdate']();
+        service['updatePreview']();
         expect(service['drawPreviewLine']).toHaveBeenCalled();
     });
 

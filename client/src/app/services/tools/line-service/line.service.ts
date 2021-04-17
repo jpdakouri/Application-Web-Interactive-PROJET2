@@ -34,7 +34,7 @@ export class LineService extends LineCreatorService {
     }
 
     moveBorderPreview(newPos: Vec2): void {
-        throw new Error('Method not implemented.');
+        return;
     }
 
     onDblClick(): void {

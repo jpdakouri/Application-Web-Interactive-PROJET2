@@ -86,7 +86,7 @@ export class SelectionEllipseService extends SelectionService {
     }
 
     moveBorderPreview(newPos: Vec2): void {
-        throw new Error('Method not implemented.');
+        return;
     }
 
     private drawEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
