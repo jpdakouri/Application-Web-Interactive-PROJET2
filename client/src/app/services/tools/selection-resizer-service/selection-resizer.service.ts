@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MagnetismService } from '@app/services/tools/magnetism-service/magnetism.service';
 import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-ellipse-service/selection-ellipse.service';
 import { SelectionPolygonalLassoService } from '@app/services/tools/selection-polygonal-lasso/selection-polygonal-lasso.service';
@@ -11,7 +12,6 @@ import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { SelectionStatus } from '@app/utils/enums/selection-resizer-status';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
-import { MagnetismService } from '../magnetism-service/magnetism.service';
 
 const REVERT = -1;
 @Injectable({

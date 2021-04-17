@@ -30,11 +30,12 @@ export class MagnetismService extends Tool {
 
     gridSize: number;
     lastPosition: Vec2;
+    lockedResizer: Vec2;
     mousePositionHandler: MousePositionHandlerService;
     constructor(drawingService: DrawingService, currentColor: CurrentColorService, mousePositionHandler: MousePositionHandlerService) {
         super(drawingService, currentColor);
         this.mousePositionHandler = mousePositionHandler;
-        this.status = SelectionStatus.TOP_LEFT_BOX;
+        this.status = SelectionStatus.OFF;
         this.currentSelection = this.drawingService.selectedAreaCtx;
         this.resizers = new Map<SelectionStatus, Vec2>();
         this.resizers
@@ -48,77 +49,62 @@ export class MagnetismService extends Tool {
             .set(SelectionStatus.BOTTOM_MIDDLE_BOX, { x: 1 / 2, y: 1 });
     }
 
-    // onMouseDown(event: MouseEvent): void {
-    //     this.mouseDown = true;
-    //     this.setCoordToNearestCrossOnGrid();
+    // onMouseMove(event: MouseEvent): void {
+    //     // if (this.mouseDown) {
+    //     //     this.verifyInRangeCross(this.getPositionFromMouse(event));
+    //     // }
     // }
 
-    onMouseMove(event: MouseEvent): void {
-        if (this.mouseDown) {
-            console.log('test');
-            this.verifyInRangeCross(this.getPositionFromMouse(event));
-        }
-    }
-
-    // onMouseUp(event: MouseEvent): void {
-    //     if (this.mouseDown) {
-    //         this.mouseDown = false;
-    //     }
-    // }
-
-    startKeys(ctx: CanvasRenderingContext2D): void {
-        console.log('Magnetism ON');
-
-        this.currentSelection = ctx;
+    startKeys(): void {
+        this.setStatus(SelectionStatus.TOP_LEFT_BOX);
         this.gridSize = this.drawingService.gridSize;
-        this.lastPosition = { x: ctx.canvas.offsetLeft, y: ctx.canvas.offsetTop };
+        // this.lastPosition = { x: this.drawingService.selectedAreaCtx.canvas.offsetLeft, y: this.drawingService.selectedAreaCtx.canvas.offsetTop };
         this.updatePosition(this.gridSize);
     }
 
     findNearestLineRight(): number {
-        const lockedResizer = this.findLockedResizer();
-        const kThGrid = Math.floor(lockedResizer.x / this.gridSize) + 1;
-        const distance = kThGrid * this.gridSize - lockedResizer.x;
-        this.currentSelection.canvas.style.left = distance + this.currentSelection.canvas.offsetLeft + 'px';
+        const kThGrid = Math.floor(this.lockedResizer.x / this.gridSize) + (this.lockedResizer.x % this.gridSize === 0 ? 1 : 0);
+        const distance = this.lockedResizer.x - kThGrid * this.gridSize;
+        this.drawingService.selectedAreaCtx.canvas.style.left = this.drawingService.selectedAreaCtx.canvas.offsetLeft - distance + 'px';
+        this.findLockedResizer();
         return distance;
     }
 
     findNearestLineLeft(): number {
-        const lockedResizer = this.findLockedResizer();
-        const kThGrid = Math.floor(lockedResizer.x / this.gridSize);
-        const distance = kThGrid * this.gridSize - lockedResizer.x;
-        this.currentSelection.canvas.style.left = this.currentSelection.canvas.offsetTop - distance + 'px';
+        const kThGrid = Math.floor(this.lockedResizer.x / this.gridSize) - (this.lockedResizer.x % this.gridSize === 0 ? 1 : 0);
+        const distance = this.lockedResizer.x - kThGrid * this.gridSize;
+        this.drawingService.selectedAreaCtx.canvas.style.left = this.drawingService.selectedAreaCtx.canvas.offsetLeft - distance + 'px';
+        this.findLockedResizer();
         return distance;
     }
 
     findNearestLineTop(): number {
-        console.log('top');
-        const lockedResizer = this.findLockedResizer();
-        const kThGrid = Math.floor(lockedResizer.y / this.gridSize);
-        const distance = kThGrid * this.gridSize - lockedResizer.y;
-        this.currentSelection.canvas.style.top = this.currentSelection.canvas.offsetTop - distance + 'px';
+        const kThGrid = Math.floor(this.lockedResizer.y / this.gridSize) - (this.lockedResizer.y % this.gridSize === 0 ? 1 : 0);
+        const distance = this.lockedResizer.y - kThGrid * this.gridSize;
+        this.drawingService.selectedAreaCtx.canvas.style.top = this.drawingService.selectedAreaCtx.canvas.offsetTop - distance + 'px';
+        this.findLockedResizer();
         return distance;
     }
 
     findNearestLineDown(): number {
-        const lockedResizer = this.findLockedResizer();
-        const kThGrid = Math.floor(lockedResizer.y / this.gridSize) + 1;
-        const distance = kThGrid * this.gridSize - lockedResizer.y;
-        this.currentSelection.canvas.style.top = distance + this.currentSelection.canvas.offsetTop + 'px';
+        const kThGrid = Math.floor(this.lockedResizer.y / this.gridSize) + (this.lockedResizer.y % this.gridSize === 0 ? 1 : 0);
+        const distance = this.lockedResizer.y - kThGrid * this.gridSize;
+        this.drawingService.selectedAreaCtx.canvas.style.top = this.drawingService.selectedAreaCtx.canvas.offsetTop - distance + 'px';
+        this.findLockedResizer();
         return distance;
     }
 
     updatePosition(grid: number): void {
         this.gridSize = grid;
-        this.currentSelection.canvas.style.left = this.lastPosition.x + 'px';
-        this.currentSelection.canvas.style.top = this.lastPosition.y + 'px';
-        console.log(' taille ' + this.currentSelection.canvas.offsetLeft);
-        this.findNearestLineLeft();
-        this.findNearestLineTop();
+        if (this.status !== SelectionStatus.OFF) {
+            console.log(' taille ' + this.drawingService.selectedAreaCtx.canvas.offsetLeft);
+            this.findNearestLineLeft();
+            this.findNearestLineTop();
+        }
     }
 
     isMouseOnTopLeftCorner(mouseCoord: Vec2): boolean {
-        const topLeftCorner = { x: this.currentSelection.canvas.offsetLeft, y: this.currentSelection.canvas.offsetTop };
+        const topLeftCorner = { x: this.drawingService.selectedAreaCtx.canvas.offsetLeft, y: this.drawingService.selectedAreaCtx.canvas.offsetTop };
         return (
             topLeftCorner.x - RANGE < mouseCoord.x &&
             mouseCoord.x < topLeftCorner.x + RANGE &&
@@ -176,11 +162,15 @@ export class MagnetismService extends Tool {
     setStatus(status: SelectionStatus): void {
         console.log('status ' + this.status);
         this.status = status;
+        this.findLockedResizer();
     }
 
-    findLockedResizer(): Vec2 {
-        const nearestCross = { x: this.resizers.get(this.status)?.x, y: this.resizers.get(this.status)?.y } as Vec2;
-        return { x: nearestCross.x * this.currentSelection.canvas.width, y: nearestCross.y * this.currentSelection.canvas.height };
+    findLockedResizer(): void {
+        const posResize = { x: this.resizers.get(this.status)?.x, y: this.resizers.get(this.status)?.y } as Vec2;
+        this.lockedResizer = {
+            x: posResize.x * this.drawingService.selectedAreaCtx.canvas.width + this.drawingService.selectedAreaCtx.canvas.offsetLeft,
+            y: posResize.y * this.drawingService.selectedAreaCtx.canvas.height + this.drawingService.selectedAreaCtx.canvas.offsetTop,
+        };
     }
 
     executeCommand(command: ToolCommand): void {

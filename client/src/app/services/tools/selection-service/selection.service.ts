@@ -54,15 +54,11 @@ export abstract class SelectionService extends Tool {
             this.offset.y = this.topLeftCorner.y - initial.y;
             this.dragActive = true;
         } else {
-            if (this.isMagnetismOff) {
-                this.magnetismService.onMouseDown(event);
-            } else {
-                this.buffer = false;
-                const imageData = this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
-                this.drawSelectionOnBase(imageData, this.topLeftCorner);
-                this.registerUndo(imageData);
-                this.deselect();
-            }
+            this.buffer = false;
+            const imageData = this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
+            this.drawSelectionOnBase(imageData, this.topLeftCorner);
+            this.registerUndo(imageData);
+            this.deselect();
         }
     }
 
@@ -123,11 +119,10 @@ export abstract class SelectionService extends Tool {
         event.preventDefault();
         if (event.key === KeyboardButtons.Escape) this.cancelSelection();
         if (event.key === KeyboardButtons.Magnetism && SelectionService.selectionActive) {
-            this.magnetismService.startKeys(this.drawingService.selectedAreaCtx);
+            this.magnetismService.startKeys();
             this.isMagnetismOff = !this.isMagnetismOff;
         }
         if (SelectionService.isSelectionStarted) {
-            console.log('Magnetism OFF');
             if (this.isMagnetismOff) {
                 if (event.key === KeyboardButtons.Left) {
                     this.activeDistance.x = -PIXELS_ARROW_STEPS;

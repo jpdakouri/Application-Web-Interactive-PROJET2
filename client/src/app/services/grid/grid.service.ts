@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MagnetismService } from '@app/services/tools/magnetism-service/magnetism.service';
 import { GRID_SIZE_CHANGE_VALUE, MAX_GRID_OPACITY, MAX_GRID_SIZE, MIN_GRID_OPACITY, MIN_GRID_SIZE } from '@app/services/tools/tools-constants';
-import { MagnetismService } from '../tools/magnetism-service/magnetism.service';
 
 @Injectable({
     providedIn: 'root',
