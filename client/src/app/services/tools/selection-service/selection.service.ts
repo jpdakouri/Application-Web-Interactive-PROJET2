@@ -59,6 +59,8 @@ export abstract class SelectionService extends Tool {
         SelectionService.selectionActive = false;
         this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
         this.isSelectionDone = false;
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawingService.previewCtx.canvas.style.top = this.drawingService.previewCtx.canvas.style.left = 0 + 'px';
     }
 
     drawSelectionOnBase(imageData: ImageData, topLeftCorner: Vec2): void {
@@ -125,6 +127,8 @@ export abstract class SelectionService extends Tool {
             this.firstGrid.y = this.topLeftCorner.y += this.activeDistance.y;
             this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
             this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
+            this.drawingService.previewCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
+            this.drawingService.previewCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
         }
     }
 
@@ -149,6 +153,8 @@ export abstract class SelectionService extends Tool {
         this.topLeftCorner.y = currentCoord.y + this.offset.y;
         this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
         this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
+        this.drawingService.previewCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
+        this.drawingService.previewCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
     }
 
     isClickIn(firstGrid: Vec2): boolean {
@@ -165,6 +171,8 @@ export abstract class SelectionService extends Tool {
         this.drawSelectionOnBase(this.getSelectionImageData(), this.initialTopLeftCorner as Vec2);
         this.drawingService.selectedAreaCtx.canvas.width = 0;
         this.drawingService.selectedAreaCtx.canvas.height = 0;
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawingService.previewCtx.canvas.style.top = this.drawingService.previewCtx.canvas.style.left = 0 + 'px';
         SelectionService.selectionActive = false;
         this.topLeftCorner = { x: 0, y: 0 };
     }

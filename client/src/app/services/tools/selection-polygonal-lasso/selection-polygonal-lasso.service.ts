@@ -88,7 +88,7 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.pathData.pop();
         this.drawLine(
-            this.drawingService.selectedAreaCtx,
+            this.drawingService.previewCtx,
             this.getPrimaryColor(),
             this.currentColorService.getSecondaryColorHex(),
             this.showDots || false,
@@ -112,6 +112,7 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
         this.replaceEmptyPixels(imageData);
         createImageBitmap(imageData).then((imgBitmap) => {
             this.drawingService.selectedAreaCtx.save();
+            this.drawingService.selectedAreaCtx.strokeStyle = '#ffffff';
             this.drawShape(this.drawingService.selectedAreaCtx, this.pathData);
             this.drawingService.selectedAreaCtx.stroke();
             this.drawingService.selectedAreaCtx.clip();
