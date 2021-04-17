@@ -54,11 +54,15 @@ export abstract class SelectionService extends Tool {
             this.offset.y = this.topLeftCorner.y - initial.y;
             this.dragActive = true;
         } else {
-            this.buffer = false;
-            const imageData = this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
-            this.drawSelectionOnBase(imageData, this.topLeftCorner);
-            this.registerUndo(imageData);
-            this.deselect();
+            if (this.isMagnetismOff) {
+                this.magnetismService.onMouseDown(event);
+            } else {
+                this.buffer = false;
+                const imageData = this.drawingService.selectedAreaCtx.getImageData(0, 0, this.width, this.height);
+                this.drawSelectionOnBase(imageData, this.topLeftCorner);
+                this.registerUndo(imageData);
+                this.deselect();
+            }
         }
     }
     abstract registerUndo(imageData: ImageData): void;
@@ -178,15 +182,15 @@ export abstract class SelectionService extends Tool {
     }
 
     updateDragPosition(grid: Vec2): void {
-        if (this.isMagnetismOff) {
-            const currentCoord = { ...grid };
-            this.topLeftCorner.x = currentCoord.x + this.offset.x;
-            this.topLeftCorner.y = currentCoord.y + this.offset.y;
-            this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
-            this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
-        } else {
-            this.magnetismService.bringToClosestCrossOnGrid(grid, this.currentCornerSelected);
-        }
+        const currentCoord = { ...grid };
+        this.topLeftCorner.x = currentCoord.x + this.offset.x;
+        this.topLeftCorner.y = currentCoord.y + this.offset.y;
+        this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
+        this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
+
+        // else {
+        //     this.magnetismService.bringToClosestCrossOnGrid(grid, this.currentCornerSelected);
+        // }
     }
 
     isClickIn(firstGrid: Vec2): boolean {

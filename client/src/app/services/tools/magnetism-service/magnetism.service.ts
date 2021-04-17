@@ -5,7 +5,6 @@ import { CurrentColorService } from '@app/services/current-color/current-color.s
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
 import { SelectionStatus } from '@app/utils/enums/selection-resizer-status';
-import { ToolCommand } from '@app/utils/interfaces/tool-command';
 
 export enum controlPoints {
     topLeft = 'topLeft',
@@ -47,10 +46,21 @@ export class MagnetismService extends Tool {
             .set(SelectionStatus.BOTTOM_MIDDLE_BOX, { x: 1 / 2, y: 1 });
     }
 
+    onMouseDown(event: MouseEvent): void {
+        this.mouseDown = true;
+        this.setCoordToNearestCrossOnGrid(this.getPositionFromMouse(event));
+    }
+
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
             console.log('test');
             this.verifyInRangeCross(this.getPositionFromMouse(event));
+        }
+    }
+
+    onMouseUp(event: MouseEvent): void {
+        if (this.mouseDown) {
+            this.mouseDown = false;
         }
     }
 
@@ -98,6 +108,7 @@ export class MagnetismService extends Tool {
         this.gridSize = grid;
         this.currentSelection.canvas.style.left = this.lastPosition.x + 'px';
         this.currentSelection.canvas.style.top = this.lastPosition.y + 'px';
+        console.log(' taille ' + this.currentSelection.canvas.offsetLeft);
         this.findNearestLineLeft();
         this.findNearestLineTop();
     }
@@ -155,64 +166,49 @@ export class MagnetismService extends Tool {
     }
 
     verifyInRangeCross(mouseCoord: Vec2): boolean {
-        return Math.abs(mouseCoord.x) <= RANGE && Math.abs(mouseCoord.y) <= RANGE;
+        return Math.abs(this.gridSize - mouseCoord.x) <= RANGE && Math.abs(mouseCoord.y) <= RANGE;
     }
 
     setStatus(status: SelectionStatus): void {
+        console.log('status ' + this.status);
         this.status = status;
     }
 
     setCoordToNearestCrossOnGrid(mouseCoord: Vec2): void {
-        // this.resizers.get()
-        const nearestCross = {
-            x: this.gridSize * Math.floor(mouseCoord.x / this.gridSize),
-            y: this.gridSize * Math.floor(mouseCoord.y / this.gridSize),
-        };
+        switch (this.status) {
+            case SelectionStatus.TOP_LEFT_BOX:
+                console.log(' we in this bitch');
+                const nearestCross = {
+                    x: this.gridSize * Math.floor(mouseCoord.x / this.gridSize),
+                    y: this.gridSize * Math.floor(mouseCoord.y / this.gridSize),
+                };
 
-        const distance = Math.hypot(nearestCross.x - mouseCoord.x, nearestCross.y - mouseCoord.y);
-        if (distance <= 2) {
-            console.log('distance ' + distance);
-            // console.log('we in this bitch nigga');
-            this.currentSelection.canvas.style.left = nearestCross.x + 'px';
-            this.currentSelection.canvas.style.top = nearestCross.y + 'px';
-        }
-        return;
-    }
-
-    cornerCurrentlySelected(mouseCoord: Vec2): controlPoints {
-        if (this.isMouseOnTopLeftCorner(mouseCoord)) {
-            return controlPoints.topLeft;
-        }
-        if (this.isMouseOnTopRightCorner(mouseCoord)) {
-            return controlPoints.topRight;
-        }
-        if (this.isMouseOnBottomLeftCorner(mouseCoord)) {
-            return controlPoints.bottomLeft;
-        }
-        if (this.isMouseOnBottomRightCorner(mouseCoord)) {
-            return controlPoints.bottomRight;
-        }
-        // À revoir
-        return controlPoints.bottomLeft;
-    }
-
-    bringToClosestCrossOnGrid(mouseCoord: Vec2, corner: controlPoints): void {
-        switch (corner) {
-            case controlPoints.topLeft:
-                this.setCoordToNearestCrossOnGrid(mouseCoord);
+                const distance = Math.hypot(nearestCross.x - mouseCoord.x, nearestCross.y - mouseCoord.y);
+                if (distance <= 2) {
+                    console.log('distance ' + distance);
+                    // console.log('we in this bitch nigga');
+                    this.currentSelection.canvas.style.left = nearestCross.x + 'px';
+                    this.currentSelection.canvas.style.top = nearestCross.y + 'px';
+                }
                 break;
-            case controlPoints.topRight:
-                this.setCoordToNearestCrossOnGrid(mouseCoord);
+            case SelectionStatus.TOP_MIDDLE_BOX:
                 break;
-            case controlPoints.bottomLeft:
-                this.setCoordToNearestCrossOnGrid(mouseCoord);
+            case SelectionStatus.TOP_RIGHT_BOX:
                 break;
-            case controlPoints.bottomRight:
-                this.setCoordToNearestCrossOnGrid(mouseCoord);
+            case SelectionStatus.MIDDLE_LEFT_BOX:
+                break;
+            case SelectionStatus.MIDDLE_RIGHT_BOX:
+                break;
+            case SelectionStatus.BOTTOM_LEFT_BOX:
+                break;
+            case SelectionStatus.BOTTOM_MIDDLE_BOX:
+                break;
+            case SelectionStatus.BOTTOM_RIGHT_BOX:
                 break;
             default:
                 break;
         }
+        return;
     }
 
     executeCommand(command: ToolCommand): void {
