@@ -212,7 +212,7 @@ fdescribe('SelectionResizerService', () => {
         expect(service['canvasWidth']).toEqual(expectedResult);
     });
 
-    it('resizeSelection should set the right values for TopRightBox', () => {
+    it('resizeSelection should set the right values for BottomMiddleBox', () => {
         service.status = SelectionStatus.BOTTOM_MIDDLE_BOX;
         service.mouseDownCoord = { x: 0, y: 0 };
         mouseMoveEvent = {
@@ -227,7 +227,7 @@ fdescribe('SelectionResizerService', () => {
         expect(service['canvasHeight']).toEqual(expectedResult);
     });
 
-    it('resizeSelection should set the right values for BottomRightBox', () => {
+    it('resizeSelection should set the right values for BottomLeftBox', () => {
         service.status = SelectionStatus.BOTTOM_LEFT_BOX;
         service.mouseDownCoord = { x: 0, y: 0 };
         mouseMoveEvent = {
@@ -260,5 +260,83 @@ fdescribe('SelectionResizerService', () => {
         service.onMouseMove(mouseMoveEvent);
         expect(service['canvasWidth']).toEqual(expectedResult);
         expect(service['topLeftCorner']).toEqual(expectedTopLeftCorner);
+    });
+
+    it('isSelectionNull should set selectionActive to false if widht=offset', () => {
+        service['width'] = service['offset'].x;
+        spyOn<any>(service, 'isSelectionNull').and.callThrough();
+        expect(SelectionResizerService['selectionActive']).toBeFalse();
+    });
+
+    it('isMirror should call isMirrorRight and isMirrorBottom for TopLeftBox', () => {
+        service.status = SelectionStatus.TOP_LEFT_BOX;
+        spyOn<any>(service, 'updatePreview').and.stub();
+        spyOn<any>(service, 'isMirrorBottom').and.stub();
+        spyOn<any>(service, 'isMirrorRight').and.stub();
+        service['isMirror']();
+        expect(service['isMirrorRight']).toHaveBeenCalled();
+        expect(service['isMirrorBottom']).toHaveBeenCalled();
+    });
+
+    it('isMirror should call isMirrorBottom for TopMiddleBox', () => {
+        service.status = SelectionStatus.TOP_MIDDLE_BOX;
+        spyOn<any>(service, 'updatePreview').and.stub();
+        spyOn<any>(service, 'isMirrorBottom').and.stub();
+        service['isMirror']();
+        expect(service['isMirrorBottom']).toHaveBeenCalled();
+    });
+
+    it('isMirror should call isMirrorLeft and isMirrorBottom for TopRightBox', () => {
+        service.status = SelectionStatus.TOP_RIGHT_BOX;
+        spyOn<any>(service, 'updatePreview').and.stub();
+        spyOn<any>(service, 'isMirrorBottom').and.stub();
+        spyOn<any>(service, 'isMirrorLeft').and.stub();
+        service['isMirror']();
+        expect(service['isMirrorLeft']).toHaveBeenCalled();
+        expect(service['isMirrorBottom']).toHaveBeenCalled();
+    });
+
+    it('isMirror should call isMirrorLeft for MiddleRightBox', () => {
+        service.status = SelectionStatus.MIDDLE_RIGHT_BOX;
+        spyOn<any>(service, 'updatePreview').and.stub();
+        spyOn<any>(service, 'isMirrorLeft').and.stub();
+        service['isMirror']();
+        expect(service['isMirrorLeft']).toHaveBeenCalled();
+    });
+
+    it('isMirror should call isMirrorLeft and isMirrorTop for BottomRightBox', () => {
+        service.status = SelectionStatus.BOTTOM_RIGHT_BOX;
+        spyOn<any>(service, 'updatePreview').and.stub();
+        spyOn<any>(service, 'isMirrorTop').and.stub();
+        spyOn<any>(service, 'isMirrorLeft').and.stub();
+        service['isMirror']();
+        expect(service['isMirrorLeft']).toHaveBeenCalled();
+        expect(service['isMirrorTop']).toHaveBeenCalled();
+    });
+
+    it('isMirror should call isMirrorTop for BottomMiddleBox', () => {
+        service.status = SelectionStatus.BOTTOM_MIDDLE_BOX;
+        spyOn<any>(service, 'updatePreview').and.stub();
+        spyOn<any>(service, 'isMirrorTop').and.stub();
+        service['isMirror']();
+        expect(service['isMirrorTop']).toHaveBeenCalled();
+    });
+
+    it('isMirror should call isMirrorRight and isMirrorTop for BottomRLeftBox', () => {
+        service.status = SelectionStatus.BOTTOM_LEFT_BOX;
+        spyOn<any>(service, 'updatePreview').and.stub();
+        spyOn<any>(service, 'isMirrorTop').and.stub();
+        spyOn<any>(service, 'isMirrorRight').and.stub();
+        service['isMirror']();
+        expect(service['isMirrorRight']).toHaveBeenCalled();
+        expect(service['isMirrorTop']).toHaveBeenCalled();
+    });
+
+    it('isMirror should call isMirrorRight for MiddleLeftBox', () => {
+        service.status = SelectionStatus.MIDDLE_LEFT_BOX;
+        spyOn<any>(service, 'updatePreview').and.stub();
+        spyOn<any>(service, 'isMirrorRight').and.stub();
+        service['isMirror']();
+        expect(service['isMirrorRight']).toHaveBeenCalled();
     });
 });
