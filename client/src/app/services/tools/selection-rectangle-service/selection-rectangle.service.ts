@@ -81,7 +81,7 @@ export class SelectionRectangleService extends SelectionService {
         }
         this.mouseDown = this.dragActive = this.mouseMoved = false;
     }
-    moveBorderPreview(newPos: Vec2): void {
+    moveBorderPreview(newPos?: Vec2): void {
         return;
     }
 

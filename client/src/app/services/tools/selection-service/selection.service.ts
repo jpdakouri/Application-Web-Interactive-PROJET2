@@ -111,7 +111,7 @@ export abstract class SelectionService extends Tool {
         if (event.key === KeyboardButtons.Escape) {
             this.cancelSelection();
         }
-        if (SelectionService.selectionActive) {
+        if (SelectionService.isSelectionStarted) {
             if (event.key === KeyboardButtons.Left) {
                 this.activeDistance.x = -PIXELS_ARROW_STEPS;
             }

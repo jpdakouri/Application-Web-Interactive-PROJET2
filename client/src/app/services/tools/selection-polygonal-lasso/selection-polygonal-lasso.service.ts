@@ -56,7 +56,8 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
         }
     }
 
-    moveBorderPreview(newPos: Vec2): void {
+    moveBorderPreview(newPos?: Vec2): void {
+        if (newPos === undefined) return;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         for (const point of this.pathData) {
             point.x += newPos.x;
