@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Color } from '@app/classes/color';
 import { Tool } from '@app/classes/tool';
+import { BucketCommand } from '@app/classes/tool-commands/bucket-command';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -16,7 +17,6 @@ import {
 } from '@app/services/services-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
-import { ToolCommand } from '@app/utils/interfaces/tool-command';
 
 // Algorithm inspired by:
 // https://www.geeksforgeeks.org/flood-fill-algorithm-implement-fill-paint/
@@ -24,7 +24,7 @@ import { ToolCommand } from '@app/utils/interfaces/tool-command';
     providedIn: 'root',
 })
 export class PaintBucketService extends Tool {
-    constructor(drawingService: DrawingService, currentColorService: CurrentColorService, undoRedo: UndoRedoService) {
+    constructor(drawingService: DrawingService, currentColorService: CurrentColorService, private undoRedo: UndoRedoService) {
         super(drawingService, currentColorService);
     }
 
@@ -47,11 +47,26 @@ export class PaintBucketService extends Tool {
             this.setFillColor();
             this.setStartColor();
             clickedLeft ? this.bfs(true) : this.bfs(false);
+            this.undoRedo.addCommand(
+                new BucketCommand(this, this.fillColor, this.startColor, this.bucketTolerance, clickedLeft, this.mouseDownCoord),
+            );
         }
     }
 
-    executeCommand(command: ToolCommand): number {
-        return 0;
+    executeCommand(command: BucketCommand): void {
+        const tempTolerance = this.bucketTolerance;
+        const tempFillColor = this.fillColor;
+        const tempStartColor = this.startColor;
+        const tempMouseDownCoord = this.mouseDownCoord;
+        this.bucketTolerance = command.bucketTolerance;
+        this.fillColor = command.fillColor;
+        this.startColor = command.startColor;
+        this.mouseDownCoord = command.mousePosition;
+        this.bfs(command.isContiguous);
+        this.bucketTolerance = tempTolerance;
+        this.fillColor = tempFillColor;
+        this.startColor = tempStartColor;
+        this.mouseDownCoord = tempMouseDownCoord;
     }
 
     isValidCoord(x: number, y: number): boolean {
@@ -96,7 +111,6 @@ export class PaintBucketService extends Tool {
             }
         }
         this.baseCtx.putImageData(this.newCanvasImageData, 0, 0);
-        this.previewCtx.putImageData(this.newCanvasImageData, 0, 0);
     }
 
     visit(visited: number[][], bfsQueue: Vec2[], x: number, y: number): void {
