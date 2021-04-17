@@ -4,6 +4,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
+import { SelectionStatus } from '@app/utils/enums/selection-resizer-status';
 
 export enum controlPoints {
     topLeft = 'topLeft',
@@ -22,7 +23,7 @@ const RANGE = 30;
     providedIn: 'root',
 })
 export class MagnetismService extends Tool {
-    private resizers: Map<controlPoints, Vec2>;
+    private resizers: Map<SelectionStatus, Vec2>;
     private currentSelection: CanvasRenderingContext2D;
 
     gridSize: number;
@@ -32,42 +33,40 @@ export class MagnetismService extends Tool {
         super(drawingService, currentColor);
         this.mousePositionHandler = mousePositionHandler;
         this.currentSelection = this.drawingService.baseCtx;
-
-        this.resizers = new Map<controlPoints, Vec2>();
+        this.resizers = new Map<SelectionStatus, Vec2>();
         this.resizers
-            .set(controlPoints.topLeft, {
+            .set(SelectionStatus.TOP_LEFT_BOX, {
                 x: 0,
                 y: 0,
             })
-            .set(controlPoints.topRight, {
+            .set(SelectionStatus.TOP_RIGHT_BOX, {
                 x: 1,
                 y: 0,
             })
-            .set(controlPoints.bottomLeft, {
+            .set(SelectionStatus.BOTTOM_LEFT_BOX, {
                 x: 0,
                 y: 1,
             })
-            .set(controlPoints.bottomRight, {
+            .set(SelectionStatus.BOTTOM_RIGHT_BOX, {
                 x: 1,
                 y: 1,
             })
-            .set(controlPoints.midLeft, {
+            .set(SelectionStatus.MIDDLE_LEFT_BOX, {
                 x: 0,
                 y: 1 / 2,
             })
-            .set(controlPoints.midTop, {
+            .set(SelectionStatus.TOP_MIDDLE_BOX, {
                 x: 1 / 2,
                 y: 0,
             })
-            .set(controlPoints.midRight, {
+            .set(SelectionStatus.MIDDLE_RIGHT_BOX, {
                 x: 1,
                 y: 1 / 2,
             })
-            .set(controlPoints.midBottom, {
+            .set(SelectionStatus.BOTTOM_MIDDLE_BOX, {
                 x: 1 / 2,
                 y: 1,
             });
-        // console.log(' h ' + this.resizers.get(controlPoints.midLeft)?.y);
     }
 
     onMouseMove(event: MouseEvent): void {

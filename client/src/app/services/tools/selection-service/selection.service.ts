@@ -115,24 +115,49 @@ export abstract class SelectionService extends Tool {
 
     defaultOnKeyDown(event: KeyboardEvent): void {
         event.preventDefault();
-        if (event.key === KeyboardButtons.Escape) this.cancelSelection();
-        if (SelectionService.selectionActive) {
-            if (event.key === KeyboardButtons.Left) {
-                this.activeDistance.x = -PIXELS_ARROW_STEPS;
+        if (event.key === KeyboardButtons.Magnetism && SelectionService.selectionActive) {
+            this.magnetismService.startKeys(this.drawingService.selectedAreaCtx);
+            this.isMagnetismOff = !this.isMagnetismOff;
+        }
+        if (this.isMagnetismOff) {
+            if (event.key === KeyboardButtons.Escape) this.cancelSelection();
+            if (SelectionService.selectionActive) {
+                if (event.key === KeyboardButtons.Left) {
+                    this.activeDistance.x = -PIXELS_ARROW_STEPS;
+                }
+                if (event.key === KeyboardButtons.Down) {
+                    this.activeDistance.y = PIXELS_ARROW_STEPS;
+                }
+                if (event.key === KeyboardButtons.Up) {
+                    this.activeDistance.y = -PIXELS_ARROW_STEPS;
+                }
+                if (event.key === KeyboardButtons.Right) {
+                    this.activeDistance.x = PIXELS_ARROW_STEPS;
+                }
+                this.firstGrid.x = this.topLeftCorner.x += this.activeDistance.x;
+                this.firstGrid.y = this.topLeftCorner.y += this.activeDistance.y;
+                this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
+                this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
             }
-            if (event.key === KeyboardButtons.Down) {
-                this.activeDistance.y = PIXELS_ARROW_STEPS;
+        } else {
+            switch (event.key) {
+                case KeyboardButtons.Up: {
+                    this.magnetismService.findNearestLineTop();
+                    break;
+                }
+                case KeyboardButtons.Down: {
+                    this.magnetismService.findNearestLineDown();
+                    break;
+                }
+                case KeyboardButtons.Right: {
+                    this.magnetismService.findNearestLineRight();
+                    break;
+                }
+                case KeyboardButtons.Left: {
+                    this.magnetismService.findNearestLineLeft();
+                    break;
+                }
             }
-            if (event.key === KeyboardButtons.Up) {
-                this.activeDistance.y = -PIXELS_ARROW_STEPS;
-            }
-            if (event.key === KeyboardButtons.Right) {
-                this.activeDistance.x = PIXELS_ARROW_STEPS;
-            }
-            this.firstGrid.x = this.topLeftCorner.x += this.activeDistance.x;
-            this.firstGrid.y = this.topLeftCorner.y += this.activeDistance.y;
-            this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
-            this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
         }
     }
 
