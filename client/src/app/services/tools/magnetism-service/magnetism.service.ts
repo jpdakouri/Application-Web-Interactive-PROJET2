@@ -5,6 +5,7 @@ import { CurrentColorService } from '@app/services/current-color/current-color.s
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
 import { SelectionStatus } from '@app/utils/enums/selection-resizer-status';
+import { ToolCommand } from '@app/utils/interfaces/tool-command';
 
 export enum controlPoints {
     topLeft = 'topLeft',
@@ -66,7 +67,6 @@ export class MagnetismService extends Tool {
         const topRightCornerX = this.currentSelection.canvas.width + this.currentSelection.canvas.offsetLeft;
         const kThGrid = Math.floor(topRightCornerX / this.gridSize) + 1;
         const num = kThGrid * this.gridSize - topRightCornerX + this.currentSelection.canvas.offsetLeft;
-        console.log('rightAfter ' + this.currentSelection.canvas.style.left);
         this.currentSelection.canvas.style.left = num + 'px';
         return num;
     }
@@ -75,7 +75,6 @@ export class MagnetismService extends Tool {
         const kThGrid = Math.floor(this.currentSelection.canvas.offsetLeft / this.gridSize) - 1 / 100;
         const num = kThGrid * this.gridSize;
         this.currentSelection.canvas.style.left = num + 'px';
-        console.log('leftAfter ' + this.currentSelection.canvas.style.left);
         return num;
     }
 
@@ -87,12 +86,12 @@ export class MagnetismService extends Tool {
         return num;
     }
 
-    findNearestLineDown(): void {
+    findNearestLineDown(): number {
         const bottom = this.currentSelection.canvas.height + this.currentSelection.canvas.offsetTop;
         const kThGrid = Math.floor(bottom / this.gridSize) + 1;
         const num = this.currentSelection.canvas.offsetTop - bottom + kThGrid * this.gridSize;
         this.currentSelection.canvas.style.top = num + 'px';
-        console.log('DownAfter ' + this.currentSelection.canvas.style.left);
+        return num;
     }
 
     updatePosition(grid: number): void {
