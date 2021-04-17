@@ -55,7 +55,7 @@ export class CanvasResizerService {
     }
 
     calculateNewCanvasSize(canvasSize: Vec2): Vec2 {
-        console.log('calculate new Canvas Size called');
+        // console.log('calculate new Canvas Size called');
         const deltaX = this.mouseService.calculateDeltaX();
         const deltaY = this.mouseService.calculateDeltaY();
         let newCoordinate = { x: Math.round(canvasSize.x), y: Math.round(canvasSize.y) };
@@ -80,7 +80,7 @@ export class CanvasResizerService {
     }
 
     calculateCanvasSize(): Vec2 {
-        console.log('calculate Canvas Size called');
+        // console.log('calculate Canvas Size called');
         const workingZone: Vec2 = this.calculateWorkingZoneSize();
         const newWidth = Math.round(workingZone.x / 2);
         const newHeight = Math.round(workingZone.y / 2);
@@ -118,7 +118,7 @@ export class CanvasResizerService {
     }
 
     updatePreviewCanvasSize(newCoordinate: Vec2): void {
-        console.log('update preview canvas called');
+        // console.log('update preview canvas called');
 
         this.canvasPreviewHeight = newCoordinate.y;
         this.canvasPreviewWidth = newCoordinate.x;

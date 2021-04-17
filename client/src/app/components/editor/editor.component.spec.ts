@@ -146,6 +146,7 @@ describe('EditorComponent', () => {
 
     it(' onKeyDown should not call emitToolChange if shift is pressed or the key is inalid ', () => {
         let keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { shiftKey: true });
+        spyOn<any>(component, 'blockKeysEvent').and.stub();
         component.onKeyDown(keyBordPrevent);
         expect(toolManagerServiceMock.emitToolChange).not.toHaveBeenCalled();
 

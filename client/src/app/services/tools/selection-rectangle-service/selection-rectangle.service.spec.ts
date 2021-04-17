@@ -9,7 +9,7 @@ import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { SelectionRectangleService } from './selection-rectangle.service';
 
-fdescribe('SelectionRectangleService', () => {
+describe('SelectionRectangleService', () => {
     let service: SelectionRectangleService;
     let serviceMousePositionHandler: MousePositionHandlerService;
     let mouseEvent: MouseEvent;
@@ -139,11 +139,12 @@ fdescribe('SelectionRectangleService', () => {
         expect(service['dragActive']).toBeFalse();
     });
 
-    it('Esc key should clear the canvas when pressed', () => {
+    it('Esc key should end selection', () => {
         const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Escape });
-        SelectionService.selectionActive = true;
+        spyOn<any>(service, 'updatePreview').and.stub();
+        spyOn<any>(service, 'cancelSelection').and.stub();
         service.onKeyDown(keyBordPrevent);
-        expect(SelectionService.selectionActive).toBe(false);
+        expect(service.cancelSelection).toHaveBeenCalled();
     });
 
     it('Shift key should call makeSquare when pressed', () => {

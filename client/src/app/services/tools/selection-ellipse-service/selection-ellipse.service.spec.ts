@@ -144,11 +144,12 @@ describe('SelectionEllipseService', () => {
         expect(service['dragActive']).toBeFalse();
     });
 
-    it('Esc key should clear the canvas when pressed', () => {
+    it('Esc key should end selection', () => {
         const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Escape });
-        SelectionService.selectionActive = true;
+        spyOn<any>(service, 'updatePreview').and.stub();
+        spyOn<any>(service, 'cancelSelection').and.stub();
         service.onKeyDown(keyBordPrevent);
-        expect(SelectionService.selectionActive).toBe(false);
+        expect(service.cancelSelection).toHaveBeenCalled();
     });
 
     it('Shift key should call makeCircle when pressed', () => {
