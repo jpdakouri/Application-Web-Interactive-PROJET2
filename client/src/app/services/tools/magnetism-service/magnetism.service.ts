@@ -25,6 +25,7 @@ const RANGE = 30;
 export class MagnetismService extends Tool {
     private resizers: Map<SelectionStatus, Vec2>;
     private currentSelection: CanvasRenderingContext2D;
+    private status: SelectionStatus;
 
     gridSize: number;
     lastPosition: Vec2;
@@ -35,38 +36,14 @@ export class MagnetismService extends Tool {
         this.currentSelection = this.drawingService.baseCtx;
         this.resizers = new Map<SelectionStatus, Vec2>();
         this.resizers
-            .set(SelectionStatus.TOP_LEFT_BOX, {
-                x: 0,
-                y: 0,
-            })
-            .set(SelectionStatus.TOP_RIGHT_BOX, {
-                x: 1,
-                y: 0,
-            })
-            .set(SelectionStatus.BOTTOM_LEFT_BOX, {
-                x: 0,
-                y: 1,
-            })
-            .set(SelectionStatus.BOTTOM_RIGHT_BOX, {
-                x: 1,
-                y: 1,
-            })
-            .set(SelectionStatus.MIDDLE_LEFT_BOX, {
-                x: 0,
-                y: 1 / 2,
-            })
-            .set(SelectionStatus.TOP_MIDDLE_BOX, {
-                x: 1 / 2,
-                y: 0,
-            })
-            .set(SelectionStatus.MIDDLE_RIGHT_BOX, {
-                x: 1,
-                y: 1 / 2,
-            })
-            .set(SelectionStatus.BOTTOM_MIDDLE_BOX, {
-                x: 1 / 2,
-                y: 1,
-            });
+            .set(SelectionStatus.TOP_LEFT_BOX, { x: 0, y: 0 })
+            .set(SelectionStatus.TOP_RIGHT_BOX, { x: 1, y: 0 })
+            .set(SelectionStatus.BOTTOM_LEFT_BOX, { x: 0, y: 1 })
+            .set(SelectionStatus.BOTTOM_RIGHT_BOX, { x: 1, y: 1 })
+            .set(SelectionStatus.MIDDLE_LEFT_BOX, { x: 0, y: 1 / 2 })
+            .set(SelectionStatus.TOP_MIDDLE_BOX, { x: 1 / 2, y: 0 })
+            .set(SelectionStatus.MIDDLE_RIGHT_BOX, { x: 1, y: 1 / 2 })
+            .set(SelectionStatus.BOTTOM_MIDDLE_BOX, { x: 1 / 2, y: 1 });
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -77,7 +54,7 @@ export class MagnetismService extends Tool {
     }
 
     startKeys(ctx: CanvasRenderingContext2D): void {
-        console.log('Magnetism Start');
+        console.log('Magnetism ON');
 
         this.currentSelection = ctx;
         this.gridSize = this.drawingService.gridSize;
@@ -85,34 +62,26 @@ export class MagnetismService extends Tool {
         this.updatePosition(this.gridSize);
     }
 
-    findNearestLineRight(): void {
+    findNearestLineRight(): number {
         const topRightCornerX = this.currentSelection.canvas.width + this.currentSelection.canvas.offsetLeft;
         const kThGrid = Math.floor(topRightCornerX / this.gridSize) + 1;
         const num = kThGrid * this.gridSize - topRightCornerX + this.currentSelection.canvas.offsetLeft;
-        // console.log(topRightCornerX);
-        // console.log(kThGrid, num + this.currentSelection.canvas.width);
-        this.currentSelection.canvas.style.left = num + 'px';
         console.log('rightAfter ' + this.currentSelection.canvas.style.left);
+        this.currentSelection.canvas.style.left = num + 'px';
+        return num;
     }
 
     findNearestLineLeft(): number {
         const kThGrid = Math.floor(this.currentSelection.canvas.offsetLeft / this.gridSize);
         const num = kThGrid * this.gridSize;
-        // console.log(this.currentSelection.canvas.offsetLeft);
-        // console.log(kThGrid, num);
-        // this.currentSelection.canvas.style.left = num + 'px';
+        this.currentSelection.canvas.style.left = num + 'px';
         return num;
-        // this.currentSelection.translate(num - this.currentSelection.canvas.offsetLeft, 0);
-        // console.log(' in left ' + this.currentSelection.canvas.offsetLeft);
-        // this.currentSelection.canvas.style.left = num;
     }
 
     findNearestLineTop(): number {
         const kThGrid = Math.floor(this.currentSelection.canvas.offsetTop / this.gridSize);
         const num = kThGrid * this.gridSize;
-        // console.log(this.currentSelection.canvas.offsetTop);
-        // console.log(kThGrid, num);
-        // this.currentSelection.canvas.style.top = num + 'px';
+        this.currentSelection.canvas.style.top = num + 'px';
         return num;
     }
 
@@ -120,9 +89,8 @@ export class MagnetismService extends Tool {
         const bottom = this.currentSelection.canvas.height + this.currentSelection.canvas.offsetTop;
         const kThGrid = Math.floor(bottom / this.gridSize) + 1;
         const num = this.currentSelection.canvas.offsetTop - bottom + kThGrid * this.gridSize;
-        // console.log(bottom);
-        // console.log(kThGrid, num + this.currentSelection.canvas.height);
-        this.currentSelection.canvas.style.left = num + 'px';
+        this.currentSelection.canvas.style.top = num + 'px';
+        console.log('leftAfter ' + this.currentSelection.canvas.style.left);
     }
 
     updatePosition(grid: number): void {
@@ -190,11 +158,24 @@ export class MagnetismService extends Tool {
         return Math.abs(mouseCoord.x) <= RANGE && Math.abs(mouseCoord.y) <= RANGE;
     }
 
+    setStatus(status: SelectionStatus): void {
+        this.status = status;
+    }
+
     setCoordToNearestCrossOnGrid(mouseCoord: Vec2): void {
+        // this.resizers.get()
         const nearestCross = {
             x: this.gridSize * Math.floor(mouseCoord.x / this.gridSize),
             y: this.gridSize * Math.floor(mouseCoord.y / this.gridSize),
         };
+
+        // switch (SelectionStatus) {
+        //     case value:
+        //         break;
+
+        //     default:
+        //         break;
+        // }
 
         const distance = Math.hypot(nearestCross.x - mouseCoord.x, nearestCross.y - mouseCoord.y);
         if (distance <= 2) {

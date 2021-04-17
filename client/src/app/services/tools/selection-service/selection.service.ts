@@ -120,6 +120,7 @@ export abstract class SelectionService extends Tool {
             this.isMagnetismOff = !this.isMagnetismOff;
         }
         if (this.isMagnetismOff) {
+            console.log('Magnetism OFF');
             if (event.key === KeyboardButtons.Escape) this.cancelSelection();
             if (SelectionService.selectionActive) {
                 if (event.key === KeyboardButtons.Left) {
