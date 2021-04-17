@@ -11,6 +11,7 @@ import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
     providedIn: 'root',
 })
 export abstract class SelectionService extends Tool {
+    static isSelectionStarted: boolean;
     static selectionActive: boolean;
     firstGrid: Vec2;
     topLeftCorner: Vec2;
@@ -24,7 +25,6 @@ export abstract class SelectionService extends Tool {
     initialTopLeftCorner?: Vec2;
     height: number;
     width: number;
-    isSelectionDone: boolean;
 
     currentColorService: CurrentColorService;
     constructor(drawingService: DrawingService, currentColorService: CurrentColorService) {
@@ -32,7 +32,7 @@ export abstract class SelectionService extends Tool {
         this.currentColorService = currentColorService;
         this.topLeftCorner = { x: 0, y: 0 };
         this.offset = { x: 0, y: 0 };
-        SelectionService.selectionActive = this.dragActive = false;
+        SelectionService.isSelectionStarted = SelectionService.selectionActive = this.dragActive = false;
         this.buffer = true;
         this.drawingService.selectedAreaCtx = this.drawingService.baseCtx;
         this.activeDistance = { x: 0, y: 0 };
@@ -56,11 +56,10 @@ export abstract class SelectionService extends Tool {
     abstract registerUndo(imageData: ImageData): void;
 
     deselect(): void {
-        SelectionService.selectionActive = false;
+        SelectionService.isSelectionStarted = false;
         this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
-        this.isSelectionDone = false;
+        SelectionService.selectionActive = false;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        // this.drawingService.previewCtx.canvas.style.top = this.drawingService.previewCtx.canvas.style.left = 0 + 'px';
     }
 
     drawSelectionOnBase(imageData: ImageData, topLeftCorner: Vec2): void {
@@ -74,8 +73,8 @@ export abstract class SelectionService extends Tool {
     }
 
     setSelection(imageData: ImageData): void {
+        SelectionService.isSelectionStarted = true;
         SelectionService.selectionActive = true;
-        this.isSelectionDone = true;
         this.topLeftCorner.x = 0;
         this.topLeftCorner.y = 0;
         this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
@@ -91,7 +90,7 @@ export abstract class SelectionService extends Tool {
     }
 
     defaultOnKeyUp(event: KeyboardEvent): void {
-        if (SelectionService.selectionActive) {
+        if (SelectionService.isSelectionStarted) {
             switch (event.key) {
                 case KeyboardButtons.Up:
                 case KeyboardButtons.Down: {
@@ -133,7 +132,7 @@ export abstract class SelectionService extends Tool {
         }
     }
 
-    abstract moveBorderPreview(newPos: Vec2): void;
+    abstract moveBorderPreview(newPos?: Vec2): void;
 
     updateTopLeftCorner(): void {
         if (this.firstGridClip.x > this.finalGridClip.x) {
@@ -177,6 +176,7 @@ export abstract class SelectionService extends Tool {
         this.drawingService.selectedAreaCtx.canvas.width = 0;
         this.drawingService.selectedAreaCtx.canvas.height = 0;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        SelectionService.isSelectionStarted = false;
         SelectionService.selectionActive = false;
         this.topLeftCorner = { x: 0, y: 0 };
     }

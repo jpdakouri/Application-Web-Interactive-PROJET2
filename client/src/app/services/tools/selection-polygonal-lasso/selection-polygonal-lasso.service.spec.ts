@@ -104,7 +104,7 @@ describe('SelectionPolygonalLassoService', () => {
         expect(service.buffer).toEqual(true);
     });
 
-    it('mouseUp does nothing if buffer and SelectionActive at true ', () => {
+    it('mouseUp does nothing if buffer and selectionActive at true ', () => {
         spyOn<any>(service, 'endOfSelection').and.stub();
         SelectionService.selectionActive = false;
         service.buffer = true;

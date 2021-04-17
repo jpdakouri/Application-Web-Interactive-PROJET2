@@ -39,7 +39,7 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
         if (this.validePoint && this.mouseDown && !SelectionService.selectionActive && this.buffer) {
             this.defaultMouseUp(event);
             if (this.pathData.length > MIN_ARRAY_LENGTH && this.verifyLastPoint(this.pathData[0])) {
-                this.isSelectionDone = true;
+                SelectionService.selectionActive = true;
                 this.endOfSelection();
             }
         } else if (!this.buffer) {
