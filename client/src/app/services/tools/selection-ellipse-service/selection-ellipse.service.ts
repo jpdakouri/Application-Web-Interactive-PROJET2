@@ -85,6 +85,10 @@ export class SelectionEllipseService extends SelectionService {
         this.mouseDown = this.dragActive = this.mouseMoved = false;
     }
 
+    moveBorderPreview(newPos: Vec2): void {
+        throw new Error('Method not implemented.');
+    }
+
     private drawEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.beginPath();
         ctx.setLineDash([LINE_DASH, LINE_DASH]);

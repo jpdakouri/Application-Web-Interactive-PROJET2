@@ -60,7 +60,7 @@ export abstract class SelectionService extends Tool {
         this.drawingService.selectedAreaCtx.canvas.width = this.drawingService.selectedAreaCtx.canvas.height = 0;
         this.isSelectionDone = false;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.drawingService.previewCtx.canvas.style.top = this.drawingService.previewCtx.canvas.style.left = 0 + 'px';
+        // this.drawingService.previewCtx.canvas.style.top = this.drawingService.previewCtx.canvas.style.left = 0 + 'px';
     }
 
     drawSelectionOnBase(imageData: ImageData, topLeftCorner: Vec2): void {
@@ -109,7 +109,9 @@ export abstract class SelectionService extends Tool {
 
     defaultOnKeyDown(event: KeyboardEvent): void {
         event.preventDefault();
-        if (event.key === KeyboardButtons.Escape) this.cancelSelection();
+        if (event.key === KeyboardButtons.Escape) {
+            this.cancelSelection();
+        }
         if (SelectionService.selectionActive) {
             if (event.key === KeyboardButtons.Left) {
                 this.activeDistance.x = -PIXELS_ARROW_STEPS;
@@ -127,10 +129,11 @@ export abstract class SelectionService extends Tool {
             this.firstGrid.y = this.topLeftCorner.y += this.activeDistance.y;
             this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
             this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
-            this.drawingService.previewCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
-            this.drawingService.previewCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
+            this.moveBorderPreview(this.activeDistance);
         }
     }
+
+    abstract moveBorderPreview(newPos: Vec2): void;
 
     updateTopLeftCorner(): void {
         if (this.firstGridClip.x > this.finalGridClip.x) {
@@ -147,14 +150,16 @@ export abstract class SelectionService extends Tool {
         }
     }
 
-    updateDragPosition(grid: Vec2): void {
-        const currentCoord = { ...grid };
+    updateDragPosition(mouseCoord: Vec2): void {
+        const currentCoord = { ...mouseCoord };
         this.topLeftCorner.x = currentCoord.x + this.offset.x;
         this.topLeftCorner.y = currentCoord.y + this.offset.y;
+        this.moveBorderPreview({
+            x: this.topLeftCorner.x - 1 - this.drawingService.selectedAreaCtx.canvas.offsetLeft,
+            y: this.topLeftCorner.y - 1 - this.drawingService.selectedAreaCtx.canvas.offsetTop,
+        });
         this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
         this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
-        this.drawingService.previewCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
-        this.drawingService.previewCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
     }
 
     isClickIn(firstGrid: Vec2): boolean {
@@ -172,7 +177,6 @@ export abstract class SelectionService extends Tool {
         this.drawingService.selectedAreaCtx.canvas.width = 0;
         this.drawingService.selectedAreaCtx.canvas.height = 0;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.drawingService.previewCtx.canvas.style.top = this.drawingService.previewCtx.canvas.style.left = 0 + 'px';
         SelectionService.selectionActive = false;
         this.topLeftCorner = { x: 0, y: 0 };
     }

@@ -77,17 +77,16 @@ export abstract class LineCreatorService extends SelectionService {
     }
 
     onKeyDown(event: KeyboardEvent): void {
+        if (event.key === KeyboardButtons.Escape) {
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.clearPath();
+            this.started = false;
+        }
         if (this.started)
             switch (event.key) {
                 case KeyboardButtons.Shift:
                     this.shiftDown = true;
                     this.updatePreview();
-                    break;
-                case KeyboardButtons.Escape:
-                    this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                    this.clearPath();
-                    this.started = false;
-                    this.defaultOnKeyDown(event);
                     break;
                 case KeyboardButtons.Backspace:
                     if (this.pathData.length > 1) {

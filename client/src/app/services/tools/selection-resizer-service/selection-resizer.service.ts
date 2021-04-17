@@ -60,6 +60,9 @@ export class SelectionResizerService extends SelectionService {
             }
         }
     }
+    moveBorderPreview(newPos: Vec2): void {
+        throw new Error('Method not implemented.');
+    }
 
     onKeyDown(event: KeyboardEvent): void {
         if (event.key === KeyboardButtons.Shift) {
