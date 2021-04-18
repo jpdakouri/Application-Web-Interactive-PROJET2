@@ -113,7 +113,6 @@ describe('TextService', () => {
 
     it('#calculateTextFinalPosition should correctly calculate text-service final position if textArea is null', () => {
         const position = { x: 50, y: 50 } as Vec2;
-        // const mockTextAreaWidth = 200;
 
         document.getElementById = jasmine.createSpy('textarea').and.returnValue(null);
 
@@ -192,7 +191,6 @@ describe('TextService', () => {
         spyOn<any>(service, 'getPositionFromMouse').and.returnValue({ x: 100, y: 100 });
         const mockMouseEvent = { x: 100, y: 100 } as MouseEvent;
         const drawStyledTextOnCanvasSpy = spyOn(service, 'drawStyledTextOnCanvas').and.callThrough();
-        // tslint:disable:no-any
         const textArea = document.createElement('HTMLTextAreaElement') as HTMLTextAreaElement;
         document.getElementById = jasmine.createSpy('textarea').and.returnValue(textArea);
 
