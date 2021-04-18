@@ -17,10 +17,10 @@ export class TextService extends Tool {
     textAlign: TextAlign = TextAlign.Start;
     fontStyle: string;
     textStyles: string[];
+    numberOfRows: number;
     showTextBox: boolean;
     textBoxPosition: Vec2;
     textBoxSize: Vec2;
-    numberOfRows: number;
 
     constructor(public currentColorService: CurrentColorService, drawingService: DrawingService) {
         super(drawingService, currentColorService);
@@ -31,10 +31,9 @@ export class TextService extends Tool {
         this.fontSize = DEFAULT_FONT_SIZE;
         this.fontStyle = '';
         this.showTextBox = false;
-        // this.textBoxSize = { x: DEFAULT_TEXT_BOX_WIDTH, y: DEFAULT_TEXT_BOX_HEIGHT };
+        this.numberOfRows = 1;
         this.textBoxSize = { x: 0, y: 0 };
         this.textBoxPosition = { x: 0, y: 0 };
-        this.numberOfRows = 1;
     }
 
     onKeyDown(event: KeyboardEvent): void {
@@ -47,8 +46,6 @@ export class TextService extends Tool {
 
     onKeyUp(event: KeyboardEvent): void {
         this.numberOfRows = this.calculateNumberOfLines(this.text);
-        // const textArea = document.getElementById('textArea') as HTMLTextAreaElement;
-        // console.log(textArea.clientWidth);
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -101,7 +98,7 @@ export class TextService extends Tool {
         });
     }
 
-    calculateFontHeight(context: CanvasRenderingContext2D, text: string): number {
+    private calculateFontHeight(context: CanvasRenderingContext2D, text: string): number {
         const metrics = context.measureText(text);
         return metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
     }
@@ -116,24 +113,14 @@ export class TextService extends Tool {
 
     calculateNumberOfCols(): number {
         const maxLineLength = this.calculateMaxLineLength(this.text);
-        // const maxLineLength = this.drawingService.baseCtx.measureText(this.text).width;
-        // console.log('maxLength :' + maxLineLength);
         const lines = this.splitTextInToLines(this.text);
         const currentLine = lines[lines.length - 1];
-        // @ts-ignore
-        let previousLine = currentLine;
-        if (lines.length > 1) {
-            previousLine = lines[lines.length - 2];
-        }
-        // let numberOfCols = currentLine.length;
         let numberOfCols = maxLineLength;
 
         if (currentLine.length > maxLineLength) {
             numberOfCols = currentLine.length;
         }
-        // console.log('number of cols : ' + numberOfCols);
-        // console.log(currentLine);
-        return numberOfCols;
+        return numberOfCols + 0.15 * numberOfCols;
     }
 
     private calculateMaxLineLength(text: string): number {
