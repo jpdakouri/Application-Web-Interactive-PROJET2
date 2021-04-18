@@ -49,11 +49,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
     initCarousel(): void {
         this.subscribeInit = this.carouselService.initCarousel(this.tagFlag).subscribe((result) => {
             this.drawingArray = result;
-            if (this.drawingArray.length === 1) {
-                this.middle = 0;
-            } else {
-                this.middle = 1;
-            }
+            this.middle = this.drawingArray.length === 1 ? 0 : 1;
             this.isLoading = false;
         });
     }

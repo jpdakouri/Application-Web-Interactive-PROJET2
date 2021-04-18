@@ -18,21 +18,22 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
     }
 
     registerUndo(imageData: ImageData): void {
-        if (this.initialTopLeftCorner === undefined) return;
-        this.moveBorderPreview({
-            x: this.initialTopLeftCorner?.x - this.topLeftCorner.x,
-            y: this.initialTopLeftCorner?.y - this.topLeftCorner.y,
-        } as Vec2);
-        const finalTopLeftCorner: Vec2 | undefined = SelectionService.selectionActive ? { ...this.topLeftCorner } : undefined;
-        const command = new SelectionCommand(
-            this,
-            { x: this.width, y: this.height },
-            imageData,
-            this.initialTopLeftCorner,
-            finalTopLeftCorner,
-            this.pathData,
-        );
-        this.undoRedo.addCommand(command);
+        if (!!this.initialTopLeftCorner) {
+            this.moveBorderPreview({
+                x: this.initialTopLeftCorner?.x - this.topLeftCorner.x,
+                y: this.initialTopLeftCorner?.y - this.topLeftCorner.y,
+            } as Vec2);
+            const finalTopLeftCorner: Vec2 | undefined = SelectionService.selectionActive ? { ...this.topLeftCorner } : undefined;
+            const command = new SelectionCommand(
+                this,
+                { x: this.width, y: this.height },
+                imageData,
+                this.initialTopLeftCorner,
+                finalTopLeftCorner,
+                this.pathData,
+            );
+            this.undoRedo.addCommand(command);
+        }
     }
 
     onMouseUp(event: MouseEvent): void {
@@ -57,15 +58,16 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
     }
 
     moveBorderPreview(newPos?: Vec2): void {
-        if (newPos === undefined) return;
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        for (const point of this.pathData) {
-            point.x += newPos.x;
-            point.y += newPos.y;
+        if (!!newPos) {
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            for (const point of this.pathData) {
+                point.x += newPos.x;
+                point.y += newPos.y;
+            }
+            this.drawingService.previewCtx.strokeStyle = 'width: 3px';
+            this.drawShape(this.drawingService.previewCtx, this.pathData);
+            this.drawingService.previewCtx.stroke();
         }
-        this.drawingService.previewCtx.strokeStyle = 'width: 3px';
-        this.drawShape(this.drawingService.previewCtx, this.pathData);
-        this.drawingService.previewCtx.stroke();
     }
 
     getPrimaryColor(): string {

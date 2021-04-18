@@ -37,12 +37,12 @@ export class ToolManagerService {
         pencilService: PencilService,
         rectangleService: RectangleService,
         ellipseService: EllipseService,
-        lineService: LineService,
-        eraserService: EraserService,
+        private lineService: LineService,
+        private eraserService: EraserService,
         aerosolService: AerosolService,
         pipetteService: PipetteService,
         selectBoxService: SelectionRectangleService,
-        public selectEllipseService: SelectionEllipseService,
+        selectEllipseService: SelectionEllipseService,
         polygonService: PolygonService,
         public textService: TextService,
         paintBucket: PaintBucketService,
@@ -86,8 +86,8 @@ export class ToolManagerService {
             const currentTool = this.toolBox[this.currentTool];
             this.currentAttributes.ShapeStyle = currentTool.shapeStyle;
             this.currentAttributes.LineThickness = currentTool.lineThickness;
-            this.currentAttributes.DotRadius = currentTool.dotRadius;
-            this.currentAttributes.ShowDots = currentTool.showDots;
+            this.currentAttributes.DotRadius = lineService.dotRadius;
+            this.currentAttributes.ShowDots = lineService.showDots;
             this.currentAttributes.Frequency = currentTool.frequency;
             this.currentAttributes.JetDiameter = currentTool.jetDiameter;
             this.currentAttributes.DropletDiameter = currentTool.dropletDiameter;
@@ -116,12 +116,12 @@ export class ToolManagerService {
     }
 
     setCurrentShowDots(checked: boolean): void {
-        this.toolBox[this.currentTool].showDots = checked;
+        if (this.currentTool === ToolsNames.Line) this.lineService.showDots = checked;
         this.currentAttributes.ShowDots = checked;
     }
 
     setCurrentDotRadius(dotRadius?: number): void {
-        this.toolBox[this.currentTool].dotRadius = dotRadius;
+        if (this.currentTool === ToolsNames.Line) this.lineService.dotRadius = dotRadius;
         this.currentAttributes.DotRadius = dotRadius;
     }
 
@@ -257,6 +257,10 @@ export class ToolManagerService {
     setCurrentFontSize(fontSize?: number): void {
         this.toolBox[this.currentTool].fontSize = fontSize;
         this.currentAttributes.FontSize = fontSize;
+    }
+
+    eraserActive(): boolean {
+        return this.eraserService.isActive;
     }
 
     isCurrentTool(toolName: ToolsNames): boolean {
