@@ -123,6 +123,7 @@ export abstract class SelectionService extends Tool {
             this.magnetismService.startKeys();
             this.isMagnetismOff = !this.isMagnetismOff;
         }
+        // Fix la position du selectedAreaCtx
         if (SelectionService.isSelectionStarted) {
             if (this.isMagnetismOff) {
                 if (event.key === KeyboardButtons.Left) {
@@ -160,11 +161,9 @@ export abstract class SelectionService extends Tool {
                         break;
                     }
                     case KeyboardButtons.Right: {
-                        // this.magnetismService.findNearestLineLeft();
                         this.magnetismService.setStatus(SelectionStatus.MIDDLE_RIGHT_BOX);
                         this.magnetismService.findNearestLineRight();
                         this.magnetismService.setStatus(SelectionStatus.TOP_LEFT_BOX);
-
                         break;
                     }
                     case KeyboardButtons.Left: {
@@ -172,8 +171,11 @@ export abstract class SelectionService extends Tool {
                         break;
                     }
                 }
+                // this.firstGrid.x = this.topLeftCorner.x += this.activeDistance.x;
+                // this.firstGrid.y = this.topLeftCorner.y += this.activeDistance.y;
+                // this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
+                // this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
             }
-
             this.moveBorderPreview(this.activeDistance);
         }
     }

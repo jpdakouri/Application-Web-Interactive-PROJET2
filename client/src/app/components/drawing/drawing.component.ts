@@ -90,6 +90,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.selectionRectangleService = selectionRectangleService;
         this.selectionPolygonalLassoService = selectionPolygonalLassoService;
         this.textService = textService;
+        this.selectionResizerService = selectionResizerService;
     }
 
     ngOnInit(): void {

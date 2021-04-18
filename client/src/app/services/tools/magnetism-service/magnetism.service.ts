@@ -18,7 +18,7 @@ export enum controlPoints {
     midBottom = 'bmidBottom',
 }
 
-const RANGE = 30;
+const RANGE = 2;
 
 @Injectable({
     providedIn: 'root',
@@ -27,7 +27,6 @@ export class MagnetismService extends Tool {
     private resizers: Map<SelectionStatus, Vec2>;
     private status: SelectionStatus;
     currentSelection: CanvasRenderingContext2D;
-
     gridSize: number;
     lastPosition: Vec2;
     lockedResizer: Vec2;
@@ -51,10 +50,15 @@ export class MagnetismService extends Tool {
             .set(SelectionStatus.CENTER, { x: 1 / 2, y: 1 / 2 });
     }
 
-    // onMouseMove(event: MouseEvent): void {
-    //     // if (this.mouseDown) {
-    //     //     this.verifyInRangeCross(this.getPositionFromMouse(event));
-    //     // }
+    onMouseMove(event: MouseEvent): void {
+        if (this.mouseDown) {
+            this.verifyInRangeCross(this.getPositionFromMouse(event));
+        }
+    }
+
+    // onMouseUp(event?: MouseEvent): void {
+    //     console.log('is that bool called ???');
+    //     this.isMouseDownWhileMagnetism = false;
     // }
 
     startKeys(): void {
@@ -104,58 +108,6 @@ export class MagnetismService extends Tool {
             this.findNearestLineLeft();
             this.findNearestLineTop();
         }
-    }
-
-    isMouseOnTopLeftCorner(mouseCoord: Vec2): boolean {
-        const topLeftCorner = { x: this.drawingService.selectedAreaCtx.canvas.offsetLeft, y: this.drawingService.selectedAreaCtx.canvas.offsetTop };
-        return (
-            topLeftCorner.x - RANGE < mouseCoord.x &&
-            mouseCoord.x < topLeftCorner.x + RANGE &&
-            topLeftCorner.y - RANGE < mouseCoord.y &&
-            mouseCoord.y < topLeftCorner.y + RANGE
-        );
-    }
-
-    isMouseOnTopRightCorner(mouseCoord: Vec2): boolean {
-        const topRightCorner = {
-            x: this.currentSelection.canvas.offsetLeft + this.currentSelection.canvas.width,
-            y: this.currentSelection.canvas.height,
-        };
-
-        return (
-            topRightCorner.x - RANGE < mouseCoord.x &&
-            mouseCoord.x < topRightCorner.x + RANGE &&
-            topRightCorner.y - RANGE < mouseCoord.y &&
-            mouseCoord.y < topRightCorner.y + RANGE
-        );
-    }
-
-    isMouseOnBottomLeftCorner(mouseCoord: Vec2): boolean {
-        const bottomLeftCorner = {
-            x: this.currentSelection.canvas.offsetLeft,
-            y: this.currentSelection.canvas.height + this.currentSelection.canvas.height,
-        };
-
-        return (
-            bottomLeftCorner.x - RANGE < mouseCoord.x &&
-            mouseCoord.x < bottomLeftCorner.x + RANGE &&
-            bottomLeftCorner.y - RANGE < mouseCoord.y &&
-            mouseCoord.y < bottomLeftCorner.y + RANGE
-        );
-    }
-
-    isMouseOnBottomRightCorner(mouseCoord: Vec2): boolean {
-        const bottomRightCorner = {
-            x: this.currentSelection.canvas.offsetLeft + this.currentSelection.canvas.width,
-            y: this.currentSelection.canvas.height + this.currentSelection.canvas.height,
-        };
-
-        return (
-            bottomRightCorner.x - RANGE < mouseCoord.x &&
-            mouseCoord.x < bottomRightCorner.x + RANGE &&
-            bottomRightCorner.y - RANGE < mouseCoord.y &&
-            mouseCoord.y < bottomRightCorner.y + RANGE
-        );
     }
 
     verifyInRangeCross(mouseCoord: Vec2): boolean {

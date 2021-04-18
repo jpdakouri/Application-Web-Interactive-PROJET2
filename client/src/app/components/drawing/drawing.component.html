@@ -95,7 +95,8 @@
         [ngStyle]="{
             left: getSelectedAreaSize().x + 'px',
             top: getSelectedAreaSize().y / 2 - 2.5 + 'px',
-            transform: 'translate(' + getTopLeftCorner().x + 'px, ' + getTopLeftCorner().y + 'px)'
+            transform: 'translate(' + getTopLeftCorner().x + 'px, ' + getTopLeftCorner().y + 'px)',
+            cursor: selectionResizerService.isMagnetismOff ? 'grab' : 'grabbing'
         }"
         (mousedown)="onSelectionBoxClick(selectionStatus.MIDDLE_RIGHT_BOX)"
         *ngIf="isActiveSelection()"
