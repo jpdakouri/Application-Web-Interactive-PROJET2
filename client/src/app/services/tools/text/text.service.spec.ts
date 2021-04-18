@@ -103,15 +103,32 @@ fdescribe('TextService', () => {
     });
 
     it('#calculateNumberOfLines should be able to calculate number of lines in a text', () => {
-        let text = 'hello word \n from team 306';
+        const text = 'hello word \n from team 306';
         expect(service['calculateNumberOfLines'](text)).toEqual(2);
-
-        text = 'hello';
-        expect(service['calculateNumberOfLines'](text)).toEqual(1);
-
-        text = '';
-        expect(service['calculateNumberOfLines'](text)).toEqual(0);
     });
 
-    it('should ', () => {});
+    it('#splitTextInToLines should correctly split text in to lines', () => {
+        const text = 'hello word\nfrom\nteam 306';
+        const expectedLines = ['hello word', 'from', 'team 306'];
+        expect(service['splitTextInToLines'](text)).toEqual(expectedLines);
+    });
+
+    it('#calculateMaxLineLength should be able to correctly calculate max line length in a text ', () => {
+        const text = 'hello word\nfrom\nteam 306';
+        const expectedMaxLineLength = text.split('\n')[0].length;
+        expect(service['calculateMaxLineLength'](text)).toEqual(expectedMaxLineLength);
+    });
+
+    it('#getSingleStyle should correctly get a single style from textStyles attribute', () => {
+        service.textStyles = ['bold', 'italic'];
+
+        expect(service.getSingleStyle('bold')).toEqual('bold');
+        expect(service.getSingleStyle('')).not.toEqual('bold');
+        expect(service.getSingleStyle('italic')).toEqual('italic');
+    });
+
+    it('#onMouseDwon should ', () => {});
+    it('#fillTextMultiLine should ', () => {});
+    it('#calculateFontHeight should ', () => {});
+    it('#calculateNumberOfCols should ', () => {});
 });
