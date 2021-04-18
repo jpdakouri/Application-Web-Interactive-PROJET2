@@ -40,7 +40,7 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
         if (this.validePoint && this.mouseDown && !SelectionService.selectionActive && this.buffer) {
             this.defaultMouseUp(event);
             if (this.pathData.length > MIN_ARRAY_LENGTH && this.verifyLastPoint(this.pathData[0])) {
-                SelectionService.selectionActive = true;
+                SelectionService.selectionActive = SelectionService.isSelectionStarted = true;
                 this.endOfSelection();
             }
         } else if (!this.buffer) {
@@ -193,6 +193,7 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
     }
 
     executeCommand(command: SelectionCommand): void {
+        console.log(command.path);
         if (command.path !== undefined) {
             this.drawingService.baseCtx.fillStyle = 'white';
             this.drawShape(this.drawingService.baseCtx, command.path);

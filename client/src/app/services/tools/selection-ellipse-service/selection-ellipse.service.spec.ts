@@ -156,6 +156,13 @@ describe('SelectionEllipseService', () => {
         expect(service.cancelSelection).toHaveBeenCalled();
     });
 
+    it('keyup other than shif call default ', () => {
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Escape });
+        spyOn<any>(service, 'defaultOnKeyUp').and.stub();
+        service.onKeyUp(keyBordPrevent);
+        expect(service.defaultOnKeyUp).toHaveBeenCalled();
+    });
+
     it('Shift key should call makeCircle when pressed', () => {
         service.onMouseDown(mouseEvent);
         const makeCircleSpy = spyOn<any>(serviceMousePositionHandler, 'makeCircle').and.callThrough();
