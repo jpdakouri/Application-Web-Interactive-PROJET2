@@ -265,7 +265,7 @@ fdescribe('SelectionResizerService', () => {
 
     it('isSelectionNull should set selectionActive to false if widht=offset', () => {
         service['width'] = service['offset'].x;
-        spyOn<any>(service, 'isSelectionNull').and.callThrough();
+        service['isSelectionNull']();
         expect(SelectionResizerService['selectionActive']).toBeFalse();
     });
 
@@ -441,6 +441,55 @@ fdescribe('SelectionResizerService', () => {
         expect(service['canvasHeight']).toEqual(expectedHeight);
     });
 
+    it('isSquare should set the right values for BottomRightBox', () => {
+        service.initialTopLeftCorner = { x: 0, y: 0 };
+        service['shiftDown'] = true;
+        service.status = SelectionStatus.BOTTOM_RIGHT_BOX;
+        service['canvasWidth'] = 20;
+        service['canvasHeight'] = 15;
+        service['initialBottomRightCorner'] = { x: 50, y: 50 };
+        let expectedResultX = -15;
+        let expectedResultY = -15;
+        service['revertX'] = true;
+        service['revertY'] = true;
+        service['isSquare']();
+        expect(service.topLeftCorner.x).toEqual(expectedResultX);
+        expect(service.topLeftCorner.y).toEqual(expectedResultY);
+        service['revertX'] = false;
+        service['revertY'] = false;
+        const expectedWidth = 15;
+        const expectedHeight = 15;
+        expectedResultX = 0;
+        expectedResultY = 0;
+        service['isSquare']();
+        expect(service.topLeftCorner.x).toEqual(expectedResultX);
+        expect(service.topLeftCorner.y).toEqual(expectedResultY);
+        expect(service['canvasWidth']).toEqual(expectedWidth);
+        expect(service['canvasHeight']).toEqual(expectedHeight);
+    });
 
+    it('isSquare should set the right values for BottomLeftBox', () => {
+        service.initialTopLeftCorner = { x: 0, y: 0 };
+        service['shiftDown'] = true;
+        service.status = SelectionStatus.BOTTOM_LEFT_BOX;
+        service['canvasWidth'] = 20;
+        service['canvasHeight'] = 15;
+        service['initialBottomRightCorner'] = { x: 50, y: 50 };
+        let expectedResultX = 50;
+        const expectedResultY = -15;
+        service['revertX'] = true;
+        service['revertY'] = true;
+        service['isSquare']();
+        expect(service.topLeftCorner.x).toEqual(expectedResultX);
+        expect(service.topLeftCorner.y).toEqual(expectedResultY);
+        service['revertX'] = false;
+        const expectedWidth = 15;
+        const expectedHeight = 15;
+        expectedResultX = 35;
+        service['isSquare']();
+        expect(service.topLeftCorner.x).toEqual(expectedResultX);
+        expect(service['canvasWidth']).toEqual(expectedWidth);
+        expect(service['canvasHeight']).toEqual(expectedHeight);
+    });
     // tslint:disable-next-line:max-file-line-count
 });

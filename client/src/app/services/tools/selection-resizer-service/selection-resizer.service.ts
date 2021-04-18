@@ -278,10 +278,10 @@ export class SelectionResizerService extends SelectionService {
     }
 
     registerUndo(imageData: ImageData): void {
-        throw new Error('Method not implemented.');
+        return;
     }
 
     executeCommand(command: ToolCommand): void {
-        throw new Error('Method not implemented.');
+        return;
     }
 }
