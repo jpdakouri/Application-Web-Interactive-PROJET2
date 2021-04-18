@@ -9,6 +9,7 @@ import { StampService } from '@app/services/tools/stamp-service/stamp.service';
 import { TextService } from '@app/services/tools/text-service/text.service';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { Stamp } from '@app/utils/enums/stamp';
+import { TextFont } from '@app/utils/enums/text-font.enum';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 import { ToolManagerService } from './tool-manager.service';
 
@@ -29,8 +30,7 @@ describe('ToolManagerService', () => {
         pencilServiceSpy = jasmine.createSpyObj('PencilService', ['onMouseMove']);
         aerosolServiceSpy = jasmine.createSpyObj('AerosolService', ['onMouseMove']);
         eraserServiceSpy = jasmine.createSpyObj('EraserService', ['onMouseMove']);
-        // @ts-ignore
-        textServiceSpy = jasmine.createSpy('TextService', '');
+        textServiceSpy = jasmine.createSpyObj('TextService', ['drawStyledTextOnCanvas']);
 
         TestBed.configureTestingModule({
             providers: [
@@ -238,6 +238,12 @@ describe('ToolManagerService', () => {
         expect(service.currentAttributes.LineThickness).not.toEqual(WRONG_FAKE_LINE_THICKNESS);
     });
 
+    it('#emitToolChange should draw text on canvas tool change', () => {
+        service.emitToolChange(ToolsNames.Text);
+        service.emitToolChange(ToolsNames.Pencil);
+        expect(textServiceSpy.drawStyledTextOnCanvas).toHaveBeenCalled();
+    });
+
     it('getStampScalingFactor gets the scaling factor', () => {
         TestBed.inject(StampService).scalingFactor = 2;
         expect(service.getStampScalingFactor()).toBe(2);
@@ -266,5 +272,22 @@ describe('ToolManagerService', () => {
         expect(stamp.selectedStamp).toBe(Stamp.Hashtag);
         service.setSelectedStamp('star');
         expect(stamp.selectedStamp).toBe(Stamp.Star);
+    });
+
+    it('#getCurrentFontSize should return textService font size', () => {
+        textServiceSpy.fontSize = 2;
+        expect(service.getCurrentFontSize()).toBe(2);
+    });
+
+    it('#setCurrentFontSize should correctly set font size', () => {
+        const fontSize = 2;
+        service.setCurrentFontSize(fontSize);
+        expect(textServiceSpy.fontSize).toBe(2);
+    });
+
+    it('#setCurrentFontFace should correctly set font face', () => {
+        const fontFace = TextFont.Arial;
+        service.setCurrentFontFace(fontFace);
+        expect(textServiceSpy.fontFace).toBe(fontFace);
     });
 });

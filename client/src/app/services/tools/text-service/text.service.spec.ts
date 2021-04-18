@@ -69,7 +69,7 @@ describe('TextService', () => {
         expect(calculateNumberOfLinesSpy).toHaveBeenCalled();
     });
 
-    it('#drawStyledTextOnCanvas should draw text-service with current style', () => {
+    it('#drawStyledTextOnCanvas should draw text-service with current style and hide text box', () => {
         const position = { x: 100, y: 100 } as Vec2;
         const fillTextMultiLineSpy = spyOn(service, 'fillTextMultiLine').and.callThrough();
         const mockText = 'hello word';
@@ -78,8 +78,8 @@ describe('TextService', () => {
         service.textAlign = TextAlign.Start;
 
         service.drawStyledTextOnCanvas();
-
         expect(fillTextMultiLineSpy).toHaveBeenCalledWith(drawingServiceSpy.baseCtx, mockText, position);
+        expect(service.showTextBox).toBe(false);
     });
 
     it('#drawStyledTextOnCanvas should not draw text-service on canvas if text-service is empty', () => {

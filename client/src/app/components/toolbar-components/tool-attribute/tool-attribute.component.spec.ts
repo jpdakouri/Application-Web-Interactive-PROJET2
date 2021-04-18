@@ -19,11 +19,14 @@ import { ToolAttributeComponent } from './tool-attribute.component';
 
 import SpyObj = jasmine.SpyObj;
 import { MatOptionModule } from '@angular/material/core';
+import { TextService } from '@app/services/tools/text-service/text.service';
 
 describe('ToolAttributeBarComponent', () => {
     let component: ToolAttributeComponent;
     let fixture: ComponentFixture<ToolAttributeComponent>;
     let toolManagerServiceSpy: SpyObj<ToolManagerService>;
+    // @ts-ignore
+    let textServiceSpy: SpyObj<TextService>;
 
     beforeEach(async(() => {
         toolManagerServiceSpy = jasmine.createSpyObj('ToolManagerService', [
@@ -43,7 +46,13 @@ describe('ToolAttributeBarComponent', () => {
             'getCurrentNumberOfSides',
             'setCurrentNumberOfSides',
             'getCurrentTolerance',
+            'getCurrentFontSize',
+            'setCurrentFontSize',
+            'setCurrentFontFace',
         ]);
+        // @ts-ignore
+        textServiceSpy = jasmine.createSpyObj('TextService', ['']);
+
         TestBed.configureTestingModule({
             declarations: [
                 ToolAttributeComponent,
@@ -54,7 +63,10 @@ describe('ToolAttributeBarComponent', () => {
                 HueSelectorComponent,
                 PipettePreviewComponent,
             ],
-            providers: [{ provide: ToolManagerService, useValue: toolManagerServiceSpy }],
+            providers: [
+                { provide: ToolManagerService, useValue: toolManagerServiceSpy },
+                { provide: TextService, useValue: textServiceSpy },
+            ],
             imports: [
                 BrowserAnimationsModule,
                 MatInputModule,

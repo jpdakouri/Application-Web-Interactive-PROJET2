@@ -63,6 +63,7 @@ export class TextService extends Tool {
         if (this.text === '') return;
         const textFinalPosition = this.calculateTextFinalPosition(this.textBoxPosition);
         this.fillTextMultiLine(this.drawingService.baseCtx, this.text, textFinalPosition);
+        this.showTextBox = false;
     }
 
     private calculateTextFinalPosition(currentPosition: Vec2): Vec2 {
