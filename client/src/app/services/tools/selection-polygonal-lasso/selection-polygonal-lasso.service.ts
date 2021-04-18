@@ -193,7 +193,6 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
     }
 
     executeCommand(command: SelectionCommand): void {
-        console.log(command.path);
         if (command.path !== undefined) {
             this.drawingService.baseCtx.fillStyle = 'white';
             this.drawShape(this.drawingService.baseCtx, command.path);

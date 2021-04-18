@@ -96,32 +96,26 @@ describe('DrawingService', () => {
     });
 
     it('should not create new drawing when canvas is not blank', () => {
-        const clearCanvasStub = spyOn(service, 'clearCanvas').and.callThrough();
-        const rectangleWidth = 1;
-        const rectangleHeight = 1;
-        service.baseCtx.fillRect(0, 0, rectangleWidth, rectangleHeight);
-        service.saveCanvas();
-        spyOn(window, 'confirm').and.returnValue(false);
-        service.createNewDrawing(true);
-        const isCanvasBlank = service.isCanvasBlank();
+        const clearCanvasStub = spyOn(service, 'clearCanvas').and.stub();
+        service.baseCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
+        service.previewCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
 
-        expect(isCanvasBlank).toBeFalse();
-        expect(window.confirm).toHaveBeenCalledWith("Le canvas n'est pas vide! Voulez-vous procéder tout de même?");
+        spyOn(window, 'confirm').and.returnValue(false);
+        spyOn(service, 'isCanvasBlank').and.returnValue(false);
+        spyOn(service, 'continueDrawing').and.stub();
+        service.createNewDrawing(true);
         expect(clearCanvasStub).not.toHaveBeenCalled();
     });
 
     it('should not clear the local storage on create new drawing when canvas is not blank', () => {
-        const localStorageClearSpy = spyOn(window.localStorage, 'clear').and.callThrough();
-        const rectangleWidth = 10;
-        const rectangleHeight = 10;
-        service.baseCtx.fillRect(0, 0, rectangleWidth, rectangleHeight);
+        const localStorageClearSpy = spyOn(window.localStorage, 'clear').and.stub();
+
+        service.baseCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         service.saveCanvas();
         spyOn(window, 'confirm').and.returnValue(false);
         service.createNewDrawing(true);
-        const isCanvasBlank = service.isCanvasBlank();
+        spyOn(service, 'isCanvasBlank').and.returnValue(false);
 
-        expect(isCanvasBlank).toBeFalse();
-        expect(window.confirm).toHaveBeenCalledWith("Le canvas n'est pas vide! Voulez-vous procéder tout de même?");
         expect(localStorageClearSpy).not.toHaveBeenCalled();
     });
 

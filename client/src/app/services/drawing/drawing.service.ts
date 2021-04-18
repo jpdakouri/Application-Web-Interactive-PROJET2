@@ -113,7 +113,6 @@ export class DrawingService {
         if (!this.isCanvasBlank() && localStorage.getItem('canvasInfo')) {
             const dataURL = localStorage.getItem('canvasInfo');
             const image = new Image();
-            console.log(dataURL);
             image.src = dataURL as string;
             if (dataURL) {
                 this.restoreCanvas();

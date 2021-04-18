@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
+import { MatOptionModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -18,7 +19,6 @@ import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { ToolAttributeComponent } from './tool-attribute.component';
 
 import SpyObj = jasmine.SpyObj;
-import { MatOptionModule } from '@angular/material/core';
 
 describe('ToolAttributeBarComponent', () => {
     let component: ToolAttributeComponent;
