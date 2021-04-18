@@ -37,7 +37,6 @@ export class TextService extends Tool {
     }
 
     onKeyDown(event: KeyboardEvent): void {
-        console.log(this.text);
         if (event.key === KeyboardButtons.Escape && this.showTextBox) {
             this.showTextBox = false;
             this.text = '';
@@ -98,7 +97,7 @@ export class TextService extends Tool {
         const lines = this.splitTextInToLines(text);
         lines.forEach((line: string) => {
             context.fillText(line, textPosition.x, textPosition.y);
-            textPosition.y += fontHeight + FONT_HEIGHT_FACTOR * fontHeight;
+            textPosition.y += fontHeight - FONT_HEIGHT_FACTOR * fontHeight;
         });
     }
 
@@ -115,27 +114,28 @@ export class TextService extends Tool {
         return text.split(NEW_LINE_SEPARATOR);
     }
 
-    calculateNumberOfCols(): number {
-        const maxLineLength = this.calculateMaxLineLength(this.text);
-        const lines = this.splitTextInToLines(this.text);
-        const currentLine = lines[lines.length - 1];
-        let numberOfCols = maxLineLength;
-
-        if (currentLine.length > maxLineLength) {
-            numberOfCols = currentLine.length;
-        }
-        return numberOfCols + 0.15 * numberOfCols;
+    calculateTextBoxWidth(): number {
+        // console.log(this.calculateLongestLineWidth(this.text));
+        return this.calculateLongestLineWidth(this.text);
     }
 
-    private calculateMaxLineLength(text: string): number {
+    private calculateLongestLineWidth(text: string): number {
         const lines = this.splitTextInToLines(text);
-        let maxLineLength = lines[0].length;
+        let longestLineWidth = this.calculateTextWidth(this.drawingService.baseCtx, lines[0]);
         for (const line of lines) {
-            if (line.length > maxLineLength) {
-                maxLineLength = line.length;
+            const lineWidth = this.calculateTextWidth(this.drawingService.baseCtx, line);
+            if (lineWidth > longestLineWidth) {
+                longestLineWidth = lineWidth;
             }
         }
-        return maxLineLength;
+        return longestLineWidth;
+    }
+
+    calculateTextWidth(context: CanvasRenderingContext2D, text: string): number {
+        context.font = ` ${this.getCurrentStyle()} ${this.fontSize}px ${this.fontFace}`;
+        context.textAlign = this.textAlign;
+
+        return context.measureText(text).width;
     }
 
     getCurrentStyle(): string {

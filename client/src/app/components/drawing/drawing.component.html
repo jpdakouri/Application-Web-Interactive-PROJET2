@@ -70,9 +70,7 @@
         <textarea
             class=""
             id="textArea"
-            placeholder="Entrez votre texte ici"
             autofocus
-            [cols]="textService.calculateNumberOfCols()"
             [rows]="textService.numberOfRows"
             #textArea
             [(ngModel)]="textService.text"
@@ -83,7 +81,8 @@
                 'text-align': textService.textAlign,
                 'font-weight': textService.getSingleStyle('bold'),
                 'font-style': textService.getSingleStyle('italic'),
-                'color': textService.currentColorService.getPrimaryColorRgb()
+                'color': textService.currentColorService.getPrimaryColorRgb(),
+                'width': textService.calculateTextBoxWidth() + 'px'
             }"
         ></textarea>
     </div>

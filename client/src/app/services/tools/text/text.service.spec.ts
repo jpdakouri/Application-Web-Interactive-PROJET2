@@ -121,21 +121,21 @@ fdescribe('TextService', () => {
         expect(service['splitTextInToLines'](text)).toEqual(expectedLines);
     });
 
-    it('#calculateMaxLineLength should be able to correctly calculate max line length in a text ', () => {
-        let text = 'hello word\nfrom\nteam 306';
-        let expectedMaxLineLength = text.split('\n')[0].length;
-        expect(service['calculateMaxLineLength'](text)).toEqual(expectedMaxLineLength);
-
-        text = 'hello \n word \n from team 306';
-        expectedMaxLineLength = text.split('\n')[2].length;
-        expect(service['calculateMaxLineLength'](text)).toEqual(expectedMaxLineLength);
-    });
-
-    it('#calculateMaxLineLength should first line if maxLine is first line in the text', () => {
-        const text = 'hello word\nfrom\nteam 306';
-        const expectedMaxLineLength = text.split('\n')[0].length;
-        expect(service['calculateMaxLineLength'](text)).toEqual(expectedMaxLineLength);
-    });
+    // it('#calculateMaxLineLength should be able to correctly calculate max line length in a text ', () => {
+    //     let text = 'hello word\nfrom\nteam 306';
+    //     let expectedMaxLineLength = text.split('\n')[0].length;
+    //     expect(service['calculateMaxLineLength'](text)).toEqual(expectedMaxLineLength);
+    //
+    //     text = 'hello \n word \n from team 306';
+    //     expectedMaxLineLength = text.split('\n')[2].length;
+    //     expect(service['calculateMaxLineLength'](text)).toEqual(expectedMaxLineLength);
+    // });
+    //
+    // it('#calculateMaxLineLength should first line if maxLine is first line in the text', () => {
+    //     const text = 'hello word\nfrom\nteam 306';
+    //     const expectedMaxLineLength = text.split('\n')[0].length;
+    //     expect(service['calculateMaxLineLength'](text)).toEqual(expectedMaxLineLength);
+    // });
 
     it('#getSingleStyle should correctly get a single style from textStyles attribute', () => {
         service.textStyles = ['bold', 'italic'];
@@ -187,7 +187,7 @@ fdescribe('TextService', () => {
 
     it('#calculateFontHeight should ', () => {});
 
-    it('#calculateNumberOfCols should ', () => {});
+    it('#calculateTextBoxWidth should ', () => {});
 
     it('#onMouseDwon should ', () => {});
 });
