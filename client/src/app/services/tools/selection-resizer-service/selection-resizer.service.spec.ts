@@ -14,14 +14,13 @@ import { MockSelectionRectangleService } from '@app/utils/tests-mocks/selection-
 // import { of } from 'rxjs';
 import { SelectionResizerService } from './selection-resizer.service';
 
-fdescribe('SelectionResizerService', () => {
+describe('SelectionResizerService', () => {
     let service: SelectionResizerService;
     let canvasTestHelper: CanvasTestHelper;
     let mouseEvent: MouseEvent;
     let selectionRectangleMock: MockSelectionRectangleService;
     let selectionEllipseMock: MockSelectionEllipseService;
     let selectionPolygoneMock: MockSelectionPolygonaleService;
-    // let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     let mouseMoveEvent: MouseEvent;
 
     let baseCtxStub: CanvasRenderingContext2D;
