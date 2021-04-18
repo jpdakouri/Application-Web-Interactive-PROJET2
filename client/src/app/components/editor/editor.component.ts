@@ -58,21 +58,15 @@ export class EditorComponent implements AfterViewInit {
 
     @HostListener('window:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
-        this.blockKeysEvent(event);
         if (this.dialogControllerService.noDialogOpened && !this.toolManagerService.textService.showTextBox) {
             if (event.ctrlKey) {
+                event.preventDefault();
                 this.manageShortCutsWithCtrl(event);
             }
 
             if (!event.shiftKey && !event.ctrlKey) {
                 this.manageShortCutsWithoutCtrl(event);
             }
-        }
-    }
-
-    private blockKeysEvent(event: KeyboardEvent): void {
-        if (!(event.key[0] === KeyboardButtons.F && event.key[1] <= '9' && event.key[1] >= '1')) {
-            event.preventDefault();
         }
     }
 
@@ -107,7 +101,7 @@ export class EditorComponent implements AfterViewInit {
 
     private manageShortCutsWithoutCtrl(event: KeyboardEvent): void {
         const toolKeyDown = this.toolFinder.get(event.key as KeyboardButtons) as ToolsNames;
-        if (!(toolKeyDown == undefined)) {
+        if (!!toolKeyDown) {
             this.toolManagerService.setCurrentTool(toolKeyDown);
             this.toolManagerService.emitToolChange(toolKeyDown);
         }

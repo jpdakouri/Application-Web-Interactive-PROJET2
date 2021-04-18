@@ -3,6 +3,7 @@ import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDialogRef } from '@angular/material/dialog';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SaveDrawingService } from '@app/services/save-drawing/save-drawing.service';
 import { FILE_NAME_REGEX, TAG_NAME_REGEX } from '@app/services/services-constants';
 import {
@@ -21,6 +22,7 @@ import { Tag } from '@app/utils/interfaces/tag';
 })
 export class SaveDrawingComponent implements AfterViewInit {
     @ViewChild('previewImage', { static: false }) previewImage: ElementRef<HTMLImageElement>;
+    @ViewChild('canvas', { static: false }) canvas: ElementRef<HTMLCanvasElement>;
 
     fileName: FormControl;
     tagName: FormControl;
@@ -32,7 +34,11 @@ export class SaveDrawingComponent implements AfterViewInit {
     currentIndex: number = 0;
     readonly separatorKeysCodes: number[] = [ENTER];
 
-    constructor(private saveDrawingService: SaveDrawingService, public dialogRef: MatDialogRef<SaveDrawingComponent>) {
+    constructor(
+        private saveDrawingService: SaveDrawingService,
+        public dialogRef: MatDialogRef<SaveDrawingComponent>,
+        private drawingService: DrawingService,
+    ) {
         this.fileName = new FormControl('', [Validators.required, Validators.pattern(FILE_NAME_REGEX)]);
         this.tagName = new FormControl('', [Validators.pattern(TAG_NAME_REGEX)]);
         this.selectedFormat = ImageFormat.PNG;
@@ -40,7 +46,7 @@ export class SaveDrawingComponent implements AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-        this.originalCanvas = document.getElementById('canvas') as HTMLCanvasElement;
+        this.originalCanvas = this.drawingService.canvas;
         setTimeout(() => {
             if (this.originalCanvas) {
                 this.imageSource = this.originalCanvas.toDataURL('image/png') as string;

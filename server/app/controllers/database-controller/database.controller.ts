@@ -59,12 +59,9 @@ export class DatabaseController {
         });
 
         this.router.get('/length/:tagFlag', (req: Request, res: Response, next: NextFunction) => {
-            const tagFlag = req.params.tagFlag === 'true';
-            if (tagFlag) {
-                res.status(HTTP_STATUS_OK).json(this.imageDataService.filteredDrawingData.length);
-            } else {
-                res.status(HTTP_STATUS_OK).json(this.imageDataService.drawingData.length);
-            }
+            res.status(HTTP_STATUS_OK).json(
+                req.params.tagFlag === 'true' ? this.imageDataService.filteredDrawingData.length : this.imageDataService.drawingData.length,
+            );
         });
         this.router.get('/single', (req: Request, res: Response, next: NextFunction) => {
             const index = req.query.index;
