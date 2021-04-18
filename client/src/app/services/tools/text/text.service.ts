@@ -14,25 +14,23 @@ import { ToolCommand } from '@app/utils/interfaces/tool-command';
 })
 export class TextService extends Tool {
     text: string;
-    textAlign: TextAlign = TextAlign.Start;
     fontStyle: string;
     textStyles: string[];
+    textAlign: TextAlign;
     numberOfRows: number;
     showTextBox: boolean;
     textBoxPosition: Vec2;
-    textBoxSize: Vec2;
 
     constructor(public currentColorService: CurrentColorService, drawingService: DrawingService) {
         super(drawingService, currentColorService);
         this.text = '';
-        this.textAlign = TextAlign.Start;
         this.textStyles = [];
         this.fontFace = TextFont.Arial;
+        this.textAlign = TextAlign.Start;
         this.fontSize = DEFAULT_FONT_SIZE;
         this.fontStyle = '';
         this.showTextBox = false;
         this.numberOfRows = 1;
-        this.textBoxSize = { x: 0, y: 0 };
         this.textBoxPosition = { x: 0, y: 0 };
     }
 
@@ -48,9 +46,9 @@ export class TextService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        const textAreaSelector = document.getElementById('textArea');
+        const textArea = document.getElementById('textArea');
         // @ts-ignore
-        if (textAreaSelector !== null && textAreaSelector.contains(event.target)) return;
+        if (textArea !== null && textArea.contains(event.target)) return;
 
         this.drawStyledTextOnCanvas();
         this.text = '';
@@ -67,20 +65,20 @@ export class TextService extends Tool {
 
     private calculateTextFinalPosition(currentPosition: Vec2): Vec2 {
         const textPosition = { ...currentPosition };
-        let textAreaWidth = 0;
         const textArea = document.getElementById('textArea') as HTMLTextAreaElement;
-        if (textArea) textAreaWidth = textArea.clientWidth;
-        switch (this.textAlign) {
-            case TextAlign.Start:
-                break;
+        if (textArea) {
+            switch (this.textAlign) {
+                case TextAlign.Start:
+                    break;
 
-            case TextAlign.Center:
-                textPosition.x += textAreaWidth / 2;
-                break;
+                case TextAlign.Center:
+                    textPosition.x += textArea.clientWidth / 2;
+                    break;
 
-            case TextAlign.End:
-                textPosition.x += textAreaWidth;
-                break;
+                case TextAlign.End:
+                    textPosition.x += textArea.clientWidth;
+                    break;
+            }
         }
         return textPosition;
     }

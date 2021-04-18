@@ -27,7 +27,6 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     @ViewChild('gridCanvas', { static: false }) gridCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('canvasResizerPreview', { static: false }) canvasResizerPreview: ElementRef<HTMLDivElement>;
     @ViewChild('selectedArea', { static: false }) selectedArea: ElementRef<HTMLCanvasElement>;
-    @ViewChild('textArea', { static: false }) textArea: ElementRef<HTMLTextAreaElement>;
     @Output() editorMinWidthEmitter: EventEmitter<number> = new EventEmitter<number>();
 
     private baseCtx: CanvasRenderingContext2D;
