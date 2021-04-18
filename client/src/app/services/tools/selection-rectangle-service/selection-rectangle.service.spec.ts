@@ -60,22 +60,34 @@ describe('SelectionRectangleService', () => {
     });
 
     it(' mouseDown should set mouseDown property to false on right click', () => {
-        const mouseEventRClick = {
-            offsetX: 25,
-            offsetY: 25,
-            button: MouseButtons.Right,
+        SelectionService.isSelectionStarted = true;
+
+        service.topLeftCorner = { x: 20, y: 20 };
+        service.mouseDownCoord = { x: 100, y: 100 };
+        // tslint:disable:no-magic-numbers
+        service.width = 100;
+        service.height = 100;
+        const grid = service.mouseDownCoord;
+        spyOn(service, 'updatePreview').and.stub();
+        spyOn(service, 'defaultOnMouseDown').and.stub();
+        const mouseEventLClick = {
+            button: MouseButtons.Left,
         } as MouseEvent;
-        service.onMouseDown(mouseEventRClick);
-        expect(service.mouseDown).toEqual(false);
+        service.onMouseDown(mouseEventLClick);
+        expect(service['isClickIn'](grid)).toEqual(true);
     });
 
     it(' mouseDown should activate the selection when isClickIn is true', () => {
         SelectionService.isSelectionStarted = true;
 
         service.topLeftCorner = { x: 20, y: 20 };
-        service.mouseDownCoord = { x: 300, y: 300 };
-
+        service.mouseDownCoord = { x: 100, y: 100 };
+        // tslint:disable:no-magic-numbers
+        service.width = 100;
+        service.height = 100;
         const grid = service.mouseDownCoord;
+        spyOn(service, 'updatePreview').and.stub();
+        spyOn(service, 'defaultOnMouseDown').and.stub();
         const mouseEventLClick = {
             button: MouseButtons.Left,
         } as MouseEvent;
@@ -111,11 +123,11 @@ describe('SelectionRectangleService', () => {
 
     it('onMouseMove should call updateDragPosition when mouse is down and is currently selecting', () => {
         const updateDragPositionSpy = spyOn<any>(service, 'updateDragPosition').and.callThrough();
-        service.mouseDown = SelectionService.isSelectionStarted = service['dragActive'] = true;
+        service.mouseDown = service['dragActive'] = true;
         const grid = (service.mouseDownCoord = { x: 100, y: 100 });
         service.height = service.width = 100;
         service.onMouseDown(mouseEvent);
-
+        SelectionService.isSelectionStarted = true;
         const mouseEventLClick = {
             x: 100,
             y: 100,
