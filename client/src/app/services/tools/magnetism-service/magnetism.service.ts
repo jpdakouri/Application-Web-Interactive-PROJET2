@@ -28,9 +28,11 @@ export class MagnetismService extends Tool {
     private status: SelectionStatus;
     currentSelection: CanvasRenderingContext2D;
     gridSize: number;
+    isMagnetismOnGoing: boolean = false;
     lastPosition: Vec2;
     lockedResizer: Vec2;
     mousePositionHandler: MousePositionHandlerService;
+
     constructor(drawingService: DrawingService, currentColor: CurrentColorService, mousePositionHandler: MousePositionHandlerService) {
         super(drawingService, currentColor);
         this.mousePositionHandler = mousePositionHandler;
@@ -54,16 +56,18 @@ export class MagnetismService extends Tool {
         console.log('valeur mouseDown ' + this.mouseDown);
         if (this.mouseDown) {
             if (this.verifyInRangeCross(this.getPositionFromMouse(event))) {
+                console.log('rentrer');
+                // this.updateDragPositionMagnetism(this.getPositionFromMouse(event));
                 this.findNearestLineLeft(); // coller en x
                 this.findNearestLineTop(); // coller en y
             }
         }
     }
 
-    // onMouseUp(event?: MouseEvent): void {
-    //     console.log('is that bool called ???');
-    //     this.isMouseDownWhileMagnetism = false;
-    // }
+    onMouseUp(event: MouseEvent): void {
+        console.log('is that bool called ???');
+        this.isMagnetismOnGoing = false;
+    }
 
     startKeys(): void {
         console.log('Magnetism ON!');
@@ -126,6 +130,8 @@ export class MagnetismService extends Tool {
     setStatus(status: SelectionStatus): void {
         console.log('status ' + this.status);
         this.status = status;
+        this.mouseDown = true;
+        this.isMagnetismOnGoing = true;
         this.findLockedResizer();
     }
 
@@ -135,6 +141,12 @@ export class MagnetismService extends Tool {
             x: posResize.x * this.drawingService.selectedAreaCtx.canvas.width + this.drawingService.selectedAreaCtx.canvas.offsetLeft,
             y: posResize.y * this.drawingService.selectedAreaCtx.canvas.height + this.drawingService.selectedAreaCtx.canvas.offsetTop,
         };
+    }
+
+    updateDragPositionMagnetism(coord: Vec2): void {
+        const currentCoord = { ...coord };
+        this.drawingService.selectedAreaCtx.canvas.style.top = currentCoord.y - 1 + 'px';
+        this.drawingService.selectedAreaCtx.canvas.style.left = currentCoord.x - 1 + 'px';
     }
 
     executeCommand(command: ToolCommand): void {

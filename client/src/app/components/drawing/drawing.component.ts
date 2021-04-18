@@ -195,7 +195,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         } else if (this.selectionResizerService.isResizing()) {
             this.selectionResizerService.onMouseMove(event);
             // La condition bool est a revoir ici pour activier le mouseMove
-        } else if (this.selectionResizerService.isResizing() && this.selectionRectangleService.isMagnetismOff) {
+        } else if (this.magnetismService.isMagnetismOnGoing) {
             this.magnetismService.onMouseMove(event);
         } else {
             this.currentTool.onMouseMove(event);
@@ -235,6 +235,8 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             this.selectionResizerService.updateValues(this.toolManagerService.getCurrentSelectionTool());
             this.selectionResizerService.onMouseUp(event);
             this.selectionResizerService.setStatus(SelectionStatus.OFF);
+        } else if (this.magnetismService.isMagnetismOnGoing) {
+            this.magnetismService.onMouseUp(event);
         } else {
             this.currentTool.onMouseUp(event);
         }

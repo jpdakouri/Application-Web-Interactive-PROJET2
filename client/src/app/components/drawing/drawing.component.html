@@ -184,7 +184,7 @@
             left: getSelectedAreaSize().x / 2 + 'px',
             top: getSelectedAreaSize().y / 2 + 2 + 'px',
             transform: 'translate(' + getTopLeftCorner().x + 'px, ' + getTopLeftCorner().y + 'px)',
-            'background-color': selectionResizerService.isMagnetismOff ? 'transparent' : 'transparent'
+            cursor: selectionResizerService.isMagnetismOff ? 'move' : 'crosshair'
         }"
         (mousedown)="onSelectionBoxClick(selectionStatus.CENTER)"
         *ngIf="isActiveSelection()"

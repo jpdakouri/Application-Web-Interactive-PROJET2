@@ -198,15 +198,20 @@ export abstract class SelectionService extends Tool {
     }
 
     updateDragPosition(mouseCoord: Vec2): void {
-        const currentCoord = { ...mouseCoord };
-        this.topLeftCorner.x = currentCoord.x + this.offset.x;
-        this.topLeftCorner.y = currentCoord.y + this.offset.y;
-        this.moveBorderPreview({
-            x: this.topLeftCorner.x - 1 - this.drawingService.selectedAreaCtx.canvas.offsetLeft,
-            y: this.topLeftCorner.y - 1 - this.drawingService.selectedAreaCtx.canvas.offsetTop,
-        });
-        this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
-        this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
+        if (this.isMagnetismOff) {
+            const currentCoord = { ...mouseCoord };
+            this.topLeftCorner.x = currentCoord.x + this.offset.x;
+            this.topLeftCorner.y = currentCoord.y + this.offset.y;
+            this.moveBorderPreview({
+                x: this.topLeftCorner.x - 1 - this.drawingService.selectedAreaCtx.canvas.offsetLeft,
+                y: this.topLeftCorner.y - 1 - this.drawingService.selectedAreaCtx.canvas.offsetTop,
+            });
+            this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
+            this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
+        } else {
+            console.log('draggin');
+            this.magnetismService.updateDragPositionMagnetism(mouseCoord);
+        }
 
         // else {
         //     this.magnetismService.bringToClosestCrossOnGrid(grid, this.currentCornerSelected);
