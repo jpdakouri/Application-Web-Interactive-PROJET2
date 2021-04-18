@@ -1,16 +1,25 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
+import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
+import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { SelectionStatus } from '@app/utils/enums/selection-resizer-status';
+import { MockSelectionEllipseService } from '@app/utils/tests-mocks/selection-ellipse-service-mock';
+import { MockSelectionPolygonaleService } from '@app/utils/tests-mocks/selection-polygonale-service-mock';
+import { MockSelectionRectangleService } from '@app/utils/tests-mocks/selection-rectangle-service-mock';
 import { SelectionResizerService } from './selection-resizer.service';
 
 fdescribe('SelectionResizerService', () => {
     let service: SelectionResizerService;
     let canvasTestHelper: CanvasTestHelper;
     let mouseEvent: MouseEvent;
+    let selectionRectangleMock: MockSelectionRectangleService;
+    let selectionEllipseMock: MockSelectionEllipseService;
+    let selectionPolygoneMock: MockSelectionPolygonaleService;
     // let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     let mouseMoveEvent: MouseEvent;
 
@@ -18,27 +27,33 @@ fdescribe('SelectionResizerService', () => {
     let previewCtxStub: CanvasRenderingContext2D;
     let selectedAreaCtxStub: CanvasRenderingContext2D;
     let drawing: DrawingService;
+    let currentColorService: CurrentColorService;
+    let mousePositionHandlerService: MousePositionHandlerService;
+    let undoRedo: UndoRedoService;
     // tslint:disable:no-any
     let resizeSelectionSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         jasmine.createSpyObj('DrawingService', ['clearCanvas']);
-        TestBed.configureTestingModule({});
         service = TestBed.inject(SelectionResizerService);
 
         canvasTestHelper = TestBed.inject(CanvasTestHelper);
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         selectedAreaCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
-
         // tslint:disable:no-string-literal
         drawing = TestBed.inject(DrawingService);
+        currentColorService = TestBed.inject(CurrentColorService);
+        mousePositionHandlerService = TestBed.inject(MousePositionHandlerService);
+        undoRedo = TestBed.inject(UndoRedoService);
         drawing.baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         drawing.previewCtx = previewCtxStub;
         service['drawingService'].selectedAreaCtx = selectedAreaCtxStub;
         spyOn<any>(service, 'getPositionFromMouse').and.returnValue({ x: 100, y: 100 });
         resizeSelectionSpy = spyOn<any>(service, 'resizeSelection').and.callThrough();
-
+        selectionRectangleMock = new MockSelectionRectangleService(drawing, currentColorService, mousePositionHandlerService, undoRedo);
+        selectionEllipseMock = new MockSelectionEllipseService(drawing, currentColorService, mousePositionHandlerService, undoRedo);
+        selectionPolygoneMock = new MockSelectionPolygonaleService(drawing, currentColorService, undoRedo);
         mouseEvent = {
             offsetX: 25,
             offsetY: 25,
@@ -76,6 +91,7 @@ fdescribe('SelectionResizerService', () => {
 
     it('onMouseDown sets the coords', () => {
         const expectedResult: Vec2 = { x: 100, y: 100 };
+        service.registerUndo(service['imageData']);
         service.onMouseDown(mouseEvent);
         expect(service.mouseDownCoord).toEqual(expectedResult);
     });
@@ -269,6 +285,16 @@ fdescribe('SelectionResizerService', () => {
         expect(SelectionResizerService['selectionActive']).toBeFalse();
     });
 
+    it('canvas.scale is called with the good parameters', () => {
+        spyOn<any>(drawing, 'clearCanvas').and.stub();
+        spyOn<any>(drawing.selectedAreaCtx, 'scale');
+        service['revertX'] = true;
+        service['revertY'] = true;
+        service['updatePreview']();
+        // tslint:disable:no-magic-numbers
+        expect(drawing.selectedAreaCtx.scale).toHaveBeenCalledWith(-1, -1);
+    });
+
     it('isMirror should call isMirrorRight and isMirrorBottom for TopLeftBox', () => {
         service.status = SelectionStatus.TOP_LEFT_BOX;
         spyOn<any>(service, 'updatePreview').and.stub();
@@ -342,7 +368,6 @@ fdescribe('SelectionResizerService', () => {
     });
 
     it('isMirrorTop should set the right value to topLeftCorner and revertY to true or false depending on coords value', () => {
-        // tslint:disable:no-magic-numbers
         service['revertY'] = false;
         service['isMirrorTop']();
         expect(service['revertY']).toBeFalse();
@@ -490,6 +515,42 @@ fdescribe('SelectionResizerService', () => {
         expect(service.topLeftCorner.x).toEqual(expectedResultX);
         expect(service['canvasWidth']).toEqual(expectedWidth);
         expect(service['canvasHeight']).toEqual(expectedHeight);
+    });
+
+    it('updateValues should set the correct values to the selectionRectangleService', () => {
+        drawing.selectedAreaCtx.canvas.style.left = 0 + 'px';
+        drawing.selectedAreaCtx.canvas.style.top = 0 + 'px';
+        drawing.selectedAreaCtx.canvas.height = 50;
+        drawing.selectedAreaCtx.canvas.width = 50;
+        service.updateValues(selectionRectangleMock);
+        expect(selectionRectangleMock.topLeftCorner.x).toEqual(0);
+        expect(selectionRectangleMock.topLeftCorner.y).toEqual(0);
+        expect(selectionRectangleMock.height).toEqual(50);
+        expect(selectionRectangleMock.width).toEqual(50);
+    });
+
+    it('updateValues should set the correct values to the selectionEllipseService', () => {
+        drawing.selectedAreaCtx.canvas.style.left = 0 + 'px';
+        drawing.selectedAreaCtx.canvas.style.top = 0 + 'px';
+        drawing.selectedAreaCtx.canvas.height = 50;
+        drawing.selectedAreaCtx.canvas.width = 50;
+        service.updateValues(selectionEllipseMock);
+        expect(selectionEllipseMock.topLeftCorner.x).toEqual(0);
+        expect(selectionEllipseMock.topLeftCorner.y).toEqual(0);
+        expect(selectionEllipseMock.height).toEqual(50);
+        expect(selectionEllipseMock.width).toEqual(50);
+    });
+
+    it('updateValues should set the correct values to the selectionPolygonalService', () => {
+        drawing.selectedAreaCtx.canvas.style.left = 0 + 'px';
+        drawing.selectedAreaCtx.canvas.style.top = 0 + 'px';
+        drawing.selectedAreaCtx.canvas.height = 50;
+        drawing.selectedAreaCtx.canvas.width = 50;
+        service.updateValues(selectionPolygoneMock);
+        expect(selectionPolygoneMock.topLeftCorner.x).toEqual(0);
+        expect(selectionPolygoneMock.topLeftCorner.y).toEqual(0);
+        expect(selectionPolygoneMock.height).toEqual(50);
+        expect(selectionPolygoneMock.width).toEqual(50);
     });
     // tslint:disable-next-line:max-file-line-count
 });
