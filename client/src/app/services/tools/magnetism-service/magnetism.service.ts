@@ -25,8 +25,8 @@ const RANGE = 30;
 })
 export class MagnetismService extends Tool {
     private resizers: Map<SelectionStatus, Vec2>;
-    private currentSelection: CanvasRenderingContext2D;
     private status: SelectionStatus;
+    currentSelection: CanvasRenderingContext2D;
 
     gridSize: number;
     lastPosition: Vec2;
@@ -46,7 +46,9 @@ export class MagnetismService extends Tool {
             .set(SelectionStatus.MIDDLE_LEFT_BOX, { x: 0, y: 1 / 2 })
             .set(SelectionStatus.TOP_MIDDLE_BOX, { x: 1 / 2, y: 0 })
             .set(SelectionStatus.MIDDLE_RIGHT_BOX, { x: 1, y: 1 / 2 })
-            .set(SelectionStatus.BOTTOM_MIDDLE_BOX, { x: 1 / 2, y: 1 });
+            .set(SelectionStatus.BOTTOM_MIDDLE_BOX, { x: 1 / 2, y: 1 })
+            // TODO : Faire la div du centre
+            .set(SelectionStatus.CENTER, { x: 1 / 2, y: 1 / 2 });
     }
 
     // onMouseMove(event: MouseEvent): void {
@@ -56,6 +58,7 @@ export class MagnetismService extends Tool {
     // }
 
     startKeys(): void {
+        console.log('Magnetism ON!');
         this.setStatus(SelectionStatus.TOP_LEFT_BOX);
         this.gridSize = this.drawingService.gridSize;
         // this.lastPosition = { x: this.drawingService.selectedAreaCtx.canvas.offsetLeft, y: this.drawingService.selectedAreaCtx.canvas.offsetTop };
@@ -63,7 +66,7 @@ export class MagnetismService extends Tool {
     }
 
     findNearestLineRight(): number {
-        const kThGrid = Math.floor(this.lockedResizer.x / this.gridSize) + (this.lockedResizer.x % this.gridSize === 0 ? 1 : 0);
+        const kThGrid = Math.floor(this.lockedResizer.x / this.gridSize) + (this.lockedResizer.x % this.gridSize === 0 ? 1 : 1);
         const distance = this.lockedResizer.x - kThGrid * this.gridSize;
         this.drawingService.selectedAreaCtx.canvas.style.left = this.drawingService.selectedAreaCtx.canvas.offsetLeft - distance + 'px';
         this.findLockedResizer();
@@ -87,7 +90,7 @@ export class MagnetismService extends Tool {
     }
 
     findNearestLineDown(): number {
-        const kThGrid = Math.floor(this.lockedResizer.y / this.gridSize) + (this.lockedResizer.y % this.gridSize === 0 ? 1 : 0);
+        const kThGrid = Math.floor(this.lockedResizer.y / this.gridSize) + (this.lockedResizer.y % this.gridSize === 0 ? 1 : 1);
         const distance = this.lockedResizer.y - kThGrid * this.gridSize;
         this.drawingService.selectedAreaCtx.canvas.style.top = this.drawingService.selectedAreaCtx.canvas.offsetTop - distance + 'px';
         this.findLockedResizer();
@@ -156,6 +159,7 @@ export class MagnetismService extends Tool {
     }
 
     verifyInRangeCross(mouseCoord: Vec2): boolean {
+        console.log('test');
         return Math.abs(this.gridSize - mouseCoord.x) <= RANGE && Math.abs(mouseCoord.y) <= RANGE;
     }
 

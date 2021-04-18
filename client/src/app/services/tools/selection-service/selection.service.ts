@@ -7,6 +7,7 @@ import { ALPHA_POS, BLUE_POS, GREEN_POS, MAX_BYTE_VALUE, RED_POS } from '@app/se
 import { MagnetismService } from '@app/services/tools/magnetism-service/magnetism.service';
 import { PIXELS_ARROW_STEPS } from '@app/services/tools/tools-constants';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
+import { SelectionStatus } from '@app/utils/enums/selection-resizer-status';
 
 export enum controlPoints {
     topLeft = 'topLeft',
@@ -141,17 +142,29 @@ export abstract class SelectionService extends Tool {
                 this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
                 this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
             } else {
+                // this.topLeftCorner = {
+                //     x: this.magnetismService.currentSelection.canvas.offsetLeft,
+                //     y: this.magnetismService.currentSelection.canvas.offsetTop,
+                // };
                 switch (event.key) {
                     case KeyboardButtons.Up: {
+                        this.magnetismService.setStatus(SelectionStatus.TOP_MIDDLE_BOX);
                         this.magnetismService.findNearestLineTop();
+                        this.magnetismService.setStatus(SelectionStatus.TOP_LEFT_BOX);
                         break;
                     }
                     case KeyboardButtons.Down: {
+                        this.magnetismService.setStatus(SelectionStatus.BOTTOM_MIDDLE_BOX);
                         this.magnetismService.findNearestLineDown();
+                        this.magnetismService.setStatus(SelectionStatus.TOP_LEFT_BOX);
                         break;
                     }
                     case KeyboardButtons.Right: {
+                        // this.magnetismService.findNearestLineLeft();
+                        this.magnetismService.setStatus(SelectionStatus.MIDDLE_RIGHT_BOX);
                         this.magnetismService.findNearestLineRight();
+                        this.magnetismService.setStatus(SelectionStatus.TOP_LEFT_BOX);
+
                         break;
                     }
                     case KeyboardButtons.Left: {
@@ -216,6 +229,8 @@ export abstract class SelectionService extends Tool {
         SelectionService.isSelectionStarted = false;
         SelectionService.selectionActive = false;
         this.topLeftCorner = { x: 0, y: 0 };
+        console.log('Magnetism OFF!');
+        this.isMagnetismOff = true;
     }
 
     resetFirstGrid(): void {

@@ -8,4 +8,5 @@ export enum SelectionStatus {
     BOTTOM_MIDDLE_BOX = 6,
     BOTTOM_LEFT_BOX = 7,
     MIDDLE_LEFT_BOX = 8,
+    CENTER = 9,
 }
