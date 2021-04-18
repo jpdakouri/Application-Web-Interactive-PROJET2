@@ -201,4 +201,12 @@ describe('DrawingService', () => {
         const ctx = service.getBaseContext();
         expect(service.getBaseContext()).toEqual(ctx);
     });
+
+    it('continue drawing should not restore drawing if no dataurl', () => {
+        spyOn(service, 'isCanvasBlank').and.returnValue(false);
+        spyOn(localStorage, 'getItem').and.returnValue('');
+        spyOn(service, 'restoreCanvas').and.stub();
+        service.continueDrawing();
+        expect(service.restoreCanvas).not.toHaveBeenCalled();
+    });
 });

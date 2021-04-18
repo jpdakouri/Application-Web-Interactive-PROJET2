@@ -310,4 +310,13 @@ describe('ToolManagerService', () => {
         tool.rotationAngle = 2;
         expect(service.getStampRotationAngle()).toBe(2);
     });
+
+    it('eraserActive should return true if erase active', () => {
+        service['eraserService'].isActive = true;
+        let retVal = service.eraserActive();
+        expect(retVal).toEqual(true);
+        service['eraserService'].isActive = false;
+        retVal = service.eraserActive();
+        expect(retVal).toEqual(false);
+    });
 });

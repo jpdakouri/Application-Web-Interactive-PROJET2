@@ -144,6 +144,16 @@ describe('EditorComponent', () => {
         expect(toolManagerServiceMock.emitToolChange).toHaveBeenCalled();
     });
 
+    xit(' #onKeyDown should call appropriate grid if input is valid ', () => {
+        const event = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Grid, ctrlKey: true });
+        // tslint:disable:no-string-literal
+        component['gridService'].showGrid = false;
+        spyOn(component['gridService'], 'newGrid').and.stub();
+        fixture.detectChanges();
+        component.onKeyDown(event);
+        expect(component['gridService'].newGrid).toHaveBeenCalled();
+    });
+
     it(' onKeyDown should not call emitToolChange if shift is pressed or the key is inalid ', () => {
         let keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { shiftKey: true });
         component.onKeyDown(keyBordPrevent);
