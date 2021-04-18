@@ -172,7 +172,7 @@ describe('CanvasResizerService', () => {
     it('should be able to calculate canvas size', () => {
         const windowWidth = 1215;
         const windowHeight = 800;
-        const expectedCanvasSize = { x: 417, y: 400 };
+        const expectedCanvasSize = { x: 428, y: 400 };
 
         // we resize the window to always have the size during the test
         window.resizeTo(windowWidth, windowHeight);

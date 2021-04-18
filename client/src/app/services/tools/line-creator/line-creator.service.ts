@@ -13,7 +13,9 @@ import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 export abstract class LineCreatorService extends SelectionService {
     started: boolean;
     pathData: Vec2[];
-    shiftPressed: boolean;
+    dotRadius?: number = DEFAULT_DOT_RADIUS;
+    showDots?: boolean = false;
+
     constructor(drawingService: DrawingService, currentColorService: CurrentColorService) {
         super(drawingService, currentColorService);
         this.clearPath();
@@ -31,7 +33,7 @@ export abstract class LineCreatorService extends SelectionService {
     defaultMouseUp(event: MouseEvent): void {
         this.mouseDownCoord = this.getPositionFromMouse(event);
 
-        if (!this.shiftPressed) this.pathData.push(this.mouseDownCoord);
+        if (!this.shiftDown) this.pathData.push(this.mouseDownCoord);
         else this.pathData.push(this.desiredAngle(this.mouseDownCoord));
 
         this.drawLine(
@@ -51,10 +53,11 @@ export abstract class LineCreatorService extends SelectionService {
         if (this.started) {
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.verifyValideLine(this.mouseDownCoord);
-            this.previewUpdate();
+            this.updatePreview();
         }
     }
 
+    // Needed for children class
     verifyValideLine(courrentPosition: Vec2): boolean {
         return true;
     }
@@ -77,23 +80,22 @@ export abstract class LineCreatorService extends SelectionService {
     }
 
     onKeyDown(event: KeyboardEvent): void {
+        if (event.key === KeyboardButtons.Escape) {
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.clearPath();
+            this.started = false;
+        }
         if (this.started)
             switch (event.key) {
                 case KeyboardButtons.Shift:
-                    this.shiftPressed = true;
-                    this.previewUpdate();
-                    break;
-                case KeyboardButtons.Escape:
-                    this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                    this.clearPath();
-                    this.started = false;
-                    this.defaultOnKeyDown(event);
+                    this.shiftDown = true;
+                    this.updatePreview();
                     break;
                 case KeyboardButtons.Backspace:
                     if (this.pathData.length > 1) {
                         this.pathData.pop();
                     }
-                    this.previewUpdate();
+                    this.updatePreview();
                     event.preventDefault();
                     break;
             }
@@ -101,15 +103,15 @@ export abstract class LineCreatorService extends SelectionService {
     }
 
     onKeyUp(event: KeyboardEvent): void {
-        if (this.shiftPressed && event.key === KeyboardButtons.Shift) {
-            this.shiftPressed = false;
-            this.previewUpdate();
+        if (this.shiftDown && event.key === KeyboardButtons.Shift) {
+            this.shiftDown = false;
+            this.updatePreview();
         } else this.defaultOnKeyUp(event);
     }
 
     abstract getPrimaryColor(): string;
 
-    private previewUpdate(): void {
+    updatePreview(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawLine(
             this.drawingService.previewCtx,
@@ -121,7 +123,7 @@ export abstract class LineCreatorService extends SelectionService {
             this.lineThickness || DEFAULT_MIN_THICKNESS,
             false,
         );
-        if (this.shiftPressed)
+        if (this.shiftDown)
             this.drawPreviewLine(this.drawingService.previewCtx, this.desiredAngle(this.mouseDownCoord), this.pathData[this.pathData.length - 1]);
         else this.drawPreviewLine(this.drawingService.previewCtx, this.mouseDownCoord, this.pathData[this.pathData.length - 1]);
     }
@@ -209,9 +211,5 @@ export abstract class LineCreatorService extends SelectionService {
     verifyLastPoint(dotToVerify: Vec2): boolean {
         const lastDot = this.pathData[this.pathData.length - 1];
         return Math.abs(lastDot.x - dotToVerify.x) <= PIXEL_DISTANCE && Math.abs(lastDot.y - dotToVerify.y) <= PIXEL_DISTANCE;
-    }
-
-    updatePreview(): void {
-        return;
     }
 }

@@ -63,6 +63,10 @@ export class ToolManagerServiceMock {
         return 1;
     }
 
+    eraserActive(): boolean {
+        return true;
+    }
+
     getSelectedStamp(): Stamp {
         return Stamp.House;
     }

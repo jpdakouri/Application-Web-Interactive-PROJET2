@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { LineCommand } from '@app/classes/tool-commands/line-command';
+import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { LineCreatorService } from '@app/services/tools/line-creator/line-creator.service';
@@ -30,6 +31,10 @@ export class LineService extends LineCreatorService {
 
     onMouseMove(event: MouseEvent): void {
         this.defaultOnMouseMove(event);
+    }
+
+    moveBorderPreview(newPos: Vec2): void {
+        return;
     }
 
     onDblClick(): void {

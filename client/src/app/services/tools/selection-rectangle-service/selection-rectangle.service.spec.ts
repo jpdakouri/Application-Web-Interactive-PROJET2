@@ -60,22 +60,34 @@ describe('SelectionRectangleService', () => {
     });
 
     it(' mouseDown should set mouseDown property to false on right click', () => {
-        const mouseEventRClick = {
-            offsetX: 25,
-            offsetY: 25,
-            button: MouseButtons.Right,
+        SelectionService.isSelectionStarted = true;
+
+        service.topLeftCorner = { x: 20, y: 20 };
+        service.mouseDownCoord = { x: 100, y: 100 };
+        // tslint:disable:no-magic-numbers
+        service.width = 100;
+        service.height = 100;
+        const grid = service.mouseDownCoord;
+        spyOn(service, 'updatePreview').and.stub();
+        spyOn(service, 'defaultOnMouseDown').and.stub();
+        const mouseEventLClick = {
+            button: MouseButtons.Left,
         } as MouseEvent;
-        service.onMouseDown(mouseEventRClick);
-        expect(service.mouseDown).toEqual(false);
+        service.onMouseDown(mouseEventLClick);
+        expect(service['isClickIn'](grid)).toEqual(true);
     });
 
     it(' mouseDown should activate the selection when isClickIn is true', () => {
-        SelectionService.selectionActive = true;
+        SelectionService.isSelectionStarted = true;
 
         service.topLeftCorner = { x: 20, y: 20 };
-        service.mouseDownCoord = { x: 300, y: 300 };
-
+        service.mouseDownCoord = { x: 100, y: 100 };
+        // tslint:disable:no-magic-numbers
+        service.width = 100;
+        service.height = 100;
         const grid = service.mouseDownCoord;
+        spyOn(service, 'updatePreview').and.stub();
+        spyOn(service, 'defaultOnMouseDown').and.stub();
         const mouseEventLClick = {
             button: MouseButtons.Left,
         } as MouseEvent;
@@ -84,7 +96,7 @@ describe('SelectionRectangleService', () => {
     });
 
     it(' mouseDown should not activate the selection when isClickIn is false', () => {
-        SelectionService.selectionActive = true;
+        SelectionService.isSelectionStarted = true;
         // tslint:disable:no-magic-numbers
         service.height = service.width = 100;
 
@@ -111,11 +123,11 @@ describe('SelectionRectangleService', () => {
 
     it('onMouseMove should call updateDragPosition when mouse is down and is currently selecting', () => {
         const updateDragPositionSpy = spyOn<any>(service, 'updateDragPosition').and.callThrough();
-        service.mouseDown = SelectionService.selectionActive = service['dragActive'] = true;
+        service.mouseDown = service['dragActive'] = true;
         const grid = (service.mouseDownCoord = { x: 100, y: 100 });
         service.height = service.width = 100;
         service.onMouseDown(mouseEvent);
-
+        SelectionService.isSelectionStarted = true;
         const mouseEventLClick = {
             x: 100,
             y: 100,
@@ -126,7 +138,7 @@ describe('SelectionRectangleService', () => {
     });
 
     it(' onMouseUp should call selectRectangle if mouse was already down', () => {
-        service.mouseDown = SelectionService.selectionActive = service.mouseMoved = true;
+        service.mouseDown = SelectionService.isSelectionStarted = service.mouseMoved = true;
         service['dragActive'] = false;
         service.mouseDownCoord = { x: 100, y: 100 };
         service['firstGrid'] = { x: 100, y: 100 };
@@ -139,11 +151,12 @@ describe('SelectionRectangleService', () => {
         expect(service['dragActive']).toBeFalse();
     });
 
-    it('Esc key should clear the canvas when pressed', () => {
+    it('Esc key should end selection', () => {
         const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Escape });
-        SelectionService.selectionActive = true;
+        spyOn<any>(service, 'updatePreview').and.stub();
+        spyOn<any>(service, 'cancelSelection').and.stub();
         service.onKeyDown(keyBordPrevent);
-        expect(SelectionService.selectionActive).toBe(false);
+        expect(service.cancelSelection).toHaveBeenCalled();
     });
 
     it('Shift key should call makeSquare when pressed', () => {
@@ -158,7 +171,7 @@ describe('SelectionRectangleService', () => {
 
     it('selected region should move 3px higher when Up key is pressed during the selection', () => {
         service.onMouseDown(mouseEvent);
-        SelectionService.selectionActive = true;
+        SelectionService.isSelectionStarted = true;
 
         service.topLeftCorner = { x: 200, y: 200 };
         const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Up });
@@ -168,7 +181,7 @@ describe('SelectionRectangleService', () => {
 
     it('selected region should not move 3px higher when Up key is pressed while there is no selection ', () => {
         service.onMouseDown(mouseEvent);
-        SelectionService.selectionActive = false;
+        SelectionService.isSelectionStarted = false;
 
         service.topLeftCorner = { x: 200, y: 200 };
         const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Up });
@@ -178,7 +191,7 @@ describe('SelectionRectangleService', () => {
 
     it('selected region should move 3px lower when Down key is pressed during the selection', () => {
         service.onMouseDown(mouseEvent);
-        SelectionService.selectionActive = true;
+        SelectionService.isSelectionStarted = true;
 
         service.topLeftCorner = { x: 200, y: 200 };
         const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Down });
@@ -188,7 +201,7 @@ describe('SelectionRectangleService', () => {
 
     it('selected region should not move 3px lower when Up key is pressed while there is no selection ', () => {
         service.onMouseDown(mouseEvent);
-        SelectionService.selectionActive = false;
+        SelectionService.isSelectionStarted = false;
 
         service.topLeftCorner = { x: 200, y: 200 };
         const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Down });
@@ -198,7 +211,7 @@ describe('SelectionRectangleService', () => {
 
     it('selected region should move 3px to the right when Down key is pressed during the selection', () => {
         service.onMouseDown(mouseEvent);
-        SelectionService.selectionActive = true;
+        SelectionService.isSelectionStarted = true;
 
         service.topLeftCorner = { x: 200, y: 200 };
         const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Right });
@@ -208,7 +221,7 @@ describe('SelectionRectangleService', () => {
 
     it('selected region should not move 3px to the right when Up key is pressed while there is no selection ', () => {
         service.onMouseDown(mouseEvent);
-        SelectionService.selectionActive = false;
+        SelectionService.isSelectionStarted = false;
 
         service.topLeftCorner = { x: 200, y: 200 };
         const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Right });
@@ -218,7 +231,7 @@ describe('SelectionRectangleService', () => {
 
     it('selected region should move 3px to the left when Down key is pressed during the selection', () => {
         service.onMouseDown(mouseEvent);
-        SelectionService.selectionActive = true;
+        SelectionService.isSelectionStarted = true;
 
         service.topLeftCorner = { x: 200, y: 200 };
         const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Left });
@@ -228,7 +241,7 @@ describe('SelectionRectangleService', () => {
 
     it('selected region should not move 3px to the left when Up key is pressed while there is no selection ', () => {
         service.onMouseDown(mouseEvent);
-        SelectionService.selectionActive = false;
+        SelectionService.isSelectionStarted = false;
 
         service.topLeftCorner = { x: 200, y: 200 };
         const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Left });
@@ -268,7 +281,7 @@ describe('SelectionRectangleService', () => {
     });
 
     it('updateLeftCorner() should be able to update topLeftCorner in any situation', () => {
-        service.mouseDown = SelectionService.selectionActive = service.mouseMoved = true;
+        service.mouseDown = SelectionService.isSelectionStarted = service.mouseMoved = true;
         service['dragActive'] = false;
         service.mouseDownCoord = { x: 100, y: 100 };
         service['firstGrid'] = { x: 100, y: 100 };
@@ -298,7 +311,7 @@ describe('SelectionRectangleService', () => {
         service.topLeftCorner = { x: 200, y: 200 };
         service.mouseDownCoord = { x: 300, y: 100 };
         service.selectAll();
-        expect(SelectionService.selectionActive).toBe(true);
+        expect(SelectionService.isSelectionStarted).toBe(true);
     });
 
     it('executeCommand calls the rectangle function for clipping', () => {
@@ -310,7 +323,7 @@ describe('SelectionRectangleService', () => {
     });
 
     it('registerUndo put undefined for final top left corner if no selection is made', () => {
-        SelectionService.selectionActive = false;
+        SelectionService.isSelectionStarted = false;
         service.registerUndo(new ImageData(2, 2));
         const command = TestBed.inject(UndoRedoService)['commands'][0] as SelectionCommand;
         expect(command.finalTopLeftCorner).toBeUndefined();

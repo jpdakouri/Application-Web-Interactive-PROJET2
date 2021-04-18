@@ -44,7 +44,7 @@ export class PencilService extends Tool {
             this.pathData.push(mousePosition);
 
             this.commandPathData.push(this.pathData);
-            const commandLineThickness = this.lineThickness === undefined ? DEFAULT_MIN_THICKNESS : this.lineThickness;
+            const commandLineThickness = !!this.lineThickness ? this.lineThickness : DEFAULT_MIN_THICKNESS;
             this.undoRedo.addCommand(
                 new PencilCommand(this, this.currentColorService.getPrimaryColorRgba(), commandLineThickness, this.commandPathData),
             );

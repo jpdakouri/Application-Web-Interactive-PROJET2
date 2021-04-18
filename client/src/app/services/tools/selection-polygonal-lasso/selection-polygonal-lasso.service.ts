@@ -11,29 +11,36 @@ import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo
     providedIn: 'root',
 })
 export class SelectionPolygonalLassoService extends LineCreatorService {
-    private validePoint: boolean = true;
+    private validePoint: boolean;
     constructor(drawingService: DrawingService, currentColorService: CurrentColorService, private undoRedo: UndoRedoService) {
         super(drawingService, currentColorService);
+        this.validePoint = true;
     }
 
     registerUndo(imageData: ImageData): void {
-        const finalTopLeftCorner: Vec2 | undefined = SelectionService.selectionActive ? { ...this.topLeftCorner } : undefined;
-        const command = new SelectionCommand(
-            this,
-            { x: this.width, y: this.height },
-            imageData,
-            this.initialTopLeftCorner,
-            finalTopLeftCorner,
-            this.pathData,
-        );
-        this.undoRedo.addCommand(command);
+        if (!!this.initialTopLeftCorner) {
+            this.moveBorderPreview({
+                x: this.initialTopLeftCorner?.x - this.topLeftCorner.x,
+                y: this.initialTopLeftCorner?.y - this.topLeftCorner.y,
+            } as Vec2);
+            const finalTopLeftCorner: Vec2 | undefined = SelectionService.selectionActive ? { ...this.topLeftCorner } : undefined;
+            const command = new SelectionCommand(
+                this,
+                { x: this.width, y: this.height },
+                imageData,
+                this.initialTopLeftCorner,
+                finalTopLeftCorner,
+                this.pathData,
+            );
+            this.undoRedo.addCommand(command);
+        }
     }
 
     onMouseUp(event: MouseEvent): void {
         if (this.validePoint && this.mouseDown && !SelectionService.selectionActive && this.buffer) {
             this.defaultMouseUp(event);
             if (this.pathData.length > MIN_ARRAY_LENGTH && this.verifyLastPoint(this.pathData[0])) {
-                this.isSelectionDone = true;
+                SelectionService.selectionActive = true;
                 this.endOfSelection();
             }
         } else if (!this.buffer) {
@@ -47,6 +54,19 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
         this.defaultOnMouseMove(event);
         if (this.mouseDown && SelectionService.selectionActive && this.dragActive) {
             this.updateDragPosition(this.getPositionFromMouse(event));
+        }
+    }
+
+    moveBorderPreview(newPos?: Vec2): void {
+        if (!!newPos) {
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            for (const point of this.pathData) {
+                point.x += newPos.x;
+                point.y += newPos.y;
+            }
+            this.drawingService.previewCtx.strokeStyle = 'width: 3px';
+            this.drawShape(this.drawingService.previewCtx, this.pathData);
+            this.drawingService.previewCtx.stroke();
         }
     }
 
@@ -87,7 +107,7 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.pathData.pop();
         this.drawLine(
-            this.drawingService.selectedAreaCtx,
+            this.drawingService.previewCtx,
             this.getPrimaryColor(),
             this.currentColorService.getSecondaryColorHex(),
             this.showDots || false,
@@ -111,6 +131,7 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
         this.replaceEmptyPixels(imageData);
         createImageBitmap(imageData).then((imgBitmap) => {
             this.drawingService.selectedAreaCtx.save();
+            this.drawingService.selectedAreaCtx.strokeStyle = 'rgba(255,255,255,0)';
             this.drawShape(this.drawingService.selectedAreaCtx, this.pathData);
             this.drawingService.selectedAreaCtx.stroke();
             this.drawingService.selectedAreaCtx.clip();
@@ -148,7 +169,6 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
     }
 
     updateBaseCtx(): void {
-        // this.drawingService.baseCtx.strokeStyle = 'rgba(255, 255, 255, 1)';
         this.drawShape(this.drawingService.baseCtx, this.pathData);
         this.drawingService.baseCtx.fillStyle = 'white';
         this.drawingService.baseCtx.fill();
@@ -173,9 +193,7 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
     }
 
     executeCommand(command: SelectionCommand): void {
-        console.log(command.path !== undefined);
         if (command.path !== undefined) {
-            console.log('a');
             this.drawingService.baseCtx.fillStyle = 'white';
             this.drawShape(this.drawingService.baseCtx, command.path);
             this.drawingService.baseCtx.fill();
