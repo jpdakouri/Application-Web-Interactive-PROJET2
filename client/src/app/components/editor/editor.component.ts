@@ -58,15 +58,14 @@ export class EditorComponent implements AfterViewInit {
 
     @HostListener('window:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
-        if (this.dialogControllerService.noDialogOpened && !this.toolManagerService.textService.showTextBox) {
-            if (event.ctrlKey) {
-                event.preventDefault();
-                this.manageShortCutsWithCtrl(event);
-            }
+        if (!(this.dialogControllerService.noDialogOpened && !this.toolManagerService.textService.showTextBox)) return;
+        if (event.ctrlKey) {
+            event.preventDefault();
+            this.manageShortCutsWithCtrl(event);
+        }
 
-            if (!event.shiftKey && !event.ctrlKey) {
-                this.manageShortCutsWithoutCtrl(event);
-            }
+        if (!event.shiftKey && !event.ctrlKey) {
+            this.manageShortCutsWithoutCtrl(event);
         }
     }
 
