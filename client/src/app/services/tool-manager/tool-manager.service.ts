@@ -89,8 +89,6 @@ export class ToolManagerService {
             this.currentAttributes.JetDiameter = currentTool.jetDiameter;
             this.currentAttributes.DropletDiameter = currentTool.dropletDiameter;
             this.currentAttributes.BucketTolerance = currentTool.bucketTolerance;
-            this.currentAttributes.FontSize = currentTool.fontSize;
-            this.currentAttributes.FontFace = currentTool.fontFace;
         });
     }
 
@@ -218,18 +216,16 @@ export class ToolManagerService {
         }
     }
 
-    getCurrentFontSize(): number | undefined {
-        return this.currentAttributes.FontSize;
+    getCurrentFontSize(): number {
+        return this.textService.fontSize;
     }
 
-    setCurrentFontFace(selectedFont?: string): void {
-        this.toolBox[this.currentTool].fontFace = selectedFont;
-        this.currentAttributes.FontFace = selectedFont;
+    setCurrentFontFace(selectedFont: string): void {
+        this.textService.fontFace = selectedFont as TextFont;
     }
 
-    setCurrentFontSize(fontSize?: number): void {
-        this.toolBox[this.currentTool].fontSize = fontSize;
-        this.currentAttributes.FontSize = fontSize;
+    setCurrentFontSize(fontSize: number): void {
+        this.textService.fontSize = fontSize;
     }
 
     isCurrentTool(toolName: ToolsNames): boolean {

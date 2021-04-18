@@ -6,6 +6,7 @@ import { LineService } from '@app/services/tools/line-service/line.service';
 import { PencilService } from '@app/services/tools/pencil-service/pencil.service';
 import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
 import { StampService } from '@app/services/tools/stamp-service/stamp.service';
+import { TextService } from '@app/services/tools/text-service/text.service';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { Stamp } from '@app/utils/enums/stamp';
 import { ToolsNames } from '@app/utils/enums/tools-names';
@@ -19,6 +20,7 @@ describe('ToolManagerService', () => {
     let aerosolServiceSpy: jasmine.SpyObj<AerosolService>;
     let eraserServiceSpy: jasmine.SpyObj<EraserService>;
     let lineServiceSpy: jasmine.SpyObj<LineService>;
+    let textServiceSpy: jasmine.SpyObj<TextService>;
 
     beforeEach(() => {
         lineServiceSpy = jasmine.createSpyObj('LineService', ['onMouseMove']);
@@ -27,6 +29,9 @@ describe('ToolManagerService', () => {
         pencilServiceSpy = jasmine.createSpyObj('PencilService', ['onMouseMove']);
         aerosolServiceSpy = jasmine.createSpyObj('AerosolService', ['onMouseMove']);
         eraserServiceSpy = jasmine.createSpyObj('EraserService', ['onMouseMove']);
+        // @ts-ignore
+        textServiceSpy = jasmine.createSpy('TextService', '');
+
         TestBed.configureTestingModule({
             providers: [
                 { provide: PencilService, useValue: pencilServiceSpy },
@@ -35,6 +40,7 @@ describe('ToolManagerService', () => {
                 { provide: AerosolService, useValue: aerosolServiceSpy },
                 { provide: EraserService, useValue: eraserServiceSpy },
                 { provide: LineService, useValue: lineServiceSpy },
+                { provide: TextService, useValue: textServiceSpy },
             ],
         });
         service = TestBed.inject(ToolManagerService);

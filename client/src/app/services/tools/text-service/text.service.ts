@@ -20,6 +20,8 @@ export class TextService extends Tool {
     numberOfRows: number;
     showTextBox: boolean;
     textBoxPosition: Vec2;
+    fontFace: TextFont;
+    fontSize: number;
 
     constructor(public currentColorService: CurrentColorService, drawingService: DrawingService) {
         super(drawingService, currentColorService);

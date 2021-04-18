@@ -179,11 +179,11 @@ export class ToolAttributeComponent {
     }
 
     onFontSizeChange(event: MatSliderChange): void {
-        this.toolManagerService.setCurrentFontSize(event.value || undefined);
+        this.toolManagerService.setCurrentFontSize(event.value as number);
     }
 
-    onFontFaceChange(selectedFont?: string): void {
-        this.toolManagerService.setCurrentFontFace(selectedFont || undefined);
+    onFontFaceChange(selectedFont: string): void {
+        this.toolManagerService.setCurrentFontFace(selectedFont);
     }
 
     onDropletDiameterChange(event: MatSliderChange): void {

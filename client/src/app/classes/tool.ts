@@ -4,14 +4,12 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import {
     DEFAULT_COLOR_BLACK,
     DEFAULT_DOT_RADIUS,
-    DEFAULT_FONT_SIZE,
     DEFAULT_MIN_THICKNESS,
     MIN_DROPLET_DIAMETER,
     MIN_FREQUENCY,
     MIN_JET_DIAMETER,
 } from '@app/services/tools/tools-constants';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
-import { TextFont } from '@app/utils/enums/text-font.enum';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
 import { Vec2 } from './vec2';
 
@@ -36,8 +34,6 @@ export abstract class Tool {
     frequency?: number = MIN_FREQUENCY;
     jetDiameter?: number = MIN_JET_DIAMETER;
     numberOfSides: number | undefined;
-    fontSize?: number = DEFAULT_FONT_SIZE;
-    fontFace?: string = TextFont.Arial;
 
     constructor(protected drawingService: DrawingService, protected currentColorService: CurrentColorService) {}
 
