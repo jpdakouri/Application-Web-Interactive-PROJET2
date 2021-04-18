@@ -76,7 +76,6 @@ export class TextService extends Tool {
 
             case TextAlign.Center:
                 textPosition.x += textAreaWidth / 2;
-                console.log(this.textBoxSize.x);
                 break;
 
             case TextAlign.End:
@@ -87,7 +86,7 @@ export class TextService extends Tool {
     }
 
     fillTextMultiLine(context: CanvasRenderingContext2D, text: string, position: Vec2): void {
-        const fontHeight = this.calculateFontHeight(context, text);
+        const fontHeight = this.calculateTextHeight(context, text);
         const textPosition = { ...position };
         context.fillStyle = this.currentColorService.getPrimaryColorRgb();
         context.font = ` ${this.getCurrentStyle()} ${this.fontSize}px ${this.fontFace}`;
@@ -97,11 +96,11 @@ export class TextService extends Tool {
         const lines = this.splitTextInToLines(text);
         lines.forEach((line: string) => {
             context.fillText(line, textPosition.x, textPosition.y);
-            textPosition.y += fontHeight - FONT_HEIGHT_FACTOR * fontHeight;
+            textPosition.y += fontHeight + FONT_HEIGHT_FACTOR * fontHeight;
         });
     }
 
-    private calculateFontHeight(context: CanvasRenderingContext2D, text: string): number {
+    private calculateTextHeight(context: CanvasRenderingContext2D, text: string): number {
         const metrics = context.measureText(text);
         return metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
     }
@@ -115,7 +114,6 @@ export class TextService extends Tool {
     }
 
     calculateTextBoxWidth(): number {
-        // console.log(this.calculateLongestLineWidth(this.text));
         return this.calculateLongestLineWidth(this.text);
     }
 
@@ -134,7 +132,6 @@ export class TextService extends Tool {
     calculateTextWidth(context: CanvasRenderingContext2D, text: string): number {
         context.font = ` ${this.getCurrentStyle()} ${this.fontSize}px ${this.fontFace}`;
         context.textAlign = this.textAlign;
-
         return context.measureText(text).width;
     }
 
