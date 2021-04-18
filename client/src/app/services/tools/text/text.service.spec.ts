@@ -6,8 +6,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { TextAlign } from '@app/utils/enums/text-align.enum';
 import { TextService } from './text.service';
-// import { DrawingService } from '@app/services/drawing/drawing.service';
-// import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
+import { TextFont } from '@app/utils/enums/text-font.enum';
 
 fdescribe('TextService', () => {
     let service: TextService;
@@ -83,13 +82,22 @@ fdescribe('TextService', () => {
         expect(fillTextMultiLineSpy).toHaveBeenCalledWith(drawingServiceSpy.baseCtx, mockText, position);
     });
 
+    it('#drawStyledTextOnCanvas should not draw text on canvas if text is empty', () => {
+        const fillTextMultiLineSpy = spyOn(service, 'fillTextMultiLine').and.callThrough();
+        service.text = '';
+
+        service.drawStyledTextOnCanvas();
+        expect(fillTextMultiLineSpy).not.toHaveBeenCalled();
+    });
+
     it('#calculateTextFinalPosition should correctly calculate text final position', () => {
         const position = { x: 100, y: 100 } as Vec2;
         const textArea = document.createElement('textarea');
+        // textArea.cols = 20;
         // textArea.style.width = 33 + 'px';
         // const textAreaWidth = textArea.clientWidth;
 
-        document.getElementById = jasmine.createSpy('HTMLTextArea').and.returnValue(textArea);
+        document.getElementById = jasmine.createSpy('textarea').and.returnValue(textArea);
         service.textAlign = TextAlign.Start;
         expect(service['calculateTextFinalPosition'](position)).toEqual(position);
 
@@ -114,6 +122,16 @@ fdescribe('TextService', () => {
     });
 
     it('#calculateMaxLineLength should be able to correctly calculate max line length in a text ', () => {
+        let text = 'hello word\nfrom\nteam 306';
+        let expectedMaxLineLength = text.split('\n')[0].length;
+        expect(service['calculateMaxLineLength'](text)).toEqual(expectedMaxLineLength);
+
+        text = 'hello \n word \n from team 306';
+        expectedMaxLineLength = text.split('\n')[2].length;
+        expect(service['calculateMaxLineLength'](text)).toEqual(expectedMaxLineLength);
+    });
+
+    it('#calculateMaxLineLength should first line if maxLine is first line in the text', () => {
         const text = 'hello word\nfrom\nteam 306';
         const expectedMaxLineLength = text.split('\n')[0].length;
         expect(service['calculateMaxLineLength'](text)).toEqual(expectedMaxLineLength);
@@ -127,8 +145,49 @@ fdescribe('TextService', () => {
         expect(service.getSingleStyle('italic')).toEqual('italic');
     });
 
-    it('#onMouseDwon should ', () => {});
-    it('#fillTextMultiLine should ', () => {});
+    it('#getCurrentStyle should correctly get current text style', () => {
+        service.textStyles = ['bold', 'italic'];
+        const expectedStyle = service.getCurrentStyle();
+        const getSingleStyleSpy = spyOn(service, 'getSingleStyle').and.callThrough();
+
+        expect(service.getCurrentStyle()).toEqual(expectedStyle);
+        expect(getSingleStyleSpy).toHaveBeenCalledTimes(2);
+    });
+
+    it('#onMouseDwon should draw text on canvas if mouse click is out of canvas', () => {
+        const mockMouseEvent = { x: 100, y: 100 } as MouseEvent;
+        const drawStyledTextOnCanvasSpy = spyOn(service, 'drawStyledTextOnCanvas').and.callThrough();
+        spyOn<any>(service, 'getPositionFromMouse').and.returnValue({ x: 100, y: 100 });
+
+        service.showTextBox = true;
+        service.onMouseDown(mockMouseEvent);
+
+        expect(drawStyledTextOnCanvasSpy).toHaveBeenCalled();
+        expect(service.text).toBe('');
+        expect(service.showTextBox).toBe(false);
+        expect(service.textBoxPosition).toEqual({ x: 100, y: 100 });
+    });
+
+    it('#onMouseDwon should change showTextBox if mouse click is out of canvas', () => {});
+
+    it('#fillTextMultiLine should be able to draw styled text in multi lines', () => {
+        const fillTextSpy = spyOn(drawingServiceSpy.baseCtx, 'fillText').and.callThrough();
+        const text = 'hello word from\nteam 306';
+        const position = { x: 100, y: 100 } as Vec2;
+        service.fontFace = TextFont.BrushScriptMT;
+        service.textAlign = TextAlign.Center;
+        service.fontSize = 2;
+
+        service.fillTextMultiLine(drawingServiceSpy.baseCtx, text, position);
+
+        expect(fillTextSpy).toHaveBeenCalledTimes(2);
+        expect(drawingServiceSpy.baseCtx.font).toEqual('2px "Brush Script MT"');
+        expect(drawingServiceSpy.baseCtx.textAlign).toEqual(service.textAlign);
+    });
+
     it('#calculateFontHeight should ', () => {});
+
     it('#calculateNumberOfCols should ', () => {});
+
+    it('#onMouseDwon should ', () => {});
 });

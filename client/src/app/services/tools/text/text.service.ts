@@ -49,9 +49,10 @@ export class TextService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        const textAreaSelector = document.querySelector('#textArea');
+        const textAreaSelector = document.getElementById('textArea');
         // @ts-ignore
         if (textAreaSelector !== null && textAreaSelector.contains(event.target)) return;
+
         this.drawStyledTextOnCanvas();
         this.text = '';
         this.numberOfRows = 1;
@@ -60,6 +61,7 @@ export class TextService extends Tool {
     }
 
     drawStyledTextOnCanvas(): void {
+        if (this.text === '') return;
         const textFinalPosition = this.calculateTextFinalPosition(this.textBoxPosition);
         this.fillTextMultiLine(this.drawingService.baseCtx, this.text, textFinalPosition);
     }
