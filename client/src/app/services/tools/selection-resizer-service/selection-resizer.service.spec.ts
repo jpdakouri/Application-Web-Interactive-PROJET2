@@ -84,6 +84,7 @@ fdescribe('SelectionResizerService', () => {
         service['selectionMouseDown'] = true;
         service.mouseDownCoord = { x: 0, y: 0 };
         service.status = SelectionStatus.TOP_LEFT_BOX;
+        spyOn<any>(service, 'updatePreview').and.stub();
         service.onMouseMove(mouseEvent);
         const expectedCoord = { x: 100, y: 100 };
         expect(service['coords']).toEqual(expectedCoord);
@@ -339,4 +340,107 @@ fdescribe('SelectionResizerService', () => {
         service['isMirror']();
         expect(service['isMirrorRight']).toHaveBeenCalled();
     });
+
+    it('isMirrorTop should set the right value to topLeftCorner and revertY to true or false depending on coords value', () => {
+        // tslint:disable:no-magic-numbers
+        service['revertY'] = false;
+        service['isMirrorTop']();
+        expect(service['revertY']).toBeFalse();
+        service.initialTopLeftCorner = { x: 0, y: 20 };
+        service['coords'].y = 25;
+        service['isMirrorTop']();
+        expect(service['revertY']).toBeFalse();
+        const expectedResult = 15;
+        service['coords'].y = 15;
+        service['isMirrorTop']();
+        expect(service.topLeftCorner.y).toEqual(expectedResult);
+        expect(service['revertY']).toBeTrue();
+    });
+
+    it('isMirrorBottom should set the right value to topLeftCorner and revertY to true or false depending on coords value', () => {
+        service['initialBottomRightCorner'] = { x: 0, y: 20 };
+        service['coords'].y = 15;
+        service['isMirrorBottom']();
+        expect(service['revertY']).toBeFalse();
+        const expectedResult = 20;
+        service['coords'].y = 25;
+        service['isMirrorBottom']();
+        expect(service.topLeftCorner.y).toEqual(expectedResult);
+        expect(service['revertY']).toBeTrue();
+    });
+
+    it('isMirrorLeft should set the right value to topLeftCorner and revertX to true or false depending on coords value', () => {
+        service['revertX'] = false;
+        service['isMirrorLeft']();
+        expect(service['revertX']).toBeFalse();
+        service.initialTopLeftCorner = { x: 20, y: 0 };
+        service['coords'].x = 25;
+        service['isMirrorLeft']();
+        expect(service['revertX']).toBeFalse();
+        const expectedResult = 15;
+        service['coords'].x = 15;
+        service['isMirrorLeft']();
+        expect(service.topLeftCorner.x).toEqual(expectedResult);
+        expect(service['revertX']).toBeTrue();
+    });
+
+    it('isMirrorRight should set the right value to topLeftCorner and revertX to true or false depending on coords value', () => {
+        service['initialBottomRightCorner'] = { x: 20, y: 0 };
+        service['coords'].x = 15;
+        service['isMirrorRight']();
+        expect(service['revertX']).toBeFalse();
+        const expectedResult = 20;
+        service['coords'].x = 25;
+        service['isMirrorRight']();
+        expect(service.topLeftCorner.x).toEqual(expectedResult);
+        expect(service['revertX']).toBeTrue();
+    });
+
+    it('isSquare should set the right values for TopLeftBox', () => {
+        service.initialTopLeftCorner = { x: 0, y: 0 };
+        service['shiftDown'] = true;
+        service.status = SelectionStatus.TOP_LEFT_BOX;
+        service['canvasWidth'] = 20;
+        service['canvasHeight'] = 15;
+        service['initialBottomRightCorner'] = { x: 50, y: 50 };
+        let expectedResultX = 50;
+        let expectedResultY = 50;
+        service['revertX'] = true;
+        service['revertY'] = true;
+        service['isSquare']();
+        expect(service.topLeftCorner.x).toEqual(expectedResultX);
+        expect(service.topLeftCorner.y).toEqual(expectedResultY);
+        service['revertX'] = false;
+        service['revertY'] = false;
+        const expectedWidth = 15;
+        const expectedHeight = 15;
+        expectedResultX = 35;
+        expectedResultY = 35;
+        service['isSquare']();
+        expect(service.topLeftCorner.x).toEqual(expectedResultX);
+        expect(service.topLeftCorner.y).toEqual(expectedResultY);
+        expect(service['canvasWidth']).toEqual(expectedWidth);
+        expect(service['canvasHeight']).toEqual(expectedHeight);
+    });
+
+    it('isSquare should set the right values for TopRightBox', () => {
+        service.initialTopLeftCorner = { x: 50, y: 50 };
+        service['shiftDown'] = true;
+        service.status = SelectionStatus.TOP_RIGHT_BOX;
+        service['canvasWidth'] = 20;
+        service['canvasHeight'] = 15;
+        service['initialBottomRightCorner'] = { x: 100, y: 100 };
+        let expectedResultX = 50;
+        service['revertX'] = true;
+        const expectedWidth = 15;
+        const expectedHeight = 15;
+        expectedResultX = 35;
+        service['isSquare']();
+        expect(service.topLeftCorner.x).toEqual(expectedResultX);
+        expect(service['canvasWidth']).toEqual(expectedWidth);
+        expect(service['canvasHeight']).toEqual(expectedHeight);
+    });
+
+
+    // tslint:disable-next-line:max-file-line-count
 });
