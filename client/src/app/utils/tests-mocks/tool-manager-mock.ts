@@ -2,7 +2,7 @@ import { EventEmitter } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { TextService } from '@app/services/tools/text/text.service';
+import { TextService } from '@app/services/tools/text-service/text.service';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { Stamp } from '@app/utils/enums/stamp';
 import { ToolsNames } from '@app/utils/enums/tools-names';

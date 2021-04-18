@@ -4,7 +4,7 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatSliderChange } from '@angular/material/slider';
 import { GridService } from '@app/services/grid/grid.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
-import { TextService } from '@app/services/tools/text/text.service';
+import { TextService } from '@app/services/tools/text-service/text.service';
 import {
     MAX_DROPLET_DIAMETER,
     MAX_FREQUENCY,

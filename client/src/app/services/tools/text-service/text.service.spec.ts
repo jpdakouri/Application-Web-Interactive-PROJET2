@@ -8,7 +8,7 @@ import { TextAlign } from '@app/utils/enums/text-align.enum';
 import { TextFont } from '@app/utils/enums/text-font.enum';
 import { TextService } from './text.service';
 
-fdescribe('TextService', () => {
+describe('TextService', () => {
     let service: TextService;
     let canvasTestHelper: CanvasTestHelper;
     let drawingServiceSpy: jasmine.SpyObj<DrawingService>;
@@ -35,7 +35,7 @@ fdescribe('TextService', () => {
         expect(service).toBeTruthy();
     });
 
-    it('#onKeyDown should empty text and change showTextBox attribute to false if showTextBox is true', () => {
+    it('#onKeyDown should empty text-service and change showTextBox attribute to false if showTextBox is true', () => {
         const mockKeyboardEvent = { key: KeyboardButtons.Escape } as KeyboardEvent;
         const emptyText = '';
         service.showTextBox = true;
@@ -45,7 +45,7 @@ fdescribe('TextService', () => {
         expect(service.text).toBe(emptyText);
     });
 
-    it('#onKeyDown should not empty text and not change showTextBox attribute if showTextBox is false or if key is not escape', () => {
+    it('#onKeyDown should not empty text-service and not change showTextBox attribute if showTextBox is false or if key is not escape', () => {
         const mockKeyboardEvent = { key: KeyboardButtons.Enter } as KeyboardEvent;
         const mockText = 'hello word';
         service.showTextBox = false;
@@ -69,7 +69,7 @@ fdescribe('TextService', () => {
         expect(calculateNumberOfLinesSpy).toHaveBeenCalled();
     });
 
-    it('#drawStyledTextOnCanvas should draw text with current style', () => {
+    it('#drawStyledTextOnCanvas should draw text-service with current style', () => {
         const position = { x: 100, y: 100 } as Vec2;
         const fillTextMultiLineSpy = spyOn(service, 'fillTextMultiLine').and.callThrough();
         const mockText = 'hello word';
@@ -82,7 +82,7 @@ fdescribe('TextService', () => {
         expect(fillTextMultiLineSpy).toHaveBeenCalledWith(drawingServiceSpy.baseCtx, mockText, position);
     });
 
-    it('#drawStyledTextOnCanvas should not draw text on canvas if text is empty', () => {
+    it('#drawStyledTextOnCanvas should not draw text-service on canvas if text-service is empty', () => {
         const fillTextMultiLineSpy = spyOn(service, 'fillTextMultiLine').and.callThrough();
         service.text = '';
 
@@ -90,7 +90,7 @@ fdescribe('TextService', () => {
         expect(fillTextMultiLineSpy).not.toHaveBeenCalled();
     });
 
-    it('#calculateTextFinalPosition should correctly calculate text final position', () => {
+    it('#calculateTextFinalPosition should correctly calculate text-service final position', () => {
         const position = { x: 50, y: 50 } as Vec2;
         const mockTextAreaWidth = 200;
         const textArea = document.createElement('HTMLTextAreaElement') as HTMLTextAreaElement;
@@ -111,7 +111,7 @@ fdescribe('TextService', () => {
         expect(service['calculateTextFinalPosition'](position)).toEqual(expectedPosition);
     });
 
-    it('#calculateTextFinalPosition should correctly calculate text final position if textArea is null', () => {
+    it('#calculateTextFinalPosition should correctly calculate text-service final position if textArea is null', () => {
         const position = { x: 50, y: 50 } as Vec2;
         // const mockTextAreaWidth = 200;
 
@@ -129,18 +129,18 @@ fdescribe('TextService', () => {
         expect(service['calculateTextFinalPosition'](position)).toEqual(expectedPosition);
     });
 
-    it('#calculateNumberOfLines should be able to calculate number of lines in a text', () => {
+    it('#calculateNumberOfLines should be able to calculate number of lines in a text-service', () => {
         const text = 'hello word \n from team 306';
         expect(service['calculateNumberOfLines'](text)).toEqual(2);
     });
 
-    it('#splitTextInToLines should correctly split text in to lines', () => {
+    it('#splitTextInToLines should correctly split text-service in to lines', () => {
         const text = 'hello word\nfrom\nteam 306';
         const expectedLines = ['hello word', 'from', 'team 306'];
         expect(service['splitTextInToLines'](text)).toEqual(expectedLines);
     });
 
-    it('#calculateLongestLineWidth should be able to correctly calculate max line length in a text ', () => {
+    it('#calculateLongestLineWidth should be able to correctly calculate max line length in a text-service ', () => {
         let text = 'hello word\nfrom\nteam 306';
         let expectedLongestLineLength = service.calculateTextWidth(drawingServiceSpy.baseCtx, text.split('\n')[0]);
         expect(service['calculateLongestLineWidth'](text)).toEqual(expectedLongestLineLength);
@@ -150,7 +150,7 @@ fdescribe('TextService', () => {
         expect(service['calculateLongestLineWidth'](text)).toEqual(expectedLongestLineLength);
     });
 
-    it('#calculateMaxLineLength should first line if maxLine is first line in the text', () => {
+    it('#calculateMaxLineLength should first line if maxLine is first line in the text-service', () => {
         const text = 'hello word\nfrom\nteam 306';
         const expectedLongestLineLength = service.calculateTextWidth(drawingServiceSpy.baseCtx, text.split('\n')[0]);
         expect(service['calculateLongestLineWidth'](text)).toEqual(expectedLongestLineLength);
@@ -164,7 +164,7 @@ fdescribe('TextService', () => {
         expect(service.getSingleStyle('italic')).toEqual('italic');
     });
 
-    it('#getCurrentStyle should correctly get current text style', () => {
+    it('#getCurrentStyle should correctly get current text-service style', () => {
         service.textStyles = ['bold', 'italic'];
         const expectedStyle = service.getCurrentStyle();
         const getSingleStyleSpy = spyOn(service, 'getSingleStyle').and.callThrough();
@@ -173,7 +173,7 @@ fdescribe('TextService', () => {
         expect(getSingleStyleSpy).toHaveBeenCalledTimes(2);
     });
 
-    it('#onMouseDwon should draw text on canvas if mouse click is out of canvas', () => {
+    it('#onMouseDwon should draw text-service on canvas if mouse click is out of canvas', () => {
         const mockMouseEvent = { x: 100, y: 100 } as MouseEvent;
         const drawStyledTextOnCanvasSpy = spyOn(service, 'drawStyledTextOnCanvas').and.callThrough();
         // tslint:disable:no-any
@@ -188,7 +188,7 @@ fdescribe('TextService', () => {
         expect(service.textBoxPosition).toEqual({ x: 100, y: 100 });
     });
 
-    it('#onMouseDwon should do nothing if showed and mouse down coordinate is in text box', () => {
+    it('#onMouseDwon should do nothing if showed and mouse down coordinate is in text-service box', () => {
         spyOn<any>(service, 'getPositionFromMouse').and.returnValue({ x: 100, y: 100 });
         const mockMouseEvent = { x: 100, y: 100 } as MouseEvent;
         const drawStyledTextOnCanvasSpy = spyOn(service, 'drawStyledTextOnCanvas').and.callThrough();
@@ -208,7 +208,7 @@ fdescribe('TextService', () => {
         expect(service.text).toBe('log2990');
     });
 
-    it('#fillTextMultiLine should be able to draw styled text in multi lines', () => {
+    it('#fillTextMultiLine should be able to draw styled text-service in multi lines', () => {
         const fillTextSpy = spyOn(drawingServiceSpy.baseCtx, 'fillText').and.callThrough();
         const text = 'hello word from\nteam 306';
         const position = { x: 100, y: 100 } as Vec2;
@@ -223,13 +223,9 @@ fdescribe('TextService', () => {
         expect(drawingServiceSpy.baseCtx.textAlign).toEqual(service.textAlign);
     });
 
-    it('#calculateTextBoxWidth should call #calculateLongestLineWidth with text attribute value', () => {
+    it('#calculateTextBoxWidth should call #calculateLongestLineWidth with text-service attribute value', () => {
         spyOn<any>(service, 'calculateLongestLineWidth').and.stub();
         service.calculateTextBoxWidth();
         expect(service['calculateLongestLineWidth']).toHaveBeenCalled();
     });
-
-    it('#calculateFontHeight should ', () => {});
-
-    it('#calculateTextBoxWidth should ', () => {});
 });

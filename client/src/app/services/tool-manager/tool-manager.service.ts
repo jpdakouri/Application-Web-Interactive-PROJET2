@@ -13,7 +13,7 @@ import { SelectionEllipseService } from '@app/services/tools/selection-ellipse-s
 import { SelectionPolygonalLassoService } from '@app/services/tools/selection-polygonal-lasso/selection-polygonal-lasso.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
 import { StampService } from '@app/services/tools/stamp-service/stamp.service';
-import { TextService } from '@app/services/tools/text/text.service';
+import { TextService } from '@app/services/tools/text-service/text.service';
 import { DEFAULT_FONT_SIZE } from '@app/services/tools/tools-constants';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { Stamp } from '@app/utils/enums/stamp';
