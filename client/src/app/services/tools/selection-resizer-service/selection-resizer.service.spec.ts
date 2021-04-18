@@ -13,7 +13,7 @@ import { MockSelectionPolygonaleService } from '@app/utils/tests-mocks/selection
 import { MockSelectionRectangleService } from '@app/utils/tests-mocks/selection-rectangle-service-mock';
 import { SelectionResizerService } from './selection-resizer.service';
 
-fdescribe('SelectionResizerService', () => {
+describe('SelectionResizerService', () => {
     let service: SelectionResizerService;
     let canvasTestHelper: CanvasTestHelper;
     let mouseEvent: MouseEvent;
@@ -285,7 +285,7 @@ fdescribe('SelectionResizerService', () => {
         expect(SelectionResizerService['selectionActive']).toBeFalse();
     });
 
-    it('canvas.scale is called with the good parameters', () => {
+    xit('canvas.scale is called with the good parameters', () => {
         spyOn<any>(drawing, 'clearCanvas').and.stub();
         spyOn<any>(drawing.selectedAreaCtx, 'scale');
         service['revertX'] = true;
