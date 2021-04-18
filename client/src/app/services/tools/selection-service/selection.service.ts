@@ -219,13 +219,12 @@ export abstract class SelectionService extends Tool {
     }
 
     isClickIn(firstGrid: Vec2): boolean {
-        if (firstGrid.x < this.topLeftCorner.x || firstGrid.x > this.topLeftCorner.x + this.width) {
-            return false;
-        }
-        if (firstGrid.y < this.topLeftCorner.y || firstGrid.y > this.topLeftCorner.y + this.height) {
-            return false;
-        }
-        return true;
+        return (
+            firstGrid.x > this.topLeftCorner.x &&
+            firstGrid.x < this.topLeftCorner.x + this.width &&
+            firstGrid.y > this.topLeftCorner.y &&
+            firstGrid.y < this.topLeftCorner.y + this.height
+        );
     }
 
     cancelSelection(): void {

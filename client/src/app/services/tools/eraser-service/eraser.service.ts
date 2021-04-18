@@ -15,6 +15,7 @@ export class EraserService extends Tool {
     private pathData: Vec2[];
     private undoRedo: UndoRedoService;
     private commandPaths: Vec2[][];
+    isActive: boolean;
 
     constructor(drawingService: DrawingService, currentColorService: CurrentColorService, undoRedo: UndoRedoService) {
         super(drawingService, currentColorService);
@@ -22,6 +23,7 @@ export class EraserService extends Tool {
         this.lineThickness = MIN_ERASER_THICKNESS;
         this.undoRedo = undoRedo;
         this.commandPaths = [];
+        this.isActive = false;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -49,7 +51,7 @@ export class EraserService extends Tool {
     }
 
     onMouseMove(event: MouseEvent): void {
-        this.eraserActive = true;
+        this.isActive = true;
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
@@ -58,7 +60,7 @@ export class EraserService extends Tool {
     }
 
     onMouseLeave(event: MouseEvent): void {
-        this.eraserActive = false;
+        this.isActive = false;
         if (this.mouseDown) {
             this.pathData.push(this.getPositionFromMouse(event));
             this.commandPaths.push(this.pathData);

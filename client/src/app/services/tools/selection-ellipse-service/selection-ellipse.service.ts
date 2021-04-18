@@ -70,6 +70,7 @@ export class SelectionEllipseService extends SelectionService {
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown && SelectionService.isSelectionStarted && !this.dragActive && this.mouseMoved) {
             SelectionService.selectionActive = true;
+            SelectionService.isSelectionStarted = true;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.finalGridClip = this.getPositionFromMouse(event);
             this.updateTopLeftCorner();
@@ -85,20 +86,19 @@ export class SelectionEllipseService extends SelectionService {
 
     moveBorderPreview(newPos?: Vec2): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.firstGrid = this.topLeftCorner;
-        this.drawEllipse(this.drawingService.previewCtx, { x: this.width, y: this.height });
+        this.drawEllipse(this.drawingService.previewCtx, { x: this.width, y: this.height }, this.topLeftCorner);
         this.drawingService.previewCtx.stroke();
         this.drawingService.selectedAreaCtx.setLineDash([]);
         this.drawingService.previewCtx.setLineDash([]);
         this.drawingService.baseCtx.setLineDash([]);
     }
 
-    private drawEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
+    private drawEllipse(ctx: CanvasRenderingContext2D, finalGrid: Vec2, firstGrid: Vec2): void {
         ctx.beginPath();
         ctx.setLineDash([LINE_DASH, LINE_DASH]);
         ctx.strokeStyle = 'blue';
         ctx.lineWidth = 1;
-        const startCoord = { ...this.firstGrid };
+        const startCoord = { ...firstGrid };
         const width = finalGrid.x;
         const height = finalGrid.y;
 
@@ -108,7 +108,7 @@ export class SelectionEllipseService extends SelectionService {
 
     private clipArea(ctx: CanvasRenderingContext2D, finalGrid: Vec2): void {
         ctx.save();
-        this.drawEllipse(ctx, finalGrid);
+        this.drawEllipse(ctx, finalGrid, this.firstGrid);
         ctx.clip('evenodd');
     }
 
@@ -132,7 +132,7 @@ export class SelectionEllipseService extends SelectionService {
         ctx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
         ctx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
         this.drawingService.baseCtx.fillStyle = 'white';
-        this.drawEllipse(this.drawingService.baseCtx, finalGrid);
+        this.drawEllipse(this.drawingService.baseCtx, finalGrid, this.firstGrid);
         this.drawingService.baseCtx.fill();
     }
 
@@ -157,7 +157,7 @@ export class SelectionEllipseService extends SelectionService {
         if (this.shiftDown) {
             this.mousePositionHandler.makeCircle(this.mouseDownCoord, currentCoord);
         }
-        this.drawEllipse(this.drawingService.previewCtx, currentCoord);
+        this.drawEllipse(this.drawingService.previewCtx, currentCoord, this.firstGrid);
         this.drawingService.previewCtx.stroke();
     }
 

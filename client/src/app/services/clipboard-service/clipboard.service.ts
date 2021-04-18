@@ -13,10 +13,7 @@ export class ClipboardService {
 
     copy(): void {
         const selectionTool = this.toolManager.getCurrentSelectionTool();
-        if (selectionTool == undefined) {
-            return;
-        }
-        if (SelectionService.selectionActive) {
+        if (!!selectionTool && SelectionService.selectionActive) {
             this.clipboardContent = selectionTool.getSelectionImageData();
         }
     }
@@ -38,20 +35,16 @@ export class ClipboardService {
     }
     delete(): void {
         const selectionTool = this.toolManager.getCurrentSelectionTool();
-        if (selectionTool == undefined) {
-            return;
+        if (!!selectionTool) {
+            selectionTool.deselect();
+            // Dummy image data because redoing a delete command has no selection movement.
+            selectionTool.registerUndo(new ImageData(1, 1));
         }
-        selectionTool.deselect();
-        // Dummy image data because redoing a delete command has no selection movement.
-        selectionTool.registerUndo(new ImageData(1, 1));
     }
 
     cut(): void {
         const selectionTool = this.toolManager.getCurrentSelectionTool();
-        if (selectionTool == undefined) {
-            return;
-        }
-        if (SelectionService.selectionActive) {
+        if (!!selectionTool && SelectionService.selectionActive) {
             this.clipboardContent = selectionTool.getSelectionImageData();
             selectionTool.deselect();
             selectionTool.registerUndo(this.clipboardContent);
@@ -59,7 +52,7 @@ export class ClipboardService {
     }
 
     hasContent(): boolean {
-        return this.clipboardContent !== undefined;
+        return !!this.clipboardContent;
     }
 
     hasSelection(): boolean {
