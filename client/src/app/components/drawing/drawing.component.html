@@ -95,8 +95,7 @@
         [ngStyle]="{
             left: getSelectedAreaSize().x + 'px',
             top: getSelectedAreaSize().y / 2 - 2.5 + 'px',
-            transform: 'translate(' + getTopLeftCorner().x + 'px, ' + getTopLeftCorner().y + 'px)',
-            cursor: selectionResizerService.isMagnetismOff ? 'grab' : 'grabbing'
+            transform: 'translate(' + getTopLeftCorner().x + 'px, ' + getTopLeftCorner().y + 'px)'
         }"
         (mousedown)="onSelectionBoxClick(selectionStatus.MIDDLE_RIGHT_BOX)"
         *ngIf="isActiveSelection()"
@@ -176,6 +175,18 @@
             transform: 'translate(' + getTopLeftCorner().x + 'px, ' + getTopLeftCorner().y + 'px)'
         }"
         (mousedown)="onSelectionBoxClick(selectionStatus.BOTTOM_LEFT_BOX)"
+        *ngIf="isActiveSelection()"
+    ></div>
+
+    <div
+        class="resizer selection-box-center"
+        [ngStyle]="{
+            left: getSelectedAreaSize().x / 2 + 'px',
+            top: getSelectedAreaSize().y / 2 + 2 + 'px',
+            transform: 'translate(' + getTopLeftCorner().x + 'px, ' + getTopLeftCorner().y + 'px)',
+            'background-color': selectionResizerService.isMagnetismOff ? 'transparent' : 'transparent'
+        }"
+        (mousedown)="onSelectionBoxClick(selectionStatus.CENTER)"
         *ngIf="isActiveSelection()"
     ></div>
 </div>

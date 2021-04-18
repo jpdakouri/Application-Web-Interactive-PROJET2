@@ -51,8 +51,12 @@ export class MagnetismService extends Tool {
     }
 
     onMouseMove(event: MouseEvent): void {
+        console.log('valeur mouseDown ' + this.mouseDown);
         if (this.mouseDown) {
-            this.verifyInRangeCross(this.getPositionFromMouse(event));
+            if (this.verifyInRangeCross(this.getPositionFromMouse(event))) {
+                this.findNearestLineLeft(); // coller en x
+                this.findNearestLineTop(); // coller en y
+            }
         }
     }
 
@@ -67,6 +71,15 @@ export class MagnetismService extends Tool {
         this.gridSize = this.drawingService.gridSize;
         // this.lastPosition = { x: this.drawingService.selectedAreaCtx.canvas.offsetLeft, y: this.drawingService.selectedAreaCtx.canvas.offsetTop };
         this.updatePosition(this.gridSize);
+    }
+
+    verifyInRangeCross(mouseCoord: Vec2): boolean {
+        console.log('test');
+        return Math.abs(this.findNearestLineLeft() - mouseCoord.x) <= RANGE && Math.abs(this.findNearestLineTop() - mouseCoord.y) <= RANGE;
+    }
+
+    isUsingMagnetism(): boolean {
+        return this.status === SelectionStatus.TOP_LEFT_BOX;
     }
 
     findNearestLineRight(): number {
@@ -108,11 +121,6 @@ export class MagnetismService extends Tool {
             this.findNearestLineLeft();
             this.findNearestLineTop();
         }
-    }
-
-    verifyInRangeCross(mouseCoord: Vec2): boolean {
-        console.log('test');
-        return Math.abs(this.gridSize - mouseCoord.x) <= RANGE && Math.abs(mouseCoord.y) <= RANGE;
     }
 
     setStatus(status: SelectionStatus): void {

@@ -194,6 +194,9 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             this.canvasResizerService.onMouseMove(event);
         } else if (this.selectionResizerService.isResizing()) {
             this.selectionResizerService.onMouseMove(event);
+            // La condition bool est a revoir ici pour activier le mouseMove
+        } else if (this.selectionResizerService.isResizing() && this.selectionRectangleService.isMagnetismOff) {
+            this.magnetismService.onMouseMove(event);
         } else {
             this.currentTool.onMouseMove(event);
             this.eraserActive = this.currentTool.eraserActive || false;
