@@ -52,33 +52,34 @@ export class TextService extends Tool {
         const textAreaSelector = document.querySelector('#textArea');
         // @ts-ignore
         if (textAreaSelector !== null && textAreaSelector.contains(event.target)) return;
-        this.drawStyledText();
+        this.drawStyledTextOnCanvas();
         this.text = '';
         this.numberOfRows = 1;
         this.showTextBox = !this.showTextBox;
         this.textBoxPosition = this.getPositionFromMouse(event);
     }
 
-    drawStyledText(): void {
-        const textFinalPosition = this.getTextFinalPosition(this.textBoxPosition);
+    drawStyledTextOnCanvas(): void {
+        const textFinalPosition = this.calculateTextFinalPosition(this.textBoxPosition);
         this.fillTextMultiLine(this.drawingService.baseCtx, this.text, textFinalPosition);
     }
 
-    private getTextFinalPosition(currentPosition: Vec2): Vec2 {
+    private calculateTextFinalPosition(currentPosition: Vec2): Vec2 {
         const textPosition = { ...currentPosition };
         let textAreaWidth = 0;
         const textArea = document.getElementById('textArea') as HTMLTextAreaElement;
-        if (textArea !== null) textAreaWidth = textArea.clientWidth;
+        if (textArea) textAreaWidth = textArea.clientWidth;
         switch (this.textAlign) {
             case TextAlign.Start:
                 break;
 
             case TextAlign.Center:
-                textPosition.x += (this.textBoxSize.x + textAreaWidth) / 2;
+                textPosition.x += textAreaWidth / 2;
+                console.log(this.textBoxSize.x);
                 break;
 
             case TextAlign.End:
-                textPosition.x += this.textBoxSize.x + textAreaWidth;
+                textPosition.x += textAreaWidth;
                 break;
         }
         return textPosition;
@@ -86,15 +87,16 @@ export class TextService extends Tool {
 
     fillTextMultiLine(context: CanvasRenderingContext2D, text: string, position: Vec2): void {
         const fontHeight = this.calculateFontHeight(context, text);
+        const textPosition = { ...position };
         context.fillStyle = this.currentColorService.getPrimaryColorRgb();
         context.font = ` ${this.getCurrentStyle()} ${this.fontSize}px ${this.fontFace}`;
         context.textAlign = this.textAlign;
-        position.y += fontHeight;
+        textPosition.y += fontHeight;
 
         const lines = this.splitTextInToLines(text);
         lines.forEach((line: string) => {
-            context.fillText(line, position.x, position.y);
-            position.y += fontHeight + FONT_HEIGHT_FACTOR * fontHeight;
+            context.fillText(line, textPosition.x, textPosition.y);
+            textPosition.y += fontHeight + FONT_HEIGHT_FACTOR * fontHeight;
         });
     }
 
