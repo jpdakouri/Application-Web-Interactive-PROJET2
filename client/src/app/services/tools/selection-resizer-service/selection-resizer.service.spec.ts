@@ -530,6 +530,7 @@ describe('SelectionResizerService', () => {
     });
 
     it('updateValues should set the correct values to the selectionEllipseService', () => {
+        spyOn<any>(drawing, 'clearCanvas').and.stub();
         drawing.selectedAreaCtx.canvas.style.left = 0 + 'px';
         drawing.selectedAreaCtx.canvas.style.top = 0 + 'px';
         drawing.selectedAreaCtx.canvas.height = 50;
