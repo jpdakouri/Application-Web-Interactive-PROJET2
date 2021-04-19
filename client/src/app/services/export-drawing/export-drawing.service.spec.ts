@@ -96,6 +96,16 @@ describe('ExportDrawingService', () => {
         expect(spyLink.href).toBe(expectedImageSource);
     });
 
+    it('should be convert canvas to bas64 image', () => {
+        const drawImageSpy = spyOn<any>(service, 'drawImageOnCanvas').and.callThrough();
+        const imageFormat = ImageFormat.PNG as string;
+        const calculatedImageSource = service.canvasToBase64Image(imageFormat);
+        const expectedImageSource = service.canvas.toDataURL('image/png').split(';base64,')[1];
+
+        expect(calculatedImageSource).toEqual(expectedImageSource);
+        expect(drawImageSpy).toHaveBeenCalled();
+    });
+
     it('should be able to download image in JPEG format', () => {
         const fileName = 'drawing-2';
         const imageFormat = ImageFormat.JPEG as string;

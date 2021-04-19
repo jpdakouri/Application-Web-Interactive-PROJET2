@@ -13,6 +13,8 @@ export class ExportDrawingServiceMock {
     link: HTMLAnchorElement = document.createElement('a');
     canvas: HTMLCanvasElement;
 
-    // tslint:disable-next-line:no-empty
+    // tslint:disable:no-empty
     downloadDrawingAsImage = (): void => {};
+
+    canvasToBase64Image = (): void => {};
 }

@@ -35,6 +35,9 @@ export const TAG_NAME_REGEX = /^[a-zA-Z0-9 ]*$/;
 export const INVALID_FILE_NAME_ERROR_MESSAGE = 'Nom de fichier invalide';
 export const REQUIRED_FILE_NAME_ERROR_MESSAGE = 'Vous devez entrer un nom';
 export const NO_ERROR_MESSAGE = '';
+export const UPLOAD_FAIL_ERROR_MESSAGE = 'Le téléversement du dessin a échoué ! Veuillez ressayer.';
+export const UPLOAD_SNACK_BAR_DISPLAY_DURATION = 10000;
+
 /****************************/
 /***SELECTION CONSTANTS*/
 /****************************/
