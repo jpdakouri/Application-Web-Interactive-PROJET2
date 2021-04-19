@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
+import { MatOptionModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -14,12 +15,11 @@ import { CurrentColorComponent } from '@app/components/color-components/current-
 import { HueSelectorComponent } from '@app/components/color-components/hue-selector/hue-selector.component';
 import { PipettePreviewComponent } from '@app/components/pipette-preview/pipette-preview.component';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
-import { ShapeStyle } from '@app/utils/enums/shape-style';
-import { ToolAttributeComponent } from './tool-attribute.component';
-
-import SpyObj = jasmine.SpyObj;
-import { MatOptionModule } from '@angular/material/core';
 import { TextService } from '@app/services/tools/text-service/text.service';
+import { ShapeStyle } from '@app/utils/enums/shape-style';
+import { TextAlign } from '@app/utils/enums/text-align.enum';
+import { ToolAttributeComponent } from './tool-attribute.component';
+import SpyObj = jasmine.SpyObj;
 
 describe('ToolAttributeBarComponent', () => {
     let component: ToolAttributeComponent;
@@ -259,5 +259,28 @@ describe('ToolAttributeBarComponent', () => {
         spyOn(component.gridService, 'changeOpacity').and.stub();
         component.onGridOpacityChange({} as MatSliderChange);
         expect(component.gridService.changeOpacity).toHaveBeenCalled();
+    });
+
+    it('onFontSizeChange should call the service to change the font size', () => {
+        component.onFontSizeChange({} as MatSliderChange);
+        expect(toolManagerServiceSpy.setCurrentFontSize).toHaveBeenCalled();
+    });
+
+    it('onFontSizeFaceChange should call the service to change the font face', () => {
+        component.onFontFaceChange({} as string);
+        expect(toolManagerServiceSpy.setCurrentFontFace).toHaveBeenCalled();
+    });
+
+    it('onFontTextAlignChange should call the service to change the text align', () => {
+        textServiceSpy.textAlign = TextAlign.Center;
+        component.onTextAlignChange(TextAlign.End as string);
+        expect(textServiceSpy.textAlign).toBe(TextAlign.End);
+    });
+
+    it('onFontTextStyleChange should call the service to change the text align', () => {
+        const textStyles = ['bold', 'italic'];
+        textServiceSpy.textStyles = [];
+        component.onTextStyleChange(textStyles);
+        expect(textServiceSpy.textStyles).toBe(textStyles);
     });
 });

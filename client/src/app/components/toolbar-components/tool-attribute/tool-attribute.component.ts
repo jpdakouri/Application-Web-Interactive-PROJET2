@@ -186,6 +186,14 @@ export class ToolAttributeComponent {
         this.toolManagerService.setCurrentFontFace(selectedFont);
     }
 
+    onTextAlignChange(value: string): void {
+        this.textService.textAlign = value as TextAlign;
+    }
+
+    onTextStyleChange(textStyle: string[]): void {
+        this.textService.textStyles = textStyle;
+    }
+
     onDropletDiameterChange(event: MatSliderChange): void {
         this.toolManagerService.setCurrentDropletDiameter(event.value || undefined);
     }
@@ -213,13 +221,5 @@ export class ToolAttributeComponent {
 
     onSelectedStampChange(stampName: string): void {
         this.toolManagerService.setSelectedStamp(stampName);
-    }
-
-    onTextAlignChange(value: string): void {
-        this.textService.textAlign = value as TextAlign;
-    }
-
-    onTextStyleChange(textStyle: string[]): void {
-        this.textService.textStyles = textStyle;
     }
 }
