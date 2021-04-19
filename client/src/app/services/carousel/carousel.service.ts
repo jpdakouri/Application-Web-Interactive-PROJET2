@@ -14,10 +14,12 @@ const LAST_INDEX_OF_ARRAY = -1;
 export class CarouselService {
     carouselDialog: MatDialogRef<CarouselComponent>;
     sizeOfArray: number;
-    courrentIndex: number = 0;
+    courrentIndex: number;
     drawingsToShow: DrawingData[];
 
-    constructor(private httpService: HttpService, public drawingService: DrawingService) {}
+    constructor(private httpService: HttpService, public drawingService: DrawingService) {
+        this.courrentIndex = 0;
+    }
 
     initCarousel(tagFlag: boolean): Observable<DrawingData[]> {
         this.drawingsToShow = [];

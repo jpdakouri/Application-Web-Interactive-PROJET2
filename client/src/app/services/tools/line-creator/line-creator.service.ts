@@ -13,11 +13,13 @@ import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 export abstract class LineCreatorService extends SelectionService {
     started: boolean;
     pathData: Vec2[];
-    dotRadius?: number = DEFAULT_DOT_RADIUS;
-    showDots?: boolean = false;
+    dotRadius?: number;
+    showDots?: boolean;
 
     constructor(drawingService: DrawingService, currentColorService: CurrentColorService) {
         super(drawingService, currentColorService);
+        this.dotRadius = DEFAULT_DOT_RADIUS;
+        this.showDots = false;
         this.clearPath();
     }
 

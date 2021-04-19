@@ -16,19 +16,28 @@ import { Subscription } from 'rxjs';
 })
 export class CarouselComponent implements OnInit, OnDestroy {
     @ViewChildren(DrawingCardComponent) drawingCard: QueryList<DrawingCardComponent>;
-    private subscribeInit: Subscription = new Subscription();
-    private subscribeGet: Subscription = new Subscription();
+    private subscribeInit: Subscription;
+    private subscribeGet: Subscription;
 
     sideCard: CardStyle;
     mainCard: CardStyle;
-    middle: number = 1;
-    left: number = 0;
-    right: number = 2;
-    isLoading: boolean = true;
-    tagFlag: boolean = false;
-    drawingArray: DrawingData[] = [];
+    middle: number;
+    left: number;
+    right: number;
+    isLoading: boolean;
+    tagFlag: boolean;
+    drawingArray: DrawingData[];
 
     constructor(public dialogRef: MatDialogRef<CarouselComponent>, public carouselService: CarouselService, public snackBar: MatSnackBar) {
+        this.subscribeInit = new Subscription();
+        this.subscribeGet = new Subscription();
+
+        this.middle = 1;
+        this.left = 0;
+        this.right = 2;
+        this.isLoading = true;
+        this.tagFlag = false;
+        this.drawingArray = [];
         this.sideCard = {
             width: MAX_WIDTH_SIDE_CARD,
             height: MAX_HEIGHT_SIDE_CARD,
