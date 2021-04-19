@@ -20,17 +20,13 @@ import { ToolManagerServiceMock } from '@app/utils/tests-mocks/tool-manager-mock
 import { ToolStub } from '@app/utils/tests-mocks/tool-stub';
 import { DrawingComponent } from './drawing.component';
 
-fdescribe('DrawingComponent', () => {
+describe('DrawingComponent', () => {
     let component: DrawingComponent;
     let fixture: ComponentFixture<DrawingComponent>;
     let toolStub: ToolStub;
     let mouseStub: MouseHandlerService;
     let canvasResizerStub: CanvasResizerService;
     let textService: TextService;
-
-    // let selectionResizerStub: SelectionResizerService;
-    // let drawingService: DrawingService;
-    // let currentColorService: CurrentColorService;
 
     let toolManagerServiceMock: ToolManagerServiceMock;
     let drawingServiceSpy: DrawingServiceMock;
