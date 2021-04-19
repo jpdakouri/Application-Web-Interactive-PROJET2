@@ -267,6 +267,7 @@ describe('ToolManagerService', () => {
         service.emitToolChange(ToolsNames.Text);
         service.emitToolChange(ToolsNames.Pencil);
         expect(textServiceSpy.drawStyledTextOnCanvas).toHaveBeenCalled();
+        expect(textServiceSpy.showTextBox).toBe(false);
     });
 
     it('getStampScalingFactor gets the scaling factor', () => {
@@ -349,4 +350,5 @@ describe('ToolManagerService', () => {
         retVal = service.eraserActive();
         expect(retVal).toEqual(false);
     });
+    // tslint:disable-next-line:max-file-line-count
 });

@@ -10,10 +10,9 @@ import { ToolManagerService } from '@app/services/tool-manager/tool-manager.serv
 import { SelectionEllipseService } from '@app/services/tools/selection-ellipse-service/selection-ellipse.service';
 import { SelectionPolygonalLassoService } from '@app/services/tools/selection-polygonal-lasso/selection-polygonal-lasso.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
-import { TextService } from '@app/services/tools/text-service/text.service';
 import { SelectionResizerService } from '@app/services/tools/selection-resizer-service/selection-resizer.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection.service';
-import { TextService } from '@app/services/tools/text/text.service';
+import { TextService } from '@app/services/tools/text-service/text.service';
 import { MIN_ERASER_THICKNESS } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { Status } from '@app/utils/enums/canvas-resizer-status';

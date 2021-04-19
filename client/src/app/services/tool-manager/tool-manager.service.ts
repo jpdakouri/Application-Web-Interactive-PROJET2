@@ -266,6 +266,7 @@ export class ToolManagerService {
     emitToolChange(toolName: ToolsNames): void {
         if (this.currentTool === ToolsNames.Text) {
             this.textService.drawStyledTextOnCanvas();
+            this.textService.showTextBox = false;
         }
         this.toolChangeEmitter.emit(toolName);
     }

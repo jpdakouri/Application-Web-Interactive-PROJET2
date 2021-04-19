@@ -3,7 +3,6 @@ import { CurrentColorService } from '@app/services/current-color/current-color.s
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import {
     DEFAULT_COLOR_BLACK,
-    DEFAULT_FONT_SIZE,
     DEFAULT_MIN_THICKNESS,
     MIN_DROPLET_DIAMETER,
     MIN_FREQUENCY,
