@@ -150,6 +150,10 @@ export class SelectionResizerService extends SelectionService {
         this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y + 'px';
         this.drawingService.selectedAreaCtx.canvas.height = this.canvasHeight;
         this.drawingService.selectedAreaCtx.canvas.width = this.canvasWidth;
+        this.drawSelection();
+    }
+
+    private drawSelection(): void {
         createImageBitmap(this.imageData).then((imgBitmap) => {
             this.drawingService.selectedAreaCtx.scale(this.revertX ? REVERT : 1, this.revertY ? REVERT : 1);
             this.drawingService.selectedAreaCtx.drawImage(
