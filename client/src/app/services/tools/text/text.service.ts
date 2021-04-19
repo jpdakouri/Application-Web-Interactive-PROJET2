@@ -110,6 +110,7 @@ export class TextService extends Tool {
         return textStyle;
     }
 
-    // tslint:disable-next-line:no-empty
-    executeCommand(command: ToolCommand): void {}
+    executeCommand(command: ToolCommand): void {
+        return;
+    }
 }

@@ -102,7 +102,7 @@ describe('DrawingService', () => {
 
         spyOn(window, 'confirm').and.returnValue(false);
         spyOn(service, 'isCanvasBlank').and.returnValue(false);
-        spyOn(service, 'continueDrawing').and.stub();
+        // spyOn(service, 'continueDrawing').and.stub();
         service.createNewDrawing(true);
         expect(clearCanvasStub).not.toHaveBeenCalled();
     });
