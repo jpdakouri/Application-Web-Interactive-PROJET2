@@ -10,6 +10,7 @@ export class DrawingService {
     previewCtx: CanvasRenderingContext2D;
     selectedAreaCtx: CanvasRenderingContext2D;
     gridCtx: CanvasRenderingContext2D;
+    gridSize: number;
     canvas: HTMLCanvasElement;
     selectedAreaCanvas: HTMLCanvasElement;
     @Output() newDrawing: EventEmitter<Vec2> = new EventEmitter();

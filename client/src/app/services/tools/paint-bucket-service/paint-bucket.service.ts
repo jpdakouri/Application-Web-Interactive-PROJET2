@@ -172,7 +172,8 @@ export class PaintBucketService extends Tool {
             color.R < TRANSPARENT_THRESHOLD &&
             color.G < TRANSPARENT_THRESHOLD &&
             color.B < TRANSPARENT_THRESHOLD;
-        return color.A === 0 || condition;
+        // tslint:disable-next-line:no-magic-numbers
+        return color.A < 11 || condition;
     }
 
     getRGBAFromCoord(x: number, y: number): Color {

@@ -155,7 +155,7 @@ describe('PaintBucketService', () => {
         const expectFalse3 = service.isTransparent({ R: 90, G: 90, B: 90, A: 1 });
         expect(expectFalse1).toBeFalsy();
         expect(expectFalse2).toBeFalsy();
-        expect(expectFalse3).toBeFalsy();
+        expect(expectFalse3).toBeTruthy();
     });
 
     it('#getRGBAFromCoord should return correct color', () => {
