@@ -16,7 +16,6 @@ export class DrawingService {
     @Output() createNewDrawingEmitter: EventEmitter<boolean> = new EventEmitter();
 
     saveCanvas(): void {
-        console.log('save');
         const value = [];
         value.push(this.canvas.toDataURL());
         value.push(this.canvas.width);
@@ -32,8 +31,11 @@ export class DrawingService {
         return this.baseCtx;
     }
 
+    getPreviewContext(): CanvasRenderingContext2D {
+        return this.previewCtx;
+    }
+
     restoreCanvas(): void {
-        console.log('restore');
         const canvasInfo = localStorage.getItem('canvasInfo');
         const info = JSON.parse(canvasInfo as string);
         if (info[0]) {
@@ -44,8 +46,8 @@ export class DrawingService {
             };
             img.src = drawingData.dataURL as string;
             this.newDrawing.emit({ x: drawingData.width, y: drawingData.height } as Vec2);
-            this.saveCanvas();
         }
+        this.saveCanvas();
     }
 
     restoreDrawing(): void {
@@ -74,7 +76,6 @@ export class DrawingService {
     }
 
     openDrawing(drawing: DrawingData, showConfirmDialog?: boolean): void {
-        console.log('openD');
         this.createNewDrawing(showConfirmDialog);
         this.canvas.width = drawing.width;
         this.canvas.height = drawing.height;
@@ -86,16 +87,17 @@ export class DrawingService {
         };
         img.src = drawing.dataURL as string;
         this.newDrawing.emit({ x: drawing.width, y: drawing.height } as Vec2);
+        this.saveCanvas();
     }
 
     createNewDrawing(showConfirmDialog?: boolean): boolean {
-        console.log('clearDrawing');
         if (localStorage.getItem('canvasInfo') && !this.isCanvasBlank() && showConfirmDialog) {
             if (confirm("Le canvas n'est pas vide! Voulez-vous procéder tout de même?")) {
                 this.clearCanvas(this.previewCtx);
                 this.clearCanvas(this.baseCtx);
-                localStorage.clear();
                 this.saveCanvas();
+                localStorage.clear();
+                this.emitCreateNewDrawing();
                 return true;
             } else if (localStorage.getItem('canvasInfo') && !this.isCanvasBlank()) {
                 this.continueDrawing();
@@ -103,33 +105,23 @@ export class DrawingService {
                 return true;
             }
         }
+
         return false;
     }
 
     continueDrawing(): void {
-        console.log('continue');
         if (!this.isCanvasBlank() && localStorage.getItem('canvasInfo')) {
             const dataURL = localStorage.getItem('canvasInfo');
             const image = new Image();
             image.src = dataURL as string;
             if (dataURL) {
-                const drawingData: DrawingData = new DrawingData('', '', [], dataURL, this.canvas.width, this.canvas.height);
-                const img = new Image();
-                img.onload = () => {
-                    this.canvas.getContext('2d')?.drawImage(img, 0, 0);
-                };
-                img.src = drawingData.dataURL as string;
-                this.newDrawing.emit({ x: drawingData.width, y: drawingData.height } as Vec2);
+                this.restoreCanvas();
+                this.restoreDrawing();
             }
-            this.restoreCanvas();
         }
     }
 
     emitCreateNewDrawing(): void {
         this.createNewDrawingEmitter.emit(true);
     }
-
-    // emitContinuerawing(): void {
-    //     this.createNewDrawingEmitter.emit(true);
-    // }
 }

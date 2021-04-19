@@ -140,7 +140,7 @@ describe('CanvasResizerService', () => {
     it('should be able to calculate previewCanvas width on middle right resize', () => {
         service.setStatus(Status.MIDDLE_RIGHT_RESIZE);
         service.resizePreviewCanvas();
-        const expectedWidth = 265;
+        const expectedWidth = 250;
         expect(service.canvasPreviewWidth).toEqual(expectedWidth);
     });
 
@@ -163,7 +163,7 @@ describe('CanvasResizerService', () => {
     it('should be able to calculate previewCanvas width and height on bottom right resize', () => {
         service.setStatus(Status.BOTTOM_RIGHT_RESIZE);
         service.resizePreviewCanvas();
-        const expectedWidth = 265;
+        const expectedWidth = 250;
         const expectedHeight = 450;
         expect(service.canvasPreviewWidth).toEqual(expectedWidth);
         expect(service.canvasPreviewHeight).toEqual(expectedHeight);
@@ -172,7 +172,7 @@ describe('CanvasResizerService', () => {
     it('should be able to calculate canvas size', () => {
         const windowWidth = 1215;
         const windowHeight = 800;
-        const expectedCanvasSize = { x: 440, y: 400 };
+        const expectedCanvasSize = { x: 428, y: 400 };
 
         // we resize the window to always have the size during the test
         window.resizeTo(windowWidth, windowHeight);

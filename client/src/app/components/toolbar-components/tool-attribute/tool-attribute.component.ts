@@ -149,6 +149,10 @@ export class ToolAttributeComponent {
         return this.toolManagerService.getStampScalingFactor();
     }
 
+    getStampRotationAngle(): number {
+        return this.toolManagerService.getStampRotationAngle();
+    }
+
     getSelectedStamp(): Stamp {
         return this.toolManagerService.getSelectedStamp();
     }
@@ -171,7 +175,7 @@ export class ToolAttributeComponent {
     }
 
     onToleranceChange(event: MatSliderChange): void {
-        this.toolManagerService.setCurrentTolerance(event.value || undefined);
+        this.toolManagerService.setCurrentTolerance(event.value || 0);
     }
 
     onFrequencyChange(event: MatSliderChange): void {
@@ -217,6 +221,10 @@ export class ToolAttributeComponent {
 
     onStampScalingFactorChange(event: MatSliderChange): void {
         this.toolManagerService.setStampScalingFactor(event.value || undefined);
+    }
+
+    onStampRotationAngleChange(event: MatSliderChange): void {
+        this.toolManagerService.setStampRotationAngle(event.value || undefined);
     }
 
     onSelectedStampChange(stampName: string): void {

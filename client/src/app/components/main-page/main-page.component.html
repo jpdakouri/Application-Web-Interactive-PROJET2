@@ -14,7 +14,7 @@
         routerLink="/editor"
         [colspan]="1"
         [rowspan]="1"
-        *ngIf="!drawingService.isCanvasBlank() && getLocalStorage() !== null"
+        *ngIf="getDataFromLocalStorage() !== null"
         (click)="onContinueDrawing()"
     >
         <mat-grid-tile-header class="tile-header">Continuer un dessin</mat-grid-tile-header>
@@ -24,7 +24,7 @@
         <mat-grid-tile-header class="tile-header">Créer un nouveau dessin</mat-grid-tile-header>
     </mat-grid-tile>
 
-    <mat-grid-tile id="sketchbook" routerLink="/editor" [colspan]="1" [rowspan]="drawingService.isCanvasBlank() ? 2 : 1" (click)="openCarousel()">
+    <mat-grid-tile id="sketchbook" routerLink="/editor" [colspan]="1" [rowspan]="getDataFromLocalStorage() !== null ? 1 : 2" (click)="openCarousel()">
         <mat-grid-tile-header class="tile-header">Carrousel de dessins</mat-grid-tile-header>
     </mat-grid-tile>
 </mat-grid-list>

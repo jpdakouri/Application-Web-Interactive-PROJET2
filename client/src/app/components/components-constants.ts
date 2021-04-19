@@ -1,4 +1,3 @@
-// color-selector-component
 /****************************/
 /***GLOBAL COLOR SELECTOR CONSTANTS***/
 /****************************/
@@ -11,8 +10,10 @@ export const MIN_TRANSPARENCY = 1;
 export const MAX_TRANSPARENCY = 100;
 
 /****************************/
-/***GLOBAL CURRENT COLOR CONSTANTS***/
+/***GLOBAL COLOR HISTORY CONSTANTS***/
 /****************************/
+export const RGB_BEGIN_INDICATOR = '(';
+export const RGB_END_INDICATOR = ')';
 
 /****************************/
 /***GLOBAL HUE SELECTOR CONSTANTS***/
@@ -54,7 +55,7 @@ export const MINIMUM_HEIGHT = 250;
 export const LOWER_BOUND_WIDTH = 500;
 export const LOWER_BOUND_HEIGHT = 500;
 
-export const SIDEBAR_WIDTH = 335;
+export const SIDEBAR_WIDTH = 360;
 
 export const WORKING_ZONE_VISIBLE_PORTION = 100;
 

@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { LineCommand } from '@app/classes/tool-commands/line-command';
+import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { LineCreatorService } from '@app/services/line-creator/line-creator.service';
+import { LineCreatorService } from '@app/services/tools/line-creator/line-creator.service';
 import { DEFAULT_DOT_RADIUS, DEFAULT_MIN_THICKNESS } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 
@@ -17,11 +18,23 @@ export class LineService extends LineCreatorService {
         this.undoRedo = undoRedo;
     }
 
+    registerUndo(imageData: ImageData): void {
+        return;
+    }
+
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
             this.defaultMouseUp(event);
         }
         this.mouseDown = false;
+    }
+
+    onMouseMove(event: MouseEvent): void {
+        this.defaultOnMouseMove(event);
+    }
+
+    moveBorderPreview(newPos: Vec2): void {
+        return;
     }
 
     onDblClick(): void {

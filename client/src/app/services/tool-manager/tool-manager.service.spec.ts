@@ -5,6 +5,9 @@ import { EraserService } from '@app/services/tools/eraser-service/eraser.service
 import { LineService } from '@app/services/tools/line-service/line.service';
 import { PencilService } from '@app/services/tools/pencil-service/pencil.service';
 import { RectangleService } from '@app/services/tools/rectangle-service/rectangle.service';
+import { SelectionEllipseService } from '@app/services/tools/selection-ellipse-service/selection-ellipse.service';
+import { SelectionPolygonalLassoService } from '@app/services/tools/selection-polygonal-lasso/selection-polygonal-lasso.service';
+import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
 import { StampService } from '@app/services/tools/stamp-service/stamp.service';
 import { TextService } from '@app/services/tools/text-service/text.service';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
@@ -86,6 +89,16 @@ describe('ToolManagerService', () => {
         expect(service.toolBox[service.currentTool].lineThickness).not.toEqual(WRONG_FAKE_LINE_THICKNESS);
     });
 
+    it("#setCurrentTolerance should set currentAttributes.BucketTolerance property and currentTool's bucketTolerance to correct value ", () => {
+        const BUCKET_TOLERANCE = 10;
+        const WRONG_BUCKET_TOLERANCE = 5;
+        service.setCurrentTolerance(BUCKET_TOLERANCE);
+        expect(service.currentAttributes.BucketTolerance).toEqual(BUCKET_TOLERANCE);
+        expect(service.currentAttributes.LineThickness).not.toEqual(WRONG_BUCKET_TOLERANCE);
+        expect(service.toolBox[service.currentTool].bucketTolerance).toEqual(BUCKET_TOLERANCE);
+        expect(service.toolBox[service.currentTool].bucketTolerance).not.toEqual(WRONG_BUCKET_TOLERANCE);
+    });
+
     it("#getCurrentLineThickness should return currentAttributes property's LineThickness", () => {
         const FAKE_LINE_THICKNESS = 10;
         const WRONG_FAKE_LINE_THICKNESS = 5;
@@ -95,24 +108,36 @@ describe('ToolManagerService', () => {
         expect(lineThickness).not.toEqual(WRONG_FAKE_LINE_THICKNESS);
     });
 
+    it("#getCurrentTolerance should return currentAttributes property's BucketTolerance", () => {
+        const BUCKET_TOLERANCE = 10;
+        const WRONG_BUCKET_TOLERANCE = 5;
+        service.currentAttributes.BucketTolerance = BUCKET_TOLERANCE;
+        const bucketTolerance = service.getCurrentTolerance();
+        expect(bucketTolerance).toEqual(BUCKET_TOLERANCE);
+        expect(bucketTolerance).not.toEqual(WRONG_BUCKET_TOLERANCE);
+    });
+
     it("#setCurrentShowDots should set currentAttributes.showDots property and currentTool's showDots to correct value ", () => {
         const FAKE_SHOW_DOTS = true;
         const WRONG_FAKE_SHOW_DOTS = false;
+        service.setCurrentTool(ToolsNames.Line);
         service.setCurrentShowDots(FAKE_SHOW_DOTS);
         expect(service.currentAttributes.ShowDots).toEqual(FAKE_SHOW_DOTS);
         expect(service.currentAttributes.ShowDots).not.toEqual(WRONG_FAKE_SHOW_DOTS);
-        expect(service.toolBox[service.currentTool].showDots).toEqual(FAKE_SHOW_DOTS);
-        expect(service.toolBox[service.currentTool].showDots).not.toEqual(WRONG_FAKE_SHOW_DOTS);
+        // tslint:disable:no-string-literal
+        expect(service['lineService'].showDots).toEqual(FAKE_SHOW_DOTS);
+        expect(service['lineService'].showDots).not.toEqual(WRONG_FAKE_SHOW_DOTS);
     });
 
     it("#setCurrentDotRadius should set currentAttributes.dotRadius property and currentTool's dot radius to correct value ", () => {
         const FAKE_DOT_RADIUS = 10;
         const WRONG_FAKE_DOT_RADIUS = 5;
+        service.setCurrentTool(ToolsNames.Line);
         service.setCurrentDotRadius(FAKE_DOT_RADIUS);
         expect(service.currentAttributes.DotRadius).toEqual(FAKE_DOT_RADIUS);
         expect(service.currentAttributes.DotRadius).not.toEqual(WRONG_FAKE_DOT_RADIUS);
-        expect(service.toolBox[service.currentTool].dotRadius).toEqual(FAKE_DOT_RADIUS);
-        expect(service.toolBox[service.currentTool].dotRadius).not.toEqual(WRONG_FAKE_DOT_RADIUS);
+        expect(service['lineService'].dotRadius).toEqual(FAKE_DOT_RADIUS);
+        expect(service['lineService'].dotRadius).not.toEqual(WRONG_FAKE_DOT_RADIUS);
     });
 
     it("#getCurrentDotRadius should return currentAttributes property's DotRadius", () => {
@@ -210,10 +235,10 @@ describe('ToolManagerService', () => {
         const WRONG_FAKE_SHAPE_STYLE = ShapeStyle.Filled;
         const WRONG_FAKE_SHOW_DOTS = false;
         service.toolBox[ToolsNames.Pencil].shapeStyle = WRONG_FAKE_SHAPE_STYLE;
-        service.toolBox[ToolsNames.Pencil].showDots = WRONG_FAKE_SHOW_DOTS;
+        service['lineService'].showDots = WRONG_FAKE_SHOW_DOTS;
         service.currentTool = ToolsNames.Pencil;
         service.toolBox[ToolsNames.Rectangle].shapeStyle = FAKE_SHAPE_STYLE;
-        service.toolBox[ToolsNames.Rectangle].showDots = FAKE_SHOW_DOTS;
+        service['lineService'].showDots = FAKE_SHOW_DOTS;
         service.emitToolChange(ToolsNames.Rectangle);
         expect(service.currentAttributes.ShapeStyle).toEqual(FAKE_SHAPE_STYLE);
         expect(service.currentAttributes.ShowDots).toEqual(FAKE_SHOW_DOTS);
@@ -226,10 +251,10 @@ describe('ToolManagerService', () => {
         const FAKE_LINE_THICKNESS = 10;
         const WRONG_FAKE_DOT_RADIUS = 15;
         const WRONG_FAKE_LINE_THICKNESS = 20;
-        service.toolBox[ToolsNames.Pencil].dotRadius = WRONG_FAKE_DOT_RADIUS;
+        service['lineService'].dotRadius = WRONG_FAKE_DOT_RADIUS;
         service.toolBox[ToolsNames.Pencil].lineThickness = WRONG_FAKE_LINE_THICKNESS;
         service.currentTool = ToolsNames.Pencil;
-        service.toolBox[ToolsNames.Rectangle].dotRadius = FAKE_DOT_RADIUS;
+        service['lineService'].dotRadius = FAKE_DOT_RADIUS;
         service.toolBox[ToolsNames.Rectangle].lineThickness = FAKE_LINE_THICKNESS;
         service.emitToolChange(ToolsNames.Rectangle);
         expect(service.currentAttributes.DotRadius).toEqual(FAKE_DOT_RADIUS);
@@ -258,6 +283,14 @@ describe('ToolManagerService', () => {
         expect(stamp.scalingFactor).toBe(2);
         service.setStampScalingFactor(undefined);
         expect(stamp.scalingFactor).toBe(2);
+    });
+
+    it('setStampRotationAngle sets the scaling factor', () => {
+        const stamp = TestBed.inject(StampService);
+        service.setStampRotationAngle(2);
+        expect(stamp.rotationAngle).toBe(2);
+        service.setStampRotationAngle(undefined);
+        expect(stamp.rotationAngle).toBe(2);
     });
 
     it('setSelectedStamp sets the selected stamp', () => {
@@ -289,5 +322,31 @@ describe('ToolManagerService', () => {
         const fontFace = TextFont.Arial;
         service.setCurrentFontFace(fontFace);
         expect(textServiceSpy.fontFace).toBe(fontFace);
+    });
+
+    it('getCurrentSelectionTool returns current if selection, undefined otherwise', () => {
+        service.emitToolChange(ToolsNames.SelectBox);
+        expect(service.getCurrentSelectionTool()).toBe(TestBed.inject(SelectionRectangleService));
+        service.emitToolChange(ToolsNames.SelectEllipse);
+        expect(service.getCurrentSelectionTool()).toBe(TestBed.inject(SelectionEllipseService));
+        service.emitToolChange(ToolsNames.SelectPolygon);
+        expect(service.getCurrentSelectionTool()).toBe(TestBed.inject(SelectionPolygonalLassoService));
+        service.emitToolChange(ToolsNames.Pencil);
+        expect(service.getCurrentSelectionTool()).toBe(undefined);
+    });
+
+    it('getStampRotationAngle gets the angle of the stamp', () => {
+        const tool = TestBed.inject(StampService);
+        tool.rotationAngle = 2;
+        expect(service.getStampRotationAngle()).toBe(2);
+    });
+
+    it('eraserActive should return true if erase active', () => {
+        service['eraserService'].isActive = true;
+        let retVal = service.eraserActive();
+        expect(retVal).toEqual(true);
+        service['eraserService'].isActive = false;
+        retVal = service.eraserActive();
+        expect(retVal).toEqual(false);
     });
 });

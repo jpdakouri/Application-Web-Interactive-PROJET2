@@ -12,6 +12,7 @@ import { RectangleService } from '@app/services/tools/rectangle-service/rectangl
 import { SelectionEllipseService } from '@app/services/tools/selection-ellipse-service/selection-ellipse.service';
 import { SelectionPolygonalLassoService } from '@app/services/tools/selection-polygonal-lasso/selection-polygonal-lasso.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
+import { SelectionResizerService } from '@app/services/tools/selection-resizer-service/selection-resizer.service';
 import { StampService } from '@app/services/tools/stamp-service/stamp.service';
 import { TextService } from '@app/services/tools/text-service/text.service';
 import { DEFAULT_FONT_SIZE } from '@app/services/tools/tools-constants';
@@ -36,8 +37,8 @@ export class ToolManagerService {
         pencilService: PencilService,
         rectangleService: RectangleService,
         ellipseService: EllipseService,
-        lineService: LineService,
-        eraserService: EraserService,
+        private lineService: LineService,
+        private eraserService: EraserService,
         aerosolService: AerosolService,
         pipetteService: PipetteService,
         selectBoxService: SelectionRectangleService,
@@ -45,6 +46,7 @@ export class ToolManagerService {
         polygonService: PolygonService,
         public textService: TextService,
         paintBucket: PaintBucketService,
+        selectionResizer: SelectionResizerService,
         stampService: StampService,
         selectPolygonalLassoService: SelectionPolygonalLassoService,
     ) {
@@ -61,6 +63,7 @@ export class ToolManagerService {
             SelectPolygon: selectPolygonalLassoService,
             Polygon: polygonService,
             PaintBucket: paintBucket,
+            SelectionResizer: selectionResizer,
             Stamp: stampService,
             Text: textService,
         };
@@ -83,8 +86,8 @@ export class ToolManagerService {
             const currentTool = this.toolBox[this.currentTool];
             this.currentAttributes.ShapeStyle = currentTool.shapeStyle;
             this.currentAttributes.LineThickness = currentTool.lineThickness;
-            this.currentAttributes.DotRadius = currentTool.dotRadius;
-            this.currentAttributes.ShowDots = currentTool.showDots;
+            this.currentAttributes.DotRadius = lineService.dotRadius;
+            this.currentAttributes.ShowDots = lineService.showDots;
             this.currentAttributes.Frequency = currentTool.frequency;
             this.currentAttributes.JetDiameter = currentTool.jetDiameter;
             this.currentAttributes.DropletDiameter = currentTool.dropletDiameter;
@@ -93,6 +96,12 @@ export class ToolManagerService {
     }
 
     setCurrentTool(toolName: ToolsNames): void {
+        // if (
+        //     this.currentTool === ToolsNames.SelectPolygon ||
+        //     this.currentTool === ToolsNames.SelectBox ||
+        //     this.currentTool === ToolsNames.SelectEllipse
+        // )
+        //     this.selectEllipseService.cancelSelection();
         this.currentTool = toolName;
     }
 
@@ -105,12 +114,12 @@ export class ToolManagerService {
     }
 
     setCurrentShowDots(checked: boolean): void {
-        this.toolBox[this.currentTool].showDots = checked;
+        if (this.currentTool === ToolsNames.Line) this.lineService.showDots = checked;
         this.currentAttributes.ShowDots = checked;
     }
 
     setCurrentDotRadius(dotRadius?: number): void {
-        this.toolBox[this.currentTool].dotRadius = dotRadius;
+        if (this.currentTool === ToolsNames.Line) this.lineService.dotRadius = dotRadius;
         this.currentAttributes.DotRadius = dotRadius;
     }
 
@@ -167,6 +176,14 @@ export class ToolManagerService {
         return this.toolBox[this.currentTool];
     }
 
+    getCurrentSelectionTool(): SelectionEllipseService | SelectionRectangleService | SelectionPolygonalLassoService | undefined {
+        const tool = this.toolBox[this.currentTool];
+        if (tool === this.toolBox[ToolsNames.SelectBox]) return tool as SelectionRectangleService;
+        if (tool === this.toolBox[ToolsNames.SelectEllipse]) return tool as SelectionEllipseService;
+        if (tool === this.toolBox[ToolsNames.SelectPolygon]) return tool as SelectionPolygonalLassoService;
+        return undefined;
+    }
+
     setCurrentNumberOfSides(numberOfSides?: number): void {
         this.toolBox[this.currentTool].numberOfSides = numberOfSides;
         this.currentAttributes.numberOfSides = numberOfSides;
@@ -186,6 +203,11 @@ export class ToolManagerService {
         return stamp.selectedStamp;
     }
 
+    getStampRotationAngle(): number {
+        const stamp = this.toolBox.Stamp as StampService;
+        return stamp.rotationAngle;
+    }
+
     setStampScalingFactor(factor?: number): void {
         if (factor != undefined) {
             const stamp = this.toolBox.Stamp as StampService;
@@ -193,26 +215,31 @@ export class ToolManagerService {
         }
     }
 
+    setStampRotationAngle(angle?: number): void {
+        if (angle != undefined) {
+            const stamp = this.toolBox.Stamp as StampService;
+            stamp.rotationAngle = angle;
+        }
+    }
+
     setSelectedStamp(stampName: string): void {
-        if (stampName != undefined) {
-            const stampTool = this.toolBox.Stamp as StampService;
-            switch (stampName) {
-                case Stamp.House:
-                    stampTool.selectedStamp = Stamp.House;
-                    break;
-                case Stamp.Letter:
-                    stampTool.selectedStamp = Stamp.Letter;
-                    break;
-                case Stamp.Star:
-                    stampTool.selectedStamp = Stamp.Star;
-                    break;
-                case Stamp.Hashtag:
-                    stampTool.selectedStamp = Stamp.Hashtag;
-                    break;
-                default:
-                    stampTool.selectedStamp = Stamp.Smile;
-                    break;
-            }
+        const stampTool = this.toolBox.Stamp as StampService;
+        switch (stampName) {
+            case Stamp.House:
+                stampTool.selectedStamp = Stamp.House;
+                break;
+            case Stamp.Letter:
+                stampTool.selectedStamp = Stamp.Letter;
+                break;
+            case Stamp.Star:
+                stampTool.selectedStamp = Stamp.Star;
+                break;
+            case Stamp.Hashtag:
+                stampTool.selectedStamp = Stamp.Hashtag;
+                break;
+            default:
+                stampTool.selectedStamp = Stamp.Smile;
+                break;
         }
     }
 
@@ -226,6 +253,10 @@ export class ToolManagerService {
 
     setCurrentFontSize(fontSize: number): void {
         this.textService.fontSize = fontSize;
+    }
+
+    eraserActive(): boolean {
+        return this.eraserService.isActive;
     }
 
     isCurrentTool(toolName: ToolsNames): boolean {

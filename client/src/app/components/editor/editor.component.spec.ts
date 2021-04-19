@@ -13,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Vec2 } from '@app/classes/vec2';
@@ -27,11 +28,14 @@ import { ExportDrawingComponent } from '@app/components/export-drawing/export-dr
 import { PipettePreviewComponent } from '@app/components/pipette-preview/pipette-preview.component';
 import { ToolAttributeComponent } from '@app/components/toolbar-components/tool-attribute/tool-attribute.component';
 import { ToolbarComponent } from '@app/components/toolbar-components/toolbar/toolbar.component';
+import { ClipboardService } from '@app/services/clipboard-service/clipboard.service';
 import { DialogControllerService } from '@app/services/dialog-controller/dialog-controller.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { GridService } from '@app/services/grid/grid.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
+import { GridServiceMock } from '@app/utils/tests-mocks/grid-service-mock';
 import { ToolManagerServiceMock } from '@app/utils/tests-mocks/tool-manager-mock';
 import { EditorComponent } from './editor.component';
 
@@ -60,10 +64,12 @@ describe('EditorComponent', () => {
     let fixture: ComponentFixture<EditorComponent>;
     let toolManagerServiceMock: ToolManagerServiceMock;
     let drawingServiceSpy: DrawingServiceMock;
+    let gridServiceMock: GridServiceMock;
 
     beforeEach(async(() => {
         drawingServiceSpy = new DrawingServiceMock();
         toolManagerServiceMock = new ToolManagerServiceMock();
+        gridServiceMock = new GridServiceMock();
         toolManagerServiceMock.textService.showTextBox = false;
         TestBed.configureTestingModule({
             declarations: [
@@ -94,12 +100,14 @@ describe('EditorComponent', () => {
                 MatDialogModule,
                 MatChipsModule,
                 MatOptionModule,
+                MatSnackBarModule,
                 MatSelectModule,
             ],
             providers: [
                 { provide: ToolManagerService, useValue: toolManagerServiceMock },
                 { provide: DrawingService, useValue: drawingServiceSpy },
                 { provide: CarouselComponent, useValue: {} },
+                { provide: GridService, useValue: gridServiceMock },
             ],
         }).compileComponents();
     }));
@@ -138,41 +146,42 @@ describe('EditorComponent', () => {
     });
 
     it(' #onKeyDown should call set the right tool if input is valid', () => {
-        const goodInput = { key: KeyboardButtons.Rectangle } as KeyboardEvent;
-        component.onKeyDown(goodInput);
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Pencil });
+        component.onKeyDown(keyBordPrevent);
         expect(toolManagerServiceMock.emitToolChange).toHaveBeenCalled();
     });
 
     it(' onKeyDown should not call emitToolChange if shift is pressed or the key is inalid ', () => {
-        component.onKeyDown({ shiftKey: true } as KeyboardEvent);
+        let keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { shiftKey: true });
+        component.onKeyDown(keyBordPrevent);
         expect(toolManagerServiceMock.emitToolChange).not.toHaveBeenCalled();
 
-        const badInput = { key: KeyboardButtons.InvalidInput } as KeyboardEvent;
-        component.onKeyDown(badInput);
+        keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.InvalidInput });
+        component.onKeyDown(keyBordPrevent);
         expect(toolManagerServiceMock.emitToolChange).not.toHaveBeenCalled();
     });
 
     it(' #onKeyDown should not call create new drawing if input is invalid ', () => {
-        const goodInput = { key: KeyboardButtons.NewDrawing, ctrlKey: false } as KeyboardEvent;
-        component.onKeyDown(goodInput);
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.NewDrawing, ctrlKey: false });
         spyOn(drawingServiceSpy, 'createNewDrawing').and.stub();
+        component.onKeyDown(keyBordPrevent);
         expect(drawingServiceSpy.createNewDrawing).not.toHaveBeenCalled();
     });
 
     it(' #onKeyDown should call create new drawing if input is valid, and if successful, saves initial state ', () => {
-        const goodInput = { key: KeyboardButtons.NewDrawing, ctrlKey: true } as KeyboardEvent;
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.NewDrawing, ctrlKey: true });
         const creatNewDrawing = spyOn(component, 'onCreateNewDrawing').and.stub().and.returnValue(true);
         spyOn(TestBed.inject(UndoRedoService), 'saveInitialState');
-        component.onKeyDown(goodInput);
+        component.onKeyDown(keyBordPrevent);
         expect(creatNewDrawing).toHaveBeenCalled();
         expect(TestBed.inject(UndoRedoService).saveInitialState).toHaveBeenCalled();
     });
 
     it(' #onKeyDown should call create new drawing if input is valid, and if unsuccessful, does not save initial state ', () => {
-        const goodInput = { key: KeyboardButtons.NewDrawing, ctrlKey: true } as KeyboardEvent;
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.NewDrawing, ctrlKey: true });
         const creatNewDrawing = spyOn(component, 'onCreateNewDrawing').and.stub().and.returnValue(false);
         spyOn(TestBed.inject(UndoRedoService), 'saveInitialState');
-        component.onKeyDown(goodInput);
+        component.onKeyDown(keyBordPrevent);
         expect(creatNewDrawing).toHaveBeenCalled();
         expect(TestBed.inject(UndoRedoService).saveInitialState).not.toHaveBeenCalled();
     });
@@ -199,19 +208,19 @@ describe('EditorComponent', () => {
     });
 
     it(' #onKeyDown should call openCarouselModal if input is valid ', () => {
-        const event = { key: KeyboardButtons.Carousel, ctrlKey: true } as KeyboardEvent;
         spyOn(component, 'openCarouselModal').and.stub();
-        component.onKeyDown(event);
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Carousel, ctrlKey: true });
+        component.onKeyDown(keyBordPrevent);
         expect(component.openCarouselModal).toHaveBeenCalled();
     });
 
     it(" #onKeyDown shouldn'n call openSaveDrawingModal if a dialog is open ", () => {
-        const event = { key: KeyboardButtons.Save, ctrlKey: true } as KeyboardEvent;
+        const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Save, ctrlKey: true });
         // tslint:disable-next-line:no-string-literal
         component['dialogControllerService'].noDialogOpened = false;
         spyOn(component, 'openSaveDrawingModal').and.stub();
         spyOn(component, 'openCarouselModal').and.stub();
-        component.onKeyDown(event);
+        component.onKeyDown(keyBordPrevent);
         expect(component.openSaveDrawingModal).not.toHaveBeenCalled();
     });
 
@@ -259,4 +268,95 @@ describe('EditorComponent', () => {
         component.onKeyDown(event);
         expect(TestBed.inject(UndoRedoService).redo).toHaveBeenCalled();
     });
+
+    it('should copy if ctrl + c is pressed', () => {
+        TestBed.inject(DialogControllerService).noDialogOpened = true;
+        const event = new KeyboardEvent('keydown', { key: 'c', ctrlKey: true });
+        spyOn(TestBed.inject(ClipboardService), 'copy');
+        component.onKeyDown(event);
+        expect(TestBed.inject(ClipboardService).copy).toHaveBeenCalled();
+    });
+
+    it('should paste if ctrl + v is pressed', () => {
+        TestBed.inject(DialogControllerService).noDialogOpened = true;
+        const event = new KeyboardEvent('keydown', { key: 'v', ctrlKey: true });
+        spyOn(TestBed.inject(ClipboardService), 'paste');
+        component.onKeyDown(event);
+        expect(TestBed.inject(ClipboardService).paste).toHaveBeenCalled();
+    });
+
+    it('should cut if ctrl + x is pressed', () => {
+        TestBed.inject(DialogControllerService).noDialogOpened = true;
+        const event = new KeyboardEvent('keydown', { key: 'x', ctrlKey: true });
+        spyOn(TestBed.inject(ClipboardService), 'cut');
+        component.onKeyDown(event);
+        expect(TestBed.inject(ClipboardService).cut).toHaveBeenCalled();
+    });
+    it('should delete if delete is pressed', () => {
+        TestBed.inject(DialogControllerService).noDialogOpened = true;
+        const event = new KeyboardEvent('keydown', { key: 'Delete' });
+        spyOn(TestBed.inject(ClipboardService), 'delete');
+        component.onKeyDown(event);
+        expect(TestBed.inject(ClipboardService).delete).toHaveBeenCalled();
+    });
+
+    it(' #onKeyDown should call new grid with null  ', () => {
+        const eventGrid = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Grid, ctrlKey: false });
+
+        // tslint:disable:no-string-literal
+        component['dialogControllerService'].noDialogOpened = true;
+        spyOn(gridServiceMock, 'newGrid').and.stub();
+        spyOn(gridServiceMock, 'clear').and.stub();
+        gridServiceMock.showGrid = false;
+        component.onKeyDown(eventGrid);
+        expect(gridServiceMock.newGrid).toHaveBeenCalledWith(null);
+    });
+
+    it(' #onKeyDown should call zoom out the grid ', () => {
+        const eventZomeOut = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.GridDown, ctrlKey: false });
+
+        // tslint:disable:no-string-literal
+        component['dialogControllerService'].noDialogOpened = true;
+        spyOn(gridServiceMock, 'newGrid').and.stub();
+        spyOn(gridServiceMock, 'clear').and.stub();
+
+        gridServiceMock.showGrid = true;
+        component.onKeyDown(eventZomeOut);
+        // tslint:disable:no-magic-numbers
+        expect(gridServiceMock.newGrid).toHaveBeenCalledWith(45);
+    });
+
+    it(' #onKeyDown should  call zoom in the grid ', () => {
+        const eventZomeIn = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.GridUp, ctrlKey: false });
+        // tslint:disable:no-string-literal
+        component['dialogControllerService'].noDialogOpened = true;
+        spyOn(gridServiceMock, 'newGrid').and.stub();
+        spyOn(gridServiceMock, 'clear').and.stub();
+
+        gridServiceMock.showGrid = true;
+        component.onKeyDown(eventZomeIn);
+        expect(gridServiceMock.newGrid).toHaveBeenCalledWith(55);
+    });
+
+    it('onkeyDown should do nothing if grid wrong input', () => {
+        let input = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.GridUp, ctrlKey: false });
+        // tslint:disable:no-string-literal
+        component['dialogControllerService'].noDialogOpened = true;
+        spyOn(gridServiceMock, 'newGrid').and.stub();
+        spyOn(gridServiceMock, 'clear').and.stub();
+        gridServiceMock.showGrid = false;
+
+        component.onKeyDown(input);
+        expect(gridServiceMock.newGrid).not.toHaveBeenCalled();
+
+        input = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.GridDown, ctrlKey: false });
+        component.onKeyDown(input);
+        expect(gridServiceMock.newGrid).not.toHaveBeenCalled();
+
+        input = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Grid, ctrlKey: false });
+        gridServiceMock.showGrid = true;
+        component.onKeyDown(input);
+        expect(gridServiceMock.clear).toHaveBeenCalled();
+    });
+    // tslint:disable-next-line:max-file-line-count
 });

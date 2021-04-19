@@ -63,6 +63,10 @@ export class ToolManagerServiceMock {
         return 1;
     }
 
+    eraserActive(): boolean {
+        return true;
+    }
+
     getSelectedStamp(): Stamp {
         return Stamp.House;
     }
@@ -77,5 +81,15 @@ export class ToolManagerServiceMock {
 
     setSelectedStamp(): void {
         /*empty*/
+    }
+    getCurrentSelectionTool(): undefined {
+        return undefined;
+    }
+    setStampRotationAngle(): void {
+        /*empty*/
+    }
+
+    getStampRotationAngle(): number {
+        return 1;
     }
 }

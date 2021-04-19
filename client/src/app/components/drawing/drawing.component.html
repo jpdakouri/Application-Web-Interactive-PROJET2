@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="drawing.component.scss">
+<link rel="stylesheet" href="drawing.component.scss" />
 <div id="canvas-container">
     <div
         class="resizer middle-right"
@@ -54,7 +54,9 @@
         #selectedArea
         [attr.width]="width"
         [attr.height]="height"
-        [ngStyle]="{ border: selectionEllipseService.selectionActive || selectionRectangleService.selectionActive ? '1px solid' : 'none' }"
+        [ngStyle]="{
+            border: isActiveSelection() ? '1px solid' : 'none'
+        }"
     >
     </canvas>
 
@@ -87,178 +89,89 @@
 
     <div
         class="resizer selection-box-middle-right"
-        [hidden]="!selectionEllipseService.isSelectionDone"
         [ngStyle]="{
             left: getSelectedAreaSize().x + 'px',
             top: getSelectedAreaSize().y / 2 - 2.5 + 'px',
             transform: 'translate(' + getTopLeftCorner().x + 'px, ' + getTopLeftCorner().y + 'px)'
         }"
-        *ngIf="selectionEllipseService.selectionActive"
+        (mousedown)="onSelectionBoxClick(selectionStatus.MIDDLE_RIGHT_BOX)"
+        *ngIf="isActiveSelection()"
     ></div>
 
     <div
         class="resizer selection-box-bottom-right"
-        [hidden]="!selectionEllipseService.isSelectionDone"
         [ngStyle]="{
             left: getSelectedAreaSize().x + 'px',
             top: getSelectedAreaSize().y + 'px',
             transform: 'translate(' + getTopLeftCorner().x + 'px, ' + getTopLeftCorner().y + 'px)'
         }"
-        *ngIf="selectionEllipseService.selectionActive"
+        (mousedown)="onSelectionBoxClick(selectionStatus.BOTTOM_RIGHT_BOX)"
+        *ngIf="isActiveSelection()"
     ></div>
 
     <div
         class="resizer selection-box-middle-bottom"
-        [hidden]="!selectionEllipseService.isSelectionDone"
         [ngStyle]="{
             left: getSelectedAreaSize().x / 2 - 2 + 'px',
             top: getSelectedAreaSize().y + 'px',
             transform: 'translate(' + getTopLeftCorner().x + 'px, ' + getTopLeftCorner().y + 'px)'
         }"
-        *ngIf="selectionEllipseService.selectionActive"
+        (mousedown)="onSelectionBoxClick(selectionStatus.BOTTOM_MIDDLE_BOX)"
+        *ngIf="isActiveSelection()"
     ></div>
 
     <div
         class="resizer selection-box-top-left"
-        [hidden]="!selectionEllipseService.isSelectionDone"
         [ngStyle]="{
             left: -2 + 'px',
             top: -2 + 'px',
             transform: 'translate(' + getTopLeftCorner().x + 'px, ' + getTopLeftCorner().y + 'px)'
         }"
-        *ngIf="selectionEllipseService.selectionActive"
+        (mousedown)="onSelectionBoxClick(selectionStatus.TOP_LEFT_BOX)"
+        *ngIf="isActiveSelection()"
     ></div>
 
     <div
         class="resizer selection-box-top-middle"
-        [hidden]="!selectionEllipseService.isSelectionDone"
         [ngStyle]="{
             left: getSelectedAreaSize().x / 2 - 2 + 'px',
             top: -2 + 'px',
             transform: 'translate(' + getTopLeftCorner().x + 'px, ' + getTopLeftCorner().y + 'px)'
         }"
-        *ngIf="selectionEllipseService.selectionActive"
+        (mousedown)="onSelectionBoxClick(selectionStatus.TOP_MIDDLE_BOX)"
+        *ngIf="isActiveSelection()"
     ></div>
 
     <div
         class="resizer selection-box-top-right"
-        [hidden]="!selectionEllipseService.isSelectionDone"
         [ngStyle]="{
             left: getSelectedAreaSize().x - 2 + 'px',
             top: -2 + 'px',
             transform: 'translate(' + getTopLeftCorner().x + 'px, ' + getTopLeftCorner().y + 'px)'
         }"
-        *ngIf="selectionEllipseService.selectionActive"
+        (mousedown)="onSelectionBoxClick(selectionStatus.TOP_RIGHT_BOX)"
+        *ngIf="isActiveSelection()"
     ></div>
 
     <div
         class="resizer selection-box-middle-left"
-        [hidden]="!selectionEllipseService.isSelectionDone"
         [ngStyle]="{
             left: -2 + 'px',
             top: getSelectedAreaSize().y / 2 + 2 + 'px',
             transform: 'translate(' + getTopLeftCorner().x + 'px, ' + getTopLeftCorner().y + 'px)'
         }"
-        *ngIf="selectionEllipseService.selectionActive"
+        (mousedown)="onSelectionBoxClick(selectionStatus.MIDDLE_LEFT_BOX)"
+        *ngIf="isActiveSelection()"
     ></div>
 
     <div
         class="resizer selection-box-bottom-left"
-        [hidden]="!selectionEllipseService.isSelectionDone"
         [ngStyle]="{
             left: -2 + 'px',
             top: getSelectedAreaSize().y - 2 + 'px',
             transform: 'translate(' + getTopLeftCorner().x + 'px, ' + getTopLeftCorner().y + 'px)'
         }"
-        *ngIf="selectionEllipseService.selectionActive"
-    ></div>
-
-    <!-- black squares for rectangle -->
-    <div
-        class="resizer selection-box-middle-right"
-        [hidden]="!selectionRectangleService.isSelectionDone"
-        [ngStyle]="{
-            left: getSelectedAreaSizeRectangle().x + 'px',
-            top: getSelectedAreaSizeRectangle().y / 2 - 2.5 + 'px',
-            transform: 'translate(' + getTopLeftCornerRectangle().x + 'px, ' + getTopLeftCornerRectangle().y + 'px)'
-        }"
-        *ngIf="selectionRectangleService.selectionActive"
-    ></div>
-
-    <div
-        class="resizer selection-box-bottom-right"
-        [hidden]="!selectionRectangleService.isSelectionDone"
-        [ngStyle]="{
-            left: getSelectedAreaSizeRectangle().x + 'px',
-            top: getSelectedAreaSizeRectangle().y + 'px',
-            transform: 'translate(' + getTopLeftCornerRectangle().x + 'px, ' + getTopLeftCornerRectangle().y + 'px)'
-        }"
-        *ngIf="selectionRectangleService.selectionActive"
-    ></div>
-
-    <div
-        class="resizer selection-box-middle-bottom"
-        [hidden]="!selectionRectangleService.isSelectionDone"
-        [ngStyle]="{
-            left: getSelectedAreaSizeRectangle().x / 2 - 2 + 'px',
-            top: getSelectedAreaSizeRectangle().y + 'px',
-            transform: 'translate(' + getTopLeftCornerRectangle().x + 'px, ' + getTopLeftCornerRectangle().y + 'px)'
-        }"
-        *ngIf="selectionRectangleService.selectionActive"
-    ></div>
-
-    <div
-        class="resizer selection-box-top-left"
-        [hidden]="!selectionRectangleService.isSelectionDone"
-        [ngStyle]="{
-            left: -2 + 'px',
-            top: -2 + 'px',
-            transform: 'translate(' + getTopLeftCornerRectangle().x + 'px, ' + getTopLeftCornerRectangle().y + 'px)'
-        }"
-        *ngIf="selectionRectangleService.selectionActive"
-    ></div>
-
-    <div
-        class="resizer selection-box-top-middle"
-        [hidden]="!selectionRectangleService.isSelectionDone"
-        [ngStyle]="{
-            left: getSelectedAreaSizeRectangle().x / 2 - 2 + 'px',
-            top: -2 + 'px',
-            transform: 'translate(' + getTopLeftCornerRectangle().x + 'px, ' + getTopLeftCornerRectangle().y + 'px)'
-        }"
-        *ngIf="selectionRectangleService.selectionActive"
-    ></div>
-
-    <div
-        class="resizer selection-box-top-right"
-        [hidden]="!selectionRectangleService.isSelectionDone"
-        [ngStyle]="{
-            left: getSelectedAreaSizeRectangle().x - 2 + 'px',
-            top: -2 + 'px',
-            transform: 'translate(' + getTopLeftCornerRectangle().x + 'px, ' + getTopLeftCornerRectangle().y + 'px)'
-        }"
-        *ngIf="selectionRectangleService.selectionActive"
-    ></div>
-
-    <div
-        class="resizer selection-box-middle-left"
-        [hidden]="!selectionRectangleService.isSelectionDone"
-        [ngStyle]="{
-            left: -2 + 'px',
-            top: getSelectedAreaSizeRectangle().y / 2 + 2 + 'px',
-            transform: 'translate(' + getTopLeftCornerRectangle().x + 'px, ' + getTopLeftCornerRectangle().y + 'px)'
-        }"
-        *ngIf="selectionRectangleService.selectionActive"
-    ></div>
-
-    <div
-        class="resizer selection-box-bottom-left"
-        [hidden]="!selectionRectangleService.isSelectionDone"
-        [ngStyle]="{
-            left: -2 + 'px',
-            top: getSelectedAreaSizeRectangle().y - 2 + 'px',
-            transform: 'translate(' + getTopLeftCornerRectangle().x + 'px, ' + getTopLeftCornerRectangle().y + 'px)'
-        }"
-        *ngIf="selectionRectangleService.selectionActive"
+        (mousedown)="onSelectionBoxClick(selectionStatus.BOTTOM_LEFT_BOX)"
+        *ngIf="isActiveSelection()"
     ></div>
 </div>

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { SelectionService } from '@app/services/tools/selection-service/selection.service';
 import { DEFAULT_DOT_RADIUS, DEFAULT_MIN_THICKNESS, PIXEL_DISTANCE, SHIFT_ANGLE_45, SHIFT_ANGLE_HALF_45 } from '@app/services/tools/tools-constants';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
@@ -10,26 +10,32 @@ import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 @Injectable({
     providedIn: 'root',
 })
-export abstract class LineCreatorService extends Tool {
+export abstract class LineCreatorService extends SelectionService {
     started: boolean;
     pathData: Vec2[];
-    shiftPressed: boolean;
+    dotRadius?: number;
+    showDots?: boolean;
+
     constructor(drawingService: DrawingService, currentColorService: CurrentColorService) {
         super(drawingService, currentColorService);
+        this.dotRadius = DEFAULT_DOT_RADIUS;
+        this.showDots = false;
         this.clearPath();
     }
 
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButtons.Left;
         this.mouseDownCoord = this.getPositionFromMouse(event);
+        if (SelectionService.selectionActive && this.mouseDown) {
+            this.firstGrid = this.mouseDownCoord;
+            this.defaultOnMouseDown(event);
+        }
     }
-
-    abstract onMouseUp(event: MouseEvent): void;
 
     defaultMouseUp(event: MouseEvent): void {
         this.mouseDownCoord = this.getPositionFromMouse(event);
 
-        if (!this.shiftPressed) this.pathData.push(this.mouseDownCoord);
+        if (!this.shiftDown) this.pathData.push(this.mouseDownCoord);
         else this.pathData.push(this.desiredAngle(this.mouseDownCoord));
 
         this.drawLine(
@@ -45,13 +51,15 @@ export abstract class LineCreatorService extends Tool {
         this.started = true;
     }
 
-    onMouseMove(event: MouseEvent): void {
+    defaultOnMouseMove(event: MouseEvent): void {
         if (this.started) {
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.verifyValideLine(this.mouseDownCoord);
-            this.previewUpdate();
+            this.updatePreview();
         }
     }
+
+    // Needed for children class
     verifyValideLine(courrentPosition: Vec2): boolean {
         return true;
     }
@@ -74,39 +82,38 @@ export abstract class LineCreatorService extends Tool {
     }
 
     onKeyDown(event: KeyboardEvent): void {
+        if (event.key === KeyboardButtons.Escape) {
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.clearPath();
+            this.started = false;
+        }
         if (this.started)
             switch (event.key) {
                 case KeyboardButtons.Shift:
-                    this.shiftPressed = true;
-                    this.previewUpdate();
-                    break;
-                case KeyboardButtons.Escape:
-                    this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                    this.clearPath();
-                    this.started = false;
+                    this.shiftDown = true;
+                    this.updatePreview();
                     break;
                 case KeyboardButtons.Backspace:
                     if (this.pathData.length > 1) {
                         this.pathData.pop();
                     }
-                    this.previewUpdate();
+                    this.updatePreview();
                     event.preventDefault();
                     break;
-                default:
-                    break;
             }
+        else this.defaultOnKeyDown(event);
     }
 
     onKeyUp(event: KeyboardEvent): void {
-        if (this.shiftPressed && event.key === KeyboardButtons.Shift) {
-            this.shiftPressed = false;
-            this.previewUpdate();
-        }
+        if (this.shiftDown && event.key === KeyboardButtons.Shift) {
+            this.shiftDown = false;
+            this.updatePreview();
+        } else this.defaultOnKeyUp(event);
     }
 
     abstract getPrimaryColor(): string;
 
-    private previewUpdate(): void {
+    updatePreview(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawLine(
             this.drawingService.previewCtx,
@@ -118,7 +125,7 @@ export abstract class LineCreatorService extends Tool {
             this.lineThickness || DEFAULT_MIN_THICKNESS,
             false,
         );
-        if (this.shiftPressed)
+        if (this.shiftDown)
             this.drawPreviewLine(this.drawingService.previewCtx, this.desiredAngle(this.mouseDownCoord), this.pathData[this.pathData.length - 1]);
         else this.drawPreviewLine(this.drawingService.previewCtx, this.mouseDownCoord, this.pathData[this.pathData.length - 1]);
     }

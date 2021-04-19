@@ -8,11 +8,16 @@ import { GridService } from '@app/services/grid/grid.service';
 import { SaveDrawingService } from '@app/services/save-drawing/save-drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-ellipse-service/selection-ellipse.service';
+import { SelectionPolygonalLassoService } from '@app/services/tools/selection-polygonal-lasso/selection-polygonal-lasso.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
 import { TextService } from '@app/services/tools/text-service/text.service';
+import { SelectionResizerService } from '@app/services/tools/selection-resizer-service/selection-resizer.service';
+import { SelectionService } from '@app/services/tools/selection-service/selection.service';
+import { TextService } from '@app/services/tools/text/text.service';
 import { MIN_ERASER_THICKNESS } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { Status } from '@app/utils/enums/canvas-resizer-status';
+import { SelectionStatus } from '@app/utils/enums/selection-resizer-status';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 import { EraserCursor } from '@app/utils/interfaces/eraser-cursor';
 
@@ -39,7 +44,9 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     currentTool: Tool;
     toolManagerService: ToolManagerService;
     canvasResizerService: CanvasResizerService;
+    selectionResizerService: SelectionResizerService;
     toolsNames: typeof ToolsNames = ToolsNames;
+    selectionStatus: typeof SelectionStatus = SelectionStatus;
 
     eraserCursor: EraserCursor = {
         cursor: 'none',
@@ -55,6 +62,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     };
     selectionEllipseService: SelectionEllipseService;
     selectionRectangleService: SelectionRectangleService;
+    selectionPolygonalLassoService: SelectionPolygonalLassoService;
     textService: TextService;
 
     constructor(
@@ -63,16 +71,20 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         private saveDrawingService: SaveDrawingService,
         public saveService: SaveDrawingService,
         public gridService: GridService,
+        selectionResizerService: SelectionResizerService,
         toolManagerService: ToolManagerService,
         canvasResizerService: CanvasResizerService,
         selectionEllipseService: SelectionEllipseService,
+        selectionPolygonalLassoService: SelectionPolygonalLassoService,
         selectionRectangleService: SelectionRectangleService,
         textService: TextService,
     ) {
         this.toolManagerService = toolManagerService;
         this.canvasResizerService = canvasResizerService;
+        this.selectionResizerService = selectionResizerService;
         this.selectionEllipseService = selectionEllipseService;
         this.selectionRectangleService = selectionRectangleService;
+        this.selectionPolygonalLassoService = selectionPolygonalLassoService;
         this.textService = textService;
     }
 
@@ -98,12 +110,17 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.drawingService.canvas.style.backgroundColor = DEFAULT_WHITE;
         this.canvasResizerService.canvasPreviewWidth = this.canvasSize.x;
         this.canvasResizerService.canvasPreviewHeight = this.canvasSize.y;
-        this.drawingService.restoreCanvas();
-        this.drawingService.saveCanvas();
+        // this.drawingService.restoreCanvas();
+        // this.drawingService.saveCanvas();
         this.undoRedo.saveInitialState();
         setTimeout(() => {
             this.selectionEllipseService.height = this.drawingService.canvas.height;
             this.selectionEllipseService.width = this.drawingService.canvas.width;
+            this.selectionPolygonalLassoService.height = this.drawingService.canvas.height;
+            this.selectionPolygonalLassoService.width = this.drawingService.canvas.width;
+            this.drawingService.restoreCanvas();
+            this.drawingService.saveCanvas();
+            this.undoRedo.saveInitialState();
         });
         setTimeout(() => {
             this.undoRedo.saveInitialState();
@@ -138,6 +155,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     }
 
     resizeCanvas(): void {
+        this.drawingService.saveCanvas();
         this.canvasSize = this.canvasResizerService.calculateNewCanvasSize(this.canvasSize);
         this.drawingService.restoreDrawing();
         this.emitEditorMinWidth();
@@ -169,9 +187,11 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         if (this.canvasResizerService.isResizing()) {
             this.eraserActive = false;
             this.canvasResizerService.onMouseMove(event);
+        } else if (this.selectionResizerService.isResizing()) {
+            this.selectionResizerService.onMouseMove(event);
         } else {
             this.currentTool.onMouseMove(event);
-            this.eraserActive = this.currentTool.eraserActive || false;
+            this.eraserActive = this.toolManagerService.eraserActive() || false;
             this.updateEraserCursor(event);
         }
     }
@@ -180,6 +200,9 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     onMouseDown(event: MouseEvent): void {
         if (this.canvasResizerService.isResizing()) {
             this.canvasResizerService.onMouseDown(event);
+        } else if (this.selectionResizerService.isResizing()) {
+            this.selectionResizerService.updateValues(this.toolManagerService.getCurrentSelectionTool());
+            this.selectionResizerService.onMouseDown(event);
         } else {
             this.currentTool.onMouseDown(event);
         }
@@ -200,6 +223,10 @@ export class DrawingComponent implements AfterViewInit, OnInit {
                 setTimeout(() => {
                     this.gridService.newGrid(null);
                 });
+        } else if (this.selectionResizerService.isResizing()) {
+            this.selectionResizerService.updateValues(this.toolManagerService.getCurrentSelectionTool());
+            this.selectionResizerService.onMouseUp(event);
+            this.selectionResizerService.setStatus(SelectionStatus.OFF);
         } else {
             this.currentTool.onMouseUp(event);
         }
@@ -214,7 +241,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         } else {
             this.currentTool.onMouseLeave(event);
         }
-        this.eraserActive = this.currentTool.eraserActive || false;
+        this.eraserActive = this.toolManagerService.eraserActive() || false;
     }
 
     @HostListener('mouseenter', ['$event'])
@@ -235,12 +262,20 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     @HostListener('keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
-        this.currentTool.onKeyDown(event);
+        if (this.selectionResizerService.isResizing()) {
+            this.selectionResizerService.onKeyDown(event);
+        } else {
+            this.currentTool.onKeyDown(event);
+        }
     }
 
     @HostListener('keyup', ['$event'])
     onKeyUp(event: KeyboardEvent): void {
-        this.currentTool.onKeyUp(event);
+        if (this.selectionResizerService.isResizing()) {
+            this.selectionResizerService.onKeyUp(event);
+        } else {
+            this.currentTool.onKeyUp(event);
+        }
     }
 
     @HostListener('contextmenu', ['$event'])
@@ -264,6 +299,10 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.canvasResizerService.onMiddleBottomResizerClick();
     }
 
+    onSelectionBoxClick(status: SelectionStatus): void {
+        this.selectionResizerService.setStatus(status);
+    }
+
     emitEditorMinWidth(): void {
         const editorMinWidth = this.computeEditorMinWidth();
         this.editorMinWidthEmitter.emit(editorMinWidth);
@@ -284,21 +323,18 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         const mousePosition = this.currentTool.getPositionFromMouse(event);
         this.eraserCursor.left = mousePosition.x + 'px';
         this.eraserCursor.top = mousePosition.y + 'px';
-        this.eraserActive = this.currentTool.eraserActive || false;
+        this.eraserActive = this.toolManagerService.eraserActive() || false;
     }
+
+    isActiveSelection(): boolean {
+        return SelectionService.selectionActive;
+    }
+
     getSelectedAreaSize(): Vec2 {
-        return { x: this.selectionEllipseService.width, y: this.selectionEllipseService.height };
+        return { x: this.drawingService.selectedAreaCtx.canvas.width, y: this.drawingService.selectedAreaCtx.canvas.height };
     }
 
     getTopLeftCorner(): Vec2 {
-        return { x: this.selectionEllipseService.topLeftCorner.x, y: this.selectionEllipseService.topLeftCorner.y };
-    }
-
-    getSelectedAreaSizeRectangle(): Vec2 {
-        return { x: this.selectionRectangleService.width, y: this.selectionRectangleService.height };
-    }
-
-    getTopLeftCornerRectangle(): Vec2 {
-        return { x: this.selectionRectangleService.topLeftCorner.x, y: this.selectionRectangleService.topLeftCorner.y };
+        return { x: this.drawingService.selectedAreaCtx.canvas.offsetLeft, y: this.drawingService.selectedAreaCtx.canvas.offsetTop };
     }
 }

@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HueSelectorComponent } from './hue-selector.component';
 const RGBA_MAX = 255;
 const CANVAS_WIDTH = 40;
-const CANVAS_HEIGHT = 200;
+const CANVAS_HEIGHT = 175;
 describe('HueSelectorComponent', () => {
     let component: HueSelectorComponent;
     let fixture: ComponentFixture<HueSelectorComponent>;
@@ -37,7 +37,7 @@ describe('HueSelectorComponent', () => {
         expect(bottomColor[0]).toBe(RGBA_MAX);
         expect(bottomColor[1]).toBe(0);
         // tslint:disable-next-line: no-magic-numbers
-        const traceOfBlueRgb = bottomColor[2] === 3 || bottomColor[2] === 4 ? true : false;
+        const traceOfBlueRgb = bottomColor[2] === 5 || bottomColor[2] === 4 ? true : false;
         expect(traceOfBlueRgb).toBe(true);
     });
     it('the selector does not move if not clicked', () => {

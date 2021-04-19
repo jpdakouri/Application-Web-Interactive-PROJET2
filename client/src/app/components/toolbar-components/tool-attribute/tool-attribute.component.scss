@@ -1,12 +1,14 @@
 .attribute-toolbar {
     height: 100vh;
-    width: 255px;
+    width: 225px;
     border-left: 1px solid black;
     padding: 5px 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 mat-slider {
-    width: 250px;
+    width: 225px;
     margin: -8px 0 -8px 0;
 }
 .mat-checkbox.mat-accent .mat-checkbox-inner-container {
@@ -60,23 +62,22 @@ mat-slider {
 }
 
 .text-font-size {
-  padding: 5px 0;
+    padding: 5px 0;
 }
 
 .text-appearance {
-  padding: 10px 0;
-  text-align: center;
+    padding: 10px 0;
+    text-align: center;
 }
 
-
 .text-alignment {
-  padding: 0;
+    padding: 0;
 }
 
 .font-selector {
-  padding: 5px 0;
+    padding: 5px 0;
 }
 
 #fontStyleGroup {
-  margin-bottom: 10px;
+    margin-bottom: 10px;
 }
