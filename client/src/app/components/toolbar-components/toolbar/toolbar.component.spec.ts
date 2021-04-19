@@ -10,7 +10,7 @@ import { ToolbarComponent } from './toolbar.component';
 
 import SpyObj = jasmine.SpyObj;
 
-fdescribe('ToolbarComponent', () => {
+describe('ToolbarComponent', () => {
     let component: ToolbarComponent;
     let fixture: ComponentFixture<ToolbarComponent>;
     let toolManagerServiceSpy: SpyObj<ToolManagerService>;
