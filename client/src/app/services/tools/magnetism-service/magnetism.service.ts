@@ -57,7 +57,6 @@ export class MagnetismService extends Tool {
     }
 
     startKeys(): void {
-        console.log('Magnetism ON!');
         this.setStatus(SelectionStatus.TOP_LEFT_BOX);
         this.gridSize = this.drawingService.gridSize;
         this.updatePosition(this.gridSize);

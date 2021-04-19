@@ -479,11 +479,10 @@ describe('SelectionResizerService', () => {
         service['canvasWidth'] = 20;
         service['canvasHeight'] = 15;
         service['initialBottomRightCorner'] = { x: 100, y: 100 };
-        let expectedResultX = 50;
         service['revertX'] = true;
         const expectedWidth = 15;
         const expectedHeight = 15;
-        expectedResultX = 35;
+        const expectedResultX = 35;
         service['isSquare']();
         expect(service.topLeftCorner.x).toEqual(expectedResultX);
         expect(service['canvasWidth']).toEqual(expectedWidth);
