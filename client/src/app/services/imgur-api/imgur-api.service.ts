@@ -14,7 +14,7 @@ export class ImgurApiService {
 
     constructor(private httpClient: HttpClient) {}
 
-    upload(fileName: string, imageSource: string): Observable<DrawingData> {
+    uploadDrawing(fileName: string, imageSource: string): Observable<DrawingData> {
         const httpOptions = {
             headers: new HttpHeaders({
                 Authorization: `Client-ID ${this.clientID}`,
