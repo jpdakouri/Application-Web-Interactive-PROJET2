@@ -3,17 +3,18 @@ import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MagnetismService } from '@app/services/tools/magnetism-service/magnetism.service';
-import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-ellipse-service/selection-ellipse.service';
 import { SelectionPolygonalLassoService } from '@app/services/tools/selection-polygonal-lasso/selection-polygonal-lasso.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection.service';
-import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
+import { REVERT } from '@app/services/tools/tools-constants';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { SelectionStatus } from '@app/utils/enums/selection-resizer-status';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
+<<<<<<< HEAD
+=======
+>>>>>>> dev
 
-const REVERT = -1;
 @Injectable({
     providedIn: 'root',
 })
@@ -28,25 +29,18 @@ export class SelectionResizerService extends SelectionService {
     private canvasWidth: number;
     private canvasHeight: number;
     private currentSelection: SelectionService;
-    constructor(
-        drawingService: DrawingService,
-        currentColorService: CurrentColorService,
-        mousePositionHandler: MousePositionHandlerService,
-        private undoRedo: UndoRedoService,
-        magntismService: MagnetismService,
-    ) {
+    constructor(drawingService: DrawingService, currentColorService: CurrentColorService, magntismService: MagnetismService) {
         super(drawingService, currentColorService, magntismService);
         this.status = SelectionStatus.OFF;
         this.coords = { x: 0, y: 0 };
         this.initialBottomRightCorner = { x: 0, y: 0 };
         this.canvasWidth = this.canvasHeight = 0;
     }
+
     onMouseDown(event: MouseEvent): void {
         this.selectionMouseDown = true;
         this.mouseDownCoord = this.coords = this.getPositionFromMouse(event);
         this.initialize();
-        // LIGNE SUIVANTE A CHANGER, JUSTE LA POUR REGLER UN PROBLEME DE COMPILATION !!!
-        this.undoRedo = this.undoRedo;
     }
 
     onMouseUp(event: MouseEvent): void {
@@ -152,6 +146,10 @@ export class SelectionResizerService extends SelectionService {
         this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y + 'px';
         this.drawingService.selectedAreaCtx.canvas.height = this.canvasHeight;
         this.drawingService.selectedAreaCtx.canvas.width = this.canvasWidth;
+        this.drawSelection();
+    }
+
+    private drawSelection(): void {
         createImageBitmap(this.imageData).then((imgBitmap) => {
             this.drawingService.selectedAreaCtx.scale(this.revertX ? REVERT : 1, this.revertY ? REVERT : 1);
             this.drawingService.selectedAreaCtx.drawImage(
