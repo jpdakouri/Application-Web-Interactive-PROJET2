@@ -10,7 +10,7 @@ import { ToolbarComponent } from './toolbar.component';
 
 import SpyObj = jasmine.SpyObj;
 
-describe('ToolbarComponent', () => {
+fdescribe('ToolbarComponent', () => {
     let component: ToolbarComponent;
     let fixture: ComponentFixture<ToolbarComponent>;
     let toolManagerServiceSpy: SpyObj<ToolManagerService>;
@@ -93,6 +93,12 @@ describe('ToolbarComponent', () => {
     it('selectedAll should be emitted when selectAll is called', () => {
         spyOn(component.selectedAll, 'emit');
         component.selectAll();
+        expect(component.selectedAll.emit).toHaveBeenCalledWith(true);
+    });
+
+    it('onClickSelectedAll should call selectedAll', () => {
+        spyOn(component.selectedAll, 'emit');
+        component.onClickSelectedAll();
         expect(component.selectedAll.emit).toHaveBeenCalledWith(true);
     });
 });
