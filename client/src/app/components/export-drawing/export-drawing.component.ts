@@ -11,6 +11,8 @@ import {
     INVALID_FILE_NAME_ERROR_MESSAGE,
     NO_ERROR_MESSAGE,
     REQUIRED_FILE_NAME_ERROR_MESSAGE,
+    UPLOAD_FAIL_ERROR_MESSAGE,
+    UPLOAD_SNACK_BAR_DISPLAY_DURATION,
 } from '@app/services/services-constants';
 import { ImageFilter } from '@app/utils/enums/image-filter.enum';
 import { ImageFormat } from '@app/utils/enums/image-format.enum';
@@ -108,19 +110,19 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
     onUpload(): void {
         this.exportDrawingService.imageSource = this.imageSource;
         const imageSource = this.exportDrawingService.canvasToBase64Image(this.selectedFormat);
-        this.imgurService.upload(this.fileName.value, imageSource).subscribe(
+        this.imgurService.uploadDrawing(this.fileName.value, imageSource).subscribe(
             (res) => {
-                this.closeDialog();
                 this.snackBar.openFromComponent(UploadLinkComponent, {
                     data: res.data.link,
-                    duration: 10000,
+                    duration: UPLOAD_SNACK_BAR_DISPLAY_DURATION,
                 });
-                console.log(res.data);
             },
-            (error) => {
-                this.closeDialog();
-                console.log('Error occurred ! ' + error);
+            () => {
+                this.snackBar.open(UPLOAD_FAIL_ERROR_MESSAGE, 'Fermer', {
+                    duration: UPLOAD_SNACK_BAR_DISPLAY_DURATION,
+                });
             },
         );
+        this.closeDialog();
     }
 }

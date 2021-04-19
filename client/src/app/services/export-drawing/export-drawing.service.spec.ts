@@ -4,7 +4,7 @@ import { ImageFilter } from '@app/utils/enums/image-filter.enum';
 import { ImageFormat } from '@app/utils/enums/image-format.enum';
 import { ExportDrawingService } from './export-drawing.service';
 
-fdescribe('ExportDrawingService', () => {
+describe('ExportDrawingService', () => {
     let service: ExportDrawingService;
     let canvasTestHelper: CanvasTestHelper;
     let spyLink: jasmine.SpyObj<HTMLAnchorElement>;
@@ -99,7 +99,6 @@ fdescribe('ExportDrawingService', () => {
     it('should be convert canvas to bas64 image', () => {
         const drawImageSpy = spyOn<any>(service, 'drawImageOnCanvas').and.callThrough();
         const imageFormat = ImageFormat.PNG as string;
-
         const calculatedImageSource = service.canvasToBase64Image(imageFormat);
         const expectedImageSource = service.canvas.toDataURL('image/png').split(';base64,')[1];
 
