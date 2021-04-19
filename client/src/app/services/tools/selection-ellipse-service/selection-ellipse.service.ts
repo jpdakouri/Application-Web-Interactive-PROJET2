@@ -42,15 +42,14 @@ export class SelectionEllipseService extends SelectionService {
         this.mouseDown = event.button === MouseButtons.Left;
         this.firstGrid = this.getPositionFromMouse(event);
         this.mouseMoved = false;
-        if (this.mouseDown) {
-            if (!SelectionService.isSelectionStarted) {
-                this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
-                this.firstGridClip = this.getPositionFromMouse(event);
-                this.updatePreview();
-                SelectionService.isSelectionStarted = true;
-            } else {
-                this.defaultOnMouseDown(event);
-            }
+        if (!this.mouseDown) return;
+        if (!SelectionService.isSelectionStarted) {
+            this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
+            this.firstGridClip = this.getPositionFromMouse(event);
+            this.updatePreview();
+            SelectionService.isSelectionStarted = true;
+        } else {
+            this.defaultOnMouseDown(event);
         }
     }
 

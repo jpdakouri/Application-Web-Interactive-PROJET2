@@ -55,7 +55,7 @@ describe('CarouselService', () => {
         spyOn(httpServiceMock, 'getLengthOfDrawings').and.returnValue(of(1));
         spyOn(httpServiceMock, 'getOneDrawing').and.returnValue(of(drawing));
 
-        service.initCarousel(false);
+        service.initCarousel(false).subscribe();
         expect(httpServiceMock.getOneDrawing).toHaveBeenCalled();
     });
 
@@ -66,7 +66,7 @@ describe('CarouselService', () => {
         spyOn(httpServiceMock, 'getLengthOfDrawings').and.returnValue(of(0));
         spyOn(httpServiceMock, 'getOneDrawing').and.returnValue(of(drawing));
 
-        service.initCarousel(false);
+        service.initCarousel(false).subscribe();
         expect(httpServiceMock.getOneDrawing).not.toHaveBeenCalled();
     });
 
@@ -75,7 +75,7 @@ describe('CarouselService', () => {
         spyOn(service, 'getArraySizeOfDrawing').and.returnValue(of(2));
         spyOn(httpServiceMock, 'getOneDrawing').and.callThrough();
         service.sizeOfArray = 2;
-        service.initCarousel(false);
+        service.initCarousel(false).subscribe();
         expect(httpServiceMock.getOneDrawing).toHaveBeenCalledTimes(3);
     });
 
