@@ -96,6 +96,12 @@ export const DEFAULT_TEXT_BOX_HEIGHT = 100;
 
 export const NEW_LINE_SEPARATOR = '\n';
 
+/**********************************/
+/****SELECTION RESIZE CONSTANTS****/
+/**********************************/
+
+export const REVERT = -1;
+
 /***************************/
 /* ERROR MESSAGE CONSTANT***/
 /***************************/
