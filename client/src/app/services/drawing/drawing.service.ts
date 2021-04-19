@@ -10,6 +10,7 @@ export class DrawingService {
     previewCtx: CanvasRenderingContext2D;
     selectedAreaCtx: CanvasRenderingContext2D;
     gridCtx: CanvasRenderingContext2D;
+    gridSize: number;
     canvas: HTMLCanvasElement;
     gridSize: number;
     selectedAreaCanvas: HTMLCanvasElement;
@@ -22,18 +23,6 @@ export class DrawingService {
         value.push(this.canvas.width);
         value.push(this.canvas.height);
         localStorage.setItem('canvasInfo', JSON.stringify(value));
-    }
-
-    getCanvas(): HTMLCanvasElement {
-        return this.canvas;
-    }
-
-    getBaseContext(): CanvasRenderingContext2D {
-        return this.baseCtx;
-    }
-
-    getPreviewContext(): CanvasRenderingContext2D {
-        return this.previewCtx;
     }
 
     restoreCanvas(): void {

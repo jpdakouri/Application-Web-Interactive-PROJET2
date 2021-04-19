@@ -69,7 +69,7 @@ export class SaveDrawingComponent implements AfterViewInit {
         return this.tagName.invalid ? INVALIDE_TAG_NAME_ERROR_MESSAGE : NO_ERROR_MESSAGE;
     }
 
-    updateService(): void {
+    private updateService(): void {
         this.saveDrawingService.originalCanvas = this.originalCanvas;
         this.saveDrawingService.image = this.previewImage;
         this.saveDrawingService.fileName = this.fileName.value;

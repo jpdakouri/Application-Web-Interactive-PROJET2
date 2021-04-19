@@ -11,8 +11,6 @@ export class GridService {
     readonly maxGridSize: number;
     readonly minOpacity: number;
     readonly maxOpacity: number;
-    magnetismService: MagnetismService;
-    gridSize: number;
     gridOpacity: string;
     showGrid: boolean;
 
@@ -21,7 +19,7 @@ export class GridService {
         this.maxGridSize = MAX_GRID_SIZE;
         this.minOpacity = MIN_GRID_OPACITY;
         this.maxOpacity = MAX_GRID_OPACITY;
-        this.gridSize = this.minGridSize;
+        this.drawingService.gridSize = this.minGridSize;
         this.gridOpacity = this.maxOpacity.toString();
         this.showGrid = false;
     }

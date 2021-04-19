@@ -95,4 +95,10 @@ describe('ToolbarComponent', () => {
         component.selectAll();
         expect(component.selectedAll.emit).toHaveBeenCalledWith(true);
     });
+
+    it('onClickSelectedAll should call selectedAll', () => {
+        spyOn(component.selectedAll, 'emit');
+        component.onClickSelectedAll();
+        expect(component.selectedAll.emit).toHaveBeenCalledWith(true);
+    });
 });

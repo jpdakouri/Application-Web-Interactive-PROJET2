@@ -43,6 +43,7 @@ class DrawingServiceMock {
     // tslint:disable:no-empty
     newDrawing: EventEmitter<Vec2> = new EventEmitter<Vec2>();
     createNewDrawingEmitter: EventEmitter<boolean> = new EventEmitter();
+    gridSize: number = 50;
 
     saveCanvas(): void {}
 

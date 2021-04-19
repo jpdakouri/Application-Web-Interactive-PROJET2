@@ -11,8 +11,10 @@ import { SaveDrawingService } from '@app/services/save-drawing/save-drawing.serv
 import { SIDEBAR_WIDTH } from '@app/services/services-constants';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { PencilService } from '@app/services/tools/pencil-service/pencil.service';
+import { SelectionResizerService } from '@app/services/tools/selection-resizer-service/selection-resizer.service';
 import { TextService } from '@app/services/tools/text-service/text.service';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
+import { SelectionStatus } from '@app/utils/enums/selection-resizer-status';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 import { ToolManagerServiceMock } from '@app/utils/tests-mocks/tool-manager-mock';
 import { ToolStub } from '@app/utils/tests-mocks/tool-stub';
@@ -143,7 +145,17 @@ describe('DrawingComponent', () => {
         expect(mouseEventSpy).toHaveBeenCalled();
     });
 
+    it("should call selectionResizer's #onMouseMove when resizing a selection", () => {
+        component.onSelectionBoxClick(SelectionStatus.TOP_LEFT_BOX);
+        const event = {} as MouseEvent;
+        const selectionResizerSpy = TestBed.inject(SelectionResizerService);
+        spyOn(selectionResizerSpy, 'onMouseMove').and.callThrough();
+        component.onMouseMove(event);
+        expect(selectionResizerSpy.onMouseMove).toHaveBeenCalled();
+    });
+
     it(" should call the tool's #mouseDown when receiving a mouse down event", () => {
+        component.onSelectionBoxClick(SelectionStatus.OFF);
         const event = {} as MouseEvent;
         const mouseEventSpy = spyOn(toolStub, 'onMouseDown').and.callThrough();
         component.onMouseDown(event);
@@ -157,6 +169,15 @@ describe('DrawingComponent', () => {
         const mouseEventSpy = spyOn(canvasResizerStub, 'onMouseDown').and.callThrough();
         component.onMouseDown(event);
         expect(mouseEventSpy).toHaveBeenCalled();
+    });
+
+    it("should call selectionResizer's #onMouseDown when resizing a selection", () => {
+        component.onSelectionBoxClick(SelectionStatus.TOP_LEFT_BOX);
+        const event = {} as MouseEvent;
+        const selectionResizerSpy = TestBed.inject(SelectionResizerService);
+        spyOn(selectionResizerSpy, 'onMouseDown').and.callThrough();
+        component.onMouseDown(event);
+        expect(selectionResizerSpy.onMouseDown).toHaveBeenCalled();
     });
 
     it('onContextMenu returns true if right clicked while any other tool is in use', () => {
@@ -176,6 +197,7 @@ describe('DrawingComponent', () => {
     });
 
     it(" should call the tool's #mouseUp when receiving a mouse up event", () => {
+        component.onSelectionBoxClick(SelectionStatus.OFF);
         const event = {} as MouseEvent;
         // tslint:disable:no-string-literal
 
@@ -199,6 +221,15 @@ describe('DrawingComponent', () => {
         component.onMouseUp(event);
         expect(mouseEventSpy).toHaveBeenCalled();
         expect(canvasResizerStub.status).toBe(Status.OFF);
+    });
+
+    it("should call selectionResizer's #onMouseUp when resizing a selection", () => {
+        component.onSelectionBoxClick(SelectionStatus.TOP_LEFT_BOX);
+        const event = {} as MouseEvent;
+        const selectionResizerSpy = TestBed.inject(SelectionResizerService);
+        spyOn(selectionResizerSpy, 'onMouseUp').and.callThrough();
+        component.onMouseUp(event);
+        expect(selectionResizerSpy.onMouseUp).toHaveBeenCalled();
     });
 
     it('should save the canvas state when a resizer is clicked', () => {
@@ -307,6 +338,7 @@ describe('DrawingComponent', () => {
     });
 
     it(" should call the tool's key down when receiving a key down event", () => {
+        component.onSelectionBoxClick(SelectionStatus.OFF);
         const event = {} as KeyboardEvent;
         const mouseEventSpy = spyOn(toolStub, 'onKeyDown').and.callThrough();
         component.onKeyDown(event);
@@ -314,12 +346,31 @@ describe('DrawingComponent', () => {
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
     });
 
+    it("should call selectionResizer's #onKeyUp when resizing a selection", () => {
+        component.onSelectionBoxClick(SelectionStatus.TOP_LEFT_BOX);
+        const event = {} as KeyboardEvent;
+        const selectionResizerSpy = TestBed.inject(SelectionResizerService);
+        spyOn(selectionResizerSpy, 'onKeyUp').and.callThrough();
+        component.onKeyUp(event);
+        expect(selectionResizerSpy.onKeyUp).toHaveBeenCalled();
+    });
+
     it(" should call the tool's key up when receiving a key up event", () => {
+        component.onSelectionBoxClick(SelectionStatus.OFF);
         const event = {} as KeyboardEvent;
         const mouseEventSpy = spyOn(toolStub, 'onKeyUp').and.callThrough();
         component.onKeyUp(event);
         expect(mouseEventSpy).toHaveBeenCalled();
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
+    });
+
+    it("should call selectionResizer's #onKeyDown when resizing a selection", () => {
+        component.onSelectionBoxClick(SelectionStatus.TOP_LEFT_BOX);
+        const event = {} as KeyboardEvent;
+        const selectionResizerSpy = TestBed.inject(SelectionResizerService);
+        spyOn(selectionResizerSpy, 'onKeyDown').and.callThrough();
+        component.onKeyDown(event);
+        expect(selectionResizerSpy.onKeyDown).toHaveBeenCalled();
     });
 
     it('getSelectedAreaSize should return correct values ', () => {
@@ -346,4 +397,4 @@ describe('DrawingComponent', () => {
         component.onMouseWheelScroll(event);
         expect(testTool.onMouseWheelScroll).toHaveBeenCalled();
     });
-});
+}); // tslint:disable-next-line:max-file-line-count

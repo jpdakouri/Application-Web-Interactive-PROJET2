@@ -80,12 +80,13 @@ describe('CarouselComponent', () => {
 
     it('initCarousel should change value of isLoading if component has recieved the drawings', () => {
         carouselServiceMock.initMock(1);
-        component.initCarousel();
+        // tslint:disable:no-string-literal
+        component['initCarousel']();
         expect(component.isLoading).toBe(false);
     });
 
     it('deleteDrawing sould remove one drawing from the list of drawing ', () => {
-        // tslint:disable-next-line:no-magic-numbers
+        // tslint:disable:no-magic-numbers
         carouselServiceMock.initMock(3);
         component.deleteDrawing('1');
         expect(component.drawingArray.length).toEqual(2);
@@ -93,28 +94,28 @@ describe('CarouselComponent', () => {
 
     it('onDialogClose should empty array of drawing and reset isLoading', () => {
         const spy = spyOn(component.dialogRef, 'close').and.callThrough();
-        component.onDialogClose();
+        component['onDialogClose']();
         expect(spy).toHaveBeenCalled();
     });
 
     it('onKeyDown left key should shift left drawings', () => {
         const shiftLeftSpy = spyOn(component, 'shiftLeft').and.stub();
         fixture.detectChanges();
-        component.onKeyDown({ key: KeyboardButtons.Left } as KeyboardEvent);
+        component['onKeyDown']({ key: KeyboardButtons.Left } as KeyboardEvent);
         expect(shiftLeftSpy).toHaveBeenCalled();
     });
 
     it('onKeyDown right key should right left drawings', () => {
         const shiftRightSpy = spyOn(component, 'shiftRight').and.stub();
         fixture.detectChanges();
-        component.onKeyDown({ key: KeyboardButtons.Right } as KeyboardEvent);
+        component['onKeyDown']({ key: KeyboardButtons.Right } as KeyboardEvent);
         expect(shiftRightSpy).toHaveBeenCalled();
     });
 
     it('onKeyDown right key should right left drawings', () => {
         const shiftRightSpy = spyOn(component, 'shiftRight').and.stub();
         fixture.detectChanges();
-        component.onKeyDown({ key: KeyboardButtons.Aerosol } as KeyboardEvent);
+        component['onKeyDown']({ key: KeyboardButtons.Aerosol } as KeyboardEvent);
         expect(shiftRightSpy).not.toHaveBeenCalled();
     });
 
@@ -157,14 +158,15 @@ describe('CarouselComponent', () => {
     }));
 
     it('toggleTagFlag should call initcarousel', () => {
-        spyOn(component, 'initCarousel').and.stub();
+        // tslint:disable-next-line:no-any
+        spyOn<any>(component, 'initCarousel').and.stub();
         component.toggleTagFlag(true);
-        expect(component.initCarousel).toHaveBeenCalled();
+        expect(component['initCarousel']).toHaveBeenCalled();
     });
 
     it('cantOpenDrawing should open the snackbar', () => {
         spyOn(component.snackBar, 'open').and.stub();
-        component.cantOpenDrawing();
+        component['cantOpenDrawing']();
         expect(component.snackBar.open).toHaveBeenCalled();
     });
 });

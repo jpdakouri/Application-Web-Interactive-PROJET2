@@ -129,7 +129,7 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
         SelectionService.selectionActive = true;
     }
 
-    clipArea(): void {
+    private clipArea(): void {
         this.drawingService.clearCanvas(this.drawingService.selectedAreaCtx);
 
         const coords = this.getClippedCoords();
@@ -155,21 +155,21 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
         this.updateParent(coords);
     }
 
-    updateParent(coords: Vec2[]): void {
+    private updateParent(coords: Vec2[]): void {
         this.firstGrid = this.firstGridClip = coords[0];
         this.finalGridClip = coords[1];
         this.updateTopLeftCorner();
         this.initialTopLeftCorner = { ...this.topLeftCorner };
     }
 
-    drawShape(ctx: CanvasRenderingContext2D, pathData: Vec2[]): void {
+    private drawShape(ctx: CanvasRenderingContext2D, pathData: Vec2[]): void {
         ctx.beginPath();
         ctx.moveTo(pathData[0].x, pathData[0].y);
         for (const point of pathData) ctx.lineTo(point.x, point.y);
         ctx.lineTo(pathData[0].x, pathData[0].y);
     }
 
-    updateSelectedCtx(coords: Vec2[], size: Vec2): void {
+    private updateSelectedCtx(coords: Vec2[], size: Vec2): void {
         this.drawingService.selectedAreaCtx.canvas.height = size.y;
         this.drawingService.selectedAreaCtx.canvas.width = size.x;
         this.drawingService.selectedAreaCtx.translate(-coords[0].x, -coords[0].y);
@@ -177,19 +177,19 @@ export class SelectionPolygonalLassoService extends LineCreatorService {
         this.drawingService.selectedAreaCtx.canvas.style.left = coords[0].x - 1 + 'px';
     }
 
-    updateBaseCtx(): void {
+    private updateBaseCtx(): void {
         this.drawShape(this.drawingService.baseCtx, this.pathData);
         this.drawingService.baseCtx.fillStyle = 'white';
         this.drawingService.baseCtx.fill();
     }
 
-    getClippedSize(coords: Vec2[]): Vec2 {
+    private getClippedSize(coords: Vec2[]): Vec2 {
         const height = Math.abs(coords[1].y - coords[0].y);
         const width = Math.abs(coords[1].x - coords[0].x);
         return { x: width, y: height } as Vec2;
     }
 
-    getClippedCoords(): Vec2[] {
+    private getClippedCoords(): Vec2[] {
         let maxCoords = { x: 0, y: 0 } as Vec2;
         let minCoords = { x: 1000, y: 1000 } as Vec2;
 

@@ -160,9 +160,9 @@ export class PaintBucketService extends Tool {
     }
 
     getCanvas(): void {
-        this.baseCtx = this.drawingService.getBaseContext();
-        this.previewCtx = this.drawingService.getPreviewContext();
-        this.canvas = this.drawingService.getCanvas();
+        this.baseCtx = this.drawingService.baseCtx;
+        this.previewCtx = this.drawingService.previewCtx;
+        this.canvas = this.drawingService.canvas;
         this.newCanvasImageData = this.canvasImageData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
     }
 
@@ -172,7 +172,8 @@ export class PaintBucketService extends Tool {
             color.R < TRANSPARENT_THRESHOLD &&
             color.G < TRANSPARENT_THRESHOLD &&
             color.B < TRANSPARENT_THRESHOLD;
-        return color.A === 0 || condition;
+        // tslint:disable-next-line:no-magic-numbers
+        return color.A < 11 || condition;
     }
 
     getRGBAFromCoord(x: number, y: number): Color {

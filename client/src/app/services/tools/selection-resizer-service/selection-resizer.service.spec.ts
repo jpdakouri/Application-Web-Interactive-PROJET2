@@ -12,7 +12,6 @@ import { SelectionStatus } from '@app/utils/enums/selection-resizer-status';
 import { MockSelectionEllipseService } from '@app/utils/tests-mocks/selection-ellipse-service-mock';
 import { MockSelectionPolygonaleService } from '@app/utils/tests-mocks/selection-polygonale-service-mock';
 import { MockSelectionRectangleService } from '@app/utils/tests-mocks/selection-rectangle-service-mock';
-// import { of } from 'rxjs';
 import { SelectionResizerService } from './selection-resizer.service';
 
 describe('SelectionResizerService', () => {
@@ -34,6 +33,7 @@ describe('SelectionResizerService', () => {
     let undoRedo: UndoRedoService;
     // tslint:disable:no-any
     let resizeSelectionSpy: jasmine.Spy<any>;
+    let imageBitmap: jasmine.SpyObj<ImageBitmap>;
 
     beforeEach(() => {
         jasmine.createSpyObj('DrawingService', ['clearCanvas']);
@@ -43,7 +43,6 @@ describe('SelectionResizerService', () => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         selectedAreaCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
-        spyOn<any>(service, 'updatePreview').and.stub();
         // tslint:disable:no-string-literal
         drawing = TestBed.inject(DrawingService);
         currentColorService = TestBed.inject(CurrentColorService);
@@ -54,21 +53,11 @@ describe('SelectionResizerService', () => {
         service['drawingService'].selectedAreaCtx = selectedAreaCtxStub;
         spyOn<any>(service, 'getPositionFromMouse').and.returnValue({ x: 100, y: 100 });
         resizeSelectionSpy = spyOn<any>(service, 'resizeSelection').and.callThrough();
-        selectionRectangleMock = new MockSelectionRectangleService(
-            drawing,
-            currentColorService,
-            mousePositionHandlerService,
-            undoRedo,
-            magnetismeService,
-        );
-        selectionEllipseMock = new MockSelectionEllipseService(
-            drawing,
-            currentColorService,
-            mousePositionHandlerService,
-            undoRedo,
-            magnetismeService,
-        );
-        selectionPolygoneMock = new MockSelectionPolygonaleService(drawing, currentColorService, undoRedo, magnetismeService);
+        imageBitmap = jasmine.createSpyObj('ImageBitmap', ['close']);
+        spyOn(self, 'createImageBitmap').and.resolveTo(imageBitmap);
+        selectionRectangleMock = new MockSelectionRectangleService(drawing, currentColorService, mousePositionHandlerService, undoRedo);
+        selectionEllipseMock = new MockSelectionEllipseService(drawing, currentColorService, mousePositionHandlerService, undoRedo);
+        selectionPolygoneMock = new MockSelectionPolygonaleService(drawing, currentColorService, undoRedo);
         mouseEvent = {
             offsetX: 25,
             offsetY: 25,
@@ -98,11 +87,13 @@ describe('SelectionResizerService', () => {
         expect(service.topLeftCorner).not.toBeUndefined();
     });
 
-    // it('updatePreview clears the canvas and draws', () => {
-    //     spyOn(drawing, 'clearCanvas');
-    //     service.updatePreview();
-    //     expect(drawing.clearCanvas).toHaveBeenCalledWith(previewCtxStub);
-    // });
+    it('updatePreview clears the canvas and draws', () => {
+        spyOn(drawing, 'clearCanvas');
+        spyOn<any>(service, 'drawSelection').and.stub();
+        service.updatePreview();
+        expect(service['drawSelection']).toHaveBeenCalled();
+        expect(drawing.clearCanvas).toHaveBeenCalledWith(previewCtxStub);
+    });
 
     it('onMouseDown sets the coords', () => {
         const expectedResult: Vec2 = { x: 100, y: 100 };
@@ -130,6 +121,7 @@ describe('SelectionResizerService', () => {
     });
 
     it('onKeyDown should update shift state', () => {
+        spyOn<any>(service, 'updatePreview').and.stub();
         service['shiftDown'] = false;
         service.mouseDownCoord = { x: 0, y: 0 };
         service.onMouseDown(mouseEvent);
@@ -140,6 +132,7 @@ describe('SelectionResizerService', () => {
     });
 
     it('onKeyup should update shift state', () => {
+        spyOn<any>(service, 'updatePreview').and.stub();
         service['shiftDown'] = true;
         service.mouseDownCoord = { x: 0, y: 0 };
         service.onKeyUp({
@@ -149,6 +142,7 @@ describe('SelectionResizerService', () => {
     });
 
     it('onKeyup call updatePreview when shift is not down', () => {
+        spyOn<any>(service, 'updatePreview').and.stub();
         service.mouseDownCoord = { x: 0, y: 0 };
         service.onKeyUp({
             key: KeyboardButtons.Shift,
@@ -157,6 +151,7 @@ describe('SelectionResizerService', () => {
     });
 
     it('resizeSelection should set the right values for TopLeftBox', () => {
+        spyOn<any>(service, 'updatePreview').and.stub();
         service.status = SelectionStatus.TOP_LEFT_BOX;
         service.mouseDownCoord = { x: 0, y: 0 };
         mouseMoveEvent = {
@@ -174,6 +169,7 @@ describe('SelectionResizerService', () => {
     });
 
     it('resizeSelection should set the right values for TopMiddleBox', () => {
+        spyOn<any>(service, 'updatePreview').and.stub();
         service.status = SelectionStatus.TOP_MIDDLE_BOX;
         service.mouseDownCoord = { x: 0, y: 0 };
         mouseMoveEvent = {
@@ -190,6 +186,7 @@ describe('SelectionResizerService', () => {
     });
 
     it('resizeSelection should set the right values for TopRightBox', () => {
+        spyOn<any>(service, 'updatePreview').and.stub();
         service.status = SelectionStatus.TOP_RIGHT_BOX;
         service.mouseDownCoord = { x: 0, y: 0 };
         mouseMoveEvent = {
@@ -207,6 +204,7 @@ describe('SelectionResizerService', () => {
     });
 
     it('resizeSelection should set the right values for MiddleRightBox', () => {
+        spyOn<any>(service, 'updatePreview').and.stub();
         service.status = SelectionStatus.MIDDLE_RIGHT_BOX;
         service.mouseDownCoord = { x: 0, y: 0 };
         mouseMoveEvent = {
@@ -221,6 +219,7 @@ describe('SelectionResizerService', () => {
     });
 
     it('resizeSelection should set the right values for BottomRightBox', () => {
+        spyOn<any>(service, 'updatePreview').and.stub();
         service.status = SelectionStatus.BOTTOM_RIGHT_BOX;
         service.mouseDownCoord = { x: 0, y: 0 };
         mouseMoveEvent = {
@@ -236,6 +235,7 @@ describe('SelectionResizerService', () => {
     });
 
     it('resizeSelection should set the right values for BottomMiddleBox', () => {
+        spyOn<any>(service, 'updatePreview').and.stub();
         service.status = SelectionStatus.BOTTOM_MIDDLE_BOX;
         service.mouseDownCoord = { x: 0, y: 0 };
         mouseMoveEvent = {
@@ -250,6 +250,7 @@ describe('SelectionResizerService', () => {
     });
 
     it('resizeSelection should set the right values for BottomLeftBox', () => {
+        spyOn<any>(service, 'updatePreview').and.stub();
         service.status = SelectionStatus.BOTTOM_LEFT_BOX;
         service.mouseDownCoord = { x: 0, y: 0 };
         mouseMoveEvent = {
@@ -267,6 +268,7 @@ describe('SelectionResizerService', () => {
     });
 
     it('resizeSelection should set the right values for MiddleLeftBox', () => {
+        spyOn<any>(service, 'updatePreview').and.stub();
         service.status = SelectionStatus.MIDDLE_LEFT_BOX;
         service.mouseDownCoord = { x: 0, y: 0 };
         mouseMoveEvent = {
@@ -311,31 +313,6 @@ describe('SelectionResizerService', () => {
         service['isSelectionNull']();
         expect(SelectionResizerService['selectionActive']).toBeTrue();
     });
-
-    // it('canvas.scale is called with the good parameters', () => {
-    //     // selectedAreaCtxStub.canvas.width = 50;
-    //     // selectedAreaCtxStub.canvas.height = 50;
-    //     // service['initialize']();
-    //     service['drawingService'].selectedAreaCtx = selectedAreaCtxStub;
-    //     service.imageData = ('addoje' as unknown) as ImageData;
-    //     spyOn<any>(service, 'isMirror').and.stub();
-    //     spyOn<any>(service, 'isSelectionNull').and.stub();
-    //     spyOn<any>(service, 'isSquare').and.stub();
-    //     spyOn<any>(drawing, 'clearCanvas').and.stub();
-    //     spyOn<any>(drawing.selectedAreaCtx, 'scale');
-    //     // spyOn(window, 'createImageBitmap');
-    //     spyOn<any>(window, 'createImageBitmap').and.callFake(() => {
-    //         return;
-    //     });
-    //     service['canvasHeight'] = 50;
-    //     service['revertX'] = true;
-    //     service['revertY'] = true;
-    //     service['updatePreview']();
-    //     expect(service['drawingService'].selectedAreaCtx.canvas.height).toEqual(50);
-    //     // setTimeout(() => {
-    //     //     // tslint:disable-next-line:prettier
-    //     //     expect(drawing.selectedAreaCtx.scale).toHaveBeenCalledWith(-1, -1);}, 500);
-    // });
 
     it('isMirror should call isMirrorRight and isMirrorBottom for TopLeftBox', () => {
         service.status = SelectionStatus.TOP_LEFT_BOX;

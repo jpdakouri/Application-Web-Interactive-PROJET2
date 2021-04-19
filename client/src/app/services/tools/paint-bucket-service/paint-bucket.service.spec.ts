@@ -24,9 +24,11 @@ describe('PaintBucketService', () => {
     let putSpy = jasmine.createSpy();
     let setSpy = jasmine.createSpy();
     let fillSpy = jasmine.createSpy();
+    let getCanvasSpy = jasmine.createSpy();
     let drawingServiceSpy: jasmine.SpyObj<DrawingService>;
     let currentColorSpy: jasmine.SpyObj<CurrentColorService>;
     let undoRedoSpy: jasmine.SpyObj<UndoRedoService>;
+
     beforeEach(() => {
         drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['getCanvas', 'getBaseContext', 'getPreviewContext']);
         currentColorSpy = jasmine.createSpyObj('CurrentColorService', ['getPrimaryColorRgba']);
@@ -44,8 +46,6 @@ describe('PaintBucketService', () => {
         service.canvas = canvasTestHelper.canvas;
         service.baseCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         service.previewCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
-        drawingServiceSpy.getCanvas.and.returnValue(service.canvas);
-        drawingServiceSpy.getBaseContext.and.returnValue(service.baseCtx);
         mouseEvent = {
             offsetX: 25,
             offsetY: 25,
@@ -55,10 +55,10 @@ describe('PaintBucketService', () => {
         service.canvas.width = 50;
         service.canvas.height = 50;
         service.mouseDownCoord = { x: 25, y: 25 };
-        spyOn(service, 'getCanvas').and.callThrough();
         fillSpy = spyOn(service, 'setFillColor');
         setSpy = spyOn(service, 'setStartColor');
         bfsSpy = spyOn(service, 'bfs');
+        getCanvasSpy = spyOn(service, 'getCanvas');
         spyOn(service, 'getPositionFromMouse').and.returnValue(mousePosition);
         getRGBASpy = spyOn(service, 'getRGBAFromCoord').and.returnValue({ R: 0, G: 0, B: 0, A: 0 });
         visitSpy = spyOn(service, 'visit').and.callThrough();
@@ -131,12 +131,13 @@ describe('PaintBucketService', () => {
         expect(getRGBASpy.calls.count()).toEqual(4);
     });
 
-    it('#getCanvas should call drawingService functions', () => {
+    it('#getCanvas should get image from base canvas context', () => {
+        // tslint:disable:no-string-literal
+        getCanvasSpy.and.callThrough();
+        service['drawingService'].baseCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
+        service['drawingService'].canvas = canvasTestHelper.canvas;
         service.getCanvas();
-        expect(drawingServiceSpy.getBaseContext).toHaveBeenCalled();
-        expect(drawingServiceSpy.getPreviewContext).toHaveBeenCalled();
-        expect(drawingServiceSpy.getCanvas).toHaveBeenCalled();
-        expect(service.baseCtx.getImageData).toHaveBeenCalled();
+        expect(getSpy).toHaveBeenCalled();
     });
 
     it('#isTransparent should return true if Alpha value is 127 or 128 and RGBA are under 100 or Alpha == 0', () => {
@@ -154,7 +155,7 @@ describe('PaintBucketService', () => {
         const expectFalse3 = service.isTransparent({ R: 90, G: 90, B: 90, A: 1 });
         expect(expectFalse1).toBeFalsy();
         expect(expectFalse2).toBeFalsy();
-        expect(expectFalse3).toBeFalsy();
+        expect(expectFalse3).toBeTruthy();
     });
 
     it('#getRGBAFromCoord should return correct color', () => {
@@ -243,9 +244,12 @@ describe('PaintBucketService', () => {
     });
 
     it('#onMouseDown should call undeRedoService #addCommand', () => {
+        getCanvasSpy.and.stub();
+        service.baseCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         service.startColor = { R: 1, G: 1, B: 1, A: 1 };
         service.fillColor = { R: 1, G: 1, B: 1, A: 1 };
         const event = { button: 0 } as MouseEvent;
+
         service.onMouseDown(event);
         expect(undoRedoSpy.addCommand).toHaveBeenCalled();
     });
