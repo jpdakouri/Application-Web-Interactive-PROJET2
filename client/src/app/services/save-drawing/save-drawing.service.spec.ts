@@ -51,13 +51,15 @@ describe('SaveDrawingService', () => {
 
     it('toStringArray should return an array of tags in string format', () => {
         const tagArray = [{} as Tag, {} as Tag];
-        expect(service.toStringArray(tagArray).length).toEqual(2);
+        // tslint:disable:no-string-literal
+        expect(service['toStringArray'](tagArray).length).toEqual(2);
     });
 
     it('addDrawing should send a drawing to the server', () => {
         service.labelsChecked = [{ name: 'tag' } as Tag];
         spyOn(httpServiceMock, 'insertDrawing').and.returnValue(of());
-        spyOn(service, 'getDataURLFromCanvas').and.returnValue('url');
+        // tslint:disable-next-line:no-any
+        spyOn<any>(service, 'getDataURLFromCanvas').and.returnValue('url');
         service.fileName = 'name';
         service.originalCanvas = { width: 200, height: 200 } as HTMLCanvasElement;
 
@@ -80,14 +82,14 @@ describe('SaveDrawingService', () => {
         context?.clearRect(0, 0, width, height);
         context?.putImageData(data, 0, 0);
         context.globalCompositeOperation = compositeOperation as string;
-        const result = service.getDataURLFromCanvas();
+        const result = service['getDataURLFromCanvas']();
         expect(result).toEqual(dataURL);
     });
 
     it('getDataURLFromCanvas should return a string url', () => {
         service.originalCanvas = canvasTestHelper.canvas;
         spyOn(service.originalCanvas, 'getContext').and.returnValue(null);
-        const result = service.getDataURLFromCanvas();
+        const result = service['getDataURLFromCanvas']();
         expect(result).toEqual('');
     });
 });

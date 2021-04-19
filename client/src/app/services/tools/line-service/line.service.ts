@@ -18,7 +18,12 @@ export class LineService extends LineCreatorService {
         this.undoRedo = undoRedo;
     }
 
+    // Unused inherited functions
     registerUndo(imageData: ImageData): void {
+        return;
+    }
+
+    moveBorderPreview(newPos: Vec2): void {
         return;
     }
 
@@ -31,10 +36,6 @@ export class LineService extends LineCreatorService {
 
     onMouseMove(event: MouseEvent): void {
         this.defaultOnMouseMove(event);
-    }
-
-    moveBorderPreview(newPos: Vec2): void {
-        return;
     }
 
     onDblClick(): void {

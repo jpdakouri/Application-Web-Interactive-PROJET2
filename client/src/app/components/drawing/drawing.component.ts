@@ -37,28 +37,17 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     private previewCtx: CanvasRenderingContext2D;
     private selectedAreaCtx: CanvasRenderingContext2D;
     private gridCtx: CanvasRenderingContext2D;
-    private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
+    private canvasSize: Vec2;
     private cursorHeight: number;
-    eraserActive: boolean = false;
+    eraserActive: boolean;
     currentTool: Tool;
     toolManagerService: ToolManagerService;
     canvasResizerService: CanvasResizerService;
     selectionResizerService: SelectionResizerService;
-    toolsNames: typeof ToolsNames = ToolsNames;
-    selectionStatus: typeof SelectionStatus = SelectionStatus;
+    toolsNames: typeof ToolsNames;
+    selectionStatus: typeof SelectionStatus;
 
-    eraserCursor: EraserCursor = {
-        cursor: 'none',
-        position: 'absolute',
-        width: '3px',
-        height: '3px',
-        top: '0px',
-        left: '0px',
-        border: '2px solid black',
-        backgroundColor: 'white',
-        transform: 'translate(-50%, -50%)',
-        zIndex: '3',
-    };
+    eraserCursor: EraserCursor;
     selectionEllipseService: SelectionEllipseService;
     selectionRectangleService: SelectionRectangleService;
     selectionPolygonalLassoService: SelectionPolygonalLassoService;
@@ -85,6 +74,22 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.selectionRectangleService = selectionRectangleService;
         this.selectionPolygonalLassoService = selectionPolygonalLassoService;
         this.textService = textService;
+        this.toolsNames = ToolsNames;
+        this.selectionStatus = SelectionStatus;
+        this.eraserActive = false;
+        this.canvasSize = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
+        this.eraserCursor = {
+            cursor: 'none',
+            position: 'absolute',
+            width: '3px',
+            height: '3px',
+            top: '0px',
+            left: '0px',
+            border: '2px solid black',
+            backgroundColor: 'white',
+            transform: 'translate(-50%, -50%)',
+            zIndex: '3',
+        };
     }
 
     ngOnInit(): void {

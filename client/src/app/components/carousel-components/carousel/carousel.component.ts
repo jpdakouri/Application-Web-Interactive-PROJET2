@@ -55,7 +55,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
         this.initCarousel();
     }
 
-    initCarousel(): void {
+    private initCarousel(): void {
         this.subscribeInit = this.carouselService.initCarousel(this.tagFlag).subscribe((result) => {
             this.drawingArray = result;
             this.middle = this.drawingArray.length === 1 ? 0 : 1;
@@ -68,14 +68,14 @@ export class CarouselComponent implements OnInit, OnDestroy {
         this.subscribeGet.unsubscribe();
     }
 
-    onDialogClose(): void {
+    private onDialogClose(): void {
         this.drawingArray = [];
         this.isLoading = true;
         this.dialogRef.close();
     }
 
     @HostListener('window:keydown', ['$event'])
-    onKeyDown(event: KeyboardEvent): void {
+    protected onKeyDown(event: KeyboardEvent): void {
         if (event.key === KeyboardButtons.Left) this.shiftLeft();
         else if (event.key === KeyboardButtons.Right) this.shiftRight();
     }
@@ -93,7 +93,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
         });
     }
 
-    cantOpenDrawing(): void {
+    private cantOpenDrawing(): void {
         this.snackBar.open('Le dessin a été supprimé par un autre client. Veuillez en choisir un autre', 'Fermer', {
             duration: 5000,
         });

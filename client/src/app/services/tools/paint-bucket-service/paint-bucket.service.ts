@@ -160,9 +160,9 @@ export class PaintBucketService extends Tool {
     }
 
     getCanvas(): void {
-        this.baseCtx = this.drawingService.getBaseContext();
-        this.previewCtx = this.drawingService.getPreviewContext();
-        this.canvas = this.drawingService.getCanvas();
+        this.baseCtx = this.drawingService.baseCtx;
+        this.previewCtx = this.drawingService.previewCtx;
+        this.canvas = this.drawingService.canvas;
         this.newCanvasImageData = this.canvasImageData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
     }
 
