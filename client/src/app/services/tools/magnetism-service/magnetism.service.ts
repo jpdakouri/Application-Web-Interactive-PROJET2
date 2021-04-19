@@ -62,7 +62,6 @@ export class MagnetismService extends Tool {
         console.log('Magnetism ON!');
         this.setStatus(SelectionStatus.TOP_LEFT_BOX);
         this.gridSize = this.drawingService.gridSize;
-        // this.lastPosition = { x: this.drawingService.selectedAreaCtx.canvas.offsetLeft, y: this.drawingService.selectedAreaCtx.canvas.offsetTop };
         this.updatePosition(this.gridSize);
     }
 

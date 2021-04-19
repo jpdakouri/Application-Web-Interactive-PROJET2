@@ -5,7 +5,7 @@ import { MagnetismService } from '@app/services/tools/magnetism-service/magnetis
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { SelectionStatus } from '@app/utils/enums/selection-resizer-status';
 
-describe('MagnetismServiceService', () => {
+fdescribe('MagnetismServiceService', () => {
     let service: MagnetismService;
     let mouseEvent: MouseEvent;
     let drawingService: DrawingService;
@@ -69,7 +69,6 @@ describe('MagnetismServiceService', () => {
         service.startKeys();
         expect(service.status).toBe(SelectionStatus.TOP_LEFT_BOX);
         expect(service.gridSize).toBe(drawingService.gridSize);
-        // expect(service.updatePosition).toHaveBeenCalledWith(drawingService.gridSize);
     });
 
     it('findNearestLineLeft should find the proper distance depending on the position of the top left corner of the selection', () => {
@@ -78,10 +77,11 @@ describe('MagnetismServiceService', () => {
 
         service.lockedResizer = positionLockedResizer;
         service.gridSize = gridSize;
-        const expectedDistance = service.findNearestLineLeft();
+        const expectedDistance = 48;
+        const distance = service.findNearestLineLeft();
 
         service.findLockedResizer();
-        expect(expectedDistance).toEqual(48);
+        expect(distance).toEqual(expectedDistance);
     });
 
     it('findNearestLineLeft place should find the proper distance depending on the position of the top left corner of the selection', () => {
@@ -90,10 +90,11 @@ describe('MagnetismServiceService', () => {
 
         service.lockedResizer = positionLockedResizer;
         service.gridSize = gridSize;
-        const expectedDistance = service.findNearestLineLeft();
+        const expectedDistance = 50;
+        const distance = service.findNearestLineLeft();
 
         service.findLockedResizer();
-        expect(expectedDistance).toEqual(50);
+        expect(expectedDistance).toEqual(distance);
     });
 
     it('findNearestRight should calculate the proper distance from the nearest cross depending on the position of the top left corner of the selection', () => {
@@ -102,10 +103,11 @@ describe('MagnetismServiceService', () => {
 
         service.lockedResizer = positionLockedResizer;
         service.gridSize = gridSize;
-        const expectedDistance = service.findNearestLineRight();
+        const expectedDistance = -2;
+        const distance = service.findNearestLineRight();
 
         service.findLockedResizer();
-        expect(expectedDistance).toEqual(-2);
+        expect(distance).toEqual(expectedDistance);
     });
 
     it('findNearestLineRight place should find the proper distance depending on the position of the top left corner of the selection', () => {
@@ -115,10 +117,11 @@ describe('MagnetismServiceService', () => {
 
         service.lockedResizer = positionLockedResizer;
         service.gridSize = gridSize;
-        const expectedDistance = service.findNearestLineRight();
+        const expectedDistance = -50;
+        const distance = service.findNearestLineRight();
 
         service.findLockedResizer();
-        expect(expectedDistance).toEqual(-50);
+        expect(distance).toEqual(expectedDistance);
     });
 
     it(' 111 findNearestLineTop place should find the proper distance depending on the position of the top left corner of the selection', () => {
@@ -128,10 +131,10 @@ describe('MagnetismServiceService', () => {
 
         service.lockedResizer = positionLockedResizer;
         service.gridSize = gridSize;
-        const expectedDistance = service.findNearestLineTop();
-
+        const expectedDistance = 48;
+        const distance = service.findNearestLineTop();
         service.findLockedResizer();
-        expect(expectedDistance).toEqual(48);
+        expect(distance).toEqual(expectedDistance);
     });
 
     it(' 222 findNearestLineTop place should find the proper distance depending on the position of the top left corner of the selection', () => {
@@ -141,10 +144,11 @@ describe('MagnetismServiceService', () => {
 
         service.lockedResizer = positionLockedResizer;
         service.gridSize = gridSize;
-        const expectedDistance = service.findNearestLineTop();
+        const expectedDistance = 50;
+        const distance = service.findNearestLineTop();
 
         service.findLockedResizer();
-        expect(expectedDistance).toEqual(50);
+        expect(distance).toEqual(expectedDistance);
     });
 
     it(' 333 findNearestLineDown place should find the proper distance depending on the position of the top left corner of the selection', () => {
@@ -154,10 +158,11 @@ describe('MagnetismServiceService', () => {
 
         service.lockedResizer = positionLockedResizer;
         service.gridSize = gridSize;
-        const expectedDistance = service.findNearestLineDown();
+        const expectedDistance = -2;
+        const distance = service.findNearestLineDown();
 
         service.findLockedResizer();
-        expect(expectedDistance).toEqual(-2);
+        expect(distance).toEqual(expectedDistance);
     });
 
     it(' 333 findNearestLineDown place should find the proper distance depending on the position of the top left corner of the selection', () => {
@@ -167,10 +172,11 @@ describe('MagnetismServiceService', () => {
 
         service.lockedResizer = positionLockedResizer;
         service.gridSize = gridSize;
-        const expectedDistance = service.findNearestLineDown();
+        const expectedDistance = -50;
+        const distance = service.findNearestLineDown();
 
         service.findLockedResizer();
-        expect(expectedDistance).toEqual(-50);
+        expect(distance).toEqual(expectedDistance);
     });
 
     it(' updatePosition should set the grid and update the selection"s position with respect to the top left corner ', () => {

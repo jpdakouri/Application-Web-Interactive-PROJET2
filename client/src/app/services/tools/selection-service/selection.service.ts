@@ -143,10 +143,6 @@ export abstract class SelectionService extends Tool {
                 this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
                 this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
             } else {
-                // this.topLeftCorner = {
-                //     x: this.magnetismService.currentSelection.canvas.offsetLeft,
-                //     y: this.magnetismService.currentSelection.canvas.offsetTop,
-                // };
                 switch (event.key) {
                     case KeyboardButtons.Up: {
                         this.magnetismService.setStatus(SelectionStatus.TOP_MIDDLE_BOX);
@@ -171,10 +167,6 @@ export abstract class SelectionService extends Tool {
                         break;
                     }
                 }
-                // this.firstGrid.x = this.topLeftCorner.x += this.activeDistance.x;
-                // this.firstGrid.y = this.topLeftCorner.y += this.activeDistance.y;
-                // this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
-                // this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
             }
             this.moveBorderPreview(this.activeDistance);
         }
