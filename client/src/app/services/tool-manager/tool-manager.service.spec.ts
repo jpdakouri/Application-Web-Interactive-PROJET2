@@ -9,8 +9,10 @@ import { SelectionEllipseService } from '@app/services/tools/selection-ellipse-s
 import { SelectionPolygonalLassoService } from '@app/services/tools/selection-polygonal-lasso/selection-polygonal-lasso.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
 import { StampService } from '@app/services/tools/stamp-service/stamp.service';
+import { TextService } from '@app/services/tools/text-service/text.service';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { Stamp } from '@app/utils/enums/stamp';
+import { TextFont } from '@app/utils/enums/text-font.enum';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 import { ToolManagerService } from './tool-manager.service';
 
@@ -22,6 +24,7 @@ describe('ToolManagerService', () => {
     let aerosolServiceSpy: jasmine.SpyObj<AerosolService>;
     let eraserServiceSpy: jasmine.SpyObj<EraserService>;
     let lineServiceSpy: jasmine.SpyObj<LineService>;
+    let textServiceSpy: jasmine.SpyObj<TextService>;
 
     beforeEach(() => {
         lineServiceSpy = jasmine.createSpyObj('LineService', ['onMouseMove']);
@@ -30,6 +33,8 @@ describe('ToolManagerService', () => {
         pencilServiceSpy = jasmine.createSpyObj('PencilService', ['onMouseMove']);
         aerosolServiceSpy = jasmine.createSpyObj('AerosolService', ['onMouseMove']);
         eraserServiceSpy = jasmine.createSpyObj('EraserService', ['onMouseMove']);
+        textServiceSpy = jasmine.createSpyObj('TextService', ['drawStyledTextOnCanvas']);
+
         TestBed.configureTestingModule({
             providers: [
                 { provide: PencilService, useValue: pencilServiceSpy },
@@ -38,6 +43,7 @@ describe('ToolManagerService', () => {
                 { provide: AerosolService, useValue: aerosolServiceSpy },
                 { provide: EraserService, useValue: eraserServiceSpy },
                 { provide: LineService, useValue: lineServiceSpy },
+                { provide: TextService, useValue: textServiceSpy },
             ],
         });
         service = TestBed.inject(ToolManagerService);
@@ -82,6 +88,7 @@ describe('ToolManagerService', () => {
         expect(service.toolBox[service.currentTool].lineThickness).toEqual(FAKE_LINE_THICKNESS);
         expect(service.toolBox[service.currentTool].lineThickness).not.toEqual(WRONG_FAKE_LINE_THICKNESS);
     });
+
     it("#setCurrentTolerance should set currentAttributes.BucketTolerance property and currentTool's bucketTolerance to correct value ", () => {
         const BUCKET_TOLERANCE = 10;
         const WRONG_BUCKET_TOLERANCE = 5;
@@ -256,6 +263,13 @@ describe('ToolManagerService', () => {
         expect(service.currentAttributes.LineThickness).not.toEqual(WRONG_FAKE_LINE_THICKNESS);
     });
 
+    it('#emitToolChange should draw text on canvas tool change', () => {
+        service.emitToolChange(ToolsNames.Text);
+        service.emitToolChange(ToolsNames.Pencil);
+        expect(textServiceSpy.drawStyledTextOnCanvas).toHaveBeenCalled();
+        expect(textServiceSpy.showTextBox).toBe(false);
+    });
+
     it('getStampScalingFactor gets the scaling factor', () => {
         TestBed.inject(StampService).scalingFactor = 2;
         expect(service.getStampScalingFactor()).toBe(2);
@@ -294,6 +308,23 @@ describe('ToolManagerService', () => {
         expect(stamp.selectedStamp).toBe(Stamp.Star);
     });
 
+    it('#getCurrentFontSize should return textService font size', () => {
+        textServiceSpy.fontSize = 2;
+        expect(service.getCurrentFontSize()).toBe(2);
+    });
+
+    it('#setCurrentFontSize should correctly set font size', () => {
+        const fontSize = 2;
+        service.setCurrentFontSize(fontSize);
+        expect(textServiceSpy.fontSize).toBe(2);
+    });
+
+    it('#setCurrentFontFace should correctly set font face', () => {
+        const fontFace = TextFont.Arial;
+        service.setCurrentFontFace(fontFace);
+        expect(textServiceSpy.fontFace).toBe(fontFace);
+    });
+
     it('getCurrentSelectionTool returns current if selection, undefined otherwise', () => {
         service.emitToolChange(ToolsNames.SelectBox);
         expect(service.getCurrentSelectionTool()).toBe(TestBed.inject(SelectionRectangleService));
@@ -310,4 +341,14 @@ describe('ToolManagerService', () => {
         tool.rotationAngle = 2;
         expect(service.getStampRotationAngle()).toBe(2);
     });
+
+    it('eraserActive should return true if erase active', () => {
+        service['eraserService'].isActive = true;
+        let retVal = service.eraserActive();
+        expect(retVal).toEqual(true);
+        service['eraserService'].isActive = false;
+        retVal = service.eraserActive();
+        expect(retVal).toEqual(false);
+    });
+    // tslint:disable-next-line:max-file-line-count
 });

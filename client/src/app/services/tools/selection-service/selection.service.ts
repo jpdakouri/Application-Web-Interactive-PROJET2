@@ -200,8 +200,8 @@ export abstract class SelectionService extends Tool {
     updateDragPosition(mouseCoord: Vec2): void {
         if (this.isMagnetismOff) {
             const currentCoord = { ...mouseCoord };
-            this.topLeftCorner.x = currentCoord.x + this.offset.x;
-            this.topLeftCorner.y = currentCoord.y + this.offset.y;
+            this.topLeftCorner.x = Math.round(currentCoord.x + this.offset.x);
+            this.topLeftCorner.y = Math.round(currentCoord.y + this.offset.y);
             this.moveBorderPreview({
                 x: this.topLeftCorner.x - 1 - this.drawingService.selectedAreaCtx.canvas.offsetLeft,
                 y: this.topLeftCorner.y - 1 - this.drawingService.selectedAreaCtx.canvas.offsetTop,
@@ -212,10 +212,6 @@ export abstract class SelectionService extends Tool {
             console.log('draggin');
             this.magnetismService.updateDragPositionMagnetism(mouseCoord);
         }
-
-        // else {
-        //     this.magnetismService.bringToClosestCrossOnGrid(grid, this.currentCornerSelected);
-        // }
     }
 
     isClickIn(firstGrid: Vec2): boolean {

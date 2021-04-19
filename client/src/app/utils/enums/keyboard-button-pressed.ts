@@ -2,6 +2,7 @@ export enum KeyboardButtons {
     Shift = 'Shift',
     Escape = 'Escape',
     Backspace = 'Backspace',
+    Enter = 'Enter',
     Line = 'l',
     Rectangle = '1',
     Pencil = 'c',

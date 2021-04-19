@@ -23,6 +23,7 @@ export class EditorComponent implements AfterViewInit {
 
     private toolFinder: Map<KeyboardButtons, ToolsNames>;
     editorMinWidth: number;
+    private shortcuts: string[];
 
     constructor(
         private toolManagerService: ToolManagerService,
@@ -50,6 +51,7 @@ export class EditorComponent implements AfterViewInit {
             .set(KeyboardButtons.PaintBucket, ToolsNames.PaintBucket)
             .set(KeyboardButtons.Text, ToolsNames.Text)
             .set(KeyboardButtons.Stamp, ToolsNames.Stamp);
+        this.shortcuts = Object.values(KeyboardButtons);
     }
 
     ngAfterViewInit(): void {
@@ -58,15 +60,15 @@ export class EditorComponent implements AfterViewInit {
 
     @HostListener('window:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
-        if (this.dialogControllerService.noDialogOpened && !this.toolManagerService.textService.showTextBox) {
-            if (event.ctrlKey) {
-                event.preventDefault();
-                this.manageShortCutsWithCtrl(event);
-            }
+        if (event.ctrlKey && this.shortcuts.indexOf(event.key) >= 0) event.preventDefault();
+        if (!(this.dialogControllerService.noDialogOpened && !this.toolManagerService.textService.showTextBox)) return;
+        if (event.ctrlKey) {
+            event.preventDefault();
+            this.manageShortCutsWithCtrl(event);
+        }
 
-            if (!event.shiftKey && !event.ctrlKey) {
-                this.manageShortCutsWithoutCtrl(event);
-            }
+        if (!event.shiftKey && !event.ctrlKey) {
+            this.manageShortCutsWithoutCtrl(event);
         }
     }
 
