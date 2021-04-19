@@ -11,7 +11,7 @@ import { SaveDrawingService } from '@app/services/save-drawing/save-drawing.serv
 import { SIDEBAR_WIDTH } from '@app/services/services-constants';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { PencilService } from '@app/services/tools/pencil-service/pencil.service';
-import { TextService } from '@app/services/tools/text/text.service';
+import { TextService } from '@app/services/tools/text-service/text.service';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 import { ToolManagerServiceMock } from '@app/utils/tests-mocks/tool-manager-mock';

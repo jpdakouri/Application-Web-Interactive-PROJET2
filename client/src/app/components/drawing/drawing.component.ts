@@ -12,7 +12,7 @@ import { SelectionPolygonalLassoService } from '@app/services/tools/selection-po
 import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
 import { SelectionResizerService } from '@app/services/tools/selection-resizer-service/selection-resizer.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection.service';
-import { TextService } from '@app/services/tools/text/text.service';
+import { TextService } from '@app/services/tools/text-service/text.service';
 import { MIN_ERASER_THICKNESS } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { Status } from '@app/utils/enums/canvas-resizer-status';
@@ -31,7 +31,6 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     @ViewChild('gridCanvas', { static: false }) gridCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('canvasResizerPreview', { static: false }) canvasResizerPreview: ElementRef<HTMLDivElement>;
     @ViewChild('selectedArea', { static: false }) selectedArea: ElementRef<HTMLCanvasElement>;
-    @ViewChild('textArea', { static: false }) textArea: ElementRef<HTMLTextAreaElement>;
     @Output() editorMinWidthEmitter: EventEmitter<number> = new EventEmitter<number>();
 
     private baseCtx: CanvasRenderingContext2D;
