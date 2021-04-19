@@ -1,6 +1,8 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { HttpService } from '@app/services/http/http.service';
+// import { Data } from '@app/utils/interfaces/data';
+// import { DrawingData } from '@app/utils/interfaces/drawing-data';
 import { HttpServiceMock } from '@app/utils/tests-mocks/http-service-mock';
 import { ImgurApiService } from './imgur-api.service';
 
@@ -20,4 +22,11 @@ describe('ImgurApiService', () => {
     it('should be created', () => {
         expect(service).toBeTruthy();
     });
+
+    // it('#upload should be able to upload drawing on imgur server', () => {
+    //     const mockData = { link: 'log22990.com' } as Data;
+    //     const mockDrawing = { data: mockData, status: 1, success: true } as DrawingData;
+    //     const fileName = 'log2990';
+    //     service.upload(fileName, '');
+    // });
 });
