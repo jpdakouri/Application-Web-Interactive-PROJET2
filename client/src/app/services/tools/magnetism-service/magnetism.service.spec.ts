@@ -4,7 +4,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MagnetismService } from '@app/services/tools/magnetism-service/magnetism.service';
 import { SelectionStatus } from '@app/utils/enums/selection-resizer-status';
 
-fdescribe('MagnetismServiceService', () => {
+describe('MagnetismServiceService', () => {
     let service: MagnetismService;
     let drawingService: DrawingService;
     let canvasTestHelper: CanvasTestHelper;

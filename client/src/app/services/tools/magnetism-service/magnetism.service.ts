@@ -4,9 +4,9 @@ import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
+import { RANGE } from '@app/services/tools/tools-constants';
 import { SelectionStatus } from '@app/utils/enums/selection-resizer-status';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
-import { RANGE } from '../tools-constants';
 
 @Injectable({
     providedIn: 'root',

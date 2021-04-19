@@ -11,9 +11,6 @@ import { REVERT } from '@app/services/tools/tools-constants';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { SelectionStatus } from '@app/utils/enums/selection-resizer-status';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
-<<<<<<< HEAD
-=======
->>>>>>> dev
 
 @Injectable({
     providedIn: 'root',

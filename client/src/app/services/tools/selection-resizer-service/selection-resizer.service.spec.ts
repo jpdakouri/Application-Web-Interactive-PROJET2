@@ -47,6 +47,7 @@ describe('SelectionResizerService', () => {
         drawing = TestBed.inject(DrawingService);
         currentColorService = TestBed.inject(CurrentColorService);
         mousePositionHandlerService = TestBed.inject(MousePositionHandlerService);
+        magnetismeService = TestBed.inject(MagnetismService);
         undoRedo = TestBed.inject(UndoRedoService);
         drawing.baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         drawing.previewCtx = previewCtxStub;
