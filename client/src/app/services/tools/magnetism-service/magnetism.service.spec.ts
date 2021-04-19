@@ -2,12 +2,10 @@ import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MagnetismService } from '@app/services/tools/magnetism-service/magnetism.service';
-import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { SelectionStatus } from '@app/utils/enums/selection-resizer-status';
 
 fdescribe('MagnetismServiceService', () => {
     let service: MagnetismService;
-    let mouseEvent: MouseEvent;
     let drawingService: DrawingService;
     let canvasTestHelper: CanvasTestHelper;
 
@@ -29,32 +27,26 @@ fdescribe('MagnetismServiceService', () => {
         drawingService.baseCtx = baseCtxStub;
         drawingService.previewCtx = previewCtxStub;
         drawingService.selectedAreaCtx = selectedAreaCtxStub;
-
-        mouseEvent = {
-            offsetX: 25,
-            offsetY: 25,
-            button: MouseButtons.Left,
-        } as MouseEvent;
     });
 
     it('should be created', () => {
         expect(service).toBeTruthy();
     });
 
-    xit('onMouseMove should change coords and call resizeSelection if status =/= OFF', () => {
-        service.mouseDown = true;
-        const coord = { x: 80, y: 80 };
-        service.verifyInRangeCross(coord);
+    // xit('onMouseMove should change coords and call resizeSelection if status =/= OFF', () => {
+    //     service.mouseDown = true;
+    //     const coord = { x: 80, y: 80 };
+    //     service.verifyInRangeCross(coord);
 
-        service.onMouseMove(mouseEvent);
-        // tslint:disable-next-line:no-any
-        const findNearestLineLeftSpy = spyOn<any>(service, 'findNearestLineLeft').and.callThrough();
-        // tslint:disable-next-line:no-any
-        const findNearestLineTopSpy = spyOn<any>(service, 'findNearestLineTop').and.callThrough();
+    //     service.onMouseMove(mouseEvent);
+    //     // tslint:disable-next-line:no-any
+    //     const findNearestLineLeftSpy = spyOn<any>(service, 'findNearestLineLeft').and.callThrough();
+    //     // tslint:disable-next-line:no-any
+    //     const findNearestLineTopSpy = spyOn<any>(service, 'findNearestLineTop').and.callThrough();
 
-        expect(findNearestLineLeftSpy).toHaveBeenCalled();
-        expect(findNearestLineTopSpy).toHaveBeenCalled();
-    });
+    //     expect(findNearestLineLeftSpy).toHaveBeenCalled();
+    //     expect(findNearestLineTopSpy).toHaveBeenCalled();
+    // });
 
     it('onMouseUp sets mouse down to false and stop magnetism', () => {
         service.onMouseUp(new MouseEvent(''));
@@ -270,10 +262,10 @@ fdescribe('MagnetismServiceService', () => {
         const gridSize = 50;
         service.gridSize = gridSize;
 
-        const coord = { x: 51, y: 51 };
+        const coord = { x: 0, y: 0 };
         const result = service.verifyInRangeCross(coord);
 
-        expect(result).toBe(true);
+        expect(result).toBe(false);
     });
 
     it(' isUsingMagnetism return true when the status is set defaut resizer ', () => {
@@ -289,4 +281,12 @@ fdescribe('MagnetismServiceService', () => {
         const result = service.isUsingMagnetism();
         expect(result).toBe(false);
     });
+
+    // it(' executeCommand should not return anything ', () => {
+    //     // tslint:disable-next-line:no-any
+
+    //     const command: ToolCommand
+    //     const result = service.executeCommand(command);
+    //     expect(result).toBe(null);
+    // });
 });
