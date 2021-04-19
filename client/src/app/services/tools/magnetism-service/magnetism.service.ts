@@ -6,8 +6,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
 import { SelectionStatus } from '@app/utils/enums/selection-resizer-status';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
-
-const RANGE = 2;
+import { RANGE } from '../tools-constants';
 
 @Injectable({
     providedIn: 'root',
@@ -40,20 +39,19 @@ export class MagnetismService extends Tool {
             .set(SelectionStatus.CENTER, { x: 1 / 2, y: 1 / 2 });
     }
 
-    onMouseMove(event: MouseEvent): void {
-        console.log('valeur mouseDown ' + this.mouseDown);
-        if (this.mouseDown) {
-            if (this.verifyInRangeCross(this.getPositionFromMouse(event))) {
-                console.log('rentrer');
-                // this.updateDragPositionMagnetism(this.getPositionFromMouse(event));
-                this.findNearestLineLeft(); // coller en x
-                this.findNearestLineTop(); // coller en y
-            }
-        }
-    }
+    // onMouseMove(event: MouseEvent): void {
+    //     console.log('valeur mouseDown ' + this.mouseDown);
+    //     if (this.mouseDown) {
+    //         if (this.verifyInRangeCross(this.getPositionFromMouse(event))) {
+    //             console.log('rentrer');
+    //             // this.updateDragPositionMagnetism(this.getPositionFromMouse(event));
+    //             this.findNearestLineLeft(); // coller en x
+    //             this.findNearestLineTop(); // coller en y
+    //         }
+    //     }
+    // }
 
     onMouseUp(event: MouseEvent): void {
-        console.log('is that bool called ???');
         this.isMagnetismOnGoing = false;
         this.mouseDown = false;
     }
@@ -67,10 +65,7 @@ export class MagnetismService extends Tool {
 
     verifyInRangeCross(mouseCoord: Vec2): boolean {
         console.log('test');
-        return (
-            Math.abs(mouseCoord.x - this.drawingService.selectedAreaCtx.canvas.offsetLeft - this.findNearestLineLeft()) <= RANGE &&
-            Math.abs(mouseCoord.y - this.drawingService.selectedAreaCtx.canvas.offsetTop - this.findNearestLineTop()) <= RANGE
-        );
+        return Math.abs(mouseCoord.x - this.findNearestLineLeft()) <= RANGE && Math.abs(mouseCoord.y - this.findNearestLineTop()) <= RANGE;
     }
 
     isUsingMagnetism(): boolean {
@@ -78,7 +73,7 @@ export class MagnetismService extends Tool {
     }
 
     findNearestLineRight(): number {
-        const kThGrid = Math.floor(this.lockedResizer.x / this.gridSize) + (this.lockedResizer.x % this.gridSize === 0 ? 1 : 1);
+        const kThGrid = Math.floor(this.lockedResizer.x / this.gridSize) + 1;
         const distance = this.lockedResizer.x - kThGrid * this.gridSize;
         this.drawingService.selectedAreaCtx.canvas.style.left = this.drawingService.selectedAreaCtx.canvas.offsetLeft - distance + 'px';
         this.findLockedResizer();
@@ -102,7 +97,7 @@ export class MagnetismService extends Tool {
     }
 
     findNearestLineDown(): number {
-        const kThGrid = Math.floor(this.lockedResizer.y / this.gridSize) + (this.lockedResizer.y % this.gridSize === 0 ? 1 : 1);
+        const kThGrid = Math.floor(this.lockedResizer.y / this.gridSize) + 1;
         const distance = this.lockedResizer.y - kThGrid * this.gridSize;
         this.drawingService.selectedAreaCtx.canvas.style.top = this.drawingService.selectedAreaCtx.canvas.offsetTop - distance + 'px';
         this.findLockedResizer();
@@ -112,14 +107,12 @@ export class MagnetismService extends Tool {
     updatePosition(grid: number): void {
         this.gridSize = grid;
         if (this.status !== SelectionStatus.OFF) {
-            console.log(' taille ' + this.drawingService.selectedAreaCtx.canvas.offsetLeft);
             this.findNearestLineLeft();
             this.findNearestLineTop();
         }
     }
 
     setStatus(status: SelectionStatus): void {
-        console.log('status ' + this.status);
         this.status = status;
         this.mouseDown = true;
         this.isMagnetismOnGoing = true;

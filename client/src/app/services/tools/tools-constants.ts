@@ -103,3 +103,8 @@ export const INVALID_FILE_NAME_ERROR_MESSAGE = 'Nom de fichier invalide';
 export const REQUIRED_FILE_NAME_ERROR_MESSAGE = 'Vous devez entrer un nom';
 export const NO_ERROR_MESSAGE = '';
 export const INVALIDE_TAG_NAME_ERROR_MESSAGE = 'Peut seulement être composé de chiffres, lettres et espaces';
+
+/**********************/
+/*MAGNETISM CONSTANTS*/
+/**********************/
+export const RANGE = 2;

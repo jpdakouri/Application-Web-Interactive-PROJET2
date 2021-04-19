@@ -71,7 +71,7 @@ fdescribe('MagnetismServiceService', () => {
         expect(service.gridSize).toBe(drawingService.gridSize);
     });
 
-    it('findNearestLineLeft should find the proper distance depending on the position of the top left corner of the selection', () => {
+    it('findNearestLineLeft should calculate the proper distance when the position of the resizer locker is not a multiple of gridSize', () => {
         const positionLockedResizer = { x: 98, y: 98 };
         const gridSize = 50;
 
@@ -84,7 +84,7 @@ fdescribe('MagnetismServiceService', () => {
         expect(distance).toEqual(expectedDistance);
     });
 
-    it('findNearestLineLeft place should find the proper distance depending on the position of the top left corner of the selection', () => {
+    it('findNearestLineLeft should calculate the proper distance when the position of the resizer locker is a multiple of gridSize', () => {
         const positionLockedResizer = { x: 100, y: 100 };
         const gridSize = 50;
 
@@ -97,7 +97,7 @@ fdescribe('MagnetismServiceService', () => {
         expect(expectedDistance).toEqual(distance);
     });
 
-    it('findNearestRight should calculate the proper distance from the nearest cross depending on the position of the top left corner of the selection', () => {
+    it('findNearestRight should calculate the proper distance when the position of the resizer locker is not a multiple of gridSize', () => {
         const positionLockedResizer = { x: 198, y: 98 };
         const gridSize = 50;
 
@@ -110,7 +110,7 @@ fdescribe('MagnetismServiceService', () => {
         expect(distance).toEqual(expectedDistance);
     });
 
-    it('findNearestLineRight place should find the proper distance depending on the position of the top left corner of the selection', () => {
+    it('findNearestLineRight should calculate the proper distance when the position of the resizer locker is a multiple of gridSize', () => {
         const positionLockedResizer = { x: 200, y: 100 };
 
         const gridSize = 50;
@@ -124,7 +124,7 @@ fdescribe('MagnetismServiceService', () => {
         expect(distance).toEqual(expectedDistance);
     });
 
-    it(' 111 findNearestLineTop place should find the proper distance depending on the position of the top left corner of the selection', () => {
+    it('findNearestLineTop should calculate the proper distance when the position of the resizer locker is not a multiple of gridSize', () => {
         const positionLockedResizer = { x: 100, y: 198 };
 
         const gridSize = 50;
@@ -137,7 +137,7 @@ fdescribe('MagnetismServiceService', () => {
         expect(distance).toEqual(expectedDistance);
     });
 
-    it(' 222 findNearestLineTop place should find the proper distance depending on the position of the top left corner of the selection', () => {
+    it('findNearestLineTop should calculate the proper distance when the position of the resizer locker is a multiple of gridSize', () => {
         const positionLockedResizer = { x: 100, y: 200 };
 
         const gridSize = 50;
@@ -151,7 +151,7 @@ fdescribe('MagnetismServiceService', () => {
         expect(distance).toEqual(expectedDistance);
     });
 
-    it(' 333 findNearestLineDown place should find the proper distance depending on the position of the top left corner of the selection', () => {
+    it(' findNearestLineDown should calculate the proper distance when the position of the resizer locker is not a multiple of gridSize', () => {
         const positionLockedResizer = { x: 100, y: 198 };
 
         const gridSize = 50;
@@ -165,7 +165,7 @@ fdescribe('MagnetismServiceService', () => {
         expect(distance).toEqual(expectedDistance);
     });
 
-    it(' 333 findNearestLineDown place should find the proper distance depending on the position of the top left corner of the selection', () => {
+    it(' 333 findNearestLineDown should calculate the proper distance when the position of the resizer locker is a multiple of gridSize', () => {
         const positionLockedResizer = { x: 100, y: 200 };
 
         const gridSize = 50;
@@ -261,24 +261,23 @@ fdescribe('MagnetismServiceService', () => {
         expect(result).toBe(false);
     });
 
-    // it(' verifyInRangeCross should return true when the selected resizer is near an intersection on the grid ', () => {
-    //     // tslint:disable-next-line:no-any
+    it(' verifyInRangeCross should return true when the selected resizer is near an intersection on the grid ', () => {
+        // tslint:disable-next-line:no-any
 
-    //     const positionLockedResizer = { x: 51, y: 51 };
-    //     service.lockedResizer = positionLockedResizer;
+        const positionLockedResizer = { x: 51, y: 51 };
+        service.lockedResizer = positionLockedResizer;
 
-    //     const gridSize = 50;
-    //     service.gridSize = gridSize;
+        const gridSize = 50;
+        service.gridSize = gridSize;
 
-    //     const coord = { x: 51, y: 51 };
-    //     const result = service.verifyInRangeCross(coord);
+        const coord = { x: 51, y: 51 };
+        const result = service.verifyInRangeCross(coord);
 
-    //     expect(result).toBe(true);
-    // });
+        expect(result).toBe(true);
+    });
 
     it(' isUsingMagnetism return true when the status is set defaut resizer ', () => {
         // tslint:disable-next-line:no-any
-
         service.status = SelectionStatus.TOP_LEFT_BOX;
         const result = service.isUsingMagnetism();
         expect(result).toBe(true);
@@ -286,7 +285,6 @@ fdescribe('MagnetismServiceService', () => {
 
     it(' isUsingMagnetism return false when the status is not set defaut resizer ', () => {
         // tslint:disable-next-line:no-any
-
         service.status = SelectionStatus.OFF;
         const result = service.isUsingMagnetism();
         expect(result).toBe(false);
