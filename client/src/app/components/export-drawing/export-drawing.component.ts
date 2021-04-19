@@ -111,9 +111,9 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
         this.exportDrawingService.imageSource = this.imageSource;
         const imageSource = this.exportDrawingService.canvasToBase64Image(this.selectedFormat);
         this.imgurService.uploadDrawing(this.fileName.value, imageSource).subscribe(
-            (res) => {
+            (response) => {
                 this.snackBar.openFromComponent(UploadLinkComponent, {
-                    data: res.data.link,
+                    data: response.data.link,
                     duration: UPLOAD_SNACK_BAR_DISPLAY_DURATION,
                 });
             },

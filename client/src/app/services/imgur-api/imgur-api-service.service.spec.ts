@@ -1,32 +1,45 @@
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { HttpService } from '@app/services/http/http.service';
-// import { Data } from '@app/utils/interfaces/data';
-// import { DrawingData } from '@app/utils/interfaces/drawing-data';
-import { HttpServiceMock } from '@app/utils/tests-mocks/http-service-mock';
+import { Data } from '@app/utils/interfaces/data';
+import { DrawingData } from '@app/utils/interfaces/drawing-data';
 import { ImgurApiService } from './imgur-api.service';
 
 describe('ImgurApiService', () => {
     let service: ImgurApiService;
-    let httpServiceMock: HttpServiceMock;
+    let httpTestingController: HttpTestingController;
 
     beforeEach(() => {
-        httpServiceMock = new HttpServiceMock();
         TestBed.configureTestingModule({
-            providers: [{ provide: HttpService, useValue: httpServiceMock }],
-            imports: [HttpClientModule],
+            imports: [HttpClientTestingModule],
         });
+        httpTestingController = TestBed.inject(HttpTestingController);
         service = TestBed.inject(ImgurApiService);
+    });
+
+    afterAll(() => {
+        httpTestingController.verify();
     });
 
     it('should be created', () => {
         expect(service).toBeTruthy();
     });
 
-    // it('#upload should be able to upload drawing on imgur server', () => {
-    //     const mockData = { link: 'log22990.com' } as Data;
-    //     const mockDrawing = { data: mockData, status: 1, success: true } as DrawingData;
-    //     const fileName = 'log2990';
-    //     service.upload(fileName, '');
-    // });
+    it('#uploadDrawing should upload drawing on imgur server', () => {
+        const fileName = 'drawing_1';
+        const imageSource = 'xhOCykIZgDDaSEFwQ';
+        const mockData = { name: fileName, link: 'log2990306.com' } as Data;
+        const mockDrawing = { data: mockData, status: 1, success: true } as DrawingData;
+
+        service.uploadDrawing(fileName, imageSource).subscribe((drawingData) => {
+            expect(drawingData.data.name).toEqual('drawing_1');
+            expect(drawingData.data.link).toEqual('log2990306.com');
+            expect(drawingData.status).toEqual(1);
+            expect(drawingData.success).toEqual(true);
+        });
+
+        const request = httpTestingController.expectOne('https://api.imgur.com/3/image');
+        expect(request.request.method).toEqual('POST');
+
+        request.flush(mockDrawing);
+    });
 });
