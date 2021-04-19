@@ -151,8 +151,8 @@ export abstract class SelectionService extends Tool {
 
     updateDragPosition(mouseCoord: Vec2): void {
         const currentCoord = { ...mouseCoord };
-        this.topLeftCorner.x = currentCoord.x + this.offset.x;
-        this.topLeftCorner.y = currentCoord.y + this.offset.y;
+        this.topLeftCorner.x = Math.round(currentCoord.x + this.offset.x);
+        this.topLeftCorner.y = Math.round(currentCoord.y + this.offset.y);
         this.moveBorderPreview({
             x: this.topLeftCorner.x - 1 - this.drawingService.selectedAreaCtx.canvas.offsetLeft,
             y: this.topLeftCorner.y - 1 - this.drawingService.selectedAreaCtx.canvas.offsetTop,

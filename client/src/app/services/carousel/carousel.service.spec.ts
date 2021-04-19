@@ -98,7 +98,7 @@ describe('CarouselService', () => {
     });
 
     it('deleteDrawing should retrun a promise', async(() => {
-        spyOn(httpServiceMock, 'deleteDrawing').and.returnValue(of(''));
+        spyOn(httpServiceMock, 'deleteDrawing').and.returnValue(of('deleted'));
         service.deleteDrawing('1');
         setTimeout(() => {
             expect(httpServiceMock.deleteDrawing).toHaveBeenCalled();

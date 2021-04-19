@@ -4,7 +4,6 @@ import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PipetteService } from '@app/services/tools/pipette-service/pipette.service';
 import { PREVIEW_SIZE } from '@app/services/tools/tools-constants';
-
 import { PipettePreviewComponent } from './pipette-preview.component';
 
 describe('PipettePreviewComponent', () => {

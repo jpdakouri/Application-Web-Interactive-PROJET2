@@ -177,10 +177,28 @@ describe('DrawingComponent', () => {
 
     it(" should call the tool's #mouseUp when receiving a mouse up event", () => {
         const event = {} as MouseEvent;
-        const mouseEventSpy = spyOn(toolStub, 'onMouseUp').and.callThrough();
+        // tslint:disable:no-string-literal
+
+        spyOn(canvasResizerStub, 'isResizing').and.returnValue(false);
+        spyOn(component['selectionResizerService'], 'isResizing').and.returnValue(true);
+        spyOn(component['selectionResizerService'], 'updateValues').and.stub();
+        spyOn(component['selectionResizerService'], 'onMouseUp').and.stub();
+        spyOn(component['selectionResizerService'], 'setStatus').and.stub();
+        component.onMouseUp(event);
+        expect(component['selectionResizerService'].setStatus).toHaveBeenCalled();
+    });
+
+    it('should resize the canvas on mouseUp when status is resizing', () => {
+        component['gridService'].showGrid = true;
+        spyOn(canvasResizerStub, 'isResizing').and.returnValue(true);
+        spyOn(component['gridService'], 'newGrid').and.stub();
+        component.onMouseUp({} as MouseEvent);
+        canvasResizerStub.setStatus(Status.BOTTOM_RIGHT_RESIZE);
+        const event = {} as MouseEvent;
+        const mouseEventSpy = spyOn(canvasResizerStub, 'onMouseUp').and.callThrough();
         component.onMouseUp(event);
         expect(mouseEventSpy).toHaveBeenCalled();
-        expect(mouseEventSpy).toHaveBeenCalledWith(event);
+        expect(canvasResizerStub.status).toBe(Status.OFF);
     });
 
     it('should save the canvas state when a resizer is clicked', () => {
