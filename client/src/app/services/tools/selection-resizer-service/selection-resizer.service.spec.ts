@@ -11,10 +11,9 @@ import { SelectionStatus } from '@app/utils/enums/selection-resizer-status';
 import { MockSelectionEllipseService } from '@app/utils/tests-mocks/selection-ellipse-service-mock';
 import { MockSelectionPolygonaleService } from '@app/utils/tests-mocks/selection-polygonale-service-mock';
 import { MockSelectionRectangleService } from '@app/utils/tests-mocks/selection-rectangle-service-mock';
-// import { of } from 'rxjs';
 import { SelectionResizerService } from './selection-resizer.service';
 
-fdescribe('SelectionResizerService', () => {
+describe('SelectionResizerService', () => {
     let service: SelectionResizerService;
     let canvasTestHelper: CanvasTestHelper;
     let mouseEvent: MouseEvent;
@@ -312,31 +311,6 @@ fdescribe('SelectionResizerService', () => {
         service['isSelectionNull']();
         expect(SelectionResizerService['selectionActive']).toBeTrue();
     });
-
-    // it('canvas.scale is called with the good parameters', () => {
-    //     // selectedAreaCtxStub.canvas.width = 50;
-    //     // selectedAreaCtxStub.canvas.height = 50;
-    //     // service['initialize']();
-    //     service['drawingService'].selectedAreaCtx = selectedAreaCtxStub;
-    //     service.imageData = ('addoje' as unknown) as ImageData;
-    //     spyOn<any>(service, 'isMirror').and.stub();
-    //     spyOn<any>(service, 'isSelectionNull').and.stub();
-    //     spyOn<any>(service, 'isSquare').and.stub();
-    //     spyOn<any>(drawing, 'clearCanvas').and.stub();
-    //     spyOn<any>(drawing.selectedAreaCtx, 'scale');
-    //     // spyOn(window, 'createImageBitmap');
-    //     spyOn<any>(window, 'createImageBitmap').and.callFake(() => {
-    //         return;
-    //     });
-    //     service['canvasHeight'] = 50;
-    //     service['revertX'] = true;
-    //     service['revertY'] = true;
-    //     service['updatePreview']();
-    //     expect(service['drawingService'].selectedAreaCtx.canvas.height).toEqual(50);
-    //     // setTimeout(() => {
-    //     //     // tslint:disable-next-line:prettier
-    //     //     expect(drawing.selectedAreaCtx.scale).toHaveBeenCalledWith(-1, -1);}, 500);
-    // });
 
     it('isMirror should call isMirrorRight and isMirrorBottom for TopLeftBox', () => {
         service.status = SelectionStatus.TOP_LEFT_BOX;

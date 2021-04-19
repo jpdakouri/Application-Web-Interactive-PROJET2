@@ -94,6 +94,12 @@ export const FONT_HEIGHT_FACTOR = 0.025;
 export const DEFAULT_TEXT_BOX_WIDTH = 800;
 export const DEFAULT_TEXT_BOX_HEIGHT = 200;
 
+/**********************************/
+/****SELECTION RESIZE CONSTANTS****/
+/**********************************/
+
+export const REVERT = -1;
+
 /***************************/
 /* ERROR MESSAGE CONSTANT***/
 /***************************/
