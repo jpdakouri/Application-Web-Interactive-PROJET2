@@ -4,7 +4,7 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatSliderChange } from '@angular/material/slider';
 import { GridService } from '@app/services/grid/grid.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
-import { TextService } from '@app/services/tools/text/text.service';
+import { TextService } from '@app/services/tools/text-service/text.service';
 import {
     MAX_DROPLET_DIAMETER,
     MAX_FREQUENCY,
@@ -137,7 +137,7 @@ export class ToolAttributeComponent {
         return this.toolManagerService.getCurrentNumberOfSides();
     }
 
-    getCurrentFontSize(): number | undefined {
+    getCurrentFontSize(): number {
         return this.toolManagerService.getCurrentFontSize();
     }
 
@@ -183,11 +183,19 @@ export class ToolAttributeComponent {
     }
 
     onFontSizeChange(event: MatSliderChange): void {
-        this.toolManagerService.setCurrentFontSize(event.value || undefined);
+        this.toolManagerService.setCurrentFontSize(event.value as number);
     }
 
-    onFontFaceChange(selectedFont?: string): void {
-        this.toolManagerService.setCurrentFontFace(selectedFont || undefined);
+    onFontFaceChange(selectedFont: string): void {
+        this.toolManagerService.setCurrentFontFace(selectedFont);
+    }
+
+    onTextAlignChange(value: string): void {
+        this.textService.textAlign = value as TextAlign;
+    }
+
+    onTextStyleChange(textStyle: string[]): void {
+        this.textService.textStyles = textStyle;
     }
 
     onDropletDiameterChange(event: MatSliderChange): void {
@@ -221,13 +229,5 @@ export class ToolAttributeComponent {
 
     onSelectedStampChange(stampName: string): void {
         this.toolManagerService.setSelectedStamp(stampName);
-    }
-
-    onTextAlignChange(value: string): void {
-        this.textService.textAlign = value as TextAlign;
-    }
-
-    onTextStyleChange(textStyle: string[]): void {
-        this.textService.textStyles = textStyle;
     }
 }

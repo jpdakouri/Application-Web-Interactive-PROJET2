@@ -13,6 +13,7 @@ export class DialogControllerService {
     noDialogOpened: boolean = true;
 
     constructor(public dialog: MatDialog) {}
+
     openDialog(component: string): void {
         if (this.noDialogOpened)
             switch (component) {

@@ -41,7 +41,6 @@ export class MainPageComponent {
     }
 
     getDataFromLocalStorage(): string | null {
-        // console.log(localStorage.getItem('canvasInfo'));
         return localStorage.getItem('canvasInfo');
     }
 
@@ -58,7 +57,6 @@ export class MainPageComponent {
         this.drawingService.continueDrawing();
     }
     testCondition(): boolean {
-        // console.log('canvasBlank ' + this.drawingService.isCanvasBlank());
         console.log('localStorage ' + (this.getDataFromLocalStorage() !== null));
         return this.getDataFromLocalStorage() !== null;
     }

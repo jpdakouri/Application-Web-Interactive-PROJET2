@@ -6,15 +6,23 @@ import { GRID_SIZE_CHANGE_VALUE, MAX_GRID_OPACITY, MAX_GRID_SIZE, MIN_GRID_OPACI
     providedIn: 'root',
 })
 export class GridService {
-    readonly minGridSize: number = MIN_GRID_SIZE;
-    readonly maxGridSize: number = MAX_GRID_SIZE;
-    readonly minOpacity: number = MIN_GRID_OPACITY;
-    readonly maxOpacity: number = MAX_GRID_OPACITY;
-    gridSize: number = this.minGridSize;
-    gridOpacity: string = this.maxOpacity.toString();
-    showGrid: boolean = false;
+    readonly minGridSize: number;
+    readonly maxGridSize: number;
+    readonly minOpacity: number;
+    readonly maxOpacity: number;
+    gridSize: number;
+    gridOpacity: string;
+    showGrid: boolean;
 
-    constructor(private drawingService: DrawingService) {}
+    constructor(private drawingService: DrawingService) {
+        this.minGridSize = MIN_GRID_SIZE;
+        this.maxGridSize = MAX_GRID_SIZE;
+        this.minOpacity = MIN_GRID_OPACITY;
+        this.maxOpacity = MAX_GRID_OPACITY;
+        this.gridSize = this.minGridSize;
+        this.gridOpacity = this.maxOpacity.toString();
+        this.showGrid = false;
+    }
 
     newGrid(newSize: number | null): void {
         this.drawingService.clearCanvas(this.drawingService.gridCtx);

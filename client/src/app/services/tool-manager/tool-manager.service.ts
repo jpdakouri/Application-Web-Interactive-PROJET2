@@ -14,7 +14,7 @@ import { SelectionPolygonalLassoService } from '@app/services/tools/selection-po
 import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
 import { SelectionResizerService } from '@app/services/tools/selection-resizer-service/selection-resizer.service';
 import { StampService } from '@app/services/tools/stamp-service/stamp.service';
-import { TextService } from '@app/services/tools/text/text.service';
+import { TextService } from '@app/services/tools/text-service/text.service';
 import { DEFAULT_FONT_SIZE } from '@app/services/tools/tools-constants';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { Stamp } from '@app/utils/enums/stamp';
@@ -92,8 +92,6 @@ export class ToolManagerService {
             this.currentAttributes.JetDiameter = currentTool.jetDiameter;
             this.currentAttributes.DropletDiameter = currentTool.dropletDiameter;
             this.currentAttributes.BucketTolerance = currentTool.bucketTolerance;
-            this.currentAttributes.FontSize = currentTool.fontSize;
-            this.currentAttributes.FontFace = currentTool.fontFace;
         });
     }
 
@@ -245,18 +243,16 @@ export class ToolManagerService {
         }
     }
 
-    getCurrentFontSize(): number | undefined {
-        return this.currentAttributes.FontSize;
+    getCurrentFontSize(): number {
+        return this.textService.fontSize;
     }
 
-    setCurrentFontFace(selectedFont?: string): void {
-        this.toolBox[this.currentTool].fontFace = selectedFont;
-        this.currentAttributes.FontFace = selectedFont;
+    setCurrentFontFace(selectedFont: string): void {
+        this.textService.fontFace = selectedFont as TextFont;
     }
 
-    setCurrentFontSize(fontSize?: number): void {
-        this.toolBox[this.currentTool].fontSize = fontSize;
-        this.currentAttributes.FontSize = fontSize;
+    setCurrentFontSize(fontSize: number): void {
+        this.textService.fontSize = fontSize;
     }
 
     eraserActive(): boolean {
@@ -269,8 +265,8 @@ export class ToolManagerService {
 
     emitToolChange(toolName: ToolsNames): void {
         if (this.currentTool === ToolsNames.Text) {
+            this.textService.drawStyledTextOnCanvas();
             this.textService.showTextBox = false;
-            this.textService.drawStyledText();
         }
         this.toolChangeEmitter.emit(toolName);
     }

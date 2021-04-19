@@ -12,7 +12,7 @@ import { SIDEBAR_WIDTH } from '@app/services/services-constants';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { PencilService } from '@app/services/tools/pencil-service/pencil.service';
 import { SelectionResizerService } from '@app/services/tools/selection-resizer-service/selection-resizer.service';
-import { TextService } from '@app/services/tools/text/text.service';
+import { TextService } from '@app/services/tools/text-service/text.service';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { SelectionStatus } from '@app/utils/enums/selection-resizer-status';
 import { ToolsNames } from '@app/utils/enums/tools-names';
@@ -199,10 +199,28 @@ describe('DrawingComponent', () => {
     it(" should call the tool's #mouseUp when receiving a mouse up event", () => {
         component.onSelectionBoxClick(SelectionStatus.OFF);
         const event = {} as MouseEvent;
-        const mouseEventSpy = spyOn(toolStub, 'onMouseUp').and.callThrough();
+        // tslint:disable:no-string-literal
+
+        spyOn(canvasResizerStub, 'isResizing').and.returnValue(false);
+        spyOn(component['selectionResizerService'], 'isResizing').and.returnValue(true);
+        spyOn(component['selectionResizerService'], 'updateValues').and.stub();
+        spyOn(component['selectionResizerService'], 'onMouseUp').and.stub();
+        spyOn(component['selectionResizerService'], 'setStatus').and.stub();
+        component.onMouseUp(event);
+        expect(component['selectionResizerService'].setStatus).toHaveBeenCalled();
+    });
+
+    it('should resize the canvas on mouseUp when status is resizing', () => {
+        component['gridService'].showGrid = true;
+        spyOn(canvasResizerStub, 'isResizing').and.returnValue(true);
+        spyOn(component['gridService'], 'newGrid').and.stub();
+        component.onMouseUp({} as MouseEvent);
+        canvasResizerStub.setStatus(Status.BOTTOM_RIGHT_RESIZE);
+        const event = {} as MouseEvent;
+        const mouseEventSpy = spyOn(canvasResizerStub, 'onMouseUp').and.callThrough();
         component.onMouseUp(event);
         expect(mouseEventSpy).toHaveBeenCalled();
-        expect(mouseEventSpy).toHaveBeenCalledWith(event);
+        expect(canvasResizerStub.status).toBe(Status.OFF);
     });
 
     it("should call selectionResizer's #onMouseUp when resizing a selection", () => {
