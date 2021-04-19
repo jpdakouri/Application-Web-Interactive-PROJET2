@@ -16,20 +16,20 @@ export class TextService extends Tool {
     text: string;
     fontStyle: string;
     textStyles: string[];
+    fontFace: TextFont;
     textAlign: TextAlign;
     numberOfRows: number;
     showTextBox: boolean;
     textBoxPosition: Vec2;
-    fontFace: TextFont;
     fontSize: number;
 
     constructor(public currentColorService: CurrentColorService, drawingService: DrawingService) {
         super(drawingService, currentColorService);
         this.text = '';
         this.textStyles = [];
-        this.fontFace = TextFont.Arial;
-        this.textAlign = TextAlign.Start;
         this.fontSize = DEFAULT_FONT_SIZE;
+        this.textAlign = TextAlign.Start;
+        this.fontFace = TextFont.Arial;
         this.fontStyle = '';
         this.showTextBox = false;
         this.numberOfRows = 1;

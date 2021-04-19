@@ -63,8 +63,8 @@ describe('TextService', () => {
 
     it('#onKeyUp should calculate new number of rows', () => {
         const mockKeyboardEvent = { key: KeyboardButtons.Enter } as KeyboardEvent;
-        // @ts-ignore
-        const calculateNumberOfLinesSpy = spyOn(service, 'calculateNumberOfLines').and.callThrough();
+        // tslint:disable:no-any
+        const calculateNumberOfLinesSpy = spyOn<any>(service, 'calculateNumberOfLines').and.callThrough();
         service.onKeyUp(mockKeyboardEvent);
         expect(calculateNumberOfLinesSpy).toHaveBeenCalled();
     });
@@ -175,7 +175,6 @@ describe('TextService', () => {
     it('#onMouseDwon should draw text-service on canvas if mouse click is out of canvas', () => {
         const mockMouseEvent = { x: 100, y: 100 } as MouseEvent;
         const drawStyledTextOnCanvasSpy = spyOn(service, 'drawStyledTextOnCanvas').and.callThrough();
-        // tslint:disable:no-any
         spyOn<any>(service, 'getPositionFromMouse').and.returnValue({ x: 100, y: 100 });
 
         service.showTextBox = true;
@@ -192,8 +191,8 @@ describe('TextService', () => {
         const mockMouseEvent = { x: 100, y: 100 } as MouseEvent;
         const drawStyledTextOnCanvasSpy = spyOn(service, 'drawStyledTextOnCanvas').and.callThrough();
         const textArea = document.createElement('HTMLTextAreaElement') as HTMLTextAreaElement;
-        document.getElementById = jasmine.createSpy('textarea').and.returnValue(textArea);
 
+        document.getElementById = jasmine.createSpy('textarea').and.returnValue(textArea);
         spyOn<any>(textArea, 'contains').and.returnValue(true);
 
         service.showTextBox = true;

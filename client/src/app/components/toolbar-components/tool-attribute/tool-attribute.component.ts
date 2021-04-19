@@ -137,7 +137,7 @@ export class ToolAttributeComponent {
         return this.toolManagerService.getCurrentNumberOfSides();
     }
 
-    getCurrentFontSize(): number | undefined {
+    getCurrentFontSize(): number {
         return this.toolManagerService.getCurrentFontSize();
     }
 
