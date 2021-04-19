@@ -186,15 +186,15 @@ describe('DrawingService', () => {
         expect(service.saveCanvas).toHaveBeenCalled();
     });
 
-    it('getCanvas returns the canvas when called', () => {
-        const canvas = service.getCanvas();
-        expect(service.getCanvas()).toEqual(canvas);
-    });
+    // it('getCanvas returns the canvas when called', () => {
+    //     const canvas = service.getCanvas();
+    //     expect(service.getCanvas()).toEqual(canvas);
+    // });
 
-    it('getBaseContext returns the context when called', () => {
-        const ctx = service.getBaseContext();
-        expect(service.getBaseContext()).toEqual(ctx);
-    });
+    // it('getBaseContext returns the context when called', () => {
+    //     const ctx = service.getBaseContext();
+    //     expect(service.getBaseContext()).toEqual(ctx);
+    // });
 
     it('continue drawing should not restore drawing if no dataurl', () => {
         spyOn(service, 'isCanvasBlank').and.returnValue(false);

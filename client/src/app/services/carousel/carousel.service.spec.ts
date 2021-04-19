@@ -44,14 +44,15 @@ describe('CarouselService', () => {
 
     it('getArraySizeOfDrawing should return un observable with the new size', () => {
         spyOn(httpServiceMock, 'getLengthOfDrawings').and.returnValue(of(1));
-        service.getArraySizeOfDrawing(false);
+        // tslint:disable-next-line:no-string-literal
+        service['getArraySizeOfDrawing'](false);
         expect(service.sizeOfArray).toEqual(1);
     });
     it('initCarousel should call #getArraySizeOfDrawing and call getOneDrawing from httpService one time if sizeOfArray = 1 ', () => {
         const drawing = new DrawingData('id', 'title', ['tags'], 'url', 100, 100);
         const array: DrawingData[] = [];
         array.push(drawing);
-        spyOn(service, 'getArraySizeOfDrawing').and.returnValue(of(1));
+        spyOn<any>(service, 'getArraySizeOfDrawing').and.returnValue(of(1));
         spyOn(httpServiceMock, 'getLengthOfDrawings').and.returnValue(of(1));
         spyOn(httpServiceMock, 'getOneDrawing').and.returnValue(of(drawing));
 
@@ -62,7 +63,7 @@ describe('CarouselService', () => {
     it('initCarousel should call #getArraySizeOfDrawing and return of([]) if size of array < 1', () => {
         const drawing = new DrawingData('id', 'title', ['tags'], 'url', 100, 100);
         service.sizeOfArray = 0;
-        spyOn(service, 'getArraySizeOfDrawing').and.returnValue(of(0));
+        spyOn<any>(service, 'getArraySizeOfDrawing').and.returnValue(of(0));
         spyOn(httpServiceMock, 'getLengthOfDrawings').and.returnValue(of(0));
         spyOn(httpServiceMock, 'getOneDrawing').and.returnValue(of(drawing));
 
@@ -72,7 +73,7 @@ describe('CarouselService', () => {
 
     it('initCarousel should call #getArraySizeOfDrawing and call getOneDrawing from httpService 3 times if sizeOfArray > 1 ', () => {
         spyOn(httpServiceMock, 'getLengthOfDrawings').and.returnValue(of(2));
-        spyOn(service, 'getArraySizeOfDrawing').and.returnValue(of(2));
+        spyOn<any>(service, 'getArraySizeOfDrawing').and.returnValue(of(2));
         spyOn(httpServiceMock, 'getOneDrawing').and.callThrough();
         service.sizeOfArray = 2;
         service.initCarousel(false).subscribe();

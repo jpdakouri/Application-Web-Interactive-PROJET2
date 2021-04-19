@@ -18,7 +18,7 @@ export class SaveDrawingService {
 
     constructor(private httpService: HttpService) {}
 
-    getDataURLFromCanvas(): string {
+    private getDataURLFromCanvas(): string {
         const context = this.originalCanvas.getContext('2d');
         const width = this.originalCanvas.width;
         const height = this.originalCanvas.height;
@@ -56,7 +56,7 @@ export class SaveDrawingService {
         });
     }
 
-    toStringArray(labels: Tag[]): string[] {
+    private toStringArray(labels: Tag[]): string[] {
         const tempArray = new Array<string>();
         let i: number;
         for (i = 0; i < labels.length; i++) tempArray.push(labels[i].name);

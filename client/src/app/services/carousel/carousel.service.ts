@@ -54,7 +54,7 @@ export class CarouselService {
         });
     }
 
-    getArraySizeOfDrawing(tagFlag: boolean): Observable<number> {
+    private getArraySizeOfDrawing(tagFlag: boolean): Observable<number> {
         const subject = new Subject<number>();
         this.httpService.getLengthOfDrawings(tagFlag).subscribe({
             next: (results) => {

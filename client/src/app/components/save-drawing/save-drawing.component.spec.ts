@@ -102,7 +102,8 @@ describe('SaveDrawingComponent', () => {
 
     it('updateService should update the values of the services', () => {
         component.fileName = new FormControl('testing');
-        component.updateService();
+        // tslint:disable-next-line:no-string-literal
+        component['updateService']();
         fixture.detectChanges();
         expect(saveDrawingServiceMock.fileName).toEqual('testing');
     });
