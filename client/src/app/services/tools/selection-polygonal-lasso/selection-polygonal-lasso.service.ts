@@ -4,23 +4,26 @@ import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { LineCreatorService } from '@app/services/tools/line-creator/line-creator.service';
+import { MagnetismService } from '@app/services/tools/magnetism-service/magnetism.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection.service';
 import { DEFAULT_DOT_RADIUS, DEFAULT_MIN_THICKNESS, MIN_ARRAY_LENGTH } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
-import { MagnetismService } from '../magnetism-service/magnetism.service';
+
 @Injectable({
     providedIn: 'root',
 })
 export class SelectionPolygonalLassoService extends LineCreatorService {
     private validePoint: boolean = true;
+    magnetismService: MagnetismService;
     constructor(
         drawingService: DrawingService,
         currentColorService: CurrentColorService,
         private undoRedo: UndoRedoService,
-        magnetismeService: MagnetismService,
+        magnetismService: MagnetismService,
     ) {
-        super(drawingService, currentColorService, magnetismeService);
+        super(drawingService, currentColorService, magnetismService);
         this.validePoint = true;
+        this.magnetismService = magnetismService;
     }
 
     registerUndo(imageData: ImageData): void {

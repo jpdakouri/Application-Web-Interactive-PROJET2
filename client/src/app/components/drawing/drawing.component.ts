@@ -115,8 +115,6 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.drawingService.canvas.style.backgroundColor = DEFAULT_WHITE;
         this.canvasResizerService.canvasPreviewWidth = this.canvasSize.x;
         this.canvasResizerService.canvasPreviewHeight = this.canvasSize.y;
-        // this.drawingService.restoreCanvas();
-        // this.drawingService.saveCanvas();
         this.undoRedo.saveInitialState();
         setTimeout(() => {
             this.selectionEllipseService.height = this.drawingService.canvas.height;
@@ -195,8 +193,8 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         } else if (this.selectionResizerService.isResizing()) {
             this.selectionResizerService.onMouseMove(event);
             // La condition bool est a revoir ici pour activier le mouseMove
-        } else if (this.magnetismService.isMagnetismOnGoing) {
-            this.magnetismService.onMouseMove(event);
+            // } else if (this.magnetismService.isMagnetismOnGoing) {
+            //     this.magnetismService.onMouseMove(event);
         } else {
             this.currentTool.onMouseMove(event);
             this.eraserActive = this.toolManagerService.eraserActive() || false;

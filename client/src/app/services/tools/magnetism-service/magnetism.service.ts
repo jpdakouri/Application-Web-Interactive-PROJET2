@@ -7,17 +7,6 @@ import { MousePositionHandlerService } from '@app/services/tools/mouse-position-
 import { SelectionStatus } from '@app/utils/enums/selection-resizer-status';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
 
-export enum controlPoints {
-    topLeft = 'topLeft',
-    topRight = 'topRight',
-    bottomLeft = 'bottomLeft',
-    bottomRight = 'bottomRight',
-    midLeft = 'midLeft',
-    midTop = 'midTop',
-    midRight = 'midRight',
-    midBottom = 'bmidBottom',
-}
-
 const RANGE = 2;
 
 @Injectable({
@@ -25,7 +14,7 @@ const RANGE = 2;
 })
 export class MagnetismService extends Tool {
     private resizers: Map<SelectionStatus, Vec2>;
-    private status: SelectionStatus;
+    status: SelectionStatus;
     currentSelection: CanvasRenderingContext2D;
     gridSize: number;
     isMagnetismOnGoing: boolean = false;
@@ -48,7 +37,6 @@ export class MagnetismService extends Tool {
             .set(SelectionStatus.TOP_MIDDLE_BOX, { x: 1 / 2, y: 0 })
             .set(SelectionStatus.MIDDLE_RIGHT_BOX, { x: 1, y: 1 / 2 })
             .set(SelectionStatus.BOTTOM_MIDDLE_BOX, { x: 1 / 2, y: 1 })
-            // TODO : Faire la div du centre
             .set(SelectionStatus.CENTER, { x: 1 / 2, y: 1 / 2 });
     }
 
@@ -67,6 +55,7 @@ export class MagnetismService extends Tool {
     onMouseUp(event: MouseEvent): void {
         console.log('is that bool called ???');
         this.isMagnetismOnGoing = false;
+        this.mouseDown = false;
     }
 
     startKeys(): void {
@@ -79,7 +68,10 @@ export class MagnetismService extends Tool {
 
     verifyInRangeCross(mouseCoord: Vec2): boolean {
         console.log('test');
-        return Math.abs(this.findNearestLineLeft() - mouseCoord.x) <= RANGE && Math.abs(this.findNearestLineTop() - mouseCoord.y) <= RANGE;
+        return (
+            Math.abs(mouseCoord.x - this.drawingService.selectedAreaCtx.canvas.offsetLeft - this.findNearestLineLeft()) <= RANGE &&
+            Math.abs(mouseCoord.y - this.drawingService.selectedAreaCtx.canvas.offsetTop - this.findNearestLineTop()) <= RANGE
+        );
     }
 
     isUsingMagnetism(): boolean {
@@ -150,10 +142,10 @@ export class MagnetismService extends Tool {
     }
 
     executeCommand(command: ToolCommand): void {
-        throw new Error('Method not implemented.');
+        return;
     }
 
     registerUndo(imageData: ImageData): void {
-        throw new Error('Method not implemented.');
+        return;
     }
 }

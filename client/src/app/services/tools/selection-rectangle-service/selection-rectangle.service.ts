@@ -3,19 +3,20 @@ import { SelectionCommand } from '@app/classes/tool-commands/selection-command';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MagnetismService } from '@app/services/tools/magnetism-service/magnetism.service';
 import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection.service';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { Sign } from '@app/utils/enums/rgb-settings';
-import { MagnetismService } from '../magnetism-service/magnetism.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class SelectionRectangleService extends SelectionService {
     mousePositionHandler: MousePositionHandlerService;
+    magnetismService: MagnetismService;
     constructor(
         drawingService: DrawingService,
         currentColorService: CurrentColorService,
@@ -25,6 +26,7 @@ export class SelectionRectangleService extends SelectionService {
     ) {
         super(drawingService, currentColorService, magnetismeService);
         this.currentColorService = currentColorService;
+        this.magnetismService = magnetismeService;
         this.topLeftCorner = { x: 0, y: 0 };
         this.offset = { x: 0, y: 0 };
         SelectionService.isSelectionStarted = this.dragActive = false;

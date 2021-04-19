@@ -3,19 +3,20 @@ import { SelectionCommand } from '@app/classes/tool-commands/selection-command';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MagnetismService } from '@app/services/tools/magnetism-service/magnetism.service';
 import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection.service';
 import { LINE_DASH } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
-import { MagnetismService } from '../magnetism-service/magnetism.service';
 @Injectable({
     providedIn: 'root',
 })
 export class SelectionEllipseService extends SelectionService {
     currentColorService: CurrentColorService;
     mousePositionHandler: MousePositionHandlerService;
+    magnetismService: MagnetismService;
 
     constructor(
         drawingService: DrawingService,
@@ -31,6 +32,7 @@ export class SelectionEllipseService extends SelectionService {
         SelectionService.isSelectionStarted = this.dragActive = false;
         this.drawingService.selectedAreaCtx = this.drawingService.baseCtx;
         this.mousePositionHandler = mousePositionHandler;
+        this.magnetismService = magnetismeService;
     }
 
     registerUndo(imageData: ImageData): void {

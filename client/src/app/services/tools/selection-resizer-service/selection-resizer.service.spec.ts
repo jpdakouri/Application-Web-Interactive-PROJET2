@@ -3,6 +3,7 @@ import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MagnetismService } from '@app/services/tools/magnetism-service/magnetism.service';
 import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
@@ -29,6 +30,7 @@ describe('SelectionResizerService', () => {
     let drawing: DrawingService;
     let currentColorService: CurrentColorService;
     let mousePositionHandlerService: MousePositionHandlerService;
+    let magnetismeService: MagnetismService;
     let undoRedo: UndoRedoService;
     // tslint:disable:no-any
     let resizeSelectionSpy: jasmine.Spy<any>;
@@ -52,9 +54,21 @@ describe('SelectionResizerService', () => {
         service['drawingService'].selectedAreaCtx = selectedAreaCtxStub;
         spyOn<any>(service, 'getPositionFromMouse').and.returnValue({ x: 100, y: 100 });
         resizeSelectionSpy = spyOn<any>(service, 'resizeSelection').and.callThrough();
-        selectionRectangleMock = new MockSelectionRectangleService(drawing, currentColorService, mousePositionHandlerService, undoRedo);
-        selectionEllipseMock = new MockSelectionEllipseService(drawing, currentColorService, mousePositionHandlerService, undoRedo);
-        selectionPolygoneMock = new MockSelectionPolygonaleService(drawing, currentColorService, undoRedo);
+        selectionRectangleMock = new MockSelectionRectangleService(
+            drawing,
+            currentColorService,
+            mousePositionHandlerService,
+            undoRedo,
+            magnetismeService,
+        );
+        selectionEllipseMock = new MockSelectionEllipseService(
+            drawing,
+            currentColorService,
+            mousePositionHandlerService,
+            undoRedo,
+            magnetismeService,
+        );
+        selectionPolygoneMock = new MockSelectionPolygonaleService(drawing, currentColorService, undoRedo, magnetismeService);
         mouseEvent = {
             offsetX: 25,
             offsetY: 25,
