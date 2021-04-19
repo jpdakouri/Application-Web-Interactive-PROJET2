@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import { TextCommand } from '@app/classes/tool-commands/text-command';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DEFAULT_FONT_SIZE, FONT_HEIGHT_FACTOR, NEW_LINE_SEPARATOR } from '@app/services/tools/tools-constants';
+import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
 import { TextAlign } from '@app/utils/enums/text-align.enum';
 import { TextFont } from '@app/utils/enums/text-font.enum';
-import { ToolCommand } from '@app/utils/interfaces/tool-command';
 
 @Injectable({
     providedIn: 'root',
@@ -23,7 +24,7 @@ export class TextService extends Tool {
     textBoxPosition: Vec2;
     fontSize: number;
 
-    constructor(public currentColorService: CurrentColorService, drawingService: DrawingService) {
+    constructor(public currentColorService: CurrentColorService, drawingService: DrawingService, private undoRedo: UndoRedoService) {
         super(drawingService, currentColorService);
         this.text = '';
         this.textStyles = [];
@@ -62,7 +63,19 @@ export class TextService extends Tool {
     drawStyledTextOnCanvas(): void {
         if (this.text === '') return;
         const textFinalPosition = this.calculateTextFinalPosition(this.textBoxPosition);
-        this.fillTextMultiLine(this.drawingService.baseCtx, this.text, textFinalPosition);
+        const command = new TextCommand(
+            this,
+            this.currentColorService.getPrimaryColorRgba(),
+            this.text,
+            this.getCurrentStyle(),
+            this.fontFace,
+            this.textAlign,
+            this.numberOfRows,
+            { ...textFinalPosition },
+            this.fontSize,
+        );
+        this.undoRedo.addCommand(command);
+        this.fillTextMultiLine(this.drawingService.baseCtx, command);
     }
 
     private calculateTextFinalPosition(currentPosition: Vec2): Vec2 {
@@ -85,15 +98,15 @@ export class TextService extends Tool {
         return textPosition;
     }
 
-    fillTextMultiLine(context: CanvasRenderingContext2D, text: string, position: Vec2): void {
-        const fontHeight = this.calculateTextHeight(context, text);
-        const textPosition = { ...position };
-        context.fillStyle = this.currentColorService.getPrimaryColorRgb();
-        context.font = ` ${this.getCurrentStyle()} ${this.fontSize}px ${this.fontFace}`;
-        context.textAlign = this.textAlign;
+    fillTextMultiLine(context: CanvasRenderingContext2D, command: TextCommand): void {
+        const fontHeight = this.calculateTextHeight(context, command.text);
+        const textPosition = { ...command.textBoxPosition };
+        context.fillStyle = command.primaryColor;
+        context.font = ` ${command.fontStyle} ${command.fontSize}px ${command.fontFace}`;
+        context.textAlign = command.textAlign;
         textPosition.y += fontHeight;
 
-        const lines = this.splitTextInToLines(text);
+        const lines = this.splitTextInToLines(command.text);
         lines.forEach((line: string) => {
             context.fillText(line, textPosition.x, textPosition.y);
             textPosition.y += fontHeight + FONT_HEIGHT_FACTOR * fontHeight;
@@ -152,6 +165,7 @@ export class TextService extends Tool {
         return textStyle;
     }
 
-    // tslint:disable-next-line:no-empty
-    executeCommand(command: ToolCommand): void {}
+    executeCommand(command: TextCommand): void {
+        this.fillTextMultiLine(this.drawingService.baseCtx, command);
+    }
 }
