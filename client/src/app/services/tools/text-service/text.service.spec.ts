@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
+import { TextCommand } from '@app/classes/tool-commands/text-command';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
@@ -73,12 +74,14 @@ describe('TextService', () => {
         const position = { x: 100, y: 100 } as Vec2;
         const fillTextMultiLineSpy = spyOn(service, 'fillTextMultiLine').and.callThrough();
         const mockText = 'hello word';
+        // tslint:disable-next-line: no-magic-numbers
+        const command = new TextCommand(service, 'rgba(0,0,0,1)', mockText, ' ', TextFont.Arial, TextAlign.Start, 1, position, 30);
         service.text = mockText;
         service.textBoxPosition = position;
         service.textAlign = TextAlign.Start;
 
         service.drawStyledTextOnCanvas();
-        expect(fillTextMultiLineSpy).toHaveBeenCalledWith(drawingServiceSpy.baseCtx, mockText, position);
+        expect(fillTextMultiLineSpy).toHaveBeenCalledWith(drawingServiceSpy.baseCtx, command);
         expect(service.showTextBox).toBe(false);
     });
 
@@ -139,37 +142,12 @@ describe('TextService', () => {
         expect(service['splitTextInToLines'](text)).toEqual(expectedLines);
     });
 
-    it('#calculateLongestLineWidth should be able to correctly calculate max line length in a text-service ', () => {
-        let text = 'hello word\nfrom\nteam 306';
-        let expectedLongestLineLength = service.calculateTextWidth(drawingServiceSpy.baseCtx, text.split('\n')[0]);
-        expect(service['calculateLongestLineWidth'](text)).toEqual(expectedLongestLineLength);
-
-        text = 'hello \n word \n from team 306';
-        expectedLongestLineLength = service.calculateTextWidth(drawingServiceSpy.baseCtx, text.split('\n')[2]);
-        expect(service['calculateLongestLineWidth'](text)).toEqual(expectedLongestLineLength);
-    });
-
-    it('#calculateMaxLineLength should first line if maxLine is first line in the text-service', () => {
-        const text = 'hello word\nfrom\nteam 306';
-        const expectedLongestLineLength = service.calculateTextWidth(drawingServiceSpy.baseCtx, text.split('\n')[0]);
-        expect(service['calculateLongestLineWidth'](text)).toEqual(expectedLongestLineLength);
-    });
-
     it('#getSingleStyle should correctly get a single style from textStyles attribute', () => {
         service.textStyles = ['bold', 'italic'];
 
         expect(service.getSingleStyle('bold')).toEqual('bold');
         expect(service.getSingleStyle('')).not.toEqual('bold');
         expect(service.getSingleStyle('italic')).toEqual('italic');
-    });
-
-    it('#getCurrentStyle should correctly get current text-service style', () => {
-        service.textStyles = ['bold', 'italic'];
-        const expectedStyle = service.getCurrentStyle();
-        const getSingleStyleSpy = spyOn(service, 'getSingleStyle').and.callThrough();
-
-        expect(service.getCurrentStyle()).toEqual(expectedStyle);
-        expect(getSingleStyleSpy).toHaveBeenCalledTimes(2);
     });
 
     it('#onMouseDwon should draw text-service on canvas if mouse click is out of canvas', () => {
@@ -209,20 +187,46 @@ describe('TextService', () => {
         const fillTextSpy = spyOn(drawingServiceSpy.baseCtx, 'fillText').and.callThrough();
         const text = 'hello word from\nteam 306';
         const position = { x: 100, y: 100 } as Vec2;
-        service.fontFace = TextFont.BrushScriptMT;
+        service.fontFace = TextFont.Georgia;
         service.textAlign = TextAlign.Center;
         service.fontSize = 2;
+        const command = new TextCommand(service, '', text, '', TextFont.Georgia, TextAlign.Center, 1, position, 2);
 
-        service.fillTextMultiLine(drawingServiceSpy.baseCtx, text, position);
+        service.fillTextMultiLine(drawingServiceSpy.baseCtx, command);
 
         expect(fillTextSpy).toHaveBeenCalledTimes(2);
-        expect(drawingServiceSpy.baseCtx.font).toEqual('2px "Brush Script MT"');
+        expect(drawingServiceSpy.baseCtx.font).toEqual('2px Georgia');
         expect(drawingServiceSpy.baseCtx.textAlign).toEqual(service.textAlign);
     });
 
-    it('#calculateTextBoxWidth should call #calculateLongestLineWidth with text-service attribute value', () => {
-        spyOn<any>(service, 'calculateLongestLineWidth').and.stub();
-        service.calculateTextBoxWidth();
-        expect(service['calculateLongestLineWidth']).toHaveBeenCalled();
+    it('#calculateLongestLineWidth should be able to correctly calculate max line length in a text-service ', () => {
+        let text = 'hello word\nfrom\nteam 306';
+        let expectedLongestLineLength = service['calculateTextWidth'](drawingServiceSpy.baseCtx, text.split('\n')[0]);
+        expect(service['calculateLongestLineWidth'](text)).toEqual(expectedLongestLineLength);
+
+        text = 'hello \n word \n from team 306';
+        expectedLongestLineLength = service['calculateTextWidth'](drawingServiceSpy.baseCtx, text.split('\n')[2]);
+        expect(service['calculateLongestLineWidth'](text)).toEqual(expectedLongestLineLength);
+    });
+
+    it('#calculateTextBoxWidth should return the length of longest line of text', () => {
+        const text = 'a\naa';
+        service.text = text;
+        const expectedTextBoxWidth = service['calculateLongestLineWidth'](text);
+        const calculatedTextBoxWidth = service['calculateTextBoxWidth']();
+        expect(calculatedTextBoxWidth).toEqual(expectedTextBoxWidth);
+    });
+
+    it('#calculateMaxLineLength should first line if maxLine is first line in the text-service', () => {
+        const text = 'hello word\nfrom\nteam 306';
+        const expectedLongestLineLength = service['calculateTextWidth'](drawingServiceSpy.baseCtx, text.split('\n')[0]);
+        expect(service['calculateLongestLineWidth'](text)).toEqual(expectedLongestLineLength);
+    });
+
+    it('executeCommand calls fillTextMultiLine with provided command', () => {
+        const command = new TextCommand(service, '', 'a', '', TextFont.Arial, TextAlign.Start, 1, { x: 0, y: 0 }, 1);
+        spyOn(service, 'fillTextMultiLine');
+        service.executeCommand(command);
+        expect(service.fillTextMultiLine).toHaveBeenCalledWith(drawingServiceSpy.baseCtx, command);
     });
 });

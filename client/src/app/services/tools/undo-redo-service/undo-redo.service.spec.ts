@@ -68,7 +68,8 @@ describe('UndoRedoService', () => {
         spyOn(drawing.baseCtx, 'getImageData').and.returnValue(new ImageData(1, 1));
         service.undo();
         service.redo();
-        expect(drawing.clearCanvas).toHaveBeenCalledTimes(2);
+        // tslint:disable-next-line: no-magic-numbers
+        expect(drawing.clearCanvas).toHaveBeenCalledTimes(4);
         expect(pencil.executeCommand).toHaveBeenCalledTimes(1);
     });
 });

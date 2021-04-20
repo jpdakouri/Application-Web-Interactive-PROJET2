@@ -14,6 +14,7 @@ import { PencilService } from '@app/services/tools/pencil-service/pencil.service
 import { SelectionPolygonalLassoService } from '@app/services/tools/selection-polygonal-lasso/selection-polygonal-lasso.service';
 import { SelectionResizerService } from '@app/services/tools/selection-resizer-service/selection-resizer.service';
 import { TextService } from '@app/services/tools/text-service/text.service';
+import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 import { SelectionStatus } from '@app/utils/enums/selection-resizer-status';
 import { ToolsNames } from '@app/utils/enums/tools-names';
@@ -52,7 +53,7 @@ describe('DrawingComponent', () => {
         toolManagerServiceMock = new ToolManagerServiceMock();
         mouseStub = new MouseHandlerService();
         canvasResizerStub = new CanvasResizerService(mouseStub);
-        textService = new TextService({} as CurrentColorService, {} as DrawingService);
+        textService = new TextService({} as CurrentColorService, {} as DrawingService, {} as UndoRedoService);
         drawingServiceSpy = new DrawingServiceMock();
 
         TestBed.configureTestingModule({
