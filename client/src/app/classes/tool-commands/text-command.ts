@@ -11,7 +11,6 @@ export class TextCommand implements ToolCommand {
     readonly fontStyle: string;
     readonly fontFace: TextFont;
     readonly textAlign: TextAlign;
-    readonly numberOfRows: number;
     readonly textBoxPosition: Vec2;
     readonly fontSize: number;
 
@@ -22,7 +21,6 @@ export class TextCommand implements ToolCommand {
         fontStyle: string,
         fontFace: TextFont,
         textAlign: TextAlign,
-        numberOfRows: number,
         textBoxPosition: Vec2,
         fontSize: number,
     ) {
@@ -32,7 +30,6 @@ export class TextCommand implements ToolCommand {
         this.fontStyle = fontStyle;
         this.fontFace = fontFace;
         this.textAlign = textAlign;
-        this.numberOfRows = numberOfRows;
         this.textBoxPosition = textBoxPosition;
         this.fontSize = fontSize;
     }
