@@ -199,10 +199,12 @@ describe('TextService', () => {
         expect(drawingServiceSpy.baseCtx.textAlign).toEqual(service.textAlign);
     });
 
-    it('#calculateTextBoxWidth should return the length of longuest line of text', () => {
+    it('#calculateTextBoxWidth should return the length of longest line of text', () => {
         service.text = 'a\naa';
-        const expectWidth = 33;
-        expect(Math.round(service.calculateTextBoxWidth())).toBe(expectWidth);
+        // Different browsers give a different width
+        const expectWidthLowerBound = 25;
+        const expectWidthUpperBound = 45;
+        expect(service.calculateTextBoxWidth() > expectWidthLowerBound && service.calculateTextBoxWidth() < expectWidthUpperBound).toBeTrue();
     });
 
     it('executeCommand calls fillTextMultiLine with provided command', () => {
