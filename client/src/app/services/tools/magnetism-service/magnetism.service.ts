@@ -4,9 +4,9 @@ import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
+import { RANGE } from '@app/services/tools/tools-constants';
 import { SelectionStatus } from '@app/utils/enums/selection-resizer-status';
 import { ToolCommand } from '@app/utils/interfaces/tool-command';
-import { RANGE } from '../tools-constants';
 
 @Injectable({
     providedIn: 'root',
@@ -39,32 +39,18 @@ export class MagnetismService extends Tool {
             .set(SelectionStatus.CENTER, { x: 1 / 2, y: 1 / 2 });
     }
 
-    // onMouseMove(event: MouseEvent): void {
-    //     console.log('valeur mouseDown ' + this.mouseDown);
-    //     if (this.mouseDown) {
-    //         if (this.verifyInRangeCross(this.getPositionFromMouse(event))) {
-    //             console.log('rentrer');
-    //             // this.updateDragPositionMagnetism(this.getPositionFromMouse(event));
-    //             this.findNearestLineLeft(); // coller en x
-    //             this.findNearestLineTop(); // coller en y
-    //         }
-    //     }
-    // }
-
     onMouseUp(event: MouseEvent): void {
         this.isMagnetismOnGoing = false;
         this.mouseDown = false;
     }
 
     startKeys(): void {
-        console.log('Magnetism ON!');
         this.setStatus(SelectionStatus.TOP_LEFT_BOX);
         this.gridSize = this.drawingService.gridSize;
         this.updatePosition(this.gridSize);
     }
 
     verifyInRangeCross(mouseCoord: Vec2): boolean {
-        console.log('test');
         return Math.abs(mouseCoord.x - this.findNearestLineLeft()) <= RANGE && Math.abs(mouseCoord.y - this.findNearestLineTop()) <= RANGE;
     }
 

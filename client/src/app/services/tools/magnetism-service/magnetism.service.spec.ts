@@ -4,7 +4,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MagnetismService } from '@app/services/tools/magnetism-service/magnetism.service';
 import { SelectionStatus } from '@app/utils/enums/selection-resizer-status';
 
-fdescribe('MagnetismServiceService', () => {
+describe('MagnetismServiceService', () => {
     let service: MagnetismService;
     let drawingService: DrawingService;
     let canvasTestHelper: CanvasTestHelper;
@@ -224,20 +224,20 @@ fdescribe('MagnetismServiceService', () => {
     });
 
     // À revoir
-    it(' updateDragPositionMagnetism should set the selectedArea canvas with the proper dimension ', () => {
-        // tslint:disable-next-line:no-any
+    // it(' updateDragPositionMagnetism should set the selectedArea canvas with the proper dimension ', () => {
+    //     // tslint:disable-next-line:no-any
 
-        const coord = { x: 80, y: 80 };
+    //     const coord = { x: 80, y: 80 };
 
-        // tslint:disable-next-line:no-any
-        // const updateDragPositionMagnetismSpy = spyOn<any>(service, 'updateDragPositionMagnetism').withArgs(coord);
+    //     // tslint:disable-next-line:no-any
+    //     // const updateDragPositionMagnetismSpy = spyOn<any>(service, 'updateDragPositionMagnetism').withArgs(coord);
 
-        // drawingService.selectedAreaCanvas.style.top ;
-        // drawingService.selectedAreaCanvas.style.left;
+    //     // drawingService.selectedAreaCanvas.style.top ;
+    //     // drawingService.selectedAreaCanvas.style.left;
 
-        service.updateDragPositionMagnetism(coord);
-        service.setStatus(SelectionStatus.TOP_LEFT_BOX);
-    });
+    //     service.updateDragPositionMagnetism(coord);
+    //     service.setStatus(SelectionStatus.TOP_LEFT_BOX);
+    // });
 
     it(' verifyInRangeCross should return false when the selected resizer is not near an intersection on the grid ', () => {
         // tslint:disable-next-line:no-any

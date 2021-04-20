@@ -9,6 +9,7 @@ describe('GridService', () => {
     let canvasTestHelper: CanvasTestHelper;
 
     beforeEach(() => {
+        jasmine.createSpyObj('MagnetismService', ['updatePosition']);
         canvasTestHelper = new CanvasTestHelper();
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
         TestBed.configureTestingModule({

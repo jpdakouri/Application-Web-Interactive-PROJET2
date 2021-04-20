@@ -63,7 +63,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         selectionResizerService: SelectionResizerService,
         toolManagerService: ToolManagerService,
         canvasResizerService: CanvasResizerService,
-        magnetismService: MagnetismService,
+        private magnetismService: MagnetismService,
         selectionEllipseService: SelectionEllipseService,
         selectionPolygonalLassoService: SelectionPolygonalLassoService,
         selectionRectangleService: SelectionRectangleService,
@@ -194,9 +194,6 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             this.canvasResizerService.onMouseMove(event);
         } else if (this.selectionResizerService.isResizing()) {
             this.selectionResizerService.onMouseMove(event);
-            // La condition bool est a revoir ici pour activier le mouseMove
-            // } else if (this.magnetismService.isMagnetismOnGoing) {
-            //     this.magnetismService.onMouseMove(event);
         } else {
             this.currentTool.onMouseMove(event);
             this.eraserActive = this.toolManagerService.eraserActive() || false;

@@ -11,6 +11,7 @@ import { SaveDrawingService } from '@app/services/save-drawing/save-drawing.serv
 import { SIDEBAR_WIDTH } from '@app/services/services-constants';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { PencilService } from '@app/services/tools/pencil-service/pencil.service';
+import { SelectionPolygonalLassoService } from '@app/services/tools/selection-polygonal-lasso/selection-polygonal-lasso.service';
 import { SelectionResizerService } from '@app/services/tools/selection-resizer-service/selection-resizer.service';
 import { TextService } from '@app/services/tools/text-service/text.service';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
@@ -172,6 +173,9 @@ describe('DrawingComponent', () => {
     });
 
     it("should call selectionResizer's #onMouseDown when resizing a selection", () => {
+        const selectLassoSpy = TestBed.inject(SelectionPolygonalLassoService);
+        spyOn(component.toolManagerService, 'getCurrentSelectionTool').and.returnValue(selectLassoSpy);
+        selectLassoSpy.isMagnetismOff = true;
         component.onSelectionBoxClick(SelectionStatus.TOP_LEFT_BOX);
         const event = {} as MouseEvent;
         const selectionResizerSpy = TestBed.inject(SelectionResizerService);

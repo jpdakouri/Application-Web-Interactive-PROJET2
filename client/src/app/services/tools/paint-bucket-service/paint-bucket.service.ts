@@ -78,7 +78,7 @@ export class PaintBucketService extends Tool {
     bfs(isContiguous: boolean): void {
         const width = this.canvas.width;
         const height = this.canvas.height;
-        const x = this.mouseDownCoord.x;
+        const x = Math.round(this.mouseDownCoord.x);
         const y = this.mouseDownCoord.y;
         let visited: number[][];
         visited = new Array<number[]>();

@@ -201,7 +201,6 @@ export abstract class SelectionService extends Tool {
             this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
             this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
         } else {
-            console.log('draggin');
             this.magnetismService.updateDragPositionMagnetism(mouseCoord);
         }
     }
@@ -223,7 +222,6 @@ export abstract class SelectionService extends Tool {
         SelectionService.isSelectionStarted = false;
         SelectionService.selectionActive = false;
         this.topLeftCorner = { x: 0, y: 0 };
-        console.log('Magnetism OFF!');
         this.isMagnetismOff = true;
     }
 

@@ -14,7 +14,7 @@ export class GridService {
     gridOpacity: string;
     showGrid: boolean;
 
-    constructor(private drawingService: DrawingService) {
+    constructor(private drawingService: DrawingService, private magnetismService: MagnetismService) {
         this.minGridSize = MIN_GRID_SIZE;
         this.maxGridSize = MAX_GRID_SIZE;
         this.minOpacity = MIN_GRID_OPACITY;
