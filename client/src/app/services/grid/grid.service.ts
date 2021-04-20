@@ -16,7 +16,7 @@ export class GridService {
     gridOpacity: string;
     showGrid: boolean;
 
-    constructor(private drawingService: DrawingService) {
+    constructor(private drawingService: DrawingService, magnetismService: MagnetismService) {
         this.minGridSize = MIN_GRID_SIZE;
         this.maxGridSize = MAX_GRID_SIZE;
         this.minOpacity = MIN_GRID_OPACITY;
@@ -24,11 +24,12 @@ export class GridService {
         this.gridSize = this.minGridSize;
         this.gridOpacity = this.maxOpacity.toString();
         this.showGrid = false;
+        this.magnetismService = magnetismService;
     }
 
     newGrid(newSize: number | null): void {
         this.drawingService.clearCanvas(this.drawingService.gridCtx);
-        this.drawingService.gridSize = newSize ? newSize : this.drawingService.gridSize;
+        this.gridSize = newSize ? newSize : this.drawingService.gridSize;
         const canvaHeight = this.drawingService.baseCtx.canvas.height;
         const canvasWidth = this.drawingService.baseCtx.canvas.width;
         this.drawingService.gridCtx.beginPath();
@@ -61,9 +62,5 @@ export class GridService {
             (increaseSize && this.drawingService.gridSize + GRID_SIZE_CHANGE_VALUE <= this.maxGridSize) ||
             (!increaseSize && this.drawingService.gridSize - GRID_SIZE_CHANGE_VALUE >= this.minGridSize)
         );
-    }
-
-    getGridSize(): number {
-        return this.drawingService.gridSize;
     }
 }

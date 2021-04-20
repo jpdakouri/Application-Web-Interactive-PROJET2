@@ -1,6 +1,7 @@
 import { EventEmitter, Injectable, Output } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingData } from '@common/communication/drawing-data';
+import { Observable } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -15,6 +16,14 @@ export class DrawingService {
     selectedAreaCanvas: HTMLCanvasElement;
     @Output() newDrawing: EventEmitter<Vec2> = new EventEmitter();
     @Output() createNewDrawingEmitter: EventEmitter<boolean> = new EventEmitter();
+    gridSizeChanger: Observable<number> = new Observable((observer) => {
+        observer.next(this.gridSize);
+        return {
+            unsubscribe(): void {
+                observer.error('gridSize not available');
+            },
+        };
+    });
 
     saveCanvas(): void {
         const value = [];

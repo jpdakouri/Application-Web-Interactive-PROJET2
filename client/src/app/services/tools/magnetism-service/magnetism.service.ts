@@ -57,13 +57,14 @@ export class MagnetismService extends Tool {
     }
 
     startKeys(): void {
+        this.drawingService.gridSizeChanger.subscribe((size: number) => {
+            this.gridSize = size;
+        });
         this.setStatus(SelectionStatus.TOP_LEFT_BOX);
-        this.gridSize = this.drawingService.gridSize;
         this.updatePosition(this.gridSize);
     }
 
     verifyInRangeCross(mouseCoord: Vec2): boolean {
-        console.log('test');
         return Math.abs(mouseCoord.x - this.findNearestLineLeft()) <= RANGE && Math.abs(mouseCoord.y - this.findNearestLineTop()) <= RANGE;
     }
 
