@@ -63,5 +63,6 @@ export class UndoRedoService {
         this.commands.forEach((command) => {
             command.tool.executeCommand(command);
         });
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 }
