@@ -12,7 +12,6 @@ export enum TextFont {
     Helvetica = 'Helvetica',
     Impact = 'Impact',
     LucidaConsole = 'Lucida Console',
-    Palatino = 'Palatino',
     SegoeUI = 'Segoe UI',
     Tahoma = 'Tahoma',
     TimesNewRoman = 'Times New Roman',

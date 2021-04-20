@@ -4,9 +4,17 @@ import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ALPHA_POS, BLUE_POS, GREEN_POS, MAX_BYTE_VALUE, RED_POS } from '@app/services/services-constants';
+import { MagnetismService } from '@app/services/tools/magnetism-service/magnetism.service';
 import { PIXELS_ARROW_STEPS } from '@app/services/tools/tools-constants';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
+import { SelectionStatus } from '@app/utils/enums/selection-resizer-status';
 
+export enum controlPoints {
+    topLeft = 'topLeft',
+    topRight = 'topRight',
+    bottomLeft = 'bottomLeft',
+    bottomRight = 'bottomRight',
+}
 @Injectable({
     providedIn: 'root',
 })
@@ -18,6 +26,9 @@ export abstract class SelectionService extends Tool {
     firstGridClip: Vec2;
     finalGridClip: Vec2;
     offset: Vec2;
+    currentCornerSelected: controlPoints;
+
+    isMagnetismOff: boolean = true;
     shiftDown: boolean;
     dragActive: boolean;
     private activeDistance: Vec2;
@@ -26,12 +37,11 @@ export abstract class SelectionService extends Tool {
     height: number;
     width: number;
 
-    currentColorService: CurrentColorService;
-    constructor(drawingService: DrawingService, currentColorService: CurrentColorService) {
+    constructor(drawingService: DrawingService, public currentColorService: CurrentColorService, public magnetismService: MagnetismService) {
         super(drawingService, currentColorService);
-        this.currentColorService = currentColorService;
         this.topLeftCorner = { x: 0, y: 0 };
         this.offset = { x: 0, y: 0 };
+        this.currentCornerSelected = controlPoints.bottomLeft;
         SelectionService.isSelectionStarted = SelectionService.selectionActive = this.dragActive = false;
         this.buffer = true;
         this.drawingService.selectedAreaCtx = this.drawingService.baseCtx;
@@ -108,26 +118,56 @@ export abstract class SelectionService extends Tool {
 
     defaultOnKeyDown(event: KeyboardEvent): void {
         event.preventDefault();
-        if (event.key === KeyboardButtons.Escape) {
-            this.cancelSelection();
+        if (event.key === KeyboardButtons.Escape) this.cancelSelection();
+        if (event.key === KeyboardButtons.Magnetism && SelectionService.selectionActive) {
+            this.magnetismService.startKeys();
+            this.isMagnetismOff = !this.isMagnetismOff;
         }
+        // Fix la position du selectedAreaCtx
         if (SelectionService.isSelectionStarted) {
-            if (event.key === KeyboardButtons.Left) {
-                this.activeDistance.x = -PIXELS_ARROW_STEPS;
+            if (this.isMagnetismOff) {
+                if (event.key === KeyboardButtons.Left) {
+                    this.activeDistance.x = -PIXELS_ARROW_STEPS;
+                }
+                if (event.key === KeyboardButtons.Down) {
+                    this.activeDistance.y = PIXELS_ARROW_STEPS;
+                }
+                if (event.key === KeyboardButtons.Up) {
+                    this.activeDistance.y = -PIXELS_ARROW_STEPS;
+                }
+                if (event.key === KeyboardButtons.Right) {
+                    this.activeDistance.x = PIXELS_ARROW_STEPS;
+                }
+                this.firstGrid.x = this.topLeftCorner.x += this.activeDistance.x;
+                this.firstGrid.y = this.topLeftCorner.y += this.activeDistance.y;
+                this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
+                this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
+            } else {
+                switch (event.key) {
+                    case KeyboardButtons.Up: {
+                        this.magnetismService.setStatus(SelectionStatus.TOP_MIDDLE_BOX);
+                        this.magnetismService.findNearestLineTop();
+                        this.magnetismService.setStatus(SelectionStatus.TOP_LEFT_BOX);
+                        break;
+                    }
+                    case KeyboardButtons.Down: {
+                        this.magnetismService.setStatus(SelectionStatus.BOTTOM_MIDDLE_BOX);
+                        this.magnetismService.findNearestLineDown();
+                        this.magnetismService.setStatus(SelectionStatus.TOP_LEFT_BOX);
+                        break;
+                    }
+                    case KeyboardButtons.Right: {
+                        this.magnetismService.setStatus(SelectionStatus.MIDDLE_RIGHT_BOX);
+                        this.magnetismService.findNearestLineRight();
+                        this.magnetismService.setStatus(SelectionStatus.TOP_LEFT_BOX);
+                        break;
+                    }
+                    case KeyboardButtons.Left: {
+                        this.magnetismService.findNearestLineLeft();
+                        break;
+                    }
+                }
             }
-            if (event.key === KeyboardButtons.Down) {
-                this.activeDistance.y = PIXELS_ARROW_STEPS;
-            }
-            if (event.key === KeyboardButtons.Up) {
-                this.activeDistance.y = -PIXELS_ARROW_STEPS;
-            }
-            if (event.key === KeyboardButtons.Right) {
-                this.activeDistance.x = PIXELS_ARROW_STEPS;
-            }
-            this.firstGrid.x = this.topLeftCorner.x += this.activeDistance.x;
-            this.firstGrid.y = this.topLeftCorner.y += this.activeDistance.y;
-            this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
-            this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
             this.moveBorderPreview(this.activeDistance);
         }
     }
@@ -150,15 +190,19 @@ export abstract class SelectionService extends Tool {
     }
 
     updateDragPosition(mouseCoord: Vec2): void {
-        const currentCoord = { ...mouseCoord };
-        this.topLeftCorner.x = Math.round(currentCoord.x + this.offset.x);
-        this.topLeftCorner.y = Math.round(currentCoord.y + this.offset.y);
-        this.moveBorderPreview({
-            x: this.topLeftCorner.x - 1 - this.drawingService.selectedAreaCtx.canvas.offsetLeft,
-            y: this.topLeftCorner.y - 1 - this.drawingService.selectedAreaCtx.canvas.offsetTop,
-        });
-        this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
-        this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
+        if (this.isMagnetismOff) {
+            const currentCoord = { ...mouseCoord };
+            this.topLeftCorner.x = Math.round(currentCoord.x + this.offset.x);
+            this.topLeftCorner.y = Math.round(currentCoord.y + this.offset.y);
+            this.moveBorderPreview({
+                x: this.topLeftCorner.x - 1 - this.drawingService.selectedAreaCtx.canvas.offsetLeft,
+                y: this.topLeftCorner.y - 1 - this.drawingService.selectedAreaCtx.canvas.offsetTop,
+            });
+            this.drawingService.selectedAreaCtx.canvas.style.top = this.topLeftCorner.y - 1 + 'px';
+            this.drawingService.selectedAreaCtx.canvas.style.left = this.topLeftCorner.x - 1 + 'px';
+        } else {
+            this.magnetismService.updateDragPositionMagnetism(mouseCoord);
+        }
     }
 
     isClickIn(firstGrid: Vec2): boolean {
@@ -178,6 +222,7 @@ export abstract class SelectionService extends Tool {
         SelectionService.isSelectionStarted = false;
         SelectionService.selectionActive = false;
         this.topLeftCorner = { x: 0, y: 0 };
+        this.isMagnetismOff = true;
     }
 
     resetFirstGrid(): void {

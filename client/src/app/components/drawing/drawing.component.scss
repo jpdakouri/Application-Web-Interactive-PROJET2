@@ -39,6 +39,43 @@ canvas {
     background-color: black;
 }
 
+.resizer.selection-box-middle-right {
+    cursor: ew-resize;
+}
+
+.resizer.selection-box-bottom-right {
+    cursor: nwse-resize;
+}
+
+.resizer.selection-box-middle-bottom {
+    cursor: ns-resize;
+}
+
+.resizer.selection-box-top-left {
+    cursor: nwse-resize;
+}
+
+.resizer.selection-box-top-middle {
+    cursor: ns-resize;
+}
+
+.resizer.selection-box-top-right {
+    cursor: nesw-resize;
+}
+
+.resizer.selection-box-middle-left {
+    cursor: ew-resize;
+}
+
+.resizer.selection-box-bottom-left {
+    cursor: nesw-resize;
+}
+
+.resizer.selection-box-center {
+    cursor: move;
+    background-color: transparent;
+}
+
 .resizer.middle-right {
     cursor: ew-resize;
 }

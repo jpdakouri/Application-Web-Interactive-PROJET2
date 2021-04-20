@@ -3,6 +3,7 @@ import { SelectionCommand } from '@app/classes/tool-commands/selection-command';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MagnetismService } from '@app/services/tools/magnetism-service/magnetism.service';
 import { MousePositionHandlerService } from '@app/services/tools/mouse-position-handler-service/mouse-position-handler.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection.service';
 import { LINE_DASH } from '@app/services/tools/tools-constants';
@@ -15,20 +16,23 @@ import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
 export class SelectionEllipseService extends SelectionService {
     currentColorService: CurrentColorService;
     mousePositionHandler: MousePositionHandlerService;
+    magnetismService: MagnetismService;
 
     constructor(
         drawingService: DrawingService,
         currentColorService: CurrentColorService,
         mousePositionHandler: MousePositionHandlerService,
         private undoRedo: UndoRedoService,
+        magnetismeService: MagnetismService,
     ) {
-        super(drawingService, currentColorService);
+        super(drawingService, currentColorService, magnetismeService);
         this.currentColorService = currentColorService;
         this.topLeftCorner = { x: 0, y: 0 };
         this.offset = { x: 0, y: 0 };
         SelectionService.isSelectionStarted = this.dragActive = false;
         this.drawingService.selectedAreaCtx = this.drawingService.baseCtx;
         this.mousePositionHandler = mousePositionHandler;
+        this.magnetismService = magnetismeService;
     }
 
     registerUndo(imageData: ImageData): void {

@@ -22,6 +22,7 @@ module.exports = function (config) {
             fixWebpackSourcePaths: true,
             combineBrowserReports: true,
         },
+        files: [{ pattern: 'src/assets/**', type: 'html', watched: true, included: true, served: true }],
         reporters: ['progress', 'kjhtml'],
         port: 9876,
         colors: true,

@@ -7,6 +7,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { GridService } from '@app/services/grid/grid.service';
 import { SaveDrawingService } from '@app/services/save-drawing/save-drawing.service';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
+import { MagnetismService } from '@app/services/tools/magnetism-service/magnetism.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-ellipse-service/selection-ellipse.service';
 import { SelectionPolygonalLassoService } from '@app/services/tools/selection-polygonal-lasso/selection-polygonal-lasso.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
@@ -62,6 +63,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         selectionResizerService: SelectionResizerService,
         toolManagerService: ToolManagerService,
         canvasResizerService: CanvasResizerService,
+        private magnetismService: MagnetismService,
         selectionEllipseService: SelectionEllipseService,
         selectionPolygonalLassoService: SelectionPolygonalLassoService,
         selectionRectangleService: SelectionRectangleService,
@@ -69,6 +71,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     ) {
         this.toolManagerService = toolManagerService;
         this.canvasResizerService = canvasResizerService;
+        this.magnetismService = magnetismService;
         this.selectionResizerService = selectionResizerService;
         this.selectionEllipseService = selectionEllipseService;
         this.selectionRectangleService = selectionRectangleService;
@@ -114,8 +117,6 @@ export class DrawingComponent implements AfterViewInit, OnInit {
         this.drawingService.canvas.style.backgroundColor = DEFAULT_WHITE;
         this.canvasResizerService.canvasPreviewWidth = this.canvasSize.x;
         this.canvasResizerService.canvasPreviewHeight = this.canvasSize.y;
-        // this.drawingService.restoreCanvas();
-        // this.drawingService.saveCanvas();
         this.undoRedo.saveInitialState();
         setTimeout(() => {
             this.selectionEllipseService.height = this.drawingService.canvas.height;
@@ -204,7 +205,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
     onMouseDown(event: MouseEvent): void {
         if (this.canvasResizerService.isResizing()) {
             this.canvasResizerService.onMouseDown(event);
-        } else if (this.selectionResizerService.isResizing()) {
+        } else if (this.selectionResizerService.isResizing() && this.toolManagerService.getCurrentSelectionTool()?.isMagnetismOff) {
             this.selectionResizerService.updateValues(this.toolManagerService.getCurrentSelectionTool());
             this.selectionResizerService.onMouseDown(event);
         } else {
@@ -231,6 +232,8 @@ export class DrawingComponent implements AfterViewInit, OnInit {
             this.selectionResizerService.updateValues(this.toolManagerService.getCurrentSelectionTool());
             this.selectionResizerService.onMouseUp(event);
             this.selectionResizerService.setStatus(SelectionStatus.OFF);
+        } else if (this.magnetismService.isMagnetismOnGoing) {
+            this.magnetismService.onMouseUp(event);
         } else {
             this.currentTool.onMouseUp(event);
         }
@@ -305,6 +308,7 @@ export class DrawingComponent implements AfterViewInit, OnInit {
 
     onSelectionBoxClick(status: SelectionStatus): void {
         this.selectionResizerService.setStatus(status);
+        this.magnetismService.setStatus(status);
     }
 
     emitEditorMinWidth(): void {

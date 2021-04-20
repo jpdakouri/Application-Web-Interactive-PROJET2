@@ -57,7 +57,6 @@ export class MainPageComponent {
         this.drawingService.continueDrawing();
     }
     testCondition(): boolean {
-        console.log('localStorage ' + (this.getDataFromLocalStorage() !== null));
         return this.getDataFromLocalStorage() !== null;
     }
 }

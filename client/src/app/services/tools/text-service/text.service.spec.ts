@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { TextCommand } from '@app/classes/tool-commands/text-command';
 import { Vec2 } from '@app/classes/vec2';
@@ -75,7 +74,7 @@ describe('TextService', () => {
         const fillTextMultiLineSpy = spyOn(service, 'fillTextMultiLine').and.callThrough();
         const mockText = 'hello word';
         // tslint:disable-next-line: no-magic-numbers
-        const command = new TextCommand(service, 'rgba(0,0,0,1)', mockText, ' ', TextFont.Arial, TextAlign.Start, 1, position, 30);
+        const command = new TextCommand(service, 'rgba(0,0,0,1)', mockText, ' ', TextFont.Arial, TextAlign.Start, position, 30);
         service.text = mockText;
         service.textBoxPosition = position;
         service.textAlign = TextAlign.Start;
@@ -190,7 +189,7 @@ describe('TextService', () => {
         service.fontFace = TextFont.Georgia;
         service.textAlign = TextAlign.Center;
         service.fontSize = 2;
-        const command = new TextCommand(service, '', text, '', TextFont.Georgia, TextAlign.Center, 1, position, 2);
+        const command = new TextCommand(service, '', text, '', TextFont.Georgia, TextAlign.Center, position, 2);
 
         service.fillTextMultiLine(drawingServiceSpy.baseCtx, command);
 
@@ -224,7 +223,7 @@ describe('TextService', () => {
     });
 
     it('executeCommand calls fillTextMultiLine with provided command', () => {
-        const command = new TextCommand(service, '', 'a', '', TextFont.Arial, TextAlign.Start, 1, { x: 0, y: 0 }, 1);
+        const command = new TextCommand(service, '', 'a', '', TextFont.Arial, TextAlign.Start, { x: 0, y: 0 }, 1);
         spyOn(service, 'fillTextMultiLine');
         service.executeCommand(command);
         expect(service.fillTextMultiLine).toHaveBeenCalledWith(drawingServiceSpy.baseCtx, command);

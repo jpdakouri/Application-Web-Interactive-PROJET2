@@ -9,6 +9,7 @@ describe('GridService', () => {
     let canvasTestHelper: CanvasTestHelper;
 
     beforeEach(() => {
+        jasmine.createSpyObj('MagnetismService', ['updatePosition']);
         canvasTestHelper = new CanvasTestHelper();
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
         TestBed.configureTestingModule({
@@ -28,11 +29,12 @@ describe('GridService', () => {
     it('newGrid should call stroke on the gridCtx', () => {
         drawServiceSpy.gridCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         drawServiceSpy.baseCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
-        const initialSize = service.gridSize;
+        // tslint:disable:no-string-literal
+        const initialSize = service['drawingService'].gridSize;
         service.newGrid(null);
-        expect(service.gridSize).toEqual(initialSize);
+        expect(service['drawingService'].gridSize).toEqual(initialSize);
         service.newGrid(55);
-        expect(service.gridSize).not.toEqual(initialSize);
+        expect(service['drawingService'].gridSize).not.toEqual(initialSize);
     });
 
     it('clear should reset the opacity', () => {
@@ -51,22 +53,28 @@ describe('GridService', () => {
     });
 
     it('gridSizeCanModify should return true if the size increase is valide', () => {
-        service.gridSize = 296;
+        service['drawingService'].gridSize = 296;
         let retValue = service.gridSizeCanModify(true);
         expect(retValue).toEqual(false);
 
-        service.gridSize = 294;
+        service['drawingService'].gridSize = 294;
         retValue = service.gridSizeCanModify(true);
         expect(retValue).toEqual(true);
     });
 
     it('gridSizeCanModify should return true if the size decrease is valide', () => {
-        service.gridSize = 14;
+        service['drawingService'].gridSize = 14;
         let retValue = service.gridSizeCanModify(false);
         expect(retValue).toEqual(false);
 
-        service.gridSize = 55;
+        service['drawingService'].gridSize = 55;
         retValue = service.gridSizeCanModify(false);
         expect(retValue).toEqual(true);
+    });
+
+    it('getGridSize should return  grid size', () => {
+        service['drawingService'].gridSize = 50;
+        const ret = service.getGridSize();
+        expect(ret).toEqual(50);
     });
 });

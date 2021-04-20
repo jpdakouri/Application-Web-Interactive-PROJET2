@@ -113,10 +113,10 @@ export class EditorComponent implements AfterViewInit {
             else this.gridService.clear();
         }
         if (event.key === KeyboardButtons.GridUp && this.gridService.gridSizeCanModify(true)) {
-            if (this.gridService.showGrid) this.gridService.newGrid((this.gridService.gridSize += GRID_SIZE_CHANGE_VALUE));
+            if (this.gridService.showGrid) this.gridService.newGrid((this.drawingService.gridSize += GRID_SIZE_CHANGE_VALUE));
         }
         if (event.key === KeyboardButtons.GridDown && this.gridService.gridSizeCanModify(false)) {
-            if (this.gridService.showGrid) this.gridService.newGrid((this.gridService.gridSize -= GRID_SIZE_CHANGE_VALUE));
+            if (this.gridService.showGrid) this.gridService.newGrid((this.drawingService.gridSize -= GRID_SIZE_CHANGE_VALUE));
         }
 
         if (event.key === KeyboardButtons.Delete) {

@@ -70,7 +70,6 @@ export class TextService extends Tool {
             this.getCurrentStyle(),
             this.fontFace,
             this.textAlign,
-            this.numberOfRows,
             { ...textFinalPosition },
             this.fontSize,
         );

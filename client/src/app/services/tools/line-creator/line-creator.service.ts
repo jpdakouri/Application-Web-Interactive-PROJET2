@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MagnetismService } from '@app/services/tools/magnetism-service/magnetism.service';
 import { SelectionService } from '@app/services/tools/selection-service/selection.service';
 import { DEFAULT_DOT_RADIUS, DEFAULT_MIN_THICKNESS, PIXEL_DISTANCE, SHIFT_ANGLE_45, SHIFT_ANGLE_HALF_45 } from '@app/services/tools/tools-constants';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
@@ -16,8 +17,8 @@ export abstract class LineCreatorService extends SelectionService {
     dotRadius?: number;
     showDots?: boolean;
 
-    constructor(drawingService: DrawingService, currentColorService: CurrentColorService) {
-        super(drawingService, currentColorService);
+    constructor(drawingService: DrawingService, currentColorService: CurrentColorService, magnetismService: MagnetismService) {
+        super(drawingService, currentColorService, magnetismService);
         this.dotRadius = DEFAULT_DOT_RADIUS;
         this.showDots = false;
         this.clearPath();

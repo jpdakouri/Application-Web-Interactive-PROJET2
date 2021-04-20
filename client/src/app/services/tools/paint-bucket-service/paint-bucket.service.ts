@@ -78,7 +78,7 @@ export class PaintBucketService extends Tool {
     bfs(isContiguous: boolean): void {
         const width = this.canvas.width;
         const height = this.canvas.height;
-        const x = this.mouseDownCoord.x;
+        const x = Math.round(this.mouseDownCoord.x);
         const y = this.mouseDownCoord.y;
         let visited: number[][];
         visited = new Array<number[]>();
@@ -172,7 +172,8 @@ export class PaintBucketService extends Tool {
             color.R < TRANSPARENT_THRESHOLD &&
             color.G < TRANSPARENT_THRESHOLD &&
             color.B < TRANSPARENT_THRESHOLD;
-        return color.A === 0 || condition;
+        // tslint:disable-next-line:no-magic-numbers
+        return color.A < 11 || condition;
     }
 
     getRGBAFromCoord(x: number, y: number): Color {

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MagnetismService } from '@app/services/tools/magnetism-service/magnetism.service';
 import { SelectionEllipseService } from '@app/services/tools/selection-ellipse-service/selection-ellipse.service';
 import { SelectionPolygonalLassoService } from '@app/services/tools/selection-polygonal-lasso/selection-polygonal-lasso.service';
 import { SelectionRectangleService } from '@app/services/tools/selection-rectangle-service/selection-rectangle.service';
@@ -25,8 +26,8 @@ export class SelectionResizerService extends SelectionService {
     private canvasWidth: number;
     private canvasHeight: number;
     private currentSelection: SelectionService;
-    constructor(drawingService: DrawingService, currentColorService: CurrentColorService) {
-        super(drawingService, currentColorService);
+    constructor(drawingService: DrawingService, currentColorService: CurrentColorService, public magnetismService: MagnetismService) {
+        super(drawingService, currentColorService, magnetismService);
         this.status = SelectionStatus.OFF;
         this.coords = { x: 0, y: 0 };
         this.initialBottomRightCorner = { x: 0, y: 0 };

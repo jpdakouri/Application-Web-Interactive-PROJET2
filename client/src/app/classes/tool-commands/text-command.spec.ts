@@ -6,6 +6,6 @@ import { TextCommand } from './text-command';
 
 describe('TextCommand', () => {
     it('should create an instance', () => {
-        expect(new TextCommand(TestBed.inject(TextService), '', '', '', TextFont.Arial, TextAlign.Start, 1, { x: 0, y: 0 }, 1)).toBeTruthy();
+        expect(new TextCommand(TestBed.inject(TextService), '', '', '', TextFont.Arial, TextAlign.Start, { x: 0, y: 0 }, 1)).toBeTruthy();
     });
 });

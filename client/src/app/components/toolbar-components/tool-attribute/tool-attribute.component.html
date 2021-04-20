@@ -243,9 +243,9 @@
             <small class="small-text">Afficher une grille à la zone de dessin</small>
         </mat-checkbox>
         <div *ngIf="gridService.showGrid">
-            <h3 class="attribute-sub-title">Taille des grilles: {{ gridService.gridSize }} pixels</h3>
+            <h3 class="attribute-sub-title">Taille des grilles: {{ gridService.getGridSize() }} pixels</h3>
             <mat-slider
-                [value]="gridService.gridSize"
+                [value]="gridService.getGridSize()"
                 #heightSlider
                 color="primary"
                 [min]="gridService.minGridSize"
