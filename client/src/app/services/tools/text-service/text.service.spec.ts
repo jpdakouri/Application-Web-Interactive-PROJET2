@@ -199,12 +199,28 @@ describe('TextService', () => {
         expect(drawingServiceSpy.baseCtx.textAlign).toEqual(service.textAlign);
     });
 
+    it('#calculateLongestLineWidth should be able to correctly calculate max line length in a text-service ', () => {
+        let text = 'hello word\nfrom\nteam 306';
+        let expectedLongestLineLength = service['calculateTextWidth'](drawingServiceSpy.baseCtx, text.split('\n')[0]);
+        expect(service['calculateLongestLineWidth'](text)).toEqual(expectedLongestLineLength);
+
+        text = 'hello \n word \n from team 306';
+        expectedLongestLineLength = service['calculateTextWidth'](drawingServiceSpy.baseCtx, text.split('\n')[2]);
+        expect(service['calculateLongestLineWidth'](text)).toEqual(expectedLongestLineLength);
+    });
+
     it('#calculateTextBoxWidth should return the length of longest line of text', () => {
-        service.text = 'a\naa';
-        // Different browsers give a different width
-        const expectWidthLowerBound = 25;
-        const expectWidthUpperBound = 45;
-        expect(service.calculateTextBoxWidth() > expectWidthLowerBound && service.calculateTextBoxWidth() < expectWidthUpperBound).toBeTrue();
+        const text = 'a\naa';
+        service.text = text;
+        const expectedTextBoxWidth = service['calculateLongestLineWidth'](text);
+        const calculatedTextBoxWidth = service['calculateTextBoxWidth']();
+        expect(calculatedTextBoxWidth).toEqual(expectedTextBoxWidth);
+    });
+
+    it('#calculateMaxLineLength should first line if maxLine is first line in the text-service', () => {
+        const text = 'hello word\nfrom\nteam 306';
+        const expectedLongestLineLength = service['calculateTextWidth'](drawingServiceSpy.baseCtx, text.split('\n')[0]);
+        expect(service['calculateLongestLineWidth'](text)).toEqual(expectedLongestLineLength);
     });
 
     it('executeCommand calls fillTextMultiLine with provided command', () => {
