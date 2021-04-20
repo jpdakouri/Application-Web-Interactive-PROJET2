@@ -187,15 +187,15 @@ describe('TextService', () => {
         const fillTextSpy = spyOn(drawingServiceSpy.baseCtx, 'fillText').and.callThrough();
         const text = 'hello word from\nteam 306';
         const position = { x: 100, y: 100 } as Vec2;
-        service.fontFace = TextFont.BrushScriptMT;
+        service.fontFace = TextFont.Georgia;
         service.textAlign = TextAlign.Center;
         service.fontSize = 2;
-        const command = new TextCommand(service, '', text, '', TextFont.BrushScriptMT, TextAlign.Center, 1, position, 2);
+        const command = new TextCommand(service, '', text, '', TextFont.Georgia, TextAlign.Center, 1, position, 2);
 
         service.fillTextMultiLine(drawingServiceSpy.baseCtx, command);
 
         expect(fillTextSpy).toHaveBeenCalledTimes(2);
-        expect(drawingServiceSpy.baseCtx.font).toEqual('2px "Brush Script MT"');
+        expect(drawingServiceSpy.baseCtx.font).toEqual('2px Georgia');
         expect(drawingServiceSpy.baseCtx.textAlign).toEqual(service.textAlign);
     });
 
