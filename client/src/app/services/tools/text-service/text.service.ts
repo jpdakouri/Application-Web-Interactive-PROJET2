@@ -142,13 +142,13 @@ export class TextService extends Tool {
         return longestLineWidth;
     }
 
-    calculateTextWidth(context: CanvasRenderingContext2D, text: string): number {
+    private calculateTextWidth(context: CanvasRenderingContext2D, text: string): number {
         context.font = ` ${this.getCurrentStyle()} ${this.fontSize}px ${this.fontFace}`;
         context.textAlign = this.textAlign;
         return context.measureText(text).width;
     }
 
-    getCurrentStyle(): string {
+    private getCurrentStyle(): string {
         const bold = this.getSingleStyle('bold');
         const italic = this.getSingleStyle('italic');
 

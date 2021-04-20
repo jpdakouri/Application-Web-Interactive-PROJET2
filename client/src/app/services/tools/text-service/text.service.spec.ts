@@ -142,37 +142,12 @@ describe('TextService', () => {
         expect(service['splitTextInToLines'](text)).toEqual(expectedLines);
     });
 
-    it('#calculateLongestLineWidth should be able to correctly calculate max line length in a text-service ', () => {
-        let text = 'hello word\nfrom\nteam 306';
-        let expectedLongestLineLength = service.calculateTextWidth(drawingServiceSpy.baseCtx, text.split('\n')[0]);
-        expect(service['calculateLongestLineWidth'](text)).toEqual(expectedLongestLineLength);
-
-        text = 'hello \n word \n from team 306';
-        expectedLongestLineLength = service.calculateTextWidth(drawingServiceSpy.baseCtx, text.split('\n')[2]);
-        expect(service['calculateLongestLineWidth'](text)).toEqual(expectedLongestLineLength);
-    });
-
-    it('#calculateMaxLineLength should first line if maxLine is first line in the text-service', () => {
-        const text = 'hello word\nfrom\nteam 306';
-        const expectedLongestLineLength = service.calculateTextWidth(drawingServiceSpy.baseCtx, text.split('\n')[0]);
-        expect(service['calculateLongestLineWidth'](text)).toEqual(expectedLongestLineLength);
-    });
-
     it('#getSingleStyle should correctly get a single style from textStyles attribute', () => {
         service.textStyles = ['bold', 'italic'];
 
         expect(service.getSingleStyle('bold')).toEqual('bold');
         expect(service.getSingleStyle('')).not.toEqual('bold');
         expect(service.getSingleStyle('italic')).toEqual('italic');
-    });
-
-    it('#getCurrentStyle should correctly get current text-service style', () => {
-        service.textStyles = ['bold', 'italic'];
-        const expectedStyle = service.getCurrentStyle();
-        const getSingleStyleSpy = spyOn(service, 'getSingleStyle').and.callThrough();
-
-        expect(service.getCurrentStyle()).toEqual(expectedStyle);
-        expect(getSingleStyleSpy).toHaveBeenCalledTimes(2);
     });
 
     it('#onMouseDwon should draw text-service on canvas if mouse click is out of canvas', () => {
@@ -224,10 +199,10 @@ describe('TextService', () => {
         expect(drawingServiceSpy.baseCtx.textAlign).toEqual(service.textAlign);
     });
 
-    it('#calculateTextBoxWidth should call #calculateLongestLineWidth with text-service attribute value', () => {
-        spyOn<any>(service, 'calculateLongestLineWidth').and.stub();
-        service.calculateTextBoxWidth();
-        expect(service['calculateLongestLineWidth']).toHaveBeenCalled();
+    it('#calculateTextBoxWidth should return the length of longuest line of text', () => {
+        service.text = 'a\naa';
+        const expectWidth = 33;
+        expect(Math.round(service.calculateTextBoxWidth())).toBe(expectWidth);
     });
 
     it('executeCommand calls fillTextMultiLine with provided command', () => {
