@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
+import { TextCommand } from '@app/classes/tool-commands/text-command';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { KeyboardButtons } from '@app/utils/enums/keyboard-button-pressed';
@@ -73,12 +74,13 @@ describe('TextService', () => {
         const position = { x: 100, y: 100 } as Vec2;
         const fillTextMultiLineSpy = spyOn(service, 'fillTextMultiLine').and.callThrough();
         const mockText = 'hello word';
+        const command = new TextCommand(service, '', mockText, '', TextFont.Arial, TextAlign.Start, 1, position, 1);
         service.text = mockText;
         service.textBoxPosition = position;
         service.textAlign = TextAlign.Start;
 
         service.drawStyledTextOnCanvas();
-        expect(fillTextMultiLineSpy).toHaveBeenCalledWith(drawingServiceSpy.baseCtx, mockText, position);
+        expect(fillTextMultiLineSpy).toHaveBeenCalledWith(drawingServiceSpy.baseCtx, command);
         expect(service.showTextBox).toBe(false);
     });
 
@@ -212,8 +214,9 @@ describe('TextService', () => {
         service.fontFace = TextFont.BrushScriptMT;
         service.textAlign = TextAlign.Center;
         service.fontSize = 2;
+        const command = new TextCommand(service, '', text, '', TextFont.Arial, TextAlign.Start, 1, position, 1);
 
-        service.fillTextMultiLine(drawingServiceSpy.baseCtx, text, position);
+        service.fillTextMultiLine(drawingServiceSpy.baseCtx, command);
 
         expect(fillTextSpy).toHaveBeenCalledTimes(2);
         expect(drawingServiceSpy.baseCtx.font).toEqual('2px "Brush Script MT"');

@@ -3,6 +3,7 @@ import { Tool } from '@app/classes/tool';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { TextService } from '@app/services/tools/text-service/text.service';
+import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
 import { Stamp } from '@app/utils/enums/stamp';
 import { ToolsNames } from '@app/utils/enums/tools-names';
@@ -10,7 +11,7 @@ import { ToolStub } from '@app/utils/tests-mocks/tool-stub';
 export class ToolManagerServiceMock {
     toolChangeEmitter: EventEmitter<ToolsNames> = new EventEmitter<ToolsNames>();
     currentTool: ToolStub = new ToolStub({} as DrawingService, {} as CurrentColorService);
-    textService: TextService = new TextService({} as CurrentColorService, {} as DrawingService);
+    textService: TextService = new TextService({} as CurrentColorService, {} as DrawingService, {} as UndoRedoService);
 
     isCurrentTool(): boolean {
         return true;
