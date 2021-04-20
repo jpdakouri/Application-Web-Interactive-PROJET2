@@ -74,7 +74,8 @@ describe('TextService', () => {
         const position = { x: 100, y: 100 } as Vec2;
         const fillTextMultiLineSpy = spyOn(service, 'fillTextMultiLine').and.callThrough();
         const mockText = 'hello word';
-        const command = new TextCommand(service, '', mockText, '', TextFont.Arial, TextAlign.Start, 1, position, 1);
+        // tslint:disable-next-line: no-magic-numbers
+        const command = new TextCommand(service, 'rgba(0,0,0,1)', mockText, ' ', TextFont.Arial, TextAlign.Start, 1, position, 30);
         service.text = mockText;
         service.textBoxPosition = position;
         service.textAlign = TextAlign.Start;
@@ -214,7 +215,7 @@ describe('TextService', () => {
         service.fontFace = TextFont.BrushScriptMT;
         service.textAlign = TextAlign.Center;
         service.fontSize = 2;
-        const command = new TextCommand(service, '', text, '', TextFont.Arial, TextAlign.Start, 1, position, 1);
+        const command = new TextCommand(service, '', text, '', TextFont.BrushScriptMT, TextAlign.Center, 1, position, 2);
 
         service.fillTextMultiLine(drawingServiceSpy.baseCtx, command);
 
