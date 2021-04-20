@@ -1,58 +1,49 @@
 <div class="export-modal-container">
-  <img #previewImage
-       [ngStyle]="{filter: selectedFilterValue}"
-       [src]="imageSource"
-       title="vignette de prévisualisation de l'image à exporter"
-       class="preview-image"
-       alt="Impossible d'afficher l'aperçu de l'image"
-  >
-  <canvas #downloadProcessingCanvas hidden></canvas>
-  <a #link hidden></a>
+    <img
+        #previewImage
+        [ngStyle]="{ filter: selectedFilterValue }"
+        [src]="imageSource"
+        title="vignette de prévisualisation de l'image à exporter"
+        class="preview-image"
+        alt="Impossible d'afficher l'aperçu de l'image"
+    />
+    <canvas #downloadProcessingCanvas hidden></canvas>
+    <a #link hidden></a>
 
-  <div class="export-options">
-    <mat-form-field
-        appearance="fill"
-        hintLabel="Max 25 caractères : lettres, chiffres, underscore et tiret"
-        hideRequiredMarker="false">
-      <mat-label>Nom du fichier</mat-label>
-      <input matInput
-             #input
-             [formControl]="fileName"
-             maxlength="25"
-             placeholder="Ex. dessin1"
-             required>
-      <mat-hint align="end">{{input.value?.length || 0}}/25</mat-hint>
-      <mat-error *ngIf="fileName.invalid">{{getErrorMessage()}}</mat-error>
-    </mat-form-field>
+    <div class="export-options">
+        <mat-form-field appearance="fill" hintLabel="Max 25 caractères : lettres, chiffres, underscore et tiret" hideRequiredMarker="false">
+            <mat-label>Nom du fichier</mat-label>
+            <input matInput #input [formControl]="fileName" maxlength="25" placeholder="Ex. dessin1" required />
+            <mat-hint align="end">{{ input.value?.length || 0 }}/25</mat-hint>
+            <mat-error *ngIf="fileName.invalid">{{ getErrorMessage() }}</mat-error>
+        </mat-form-field>
 
-    <mat-form-field appearance="fill">
-      <mat-label>Extension</mat-label>
-      <mat-select [(value)]="selectedFormat" (selectionChange)="onFormatChange(selectedFormat)">
-        <mat-option *ngFor="let format of formats" [value]="format">{{ format }}</mat-option>
-      </mat-select>
-    </mat-form-field>
+        <mat-form-field appearance="fill">
+            <mat-label>Extension</mat-label>
+            <mat-select [(value)]="selectedFormat" (selectionChange)="onFormatChange(selectedFormat)">
+                <mat-option *ngFor="let format of formats" [value]="format">{{ format }}</mat-option>
+            </mat-select>
+        </mat-form-field>
 
-    <mat-form-field appearance="fill">
-      <mat-label>Filtre</mat-label>
-      <mat-select [(value)]="selectedFilter" (selectionChange)="onFilterChange(selectedFilter)">
-        <mat-option *ngFor="let filter of filters" [value]="filter">{{ filter }}</mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
+        <mat-form-field appearance="fill">
+            <mat-label>Filtre</mat-label>
+            <mat-select [(value)]="selectedFilter" (selectionChange)="onFilterChange(selectedFilter)">
+                <mat-option *ngFor="let filter of filters" [value]="filter">{{ filter }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
 
-  <mat-dialog-actions  mat-dialog-actions>
-    <button mat-raised-button mat-dialog-close mat-flat-button>Annuler</button>
+    <mat-dialog-actions mat-dialog-actions>
+        <button mat-raised-button mat-dialog-close mat-flat-button>Annuler</button>
 
-    <div class="flexExpand"></div>
+        <div class="flexExpand"></div>
 
-    <button mat-raised-button color="primary" disabled>
-      <span class="material-icons">file_upload</span>Téléverser sur Imgur
-    </button>
+        <button mat-raised-button color="primary" (click)="onUpload()" [disabled]="fileName.invalid">
+            <span class="material-icons">file_upload</span>Téléverser sur Imgur
+        </button>
 
-    <button mat-raised-button color="primary" (click)="onDownload()" [disabled]="fileName.invalid">
-      <span class="material-icons" (click)="onDownload()">file_download</span>Télécharger
-    </button>
-
-  </mat-dialog-actions>
-
+        <button mat-raised-button color="primary" (click)="onDownload()" [disabled]="fileName.invalid">
+            <span class="material-icons" (click)="onDownload()">file_download</span>Télécharger
+        </button>
+    </mat-dialog-actions>
 </div>

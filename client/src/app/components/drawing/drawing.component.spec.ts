@@ -1,6 +1,8 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { EventEmitter } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { Vec2 } from '@app/classes/vec2';
 import { CanvasResizerService, Status } from '@app/services/canvas-resizer/canvas-resizer.service';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -9,7 +11,12 @@ import { SaveDrawingService } from '@app/services/save-drawing/save-drawing.serv
 import { SIDEBAR_WIDTH } from '@app/services/services-constants';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
 import { PencilService } from '@app/services/tools/pencil-service/pencil.service';
+import { SelectionPolygonalLassoService } from '@app/services/tools/selection-polygonal-lasso/selection-polygonal-lasso.service';
+import { SelectionResizerService } from '@app/services/tools/selection-resizer-service/selection-resizer.service';
+import { TextService } from '@app/services/tools/text-service/text.service';
+import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
 import { MouseButtons } from '@app/utils/enums/mouse-button-pressed';
+import { SelectionStatus } from '@app/utils/enums/selection-resizer-status';
 import { ToolsNames } from '@app/utils/enums/tools-names';
 import { ToolManagerServiceMock } from '@app/utils/tests-mocks/tool-manager-mock';
 import { ToolStub } from '@app/utils/tests-mocks/tool-stub';
@@ -19,27 +26,46 @@ describe('DrawingComponent', () => {
     let component: DrawingComponent;
     let fixture: ComponentFixture<DrawingComponent>;
     let toolStub: ToolStub;
-    let drawingStub: DrawingService;
     let mouseStub: MouseHandlerService;
     let canvasResizerStub: CanvasResizerService;
+    let textService: TextService;
 
     let toolManagerServiceMock: ToolManagerServiceMock;
+    let drawingServiceSpy: DrawingServiceMock;
+    class DrawingServiceMock {
+        // tslint:disable:no-empty
+        newDrawing: EventEmitter<Vec2> = new EventEmitter<Vec2>();
+        createNewDrawingEmitter: EventEmitter<boolean> = new EventEmitter();
+
+        saveCanvas(): void {}
+        restoreCanvas(): void {}
+        restoreDrawing(): void {}
+        clearCanvas(): void {}
+        isCanvasBlank(): boolean {
+            return true;
+        }
+        createNewDrawing(): void {}
+        openDrawing(): void {}
+    }
+
     beforeEach(async(() => {
         toolStub = new ToolStub({} as DrawingService, {} as CurrentColorService);
-        drawingStub = new DrawingService();
         toolManagerServiceMock = new ToolManagerServiceMock();
         mouseStub = new MouseHandlerService();
         canvasResizerStub = new CanvasResizerService(mouseStub);
+        textService = new TextService({} as CurrentColorService, {} as DrawingService, {} as UndoRedoService);
+        drawingServiceSpy = new DrawingServiceMock();
 
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],
             providers: [
                 { provide: PencilService, useValue: toolStub },
-                { provide: DrawingService, useValue: drawingStub },
+                { provide: DrawingService, useValue: drawingServiceSpy },
                 { provide: CanvasResizerService, useValue: canvasResizerStub },
                 { provide: MouseHandlerService, useValue: mouseStub },
                 { provide: ToolManagerService, useValue: toolManagerServiceMock },
                 { provide: SaveDrawingService, useValue: {} },
+                { provide: TextService, useValue: textService },
             ],
             imports: [MatTooltipModule, HttpClientTestingModule],
         }).compileComponents();
@@ -49,6 +75,7 @@ describe('DrawingComponent', () => {
         fixture = TestBed.createComponent(DrawingComponent);
         component = fixture.componentInstance;
         toolStub = toolManagerServiceMock.currentTool;
+
         fixture.detectChanges();
     });
 
@@ -80,7 +107,7 @@ describe('DrawingComponent', () => {
         spyOn(canvasResizerStub, 'calculateCanvasSize').and.stub();
         spyOn(canvasResizerStub, 'updatePreviewCanvasSize').and.stub();
 
-        drawingStub.createNewDrawingEmitter.emit();
+        drawingServiceSpy.createNewDrawingEmitter.emit();
         expect(canvasResizerStub.calculateCanvasSize).toHaveBeenCalled();
         expect(canvasResizerStub.updatePreviewCanvasSize).toHaveBeenCalled();
     });
@@ -89,15 +116,9 @@ describe('DrawingComponent', () => {
         spyOn(component, 'subscribeToNewDrawing').and.stub();
         spyOn(canvasResizerStub, 'updatePreviewCanvasSize').and.stub();
 
-        drawingStub.newDrawing.emit();
+        drawingServiceSpy.newDrawing.emit();
 
         expect(canvasResizerStub.updatePreviewCanvasSize).toHaveBeenCalled();
-    });
-
-    it("#ngAfterViewInit should call darwingService's #restoreCanvas", () => {
-        spyOn(drawingStub, 'restoreCanvas').and.callThrough();
-        component.ngAfterViewInit();
-        expect(drawingStub.restoreCanvas).toHaveBeenCalled();
     });
 
     it('should get stubTool', () => {
@@ -126,7 +147,17 @@ describe('DrawingComponent', () => {
         expect(mouseEventSpy).toHaveBeenCalled();
     });
 
+    it("should call selectionResizer's #onMouseMove when resizing a selection", () => {
+        component.onSelectionBoxClick(SelectionStatus.TOP_LEFT_BOX);
+        const event = {} as MouseEvent;
+        const selectionResizerSpy = TestBed.inject(SelectionResizerService);
+        spyOn(selectionResizerSpy, 'onMouseMove').and.callThrough();
+        component.onMouseMove(event);
+        expect(selectionResizerSpy.onMouseMove).toHaveBeenCalled();
+    });
+
     it(" should call the tool's #mouseDown when receiving a mouse down event", () => {
+        component.onSelectionBoxClick(SelectionStatus.OFF);
         const event = {} as MouseEvent;
         const mouseEventSpy = spyOn(toolStub, 'onMouseDown').and.callThrough();
         component.onMouseDown(event);
@@ -140,6 +171,18 @@ describe('DrawingComponent', () => {
         const mouseEventSpy = spyOn(canvasResizerStub, 'onMouseDown').and.callThrough();
         component.onMouseDown(event);
         expect(mouseEventSpy).toHaveBeenCalled();
+    });
+
+    it("should call selectionResizer's #onMouseDown when resizing a selection", () => {
+        const selectLassoSpy = TestBed.inject(SelectionPolygonalLassoService);
+        spyOn(component.toolManagerService, 'getCurrentSelectionTool').and.returnValue(selectLassoSpy);
+        selectLassoSpy.isMagnetismOff = true;
+        component.onSelectionBoxClick(SelectionStatus.TOP_LEFT_BOX);
+        const event = {} as MouseEvent;
+        const selectionResizerSpy = TestBed.inject(SelectionResizerService);
+        spyOn(selectionResizerSpy, 'onMouseDown').and.callThrough();
+        component.onMouseDown(event);
+        expect(selectionResizerSpy.onMouseDown).toHaveBeenCalled();
     });
 
     it('onContextMenu returns true if right clicked while any other tool is in use', () => {
@@ -159,21 +202,51 @@ describe('DrawingComponent', () => {
     });
 
     it(" should call the tool's #mouseUp when receiving a mouse up event", () => {
+        component.onSelectionBoxClick(SelectionStatus.OFF);
         const event = {} as MouseEvent;
-        const mouseEventSpy = spyOn(toolStub, 'onMouseUp').and.callThrough();
+        // tslint:disable:no-string-literal
+
+        spyOn(canvasResizerStub, 'isResizing').and.returnValue(false);
+        spyOn(component['selectionResizerService'], 'isResizing').and.returnValue(true);
+        spyOn(component['selectionResizerService'], 'updateValues').and.stub();
+        spyOn(component['selectionResizerService'], 'onMouseUp').and.stub();
+        spyOn(component['selectionResizerService'], 'setStatus').and.stub();
+        component.onMouseUp(event);
+        expect(component['selectionResizerService'].setStatus).toHaveBeenCalled();
+    });
+
+    it('should resize the canvas on mouseUp when status is resizing', () => {
+        component['gridService'].showGrid = true;
+        spyOn(canvasResizerStub, 'isResizing').and.returnValue(true);
+        spyOn(component['gridService'], 'newGrid').and.stub();
+        component.onMouseUp({} as MouseEvent);
+        canvasResizerStub.setStatus(Status.BOTTOM_RIGHT_RESIZE);
+        const event = {} as MouseEvent;
+        const mouseEventSpy = spyOn(canvasResizerStub, 'onMouseUp').and.callThrough();
         component.onMouseUp(event);
         expect(mouseEventSpy).toHaveBeenCalled();
-        expect(mouseEventSpy).toHaveBeenCalledWith(event);
+        expect(canvasResizerStub.status).toBe(Status.OFF);
+    });
+
+    it("should call selectionResizer's #onMouseUp when resizing a selection", () => {
+        component.onSelectionBoxClick(SelectionStatus.TOP_LEFT_BOX);
+        const event = {} as MouseEvent;
+        const selectionResizerSpy = TestBed.inject(SelectionResizerService);
+        spyOn(selectionResizerSpy, 'onMouseUp').and.callThrough();
+        component.onMouseUp(event);
+        expect(selectionResizerSpy.onMouseUp).toHaveBeenCalled();
     });
 
     it('should save the canvas state when a resizer is clicked', () => {
         const numberOfCallsToSaveCanvasMethod = 3;
-        spyOn(drawingStub, 'saveCanvas');
 
+        // tslint:disable-next-line:no-any
+        const saveCanvasSpy = spyOn<any>(drawingServiceSpy, 'saveCanvas').and.callThrough();
+        // setTimeout(() => {});
         component.onMiddleRightResizerClick();
         component.onBottomRightResizerClick();
         component.onMiddleBottomResizerClick();
-        expect(drawingStub.saveCanvas).toHaveBeenCalledTimes(numberOfCallsToSaveCanvasMethod);
+        expect(saveCanvasSpy).toHaveBeenCalledTimes(numberOfCallsToSaveCanvasMethod);
     });
 
     it("should call CanvasResizerService's #onMiddleRightResizer when is called", () => {
@@ -195,9 +268,12 @@ describe('DrawingComponent', () => {
     });
 
     it('should restore the canvas after #resize call', () => {
-        spyOn(drawingStub, 'restoreCanvas');
+        spyOn(drawingServiceSpy, 'restoreDrawing');
         component.resizeCanvas();
-        expect(drawingStub.restoreCanvas).toHaveBeenCalled();
+        // setTimeout(() => {
+        //     component.resizeCanvas();
+        // });
+        expect(drawingServiceSpy.restoreDrawing).toHaveBeenCalled();
     });
 
     it('canvasPreviewSize should be canvasSize on init', () => {
@@ -267,6 +343,7 @@ describe('DrawingComponent', () => {
     });
 
     it(" should call the tool's key down when receiving a key down event", () => {
+        component.onSelectionBoxClick(SelectionStatus.OFF);
         const event = {} as KeyboardEvent;
         const mouseEventSpy = spyOn(toolStub, 'onKeyDown').and.callThrough();
         component.onKeyDown(event);
@@ -274,7 +351,17 @@ describe('DrawingComponent', () => {
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
     });
 
+    it("should call selectionResizer's #onKeyUp when resizing a selection", () => {
+        component.onSelectionBoxClick(SelectionStatus.TOP_LEFT_BOX);
+        const event = {} as KeyboardEvent;
+        const selectionResizerSpy = TestBed.inject(SelectionResizerService);
+        spyOn(selectionResizerSpy, 'onKeyUp').and.callThrough();
+        component.onKeyUp(event);
+        expect(selectionResizerSpy.onKeyUp).toHaveBeenCalled();
+    });
+
     it(" should call the tool's key up when receiving a key up event", () => {
+        component.onSelectionBoxClick(SelectionStatus.OFF);
         const event = {} as KeyboardEvent;
         const mouseEventSpy = spyOn(toolStub, 'onKeyUp').and.callThrough();
         component.onKeyUp(event);
@@ -282,35 +369,37 @@ describe('DrawingComponent', () => {
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
     });
 
-    it('  getSelectedAreaSize should return correct values ', () => {
-        component.selectionEllipseService.width = 2;
-        component.selectionEllipseService.height = 2;
+    it("should call selectionResizer's #onKeyDown when resizing a selection", () => {
+        component.onSelectionBoxClick(SelectionStatus.TOP_LEFT_BOX);
+        const event = {} as KeyboardEvent;
+        const selectionResizerSpy = TestBed.inject(SelectionResizerService);
+        spyOn(selectionResizerSpy, 'onKeyDown').and.callThrough();
+        component.onKeyDown(event);
+        expect(selectionResizerSpy.onKeyDown).toHaveBeenCalled();
+    });
+
+    it('getSelectedAreaSize should return correct values ', () => {
+        component.selectedArea.nativeElement.width = 2;
+        component.selectedArea.nativeElement.height = 2;
 
         expect(component.getSelectedAreaSize().x).toEqual(2);
         expect(component.getSelectedAreaSize().y).toEqual(2);
     });
 
-    it('getTopLeftCorner() should return correct values ', () => {
-        component.selectionEllipseService.topLeftCorner.x = 2;
-        component.selectionEllipseService.topLeftCorner.y = 2;
+    it(' getTopLeftCorner() should return correct values ', () => {
+        component.selectedArea.nativeElement.style.left = 2 + 'px';
+        component.selectedArea.nativeElement.style.top = 2 + 'px';
 
         expect(component.getTopLeftCorner().x).toEqual(2);
         expect(component.getTopLeftCorner().y).toEqual(2);
     });
 
-    it('getSelectedAreaSizeRectangle should return correct values ', () => {
-        component.selectionRectangleService.width = 2;
-        component.selectionRectangleService.height = 2;
-
-        expect(component.getSelectedAreaSizeRectangle().x).toEqual(2);
-        expect(component.getSelectedAreaSizeRectangle().y).toEqual(2);
+    it('onMouseWheelScroll delegates to the current tool', () => {
+        const testTool = TestBed.inject(PencilService);
+        component.currentTool = testTool;
+        spyOn(testTool, 'onMouseWheelScroll');
+        const event = new WheelEvent('mousewheel');
+        component.onMouseWheelScroll(event);
+        expect(testTool.onMouseWheelScroll).toHaveBeenCalled();
     });
-
-    it('getTopLeftCornerRectangle should return correct values ', () => {
-        component.selectionRectangleService.topLeftCorner.x = 2;
-        component.selectionRectangleService.topLeftCorner.y = 2;
-
-        expect(component.getTopLeftCornerRectangle().x).toEqual(2);
-        expect(component.getTopLeftCornerRectangle().y).toEqual(2);
-    });
-});
+}); // tslint:disable-next-line:max-file-line-count

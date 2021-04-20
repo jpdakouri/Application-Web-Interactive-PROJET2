@@ -1,13 +1,18 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { UploadLinkComponent } from '@app/components/export-drawing/upload-link/upload-link.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ExportDrawingService } from '@app/services/export-drawing/export-drawing.service';
+import { ImgurApiService } from '@app/services/imgur-api/imgur-api.service';
 import {
     FILE_NAME_REGEX,
     INVALID_FILE_NAME_ERROR_MESSAGE,
     NO_ERROR_MESSAGE,
     REQUIRED_FILE_NAME_ERROR_MESSAGE,
+    UPLOAD_FAIL_ERROR_MESSAGE,
+    UPLOAD_SNACK_BAR_DISPLAY_DURATION,
 } from '@app/services/services-constants';
 import { ImageFilter } from '@app/utils/enums/image-filter.enum';
 import { ImageFormat } from '@app/utils/enums/image-format.enum';
@@ -33,8 +38,10 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
 
     constructor(
         private exportDrawingService: ExportDrawingService,
+        private imgurService: ImgurApiService,
         private drawingService: DrawingService,
         public dialogRef: MatDialogRef<ExportDrawingComponent>,
+        private snackBar: MatSnackBar,
     ) {
         this.filters = Object.values(ImageFilter);
         this.formats = Object.values(ImageFormat);
@@ -98,5 +105,24 @@ export class ExportDrawingComponent implements OnInit, OnDestroy, AfterViewInit 
         this.exportDrawingService.imageSource = this.imageSource;
         this.exportDrawingService.downloadDrawingAsImage(this.fileName.value, this.selectedFormat);
         this.dialogRef.close();
+    }
+
+    onUpload(): void {
+        this.exportDrawingService.imageSource = this.imageSource;
+        const imageSource = this.exportDrawingService.canvasToBase64Image(this.selectedFormat);
+        this.imgurService.uploadDrawing(this.fileName.value, imageSource).subscribe(
+            (response) => {
+                this.snackBar.openFromComponent(UploadLinkComponent, {
+                    data: response.data.link,
+                    duration: UPLOAD_SNACK_BAR_DISPLAY_DURATION,
+                });
+            },
+            () => {
+                this.snackBar.open(UPLOAD_FAIL_ERROR_MESSAGE, 'Fermer', {
+                    duration: UPLOAD_SNACK_BAR_DISPLAY_DURATION,
+                });
+            },
+        );
+        this.closeDialog();
     }
 }

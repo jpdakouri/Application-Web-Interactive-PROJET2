@@ -47,28 +47,7 @@ describe('LineService', () => {
         expect(service).toBeTruthy();
     });
 
-    it(' mouseDown should set mouseDownCoord to correct position', () => {
-        const expectedResult: Vec2 = { x: 100, y: 100 };
-        service.onMouseDown(mouseEvent);
-        expect(service.mouseDownCoord).toEqual(expectedResult);
-    });
-
-    it(' mouseDown should set mouseDown property to true on left click', () => {
-        service.onMouseDown(mouseEvent);
-        expect(service.mouseDown).toEqual(true);
-    });
-
-    it(' mouseDown should set mouseDown property to false on right click', () => {
-        const mouseEventRClick = {
-            offsetX: 25,
-            offsetY: 25,
-            button: MouseButtons.Right,
-        } as MouseEvent;
-        service.onMouseDown(mouseEventRClick);
-        expect(service.mouseDown).toEqual(false);
-    });
-
-    it(' onMouseUp should call drawLine if mouse was already down', () => {
+    it(' defaultMouseUp should call drawLine if mouse was already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
         const drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
@@ -77,7 +56,7 @@ describe('LineService', () => {
         expect(drawLineSpy).toHaveBeenCalled();
     });
 
-    it(' onMouseUp should not call drawLine if mouse was not down', () => {
+    it(' defaultMouseUp should not call drawLine if mouse was not down', () => {
         service.mouseDown = false;
         const drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
 
@@ -85,21 +64,20 @@ describe('LineService', () => {
         expect(drawLineSpy).not.toHaveBeenCalled();
     });
 
-    it(' onMouseUp should not call desiredAngle if mouse was already down and shift not pressed', () => {
+    it(' defaultMouseUp should not call desiredAngle if mouse was already down and shift not pressed', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
-        const keyboardEventFalse = {
-            key: KeyboardButtons.InvalidInput,
-        } as KeyboardEvent;
+        // const keyBordPrevent = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.InvalidInput });
+
         const desiredAngleSpy = spyOn<any>(service, 'desiredAngle').and.callThrough();
 
         service.onMouseUp(mouseEvent);
-        service.onKeyDown(keyboardEventFalse);
+        service.shiftDown = false;
 
         expect(desiredAngleSpy).not.toHaveBeenCalled();
     });
 
-    it(' onMouseUp should call desiredAngle if mouse was already down and shift pressed', () => {
+    it(' defaultMouseUp should call desiredAngle if mouse was already down and shift pressed', () => {
         mouseEvent = {
             offsetX: 40,
             offsetY: 40,
@@ -110,44 +88,33 @@ describe('LineService', () => {
         // spyOn<any>(service, 'getPositionFromMouse').and.returnValue({ x: 100, y: 100 });
         service['pathData'].push({ x: 0, y: 0 });
         service.mouseDown = true;
-        service['shiftPressed'] = true;
+        service['shiftDown'] = true;
         const desiredAngleSpy = spyOn<any>(service, 'desiredAngle').and.callThrough();
 
         service.onMouseUp(mouseEvent);
         expect(desiredAngleSpy).toHaveBeenCalled();
     });
 
-    it(' desiredAngle shoulld return the right value', () => {
-        service['pathData'].push({ x: 0, y: 0 });
-        expect(service['desiredAngle']({ x: 2, y: -3 })).toEqual({ x: 2, y: -2 });
-
-        service['pathData'].push({ x: 0, y: 0 });
-        expect(service['desiredAngle']({ x: -10, y: 7 })).toEqual({ x: -10, y: 10 });
-
-        service['pathData'].push({ x: 0, y: 0 });
-        expect(service['desiredAngle']({ x: 1, y: -3 })).toEqual({ x: 0, y: -3 });
-    });
-
-    it('onMouseMove should call previewUpdate if the drawing has started', () => {
+    it('onMouseMove should call updatePreview if the drawing has started', () => {
         service.mouseDown = true;
         const mouseStartEvent = {
             offsetX: 0,
             offsetY: 0,
             button: MouseButtons.Left,
         } as MouseEvent;
-        const previewUpdateSpy = spyOn<any>(service, 'previewUpdate').and.callThrough();
+        const updatePreviewSpy = spyOn<any>(service, 'updatePreview').and.callThrough();
         service.onMouseUp(mouseStartEvent);
         service.onMouseMove(mouseEvent);
 
-        expect(previewUpdateSpy).toHaveBeenCalled();
+        expect(updatePreviewSpy).toHaveBeenCalled();
     });
 
-    it('onMouseMove should not call previewUpdate if the drawing has not started', () => {
+    it('onMouseMove should not call updatePreview if the drawing has not started', () => {
         service.mouseDown = false;
-        const previewUpdateSpy = spyOn<any>(service, 'previewUpdate').and.callThrough();
+        const updatePreviewSpy = spyOn<any>(service, 'updatePreview').and.callThrough();
         service.onMouseMove(mouseEvent);
 
-        expect(previewUpdateSpy).not.toHaveBeenCalled();
+        expect(updatePreviewSpy).not.toHaveBeenCalled();
     });
 
     it('onMouseLeave should stop the preview if drawing has started ', () => {
@@ -248,32 +215,8 @@ describe('LineService', () => {
         );
     });
 
-    it(' keys should perform their task', () => {
-        service['started'] = true;
-        service.mouseDownCoord = { x: 20, y: 20 };
-        service['pathData'].push({ x: 0, y: 0 }, service.mouseDownCoord);
-
-        service.onKeyDown({
-            key: KeyboardButtons.Shift,
-        } as KeyboardEvent);
-        expect(service['shiftPressed']).toBeTrue();
-
-        service.onKeyDown({
-            key: KeyboardButtons.Escape,
-        } as KeyboardEvent);
-        expect(service['started']).toBeFalse();
-
-        service['pathData'].push({ x: 0, y: 0 }, service.mouseDownCoord);
-        const event = jasmine.createSpyObj('KeyboardEvent', ['preventDefault'], { key: KeyboardButtons.Backspace });
-        service.onKeyDown(event);
-        expect(event.preventDefault).toHaveBeenCalled();
-
-        service.onKeyDown(event);
-        expect(event.preventDefault).toHaveBeenCalled();
-    });
-
     it('onKeyup should update shift state', () => {
-        service['shiftPressed'] = true;
+        service['shiftDown'] = true;
         service.mouseDownCoord = { x: 20, y: 20 };
         service['lineThickness'] = undefined;
         service['pathData'].push({ x: 0, y: 0 }, service.mouseDownCoord);
@@ -281,17 +224,17 @@ describe('LineService', () => {
         service.onKeyUp({
             key: KeyboardButtons.Shift,
         } as KeyboardEvent);
-        expect(service['shiftPressed']).toBeFalse();
+        expect(service['shiftDown']).toBeFalse();
     });
 
-    it('onKeyup should not call previewUpdate if shift isnt pressed', () => {
-        service['shiftPressed'] = false;
-        const previewUpdateSpy = spyOn<any>(service, 'previewUpdate').and.callThrough();
+    it('onKeyup should not call updatePreview if shift isnt pressed', () => {
+        service['shiftDown'] = false;
+        const updatePreviewSpy = spyOn<any>(service, 'updatePreview').and.callThrough();
 
         service.onKeyUp({
             key: KeyboardButtons.InvalidInput,
         } as KeyboardEvent);
-        expect(previewUpdateSpy).not.toHaveBeenCalled();
+        expect(updatePreviewSpy).not.toHaveBeenCalled();
     });
 
     it('executeCommand draws a line for each point in path', () => {
@@ -311,6 +254,17 @@ describe('LineService', () => {
         service.executeCommand(command);
         expect(TestBed.inject(DrawingService).baseCtx.lineTo).toHaveBeenCalledTimes(2);
     });
+
+    it('updatePreview should call desiredAngle if shift is pressed', () => {
+        service.mouseDownCoord = { x: 0, y: 0 } as Vec2;
+        service.pathData.push(service.mouseDownCoord);
+        spyOn<any>(service, 'drawLine').and.stub();
+        service.shiftDown = true;
+        spyOn<any>(service, 'drawPreviewLine').and.stub();
+        service['updatePreview']();
+        expect(service['drawPreviewLine']).toHaveBeenCalled();
+    });
+
     it('onmouseup uses default dot radius and thickness if undefined', () => {
         service.dotRadius = undefined;
         service.lineThickness = undefined;
@@ -356,5 +310,4 @@ describe('LineService', () => {
         const expectedWidth = 1;
         expect(TestBed.inject(DrawingService).previewCtx.lineWidth).toBe(expectedWidth);
     });
-    // tslint:disable-next-line:max-file-line-count
 });

@@ -16,19 +16,28 @@ import { Subscription } from 'rxjs';
 })
 export class CarouselComponent implements OnInit, OnDestroy {
     @ViewChildren(DrawingCardComponent) drawingCard: QueryList<DrawingCardComponent>;
-    private subscribeInit: Subscription = new Subscription();
-    private subscribeGet: Subscription = new Subscription();
+    private subscribeInit: Subscription;
+    private subscribeGet: Subscription;
 
     sideCard: CardStyle;
     mainCard: CardStyle;
-    middle: number = 1;
-    left: number = 0;
-    right: number = 2;
-    isLoading: boolean = true;
-    tagFlag: boolean = false;
-    drawingArray: DrawingData[] = [];
+    middle: number;
+    left: number;
+    right: number;
+    isLoading: boolean;
+    tagFlag: boolean;
+    drawingArray: DrawingData[];
 
     constructor(public dialogRef: MatDialogRef<CarouselComponent>, public carouselService: CarouselService, public snackBar: MatSnackBar) {
+        this.subscribeInit = new Subscription();
+        this.subscribeGet = new Subscription();
+
+        this.middle = 1;
+        this.left = 0;
+        this.right = 2;
+        this.isLoading = true;
+        this.tagFlag = false;
+        this.drawingArray = [];
         this.sideCard = {
             width: MAX_WIDTH_SIDE_CARD,
             height: MAX_HEIGHT_SIDE_CARD,
@@ -46,14 +55,10 @@ export class CarouselComponent implements OnInit, OnDestroy {
         this.initCarousel();
     }
 
-    initCarousel(): void {
+    private initCarousel(): void {
         this.subscribeInit = this.carouselService.initCarousel(this.tagFlag).subscribe((result) => {
             this.drawingArray = result;
-            if (this.drawingArray.length === 1) {
-                this.middle = 0;
-            } else {
-                this.middle = 1;
-            }
+            this.middle = this.drawingArray.length === 1 ? 0 : 1;
             this.isLoading = false;
         });
     }
@@ -63,14 +68,14 @@ export class CarouselComponent implements OnInit, OnDestroy {
         this.subscribeGet.unsubscribe();
     }
 
-    onDialogClose(): void {
+    private onDialogClose(): void {
         this.drawingArray = [];
         this.isLoading = true;
         this.dialogRef.close();
     }
 
     @HostListener('window:keydown', ['$event'])
-    onKeyDown(event: KeyboardEvent): void {
+    protected onKeyDown(event: KeyboardEvent): void {
         if (event.key === KeyboardButtons.Left) this.shiftLeft();
         else if (event.key === KeyboardButtons.Right) this.shiftRight();
     }
@@ -88,7 +93,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
         });
     }
 
-    cantOpenDrawing(): void {
+    private cantOpenDrawing(): void {
         this.snackBar.open('Le dessin a été supprimé par un autre client. Veuillez en choisir un autre', 'Fermer', {
             duration: 5000,
         });

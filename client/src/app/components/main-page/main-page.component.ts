@@ -16,12 +16,10 @@ export class MainPageComponent {
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
     canOpen: boolean = false;
     isPendingDrawing: boolean = false;
-
-    constructor(
-        private basicService: IndexService,
-        private drawingService: DrawingService,
-        private dialogControllerService: DialogControllerService,
-    ) {}
+    drawingService: DrawingService;
+    constructor(private basicService: IndexService, drawingService: DrawingService, private dialogControllerService: DialogControllerService) {
+        this.drawingService = drawingService;
+    }
 
     sendTimeToServer(): void {
         const newTimeMessage: Message = {
@@ -42,12 +40,23 @@ export class MainPageComponent {
             .subscribe(this.message);
     }
 
+    getDataFromLocalStorage(): string | null {
+        return localStorage.getItem('canvasInfo');
+    }
+
     onCreateNewDrawing(): void {
-        this.drawingService.createNewDrawing();
+        this.drawingService.createNewDrawing(true);
     }
 
     openCarousel(): void {
         this.onCreateNewDrawing();
         this.dialogControllerService.openDialog('carousel');
+    }
+
+    onContinueDrawing(): void {
+        this.drawingService.continueDrawing();
+    }
+    testCondition(): boolean {
+        return this.getDataFromLocalStorage() !== null;
     }
 }

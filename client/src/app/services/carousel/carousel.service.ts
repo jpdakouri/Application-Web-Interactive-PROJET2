@@ -14,46 +14,47 @@ const LAST_INDEX_OF_ARRAY = -1;
 export class CarouselService {
     carouselDialog: MatDialogRef<CarouselComponent>;
     sizeOfArray: number;
-    courrentIndex: number = 0;
+    courrentIndex: number;
     drawingsToShow: DrawingData[];
 
-    constructor(private httpService: HttpService, public drawingService: DrawingService) {}
+    constructor(private httpService: HttpService, public drawingService: DrawingService) {
+        this.courrentIndex = 0;
+    }
 
     initCarousel(tagFlag: boolean): Observable<DrawingData[]> {
         this.drawingsToShow = [];
-        const subject = new Subject<DrawingData[]>();
         this.courrentIndex = 0;
-
-        this.getArraySizeOfDrawing(tagFlag).subscribe((size) => {
-            if (size > 0) {
+        return new Observable((subscriber) => {
+            this.getArraySizeOfDrawing(tagFlag).subscribe((size) => {
+                if (size <= 0) {
+                    subscriber.next(this.drawingsToShow);
+                    return;
+                }
                 this.httpService.getOneDrawing(LAST_INDEX_OF_ARRAY, tagFlag).subscribe({
                     next: (resultFirst) => {
                         this.drawingsToShow.push(resultFirst);
-                        if (this.sizeOfArray > 1) {
-                            this.httpService.getOneDrawing(0, tagFlag).subscribe({
-                                next: (resultSecond) => {
-                                    this.drawingsToShow.push(resultSecond);
-                                    this.httpService.getOneDrawing(1, tagFlag).subscribe({
-                                        next: (resultThird) => {
-                                            this.drawingsToShow.push(resultThird);
-                                            subject.next(this.drawingsToShow);
-                                        },
-                                    });
-                                },
-                            });
-                        } else {
-                            subject.next(this.drawingsToShow);
+                        if (this.sizeOfArray <= 1) {
+                            subscriber.next(this.drawingsToShow);
+                            return;
                         }
+                        this.httpService.getOneDrawing(0, tagFlag).subscribe({
+                            next: (resultSecond) => {
+                                this.drawingsToShow.push(resultSecond);
+                                this.httpService.getOneDrawing(1, tagFlag).subscribe({
+                                    next: (resultThird) => {
+                                        this.drawingsToShow.push(resultThird);
+                                        subscriber.next(this.drawingsToShow);
+                                    },
+                                });
+                            },
+                        });
                     },
                 });
-            } else {
-                subject.next(this.drawingsToShow);
-            }
+            });
         });
-        return subject.asObservable();
     }
 
-    getArraySizeOfDrawing(tagFlag: boolean): Observable<number> {
+    private getArraySizeOfDrawing(tagFlag: boolean): Observable<number> {
         const subject = new Subject<number>();
         this.httpService.getLengthOfDrawings(tagFlag).subscribe({
             next: (results) => {

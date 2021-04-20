@@ -18,7 +18,7 @@ export const MINIMUM_HEIGHT = 250;
 export const LOWER_BOUND_WIDTH = 500;
 export const LOWER_BOUND_HEIGHT = 500;
 
-export const SIDEBAR_WIDTH = 335;
+export const SIDEBAR_WIDTH = 360;
 
 export const WORKING_ZONE_VISIBLE_PORTION = 100;
 
@@ -35,6 +35,9 @@ export const TAG_NAME_REGEX = /^[a-zA-Z0-9 ]*$/;
 export const INVALID_FILE_NAME_ERROR_MESSAGE = 'Nom de fichier invalide';
 export const REQUIRED_FILE_NAME_ERROR_MESSAGE = 'Vous devez entrer un nom';
 export const NO_ERROR_MESSAGE = '';
+export const UPLOAD_FAIL_ERROR_MESSAGE = 'Le téléversement du dessin a échoué ! Veuillez ressayer.';
+export const UPLOAD_SNACK_BAR_DISPLAY_DURATION = 10000;
+
 /****************************/
 /***SELECTION CONSTANTS*/
 /****************************/
@@ -44,3 +47,22 @@ export const GREEN_POS = 2;
 export const BLUE_POS = 1;
 export const ALPHA_POS = 4;
 export const MAX_BYTE_VALUE = 255;
+
+/****************************/
+/***PAINTBUCKET CONSTANTS*/
+/****************************/
+export const MAX_PIXEL_VALUE = 255;
+
+export const ALPHA = 3;
+
+export const ARRAY_OFFSET = 4;
+
+export const INCREASE_FACTOR = 120;
+
+export const N_COORD_3 = 3;
+
+export const HALF_OPACITY_128 = 128;
+
+export const HALF_OPACITY_127 = 127;
+
+export const TRANSPARENT_THRESHOLD = 100;

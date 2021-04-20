@@ -1,15 +1,24 @@
 .toolbar {
-    min-height: 100vh;
+    height: 100vh;
     display: flex;
     padding: 10px 10px 0px 10px;
     flex-direction: column;
 }
 
 .flex-item {
-    margin-bottom: 10px;
     width: 40px;
 }
-
+.box {
+    grid-gap: 7px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+}
 .polygon-button-container {
     margin-bottom: 5px;
+}
+.mat-divider {
+    margin: 7px 0;
+    border-top-width: 1px;
+    border-top-color: #3f51b5;
 }

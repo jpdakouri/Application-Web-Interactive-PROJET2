@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
+import { MatOptionModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -14,15 +15,17 @@ import { CurrentColorComponent } from '@app/components/color-components/current-
 import { HueSelectorComponent } from '@app/components/color-components/hue-selector/hue-selector.component';
 import { PipettePreviewComponent } from '@app/components/pipette-preview/pipette-preview.component';
 import { ToolManagerService } from '@app/services/tool-manager/tool-manager.service';
+import { TextService } from '@app/services/tools/text-service/text.service';
 import { ShapeStyle } from '@app/utils/enums/shape-style';
+import { TextAlign } from '@app/utils/enums/text-align.enum';
 import { ToolAttributeComponent } from './tool-attribute.component';
-
 import SpyObj = jasmine.SpyObj;
 
 describe('ToolAttributeBarComponent', () => {
     let component: ToolAttributeComponent;
     let fixture: ComponentFixture<ToolAttributeComponent>;
     let toolManagerServiceSpy: SpyObj<ToolManagerService>;
+    let textServiceSpy: SpyObj<TextService>;
 
     beforeEach(async(() => {
         toolManagerServiceSpy = jasmine.createSpyObj('ToolManagerService', [
@@ -41,7 +44,19 @@ describe('ToolAttributeBarComponent', () => {
             'setCurrentJetDiameter',
             'getCurrentNumberOfSides',
             'setCurrentNumberOfSides',
+            'getCurrentTolerance',
+            'getStampScalingFactor',
+            'getStampRotationAngle',
+            'getSelectedStamp',
+            'setStampScalingFactor',
+            'setStampRotationAngle',
+            'setSelectedStamp',
+            'getCurrentFontSize',
+            'setCurrentFontSize',
+            'setCurrentFontFace',
         ]);
+        textServiceSpy = jasmine.createSpyObj('TextService', ['']);
+
         TestBed.configureTestingModule({
             declarations: [
                 ToolAttributeComponent,
@@ -52,16 +67,21 @@ describe('ToolAttributeBarComponent', () => {
                 HueSelectorComponent,
                 PipettePreviewComponent,
             ],
-            providers: [{ provide: ToolManagerService, useValue: toolManagerServiceSpy }],
+            providers: [
+                { provide: ToolManagerService, useValue: toolManagerServiceSpy },
+                { provide: TextService, useValue: textServiceSpy },
+            ],
             imports: [
                 BrowserAnimationsModule,
                 MatInputModule,
                 MatButtonToggleModule,
                 MatSliderModule,
+                MatCheckboxModule,
                 MatDividerModule,
                 MatCheckboxModule,
                 FormsModule,
                 MatIconModule,
+                MatOptionModule,
             ],
         }).compileComponents();
     }));
@@ -225,5 +245,78 @@ describe('ToolAttributeBarComponent', () => {
     it('onNumberOfSidesChange should call setCurrentNumberOfSides from toolManagerService', () => {
         component.onNumberOfSidesChange({} as MatSliderChange);
         expect(toolManagerServiceSpy.setCurrentNumberOfSides).toHaveBeenCalled();
+    });
+
+    it('onGridSizeChange should call newGrid if showGrid is true', () => {
+        spyOn(component.gridService, 'newGrid').and.stub();
+        spyOn(component.gridService, 'clear').and.stub();
+        component.gridService.showGrid = true;
+        component.onGridSizeChange({} as MatSliderChange);
+        expect(component.gridService.newGrid).toHaveBeenCalled();
+
+        component.gridService.showGrid = false;
+        component.onGridSizeChange({} as MatSliderChange);
+        expect(component.gridService.clear).toHaveBeenCalled();
+    });
+
+    it('onGridOpacityChange should call the service to change the opacity', () => {
+        spyOn(component.gridService, 'changeOpacity').and.stub();
+        component.onGridOpacityChange({} as MatSliderChange);
+        expect(component.gridService.changeOpacity).toHaveBeenCalled();
+    });
+
+    it('onStampScalingFactorChange calls the set function of Tool manager', () => {
+        const event = new MatSliderChange();
+        component.onStampScalingFactorChange(event);
+        expect(toolManagerServiceSpy.setStampScalingFactor).toHaveBeenCalled();
+    });
+
+    it('onStampRotationAngleChange calls the set function of Tool manager', () => {
+        const event = new MatSliderChange();
+        component.onStampRotationAngleChange(event);
+        expect(toolManagerServiceSpy.setStampRotationAngle).toHaveBeenCalled();
+    });
+
+    it('onSelectedStampChange calls the set function of Tool manager', () => {
+        component.onSelectedStampChange('stub');
+        expect(toolManagerServiceSpy.setSelectedStamp).toHaveBeenCalled();
+    });
+
+    it('getStampScalingFactor calls the get function of Tool manager', () => {
+        component.getStampScalingFactor();
+        expect(toolManagerServiceSpy.getStampScalingFactor).toHaveBeenCalled();
+    });
+
+    it('getStampRotationAngle calls the get function of Tool manager', () => {
+        component.getStampRotationAngle();
+        expect(toolManagerServiceSpy.getStampRotationAngle).toHaveBeenCalled();
+    });
+
+    it('getSelectedStamp calls the get function of Tool manager', () => {
+        component.getSelectedStamp();
+        expect(toolManagerServiceSpy.getSelectedStamp).toHaveBeenCalled();
+    });
+
+    it('onFontSizeChange should call the service to change the font size', () => {
+        component.onFontSizeChange({} as MatSliderChange);
+        expect(toolManagerServiceSpy.setCurrentFontSize).toHaveBeenCalled();
+    });
+
+    it('onFontSizeFaceChange should call the service to change the font face', () => {
+        component.onFontFaceChange({} as string);
+        expect(toolManagerServiceSpy.setCurrentFontFace).toHaveBeenCalled();
+    });
+
+    it('onFontTextAlignChange should call the service to change the text align', () => {
+        textServiceSpy.textAlign = TextAlign.Center;
+        component.onTextAlignChange(TextAlign.End as string);
+        expect(textServiceSpy.textAlign).toBe(TextAlign.End);
+    });
+
+    it('onFontTextStyleChange should call the service to change the text align', () => {
+        const textStyles = ['bold', 'italic'];
+        textServiceSpy.textStyles = [];
+        component.onTextStyleChange(textStyles);
+        expect(textServiceSpy.textStyles).toBe(textStyles);
     });
 });

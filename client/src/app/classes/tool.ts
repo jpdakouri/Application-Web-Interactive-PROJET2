@@ -3,7 +3,6 @@ import { CurrentColorService } from '@app/services/current-color/current-color.s
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import {
     DEFAULT_COLOR_BLACK,
-    DEFAULT_DOT_RADIUS,
     DEFAULT_MIN_THICKNESS,
     MIN_DROPLET_DIAMETER,
     MIN_FREQUENCY,
@@ -25,10 +24,8 @@ export abstract class Tool {
     primaryColor?: string = DEFAULT_COLOR_BLACK;
     secondaryColor?: string = DEFAULT_COLOR_BLACK;
     shapeStyle?: ShapeStyle = ShapeStyle.Outline;
-    dotRadius?: number = DEFAULT_DOT_RADIUS;
-    showDots?: boolean = false;
     mouseMoved: boolean = false;
-    eraserActive?: boolean = false;
+    bucketTolerance?: number = 0;
     dropletDiameter?: number = MIN_DROPLET_DIAMETER;
     frequency?: number = MIN_FREQUENCY;
     jetDiameter?: number = MIN_JET_DIAMETER;
@@ -45,7 +42,10 @@ export abstract class Tool {
     onMouseEnter(event: MouseEvent): void {}
 
     onDblClick(): void {}
+
     onMouseLeave(event: MouseEvent): void {}
+
+    onMouseWheelScroll(event: MouseEvent): void {}
 
     onKeyDown(event: KeyboardEvent): void {}
 

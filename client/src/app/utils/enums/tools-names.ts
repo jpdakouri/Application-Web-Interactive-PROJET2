@@ -6,7 +6,12 @@ export enum ToolsNames {
     Line = 'Line',
     Aerosol = 'Aerosol',
     Pipette = 'Pipette',
+    Polygon = 'Polygon',
+    Text = 'Text',
+    PaintBucket = 'PaintBucket',
+    SelectionResizer = 'SelectionResizer',
+    Stamp = 'Stamp',
     SelectBox = 'SelectBox',
     SelectEllipse = 'SelectEllipse',
-    Polygon = 'Polygon',
+    SelectPolygon = 'SelectPolygon',
 }

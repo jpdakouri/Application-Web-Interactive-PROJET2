@@ -39,7 +39,7 @@ describe('DrawingService', () => {
         expect(service.isCanvasBlank()).toBeFalse();
     });
 
-    it('#saveCanvas should save the canvas to session storage', () => {
+    it('#saveCanvas should save the canvas to local storage', () => {
         const RECTANGLE_OFFSET = 20;
         const RECTANGLE_DIMENSIONS = 20;
         service.baseCtx.beginPath();
@@ -47,8 +47,9 @@ describe('DrawingService', () => {
         service.baseCtx.stroke();
         service.saveCanvas();
         const expectedCanvasDataURL = service.canvas.toDataURL();
-        const canvasDataURL = sessionStorage.getItem('canvasBuffer');
-        expect(canvasDataURL).toEqual(expectedCanvasDataURL);
+        const canvasDataURL = localStorage.getItem('canvasInfo');
+        const info = JSON.parse(canvasDataURL as string);
+        expect(info[0]).toEqual(expectedCanvasDataURL);
         service.baseCtx.beginPath();
         service.baseCtx.rect(RECTANGLE_OFFSET + 1, RECTANGLE_OFFSET + 1, RECTANGLE_DIMENSIONS + 1, RECTANGLE_DIMENSIONS + 1);
         service.baseCtx.stroke();
@@ -65,8 +66,11 @@ describe('DrawingService', () => {
         service.baseCtx.beginPath();
         service.baseCtx.rect(RECTANGLE_OFFSET, RECTANGLE_OFFSET, RECTANGLE_DIMENSIONS, RECTANGLE_DIMENSIONS);
         service.baseCtx.stroke();
-        const canvasDataURL = service.canvas.toDataURL();
-        sessionStorage.setItem('canvasBuffer', canvasDataURL);
+        const canvasDataURL = [];
+        canvasDataURL.push(service.canvas.toDataURL());
+        canvasDataURL.push(service.canvas.width);
+        canvasDataURL.push(service.canvas.height);
+        localStorage.setItem('canvasInfo', JSON.stringify(canvasDataURL));
         const canvasImageData = service.baseCtx.getImageData(0, 0, service.canvas.width, service.canvas.height);
         const originalPixels = canvasImageData.data;
 
@@ -91,34 +95,36 @@ describe('DrawingService', () => {
         }, 500);
     });
 
-    it('should not create new drawing when canvas is not blank', () => {
-        const clearCanvasStub = spyOn(service, 'clearCanvas').and.callThrough();
-        const rectangleWidth = 1;
-        const rectangleHeight = 1;
-        service.baseCtx.fillRect(0, 0, rectangleWidth, rectangleHeight);
-        service.saveCanvas();
-        spyOn(window, 'confirm').and.returnValue(false);
-        service.createNewDrawing();
-        const isCanvasBlank = service.isCanvasBlank();
+    it('#restoreCanvas should not restore canvas from session storage if no session storage', () => {
+        spyOn(localStorage, 'getItem').and.returnValue('""');
+        spyOn(service, 'isCanvasBlank').and.returnValue(false);
+        spyOn(service.newDrawing, 'emit');
+        service.restoreCanvas();
+        expect(service.newDrawing.emit).not.toHaveBeenCalled();
+    });
 
-        expect(isCanvasBlank).toBeFalse();
-        expect(window.confirm).toHaveBeenCalledWith("Le canvas n'est pas vide! Voulez-vous procéder tout de même?");
+    it('should not create new drawing when canvas is not blank', () => {
+        const clearCanvasStub = spyOn(service, 'clearCanvas').and.stub();
+        service.baseCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
+        service.previewCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
+
+        spyOn(window, 'confirm').and.returnValue(false);
+        spyOn(service, 'isCanvasBlank').and.returnValue(false);
+        spyOn(service, 'continueDrawing').and.stub();
+        service.createNewDrawing(true);
         expect(clearCanvasStub).not.toHaveBeenCalled();
     });
 
-    it('should not clear the session storage on create new drawing when canvas is not blank', () => {
-        const sessionStorageClearSpy = spyOn(window.sessionStorage, 'clear').and.callThrough();
-        const rectangleWidth = 10;
-        const rectangleHeight = 10;
-        service.baseCtx.fillRect(0, 0, rectangleWidth, rectangleHeight);
+    it('should not clear the local storage on create new drawing when canvas is not blank', () => {
+        const localStorageClearSpy = spyOn(window.localStorage, 'clear').and.stub();
+
+        service.baseCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         service.saveCanvas();
         spyOn(window, 'confirm').and.returnValue(false);
-        service.createNewDrawing();
-        const isCanvasBlank = service.isCanvasBlank();
+        service.createNewDrawing(true);
+        spyOn(service, 'isCanvasBlank').and.returnValue(false);
 
-        expect(isCanvasBlank).toBeFalse();
-        expect(window.confirm).toHaveBeenCalledWith("Le canvas n'est pas vide! Voulez-vous procéder tout de même?");
-        expect(sessionStorageClearSpy).not.toHaveBeenCalled();
+        expect(localStorageClearSpy).not.toHaveBeenCalled();
     });
 
     it('isCanvasBlank should true if baseCanva is undefined', () => {
@@ -127,32 +133,26 @@ describe('DrawingService', () => {
         expect(returnValue).toBe(true);
     });
 
-    it('restoreCanvas shouldnt drawImage if there is no image', () => {
-        spyOn(sessionStorage, 'getItem').and.returnValue(null);
-        spyOn(service.baseCtx, 'drawImage').and.stub();
-        service.restoreCanvas();
-        expect(service.baseCtx.drawImage).not.toHaveBeenCalled();
-    });
-
     it('should do nothing when canvas is blank on create new drawing', () => {
         spyOn(window, 'confirm').and.returnValue(false);
         const clearCanvasStub = spyOn(service, 'clearCanvas').and.callThrough();
-        service.createNewDrawing();
+        service.createNewDrawing(true);
         expect(clearCanvasStub).not.toHaveBeenCalled();
         expect(service.isCanvasBlank()).toBeTrue();
     });
 
-    it('should clear the session storage on create new drawing when canvas is not blank', () => {
-        const sessionStorageClearSpy = spyOn(window.sessionStorage, 'clear').and.callThrough();
+    it('should clear the local storage on create new drawing when canvas is not blank', () => {
+        const localStorageClearSpy = spyOn(window.localStorage, 'clear').and.callThrough();
         const rectangleWidth = 10;
         const rectangleHeight = 10;
+        spyOn(service, 'isCanvasBlank').and.returnValue(false);
         service.baseCtx.fillRect(0, 0, rectangleWidth, rectangleHeight);
         service.saveCanvas();
         spyOn(window, 'confirm').and.returnValue(true);
-        service.createNewDrawing();
+        service.createNewDrawing(true);
 
         expect(window.confirm).toHaveBeenCalledWith("Le canvas n'est pas vide! Voulez-vous procéder tout de même?");
-        expect(sessionStorageClearSpy).toHaveBeenCalled();
+        expect(localStorageClearSpy).toHaveBeenCalled();
     });
 
     it('#createNewDrawing should call #emitCreateNewDrawing if canvas is not blank', () => {
@@ -161,24 +161,25 @@ describe('DrawingService', () => {
         const rectangleHeight = 10;
 
         service.baseCtx.fillRect(0, 0, rectangleWidth, rectangleHeight);
+        spyOn(service, 'isCanvasBlank').and.returnValue(false);
         service.saveCanvas();
 
         spyOn(window, 'confirm').and.returnValue(true);
 
-        service.createNewDrawing();
+        service.createNewDrawing(true);
 
         expect(window.confirm).toHaveBeenCalledWith("Le canvas n'est pas vide! Voulez-vous procéder tout de même?");
         expect(emitSpy).toHaveBeenCalled();
     });
 
-    it('openDrawing should call save canva', () => {
+    it('openDrawing should call saveCanvas', () => {
         spyOn(service, 'createNewDrawing').and.stub();
         spyOn(service, 'saveCanvas').and.stub();
         const newDrawing = {
             width: 100,
             height: 100,
         } as DrawingData;
-        service.openDrawing(newDrawing);
+        service.openDrawing(newDrawing, true);
         expect(service.saveCanvas).toHaveBeenCalled();
     });
 
@@ -191,7 +192,34 @@ describe('DrawingService', () => {
             height: 100,
             dataURL: canva,
         } as DrawingData;
-        service.openDrawing(newDrawing);
+        service.openDrawing(newDrawing, true);
         expect(service.saveCanvas).toHaveBeenCalled();
+    });
+
+    it('continue drawing should not restore drawing if no dataurl', () => {
+        spyOn(localStorage, 'getItem').and.returnValue('"test"');
+        spyOn(service, 'isCanvasBlank').and.returnValue(false);
+        spyOn(service, 'restoreCanvas').and.stub();
+        spyOn(service, 'restoreDrawing').and.stub();
+        service.continueDrawing();
+        expect(service.restoreCanvas).toHaveBeenCalled();
+    });
+
+    it('createNewDrawing calls continueDrawing if asked to', () => {
+        spyOn(localStorage, 'getItem').and.returnValue('"test"');
+        spyOn(service, 'continueDrawing').and.stub();
+        spyOn(window, 'confirm').and.returnValue(false);
+        spyOn(service, 'isCanvasBlank').and.returnValue(false);
+        spyOn(service, 'saveCanvas').and.stub();
+        const ret = service.createNewDrawing(true);
+        expect(ret).toBeTruthy();
+    });
+
+    it('continue should not restore if localstorage has nothing', () => {
+        spyOn(localStorage, 'getItem').and.returnValue('');
+        spyOn(service, 'isCanvasBlank').and.returnValue(false);
+        spyOn(service, 'restoreCanvas').and.stub();
+        service.continueDrawing();
+        expect(service.restoreCanvas).not.toHaveBeenCalled();
     });
 });
