@@ -82,13 +82,13 @@ export class DrawingService {
     createNewDrawing(showConfirmDialog?: boolean): boolean {
         if (localStorage.getItem('canvasInfo') && !this.isCanvasBlank() && showConfirmDialog) {
             if (confirm("Le canvas n'est pas vide! Voulez-vous procéder tout de même?")) {
+                localStorage.clear();
                 this.clearCanvas(this.previewCtx);
                 this.clearCanvas(this.baseCtx);
                 this.saveCanvas();
-                localStorage.clear();
                 this.emitCreateNewDrawing();
                 return true;
-            } else if (localStorage.getItem('canvasInfo') && !this.isCanvasBlank()) {
+            } else {
                 this.continueDrawing();
                 this.saveCanvas();
                 return true;

@@ -12,6 +12,7 @@ export class GridServiceMock {
         return true;
     }
     getGridSize(): number {
+        // tslint:disable-next-line:no-magic-numbers
         return 50;
     }
 }

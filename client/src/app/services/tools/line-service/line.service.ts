@@ -4,9 +4,9 @@ import { Vec2 } from '@app/classes/vec2';
 import { CurrentColorService } from '@app/services/current-color/current-color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { LineCreatorService } from '@app/services/tools/line-creator/line-creator.service';
+import { MagnetismService } from '@app/services/tools/magnetism-service/magnetism.service';
 import { DEFAULT_DOT_RADIUS, DEFAULT_MIN_THICKNESS } from '@app/services/tools/tools-constants';
 import { UndoRedoService } from '@app/services/tools/undo-redo-service/undo-redo.service';
-import { MagnetismService } from '../magnetism-service/magnetism.service';
 
 @Injectable({
     providedIn: 'root',
