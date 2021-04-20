@@ -229,4 +229,11 @@ describe('TextService', () => {
         service.calculateTextBoxWidth();
         expect(service['calculateLongestLineWidth']).toHaveBeenCalled();
     });
+
+    it('executeCommand calls fillTextMultiLine with provided command', () => {
+        const command = new TextCommand(service, '', 'a', '', TextFont.Arial, TextAlign.Start, 1, { x: 0, y: 0 }, 1);
+        spyOn(service, 'fillTextMultiLine');
+        service.executeCommand(command);
+        expect(service.fillTextMultiLine).toHaveBeenCalledWith(drawingServiceSpy.baseCtx, command);
+    });
 });
